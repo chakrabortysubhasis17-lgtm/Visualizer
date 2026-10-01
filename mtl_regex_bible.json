@@ -1,0 +1,194 @@
+{
+  "web_novel_regex_bible": {
+    "gender_classification": {
+      "female": {
+        "high_confidence_titles": [
+          "saintess", "holy maiden", "fairy", "goddess", "empress", "queen", 
+          "matriarch", "nun", "concubine", "princess", "female president", 
+          "hostess", "maid", "widow", "witch", "loli", "succubus", "duchess",
+          "countess", "marchioness", "baroness", "viscountess", "milady",
+          "shijie", "shimei", "noona", "unnie", "ahjumma", "ajumma"
+        ],
+        "medium_confidence_titles": [
+          "sister", "senior sister", "junior sister", "mother", "daughter", 
+          "aunt", "grandmother", "miss", "madam", "lady", "girl", "woman", "wife",
+          "heroine", "villainess"
+        ],
+        "self_identifiers": [
+          "this lady", "this fairy", "this queen", "this empress", "bengong", "qie"
+        ],
+        "vocatives_spoken_by_females": [
+          "husband", "gege", "brother fan", "brother ye", "honey", "darling", 
+          "my king", "hubby", "big brother", "oppa", "shixiong"
+        ],
+        "action_verbs": [
+          "giggled", "blushed", "pouted", "stomped her foot", "bit her lip", 
+          "covered her mouth", "smiled sweetly", "eyes reddened", "whimpered", 
+          "sobbed", "snuggled", "glared reproachfully", "rolled her eyes", 
+          "coquettishly", "hummed softly", "wept", "puffed her cheeks", "curtsied",
+          "smoothed her skirt", "tucked a strand of hair behind her ear"
+        ],
+        "physical_descriptors": [
+          "jade-like", "slender", "delicate", "peerless beauty", "fair skin", 
+          "curves", "long hair", "fragrance", "alluring", "charming", "frosty", 
+          "iceberg", "watery eyes", "cherry lips", "porcelain", "graceful figure",
+          "voluptuous", "petite"
+        ]
+      },
+      "male": {
+        "high_confidence_titles": [
+          "patriarch", "emperor", "king", "holy son", "prince", "young master", 
+          "scion", "monk", "eunuch", "emissary", "duke", "baron", "marquis",
+          "earl", "viscount", "milord", "sire", "shidi", "shixiong", "hyung", 
+          "oppa", "ahjussi", "ajusshi"
+        ],
+        "medium_confidence_titles": [
+          "brother", "senior brother", "junior brother", "father", "son", 
+          "uncle", "grandfather", "mister", "sir", "gentleman", "man", "boy",
+          "boss", "chief", "cap", "don", "consigliere"
+        ],
+        "self_identifiers": [
+          "this young master", "this seat", "your father", "this king", 
+          "this emperor", "zhen", "this lord", "laozi", "benzuo"
+        ],
+        "vocatives_spoken_by_males": [
+          "wife", "woman", "little girl", "my empress", "noona", "shimei"
+        ],
+        "action_verbs": [
+          "laughed heartily", "roared", "barked", "sneered", "smirked", 
+          "snorted coldly", "spoke heavily", "stroked his beard", 
+          "stood with his hands behind his back", "eyes narrowed dangerously", 
+          "scoffed", "bellowed", "flicked his sleeves", "cupped his fists",
+          "clasped his hands", "tipped his hat", "adjusted his tie"
+        ],
+        "physical_descriptors": [
+          "handsome", "sharp eyebrows", "starry eyes", "broad-shouldered", 
+          "muscular", "rugged", "tall and sturdy", "imposing", "beard", 
+          "chiseled", "sword-like eyebrows", "deep gaze", "chiseled jawline"
+        ]
+      }
+    },
+    "cultural_and_regional_patterns": {
+      "chinese_wuxia_xianxia": {
+        "honorifics": [
+          "fellow daoist", "shizun", "martial uncle", "martial aunt", "senior martial brother",
+          "junior martial sister", "da ge", "er ge", "sect master", "pavilion master"
+        ],
+        "tropes_and_actions": [
+          "cupped his fists", "flicked his sleeves", "vomited a mouthful of blood",
+          "qi deviation", "heavens", "heavenly tribulation", "nine generations",
+          "dual cultivation", "karmic ties", "slapped his face", "courting death"
+        ]
+      },
+      "korean_manhwa_litrpg": {
+        "honorifics": [
+          "sunbae", "sunbaenim", "hubae", "nim", "hunter", "awakener", "guild master", 
+          "chaebol", "chairman", "director", "team leader"
+        ],
+        "tropes_and_actions": [
+          "gatebreak", "dungeon break", "s-class", "ss-class", "status window", 
+          "constellation", "sponsor", "incarnation", "bowed 90 degrees", "clicked his tongue"
+        ]
+      },
+      "western_euro_fantasy": {
+        "honorifics": [
+          "your grace", "your highness", "your majesty", "my liege", "sire",
+          "lord", "lady", "paladin", "cleric", "necromancer", "rogue", "mage"
+        ],
+        "tropes_and_actions": [
+          "drew his longsword", "cast a spell", "mana core", "adventurer's guild",
+          "adjusted his glasses", "sipped tea elegantly", "tipped his hat"
+        ]
+      }
+    },
+    "generational_and_vrmmo_slang": {
+      "gen_z_and_alpha": {
+        "vocatives": [
+          "bro", "bruh", "chat", "dude", "man", "bestie", "fam", "goat", "npc"
+        ],
+        "catchphrases": [
+          "no cap", "fr fr", "bet", "sus", "rizz", "lit", "mid", "based", 
+          "cringe", "salty", "valid", "skibidi", "sigma", "delulu", "flex",
+          "rent free", "touch grass", "main character energy"
+        ],
+        "actions": [
+          "facepalmed", "deadass", "scrolled on their phone", "livestreamed", 
+          "typed furiously", "cancelled", "ratioed", "ghosted", "vibin", "cringed"
+        ]
+      },
+      "vrmmo_and_gamers": {
+        "vocatives": [
+          "tank", "healer", "dps", "noob", "smurf", "dev", "admin", "gm"
+        ],
+        "catchphrases": [
+          "aggro", "wipe", "nerf", "buff", "op", "broken", "lag", "ping", 
+          "loot", "gacha", "rng", "p2w", "f2p", "min-max"
+        ],
+        "actions": [
+          "logged out", "logged in", "equipped", "unequipped", "opened the inventory",
+          "cast a skill", "triggered the cooldown", "pulled the mob", "spammed"
+        ]
+      }
+    },
+    "mtl_archetype_tropes": {
+      "arrogant_scion_or_chaebol_heir": {
+        "associated_voice": "en-US-EricNeural",
+        "catchphrases": [
+          "trash", "waste", "courting death", "kneel", "cripple your own cultivation", 
+          "frog in a well", "toad lusting after swan meat", "do you know who my father is", 
+          "you dare", "give you face but you refuse", "do you know how much this suit costs"
+        ],
+        "actions": [
+          "sneered", "barked", "mocked", "scoffed", "looked down disdainfully", 
+          "laughed wildly", "pointed a finger arrogantly", "adjusted his rolex"
+        ]
+      },
+      "villainess_or_oujou_sama": {
+        "associated_voice": "en-US-ElizabethNeural",
+        "catchphrases": [
+          "oh ho ho", "know your place", "commoner", "audacious", "insolent",
+          "how dare you speak to me", "dirty hands"
+        ],
+        "actions": [
+          "covered her mouth with a fan", "laughed haughtily", "looked down her nose",
+          "crossed her arms", "flicked her hair"
+        ]
+      },
+      "ice_jade_beauty_or_kuudere": {
+        "associated_voice": "en-US-SaraNeural",
+        "catchphrases": [
+          "shameless", "lecher", "die", "don't come near me", "boring", "pointless"
+        ],
+        "actions": [
+          "frosty expression", "eyes cold as ice", "repelling people a thousand miles away", 
+          "frowned slightly", "ignored him completely", "drew her sword coldly", 
+          "celestial aura flared", "spoke without emotion"
+        ]
+      },
+      "loyal_subordinate_or_secretary": {
+        "associated_voice": "en-US-ChristopherNeural",
+        "catchphrases": [
+          "master", "my lord", "your divine will", "this subordinate understands", 
+          "at your command", "will fulfill the mission", "reporting to", "chairman"
+        ],
+        "actions": [
+          "bowed respectfully", "kneeled on one knee", "cupped his hands", 
+          "without hesitation", "spoke firmly", "stepped forward respectfully", 
+          "lowered his head", "adjusted his tablet"
+        ]
+      },
+      "panicked_mob_or_stream_viewer": {
+        "associated_voice": "en-US-TonyNeural",
+        "catchphrases": [
+          "impossible", "how can this be", "he is a monster", "run", "spare my life", 
+          "it's over", "what realm is this", "chat is this real", "gg", "he's hacking"
+        ],
+        "actions": [
+          "gasped in horror", "pupils shrank", "trembled violently", 
+          "fell to his knees in terror", "scalp went numb", "inhaled a breath of cold air",
+          "spammed the chat"
+        ]
+      }
+    }
+  }
+}

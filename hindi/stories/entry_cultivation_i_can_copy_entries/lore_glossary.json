@@ -1,0 +1,1362 @@
+{
+  "Li Qing": {
+    "indianized": "Rudra",
+    "devanagari": "रुद्र",
+    "category": "character"
+  },
+  "Qing'er": {
+    "indianized": "Rudra",
+    "devanagari": "रुद्र",
+    "category": "character"
+  },
+  "Li Canghai": {
+    "indianized": "Grandfather Devvrat",
+    "devanagari": "दादाजी देवव्रत",
+    "category": "character"
+  },
+  "Grand Elder Li": {
+    "indianized": "Grand Elder Devvrat",
+    "devanagari": "ग्रैंड एल्डर देवव्रत",
+    "category": "character"
+  },
+  "Li Tianheng": {
+    "indianized": "Clan Leader Rishabh",
+    "devanagari": "कुल प्रमुख ऋषभ",
+    "category": "character"
+  },
+  "Li Family": {
+    "indianized": "Suryakul Clan",
+    "devanagari": "सूर्यकुल",
+    "category": "faction"
+  },
+  "Li Clan": {
+    "indianized": "Suryakul Clan",
+    "devanagari": "सूर्यकुल",
+    "category": "faction"
+  },
+  "Canglan Prefecture": {
+    "indianized": "Neelanchal Province",
+    "devanagari": "नीलांचल प्रांत",
+    "category": "location"
+  },
+  "Tainan Mountains": {
+    "indianized": "Dakshingiri Mountains",
+    "devanagari": "दक्षिणगिरि पर्वतमाला",
+    "category": "location"
+  },
+  "Myriad Things Entry System": {
+    "indianized": "Sarvatra Gunank Pranali",
+    "devanagari": "सर्वत्र गुणांक प्रणाली",
+    "category": "artifact"
+  },
+  "Huaxia": {
+    "indianized": "Bharatvarsha",
+    "devanagari": "भारतवर्ष",
+    "category": "location"
+  },
+  "Yao Beasts": {
+    "indianized": "Asur Pashu",
+    "devanagari": "असुर पशु",
+    "category": "character"
+  },
+  "Qi Refining, Foundation Establishment, Core Formation, Nascent Soul, and Soul Transformation": {
+    "indianized": "Pranayam, Adhaar Sthapan, Swarn Lingam, Divya Atma, aur Param Chetna",
+    "devanagari": "प्राणायाम, आधार स्थापन, स्वर्ण लिंगम, दिव्य आत्मा, और परम चेतना",
+    "category": "artifact"
+  },
+  "Golden Core Stage Old Ancestor": {
+    "indianized": "Maharshi Swarn Lingam",
+    "devanagari": "महर्षि स्वर्ण लिंगम",
+    "category": "character"
+  },
+  "Spirit Testing Tablet": {
+    "indianized": "Divya Atma Shila",
+    "devanagari": "दिव्य आत्मा शिला",
+    "category": "artifact"
+  },
+  "Heavenly Spiritual Root, Earthly Spiritual Root, Three-Element Spiritual Root, Four and Five Spirit Roots": {
+    "indianized": "Divya Mool, Prithvi Mool, Trividha Mool, Chaturvidha aur Panchvidha Mool",
+    "devanagari": "दिव्य मूल, पृथ्वी मूल, त्रिविध मूल, चतुर्विध और पंचविध मूल",
+    "category": "artifact"
+  },
+  "Red Flame Serpent Demon": {
+    "indianized": "Raktagni Naag",
+    "devanagari": "रक्ताग्नि नाग",
+    "category": "character"
+  },
+  "Clear Spirit Jade Pendant": {
+    "indianized": "Nirmal Mani Haar",
+    "devanagari": "निर्मल मणि हार",
+    "category": "artifact"
+  },
+  "Azure Origin Art": {
+    "indianized": "Neelprabhav Vidya",
+    "devanagari": "नीलप्रभाव विद्या",
+    "category": "artifact"
+  },
+  "Peerless Marrow Cleansing Pill": {
+    "indianized": "Divya Majja Shodhan Vati",
+    "devanagari": "दिव्य मज्जा शोधन वटी",
+    "category": "artifact"
+  },
+  "Second Grandfather": {
+    "indianized": "Second Grandfather Bharat",
+    "devanagari": "दाऊजी भरत",
+    "category": "character"
+  },
+  "Grandpa Fu": {
+    "indianized": "Grandpa Bansi",
+    "devanagari": "दादाजी बंशी",
+    "category": "character"
+  },
+  "Scripture Pavilion": {
+    "indianized": "Ved Mandapam",
+    "devanagari": "वेद मंडपम",
+    "category": "location"
+  },
+  "Hundred-Herb Spirit Rice Porridge": {
+    "indianized": "Shat Jadi Divya Kheer",
+    "devanagari": "शत जड़ी दिव्य खीर",
+    "category": "artifact"
+  },
+  "Spirit Liquid Essence Porridge": {
+    "indianized": "Amrit Ras Kheer",
+    "devanagari": "अमृत रस खीर",
+    "category": "artifact"
+  },
+  "Li Fu": {
+    "indianized": "Granduncle Bharadwaj",
+    "devanagari": "महाशय भारद्वाज",
+    "category": "character"
+  },
+  "Late Bloomer": {
+    "indianized": "Chir-Vikasit",
+    "devanagari": "चिर-विकसित",
+    "category": "artifact"
+  },
+  "Life Winner": {
+    "indianized": "Bhagya-Vijeta",
+    "devanagari": "भाग्य-विजेता",
+    "category": "artifact"
+  },
+  "Divine Object Self-Obscuration": {
+    "indianized": "Divya-Rup Guptikaran",
+    "devanagari": "दिव्य-रूप गुप्तीकरण",
+    "category": "artifact"
+  },
+  "Xuanyuan Spiritual Power": {
+    "indianized": "Meru Divya Urja",
+    "devanagari": "मेरु दिव्य ऊर्जा",
+    "category": "artifact"
+  },
+  "Clear Breeze Steps": {
+    "indianized": "Sugandh Pavan Gati",
+    "devanagari": "सुगंध पवन गति",
+    "category": "artifact"
+  },
+  "Water Ring Art": {
+    "indianized": "Varun Valay Vidya",
+    "devanagari": "वरुण वलय विद्या",
+    "category": "artifact"
+  },
+  "Five Elements Shadow Escape - Remnant": {
+    "indianized": "Panchatattva Chhaya Gaman",
+    "devanagari": "पंचतत्त्व छाया गमन",
+    "category": "artifact"
+  },
+  "Water Element Shield": {
+    "indianized": "Jal Kavach",
+    "devanagari": "जल कवच",
+    "category": "artifact"
+  },
+  "Qingyuan Art - Ancient": {
+    "indianized": "Prachin Prannath Sadhana",
+    "devanagari": "प्राचीन प्राणनाथ साधना",
+    "category": "artifact"
+  },
+  "Great Derivation Five Elements - Source": {
+    "indianized": "Mahatattva Pancha Utsav",
+    "devanagari": "महातत्त्व पंच उत्सव",
+    "category": "artifact"
+  },
+  "Five Elements Instant Step": {
+    "indianized": "Panchatattva Tadit Gati",
+    "devanagari": "पंचतत्त्व तड़ित गति",
+    "category": "artifact"
+  },
+  "Li Huayuan": {
+    "indianized": "Patriarch Devendra",
+    "devanagari": "कुलगुरू देवेंद्र",
+    "category": "character"
+  },
+  "Li Yuanzhang": {
+    "indianized": "Li Yuanzhang",
+    "devanagari": "ऋषभ",
+    "category": "character"
+  },
+  "Spirit Void Sect": {
+    "indianized": "Shunya Sampraday",
+    "devanagari": "शून्याकाश संप्रदाय",
+    "category": "faction"
+  },
+  "Yunzhou": {
+    "indianized": "Meghanchal",
+    "devanagari": "मेघांचल",
+    "category": "location"
+  },
+  "One-Yuan Sword Qi": {
+    "indianized": "Eka-Prana Astra Tej",
+    "devanagari": "एक-प्राण अस्त्र तेज",
+    "category": "artifact"
+  },
+  "Steadfast and Unyielding": {
+    "indianized": "Vajra Sankalp",
+    "devanagari": "वज्र संकल्प",
+    "category": "artifact"
+  },
+  "Flying Feather Shuttle": {
+    "indianized": "Pakshi-Paksh Yahan",
+    "devanagari": "विहंगम पिच्छ यान",
+    "category": "artifact"
+  },
+  "Gu Qingyang": {
+    "indianized": "Gupteshwar",
+    "devanagari": "गुप्तेश्वर",
+    "category": "character"
+  },
+  "Vegetation into Soldiers": {
+    "indianized": "Vanaspatik Shastra",
+    "devanagari": "वनस्पतिक शस्त्र",
+    "category": "artifact"
+  },
+  "Lord of a Peak": {
+    "indianized": "Shikhar-Adhipati",
+    "devanagari": "शिखर-धिपति",
+    "category": "artifact"
+  },
+  "Green Wood Longevity": {
+    "indianized": "Harit Vriksh Chirayu",
+    "devanagari": "हरित वृक्ष चिरायु",
+    "category": "artifact"
+  },
+  "Green Bamboo Peak": {
+    "indianized": "Harit Venu Shikhar",
+    "devanagari": "हरित वेणु शिखर",
+    "category": "location"
+  },
+  "Grade-A Cave Abode": {
+    "indianized": "Pratham-Sreni Guha Griha",
+    "devanagari": "प्रथम-श्रेणी गुहा गृह",
+    "category": "location"
+  },
+  "Mystery of the Womb": {
+    "indianized": "Garbh Rahasya",
+    "devanagari": "गर्भ रहस्य",
+    "category": "artifact"
+  },
+  "Zhao Min": {
+    "indianized": "Jaamin",
+    "devanagari": "जामिन",
+    "category": "character"
+  },
+  "Peak Masters Hall": {
+    "indianized": "Shikharadhipati Kaksha",
+    "devanagari": "शिखराधिपति कक्ष",
+    "category": "location"
+  },
+  "Green罡 Shield": {
+    "indianized": "Haritvajra Shield",
+    "devanagari": "हरितवज्र ढाल",
+    "category": "artifact"
+  },
+  "Yellow Dragon Pills": {
+    "indianized": "Peetnaga Vati",
+    "devanagari": "पीतनाग वटी",
+    "category": "artifact"
+  },
+  "Lin Feng": {
+    "indianized": "Mahaveer",
+    "devanagari": "महावीर",
+    "category": "character"
+  },
+  "Transmission Pavilion": {
+    "indianized": "Vidya Sanchar Mandap",
+    "devanagari": "विद्या संचार मंडप",
+    "category": "location"
+  },
+  "General Affairs Hall": {
+    "indianized": "Sarva Karya Bhavan",
+    "devanagari": "सर्व कार्य भवन",
+    "category": "location"
+  },
+  "Deacon Zhao": {
+    "indianized": "दीक्षित झा",
+    "devanagari": "दीक्षित झा",
+    "category": "character"
+  },
+  "Evergreen Art": {
+    "indianized": "शाश्वत हरित विद्या",
+    "devanagari": "शाश्वत हरित विद्या",
+    "category": "artifact"
+  },
+  "Vine Strangling Technique": {
+    "indianized": "लता पाश बंधन विद्या",
+    "devanagari": "लता पाश बंधन विद्या",
+    "category": "artifact"
+  },
+  "Spell Practice Field": {
+    "indianized": "मंत्र अभ्यास प्रांगण",
+    "devanagari": "मंत्र अभ्यास प्रांगण",
+    "category": "location"
+  },
+  "Golden Core Stage": {
+    "indianized": "Suvarnapindavastha",
+    "devanagari": "सुवर्णपिंडावस्था",
+    "category": "artifact"
+  },
+  "Jade Slips": {
+    "indianized": "Manikya Parna",
+    "devanagari": "माणिक्य पर्ण",
+    "category": "artifact"
+  },
+  "Foundation Establishment Stage": {
+    "indianized": "Neenvasthapana Avastha",
+    "devanagari": "नींवस्थापना अवस्था",
+    "category": "artifact"
+  },
+  "Fragmented Divine Sense Jade Slip": {
+    "indianized": "Khandit Divya Chetana Manikya Parna",
+    "devanagari": "खंडित दिव्य चेतना माणिक्य पर्ण",
+    "category": "artifact"
+  },
+  "God-Stabbing Awl": {
+    "indianized": "Vajra Chetana Suchi",
+    "devanagari": "वज्र चेतना सूचि",
+    "category": "artifact"
+  },
+  "Sea of Consciousness": {
+    "indianized": "Chetana Sagar",
+    "devanagari": "चेतना सागर",
+    "category": "location"
+  },
+  "Warm Spirit Jade Prayer Mat": {
+    "indianized": "Ushna Divya Mani Dhyan Asan",
+    "devanagari": "उष्ण दिव्य मणि ध्यान आसन",
+    "category": "artifact"
+  },
+  "Deduction Function": {
+    "indianized": "Anuman Pranali",
+    "devanagari": "अनुमान प्रणाली",
+    "category": "artifact"
+  },
+  "Top-Grade Spirit Stone": {
+    "indianized": "Sarvottam Divya Mani",
+    "devanagari": "सर्वोत्तम दिव्य मणि",
+    "category": "artifact"
+  },
+  "Shadowless Soul-Extinguishing Needle": {
+    "indianized": "Chhayahin Atma-Vinashak Suchi",
+    "devanagari": "छायाहीन आत्मा-विनाशक सूचि",
+    "category": "artifact"
+  },
+  "Niwan Palace": {
+    "indianized": "Nirvan Mahal",
+    "devanagari": "निर्वाण महल",
+    "category": "location"
+  },
+  "Refined Iron Ore": {
+    "indianized": "Shuddh Loh Ayas",
+    "devanagari": "शुद्ध लोह अयस्क",
+    "category": "artifact"
+  },
+  "Cliff of Reflection": {
+    "indianized": "Pashchatya Shila",
+    "devanagari": "पश्चात्ताप शिला",
+    "category": "location"
+  },
+  "Storage Pouch": {
+    "indianized": "Sanchay Thaili",
+    "devanagari": "संचय थैली",
+    "category": "artifact"
+  },
+  "Essence Condensing Pills": {
+    "indianized": "Tejas Vati",
+    "devanagari": "तेजस वटी",
+    "category": "artifact"
+  },
+  "Lingmiao Peak": {
+    "indianized": "Divya Shikhar",
+    "devanagari": "दिव्य शिखर",
+    "category": "location"
+  },
+  "Deacon Hall": {
+    "indianized": "Sevak Kaksha",
+    "devanagari": "सेवक कक्ष",
+    "category": "location"
+  },
+  "Zhang Dafu": {
+    "indianized": "Dhaniram",
+    "devanagari": "धनीराम",
+    "category": "character"
+  },
+  "Zhou Xue": {
+    "indianized": "Vidya",
+    "devanagari": "विद्या",
+    "category": "character"
+  },
+  "Liu Da": {
+    "indianized": "Bheeshma",
+    "devanagari": "भीष्म",
+    "category": "character"
+  },
+  "Avoid Misfortune and Seek Fortune": {
+    "indianized": "Sankat Nivarana Bhagya",
+    "devanagari": "संकट निवारण भाग्य",
+    "category": "artifact"
+  },
+  "Zhao Peng": {
+    "indianized": "Jayant",
+    "devanagari": "जयंत",
+    "category": "character"
+  },
+  "Metal, Water, Fire, and Earth Pseudo-Spiritual Root": {
+    "indianized": "Chatur-Tatva Mithya Divya Mool",
+    "devanagari": "चतुः-तत्त्व मिथ्या दिव्य मूल",
+    "category": "artifact"
+  },
+  "Death Soldier": {
+    "indianized": "Mrityu Sainik",
+    "devanagari": "मृत्यु सैनिक",
+    "category": "character"
+  },
+  "Earth Escape Proficient": {
+    "indianized": "Bhoomi Gati Praveena",
+    "devanagari": "भूमि गति प्रवीणा",
+    "category": "artifact"
+  },
+  "Second Senior Brother": {
+    "indianized": "Dwitiya Jyeshtha Bhrata",
+    "devanagari": "द्वितीय ज्येष्ठ भ्राता",
+    "category": "character"
+  },
+  "Second-Rank Breath-Concealing Talisman": {
+    "indianized": "Dvitiya-Sreni Prana-Gopana Yantra",
+    "devanagari": "द्वितीय-श्रेणी प्राण-गोपन यंत्र",
+    "category": "artifact"
+  },
+  "Filthy Blood Spirit-Polluting Flag": {
+    "indianized": "Malina Rakta Pradushana Dhvaja",
+    "devanagari": "मलिन रक्त प्रदूषण ध्वजा",
+    "category": "artifact"
+  },
+  "Abandoned Spirit Medicine Garden": {
+    "indianized": "Tyakta Divya Aushdhi Vatika",
+    "devanagari": "त्यक्त दिव्य औषधि वाटिका",
+    "category": "location"
+  },
+  "Blood-Fire Ganoderma": {
+    "indianized": "Rakta-Agni Kukurmutta",
+    "devanagari": "रक्त-अग्नि कुकुरमुत्ता",
+    "category": "artifact"
+  },
+  "Minor Formless Maze Formation": {
+    "indianized": "Laghu Nirakar Bhramana Vyuh",
+    "devanagari": "लघु निराकार भ्रमण व्यूह",
+    "category": "artifact"
+  },
+  "Fragmented Concealment Formation": {
+    "indianized": "Khandit Guptikaran Vyuh",
+    "devanagari": "खंडित गुप्तीकरण व्यूह",
+    "category": "artifact"
+  },
+  "Small Maze Formation": {
+    "indianized": "Laghu Bhulabhulaiya Rachna",
+    "devanagari": "लघु भुलभुलैया रचना",
+    "category": "artifact"
+  },
+  "Law Enforcement Hall": {
+    "indianized": "Dandadhari Kaksha",
+    "devanagari": "दंडाधिकारी कक्ष",
+    "category": "faction"
+  },
+  "Sun Tiezhu": {
+    "indianized": "Surya Lohar",
+    "devanagari": "सूर्य लोहार",
+    "category": "character"
+  },
+  "Wang Mazi": {
+    "indianized": "Varun Daspuria",
+    "devanagari": "वरुण दासपुरिया",
+    "category": "character"
+  },
+  "Chen Ping": {
+    "indianized": "Chaitanya Shanti",
+    "devanagari": "चैतन्य शांति",
+    "category": "character"
+  },
+  "Dragon-Severing Stone": {
+    "indianized": "Naag-Chedan Shila",
+    "devanagari": "नाग-छेदन शिला",
+    "category": "artifact"
+  },
+  "Early-warning Formation Flags": {
+    "indianized": "Purva-Cheta Yantra Dhwaja",
+    "devanagari": "पूर्व-चेत यंत्र ध्वजा",
+    "category": "artifact"
+  },
+  "Mid-Grade Spirit Stone": {
+    "indianized": "Madhyam Sreni Divya Mani",
+    "devanagari": "मध्यम श्रेणी दिव्य मणि",
+    "category": "artifact"
+  },
+  "Thousand Threads Derivation Fire Art": {
+    "indianized": "Sahasra Sutra Pravah Agni Vidya",
+    "devanagari": "सहस्र सूत्र प्रबाह अग्नि विद्या",
+    "category": "artifact"
+  },
+  "blood flame spirit refining pill": {
+    "indianized": "Rakta Jwala Divya Shodhan Vati",
+    "devanagari": "रक्त ज्वाला दिव्य शोधन वटी",
+    "category": "artifact"
+  },
+  "Starfire Grass": {
+    "indianized": "Nakshatra Agni Trina",
+    "devanagari": "नक्षत्र अग्नि तृण",
+    "category": "artifact"
+  },
+  "Blood Coagulation Vine": {
+    "indianized": "Rakta Stambhan Latha",
+    "devanagari": "रक्त स्तंभन लता",
+    "category": "artifact"
+  },
+  "Hundred-Year Jade Marrow Ganoderma": {
+    "indianized": "Shata-Varshiya Manikya Majja Kukurmutta",
+    "devanagari": "शत-वर्षीय माणिक्य मज्जा कुकुरमुत्ता",
+    "category": "artifact"
+  },
+  "Immaculate Spirit Body": {
+    "indianized": "Nishkalank Divya Sharir",
+    "devanagari": "निष्कलंक दिव्य शरीर",
+    "category": "artifact"
+  },
+  "Zhao Tiezhu": {
+    "indianized": "Tulsidas",
+    "devanagari": "तुलसीदास",
+    "category": "character"
+  },
+  "Zhou Yun": {
+    "indianized": "Yogesh",
+    "devanagari": "योगेश",
+    "category": "character"
+  },
+  "Duobao Pavilion": {
+    "indianized": "Ratna Kosh Bhavan",
+    "devanagari": "रत्न कोष भवन",
+    "category": "location"
+  },
+  "Qian Duoduo": {
+    "indianized": "Dhananjay",
+    "devanagari": "धनंजय",
+    "category": "character"
+  },
+  "Hall of Justice": {
+    "indianized": "Nyayalaya",
+    "devanagari": "न्यायालय",
+    "category": "faction"
+  },
+  "Peak Master Gu": {
+    "indianized": "Acharya Gupteshwar",
+    "devanagari": "आचार्य गुप्तेश्वर",
+    "category": "character"
+  },
+  "Vermilion Fruit": {
+    "indianized": "Raktim Phalam",
+    "devanagari": "रक्तिम फलम्",
+    "category": "artifact"
+  },
+  "Lin Yuanshan": {
+    "indianized": "Maharshi Vijayshan",
+    "devanagari": "महर्षि विजयशान",
+    "category": "character"
+  },
+  "Dragon Blood Holy Flame Fruit": {
+    "indianized": "Nag Raktagni Divya Phalam",
+    "devanagari": "नाग रक्ताग्नि दिव्य फलम्",
+    "category": "artifact"
+  },
+  "Bigu Pill": {
+    "indianized": "Nirahar Divya Vati",
+    "devanagari": "निराहार दिव्य वटी",
+    "category": "artifact"
+  },
+  "Peak Master's Grand Hall": {
+    "indianized": "Shikhar Adhipati Mahamandap",
+    "devanagari": "शिखर अधिपति महामंडप",
+    "category": "location"
+  },
+  "Spiritual Tea": {
+    "indianized": "Divya Amrit Chai",
+    "devanagari": "दिव्य अमृत चाय",
+    "category": "artifact"
+  },
+  "Qi Refinement Level 3 Middle Stage": {
+    "indianized": "Pranayam Tritiya Staran Madhyavastha",
+    "devanagari": "प्राणायाम तृतीय स्तरन मध्यावस्था",
+    "category": "artifact"
+  },
+  "Core Disciples": {
+    "indianized": "Mukhya Shishya",
+    "devanagari": "मुख्य शिष्य",
+    "category": "character"
+  },
+  "Earthly Spiritual Root": {
+    "indianized": "Bhaumik Divya Mool",
+    "devanagari": "भौमिक दिव्य मूल",
+    "category": "artifact"
+  },
+  "Fasting Pill": {
+    "indianized": "Nirahar Vati",
+    "devanagari": "निराहार वटी",
+    "category": "artifact"
+  },
+  "Pill Vein": {
+    "indianized": "Aushadhi Shira",
+    "devanagari": "औषधि शिरा",
+    "category": "artifact"
+  },
+  "Tier 1 Peak Grade": {
+    "indianized": "Pratham Sreni Shikhar Koti",
+    "devanagari": "प्रथम श्रेणी शिखर कोटि",
+    "category": "artifact"
+  },
+  "Rejuvenation Pills": {
+    "indianized": "Sanjivani Vati",
+    "devanagari": "संजीवनी वटी",
+    "category": "artifact"
+  },
+  "Tier 1 High Grade": {
+    "indianized": "Pratham Sreni Uchcha Koti",
+    "devanagari": "प्रथम श्रेणी उच्च कोटि",
+    "category": "artifact"
+  },
+  "Alchemy Hall": {
+    "indianized": "Aushadh Shala",
+    "devanagari": "औषध शाला",
+    "category": "location"
+  },
+  "Ghostly Blue Ice Flame": {
+    "indianized": "Pret Shitala Nila Agni",
+    "devanagari": "प्रेत शीतला नीला अग्नि",
+    "category": "artifact"
+  },
+  "Tier 4 Low Grade Heaven and Earth Exotic Fire": {
+    "indianized": "Chaturth Sreni Neech Koti Brahmandiya Divya Agni",
+    "devanagari": "चतुर्थ श्रेणी नीच कोटि ब्रह्मांडीय दिव्य अग्नि",
+    "category": "artifact"
+  },
+  "Nine Netherworld Underworld Fire": {
+    "indianized": "Nava Patal Lokagni",
+    "devanagari": "नव पाताल लोकाग्नि",
+    "category": "artifact"
+  },
+  "Fragmented True Interpretation of the Way of Alchemy": {
+    "indianized": "Rasayan Shastra Ka Khandit Satya Bhashya",
+    "devanagari": "रसायन शास्त्र का खंडित सत्य भाष्य",
+    "category": "artifact"
+  },
+  "Library Pavilion": {
+    "indianized": "Pustakalaya Mandap",
+    "devanagari": "पुस्तकालय मंडप",
+    "category": "location"
+  },
+  "True Interpretation of the Way of Alchemy": {
+    "indianized": "Rasanushashan Satya Bhashya",
+    "devanagari": "रसानुशासन सत्य भाष्य",
+    "category": "artifact"
+  },
+  "Sun Hao": {
+    "indianized": "Surya",
+    "devanagari": "सूर्य",
+    "category": "character"
+  },
+  "Zhao Dezhu": {
+    "indianized": "Tejas",
+    "devanagari": "तेजस",
+    "category": "character"
+  },
+  "Yan Shouyi": {
+    "indianized": "Yashodhar",
+    "devanagari": "यशोधर",
+    "category": "character"
+  },
+  "Saint Heart of Battle": {
+    "indianized": "Yuddha Veerta Hriday",
+    "devanagari": "युद्ध वीरता हृदय",
+    "category": "artifact"
+  },
+  "Scarlet Flame Mad Dragon Art": {
+    "indianized": "Raktagni Ugra Naag Vidya",
+    "devanagari": "रक्ताग्नि उग्र नाग विद्या",
+    "category": "artifact"
+  },
+  "Azure Wood Shadow-Shifting Evasion": {
+    "indianized": "Harit Vriksh Chhaya Chaal",
+    "devanagari": "हरित वृक्ष छाया चाल",
+    "category": "artifact"
+  },
+  "Star-Shattering Finger": {
+    "indianized": "Nakshatra Bhedi Anguli",
+    "devanagari": "नक्षत्र भेदी अंगुली",
+    "category": "artifact"
+  },
+  "Mystic Water Heavy Essence Shield": {
+    "indianized": "Guhya Jala Guru Rasa Kavach",
+    "devanagari": "गुह्य जल गुरु रस कवच",
+    "category": "artifact"
+  },
+  "Mystic Iron Pillar": {
+    "indianized": "Guhya Loha Stambh",
+    "devanagari": "गुह्य लोह स्तंभ",
+    "category": "artifact"
+  },
+  "Green Wood Creation Pill": {
+    "indianized": "Harit Cast Nirman Aushadhi",
+    "devanagari": "हरित कास्ट निर्माण औषधि",
+    "category": "artifact"
+  },
+  "Alchemy Formation": {
+    "indianized": "Rasa Shastra Yantra",
+    "devanagari": "रस शास्त्र यंत्र",
+    "category": "artifact"
+  },
+  "Spirit Medicines": {
+    "indianized": "Divya Aushadhi Dravya",
+    "devanagari": "दिव्य औषधि द्रव्य",
+    "category": "artifact"
+  },
+  "Three-Turn Green Wood Creation Pill": {
+    "indianized": "Tri-Vriti Harit Cast Nirman Aushadhi",
+    "devanagari": "त्रि-वृती हरित कास्ट निर्माण औषधि",
+    "category": "artifact"
+  },
+  "Peak Master's Great Hall": {
+    "indianized": "Shikhar Adhipati Bhavan",
+    "devanagari": "शिखर अधिपति भवन",
+    "category": "location"
+  },
+  "Personal Disciple Token": {
+    "indianized": "Niji Shishya Mudra",
+    "devanagari": "निजी शिष्य मुद्रा",
+    "category": "artifact"
+  },
+  "Wood Dragon Escape Spirit Talisman": {
+    "indianized": "Kasth Nag Palayan Yantra",
+    "devanagari": "काष्ठ नाग पलायन यंत्र",
+    "category": "artifact"
+  },
+  "Tianxing City": {
+    "indianized": "Swargapuri Nagar",
+    "devanagari": "स्वर्गपुरी नगर",
+    "category": "location"
+  },
+  "Sound-Transmission Talisman": {
+    "indianized": "Sandesh Sanchar Patra",
+    "devanagari": "संदेश संचार पत्र",
+    "category": "artifact"
+  },
+  "Fire Poison": {
+    "indianized": "Agni Vish",
+    "devanagari": "अग्नि विष",
+    "category": "artifact"
+  },
+  "Extreme Cold Spirit-Sealing Talisman": {
+    "indianized": "Atishital Divya Mudra Patra",
+    "devanagari": "अतिशीतल दिव्य मुद्रा पत्र",
+    "category": "artifact"
+  },
+  "Wang Wu": {
+    "indianized": "Viren",
+    "devanagari": "वीरन",
+    "category": "character"
+  },
+  "Zhang Liu": {
+    "indianized": "Jaisingh",
+    "devanagari": "जयसिंह",
+    "category": "character"
+  },
+  "Zhao Si": {
+    "indianized": "Jayant",
+    "devanagari": "जयंत",
+    "category": "character"
+  },
+  "Lingxu Administration Office": {
+    "indianized": "Shunyashram Prashasan Karyalay",
+    "devanagari": "शून्याश्रम प्रशासन कार्यालय",
+    "category": "location"
+  },
+  "Nangong Yue": {
+    "indianized": "Nandini",
+    "devanagari": "नंदिनी",
+    "category": "character"
+  },
+  "Nangong Ying": {
+    "indianized": "Nalini",
+    "devanagari": "नलिनी",
+    "category": "character"
+  },
+  "Spiritual Perception Eyes": {
+    "indianized": "Aatmik Bodh Netra",
+    "devanagari": "आत्मिक बोध नेत्र",
+    "category": "artifact"
+  },
+  "Truth-Piercing Spiritual Eyes": {
+    "indianized": "Satya Bhedi Divya Netra",
+    "devanagari": "सत्य भेदी दिव्य नेत्र",
+    "category": "artifact"
+  },
+  "Lingxu Administrative Office": {
+    "indianized": "Lingxu Prashasanik Karyalay",
+    "devanagari": "लिंग्तु प्रशासनिक कार्यालय",
+    "category": "location"
+  },
+  "Combat Arena": {
+    "indianized": "Ranabhumi Arena",
+    "devanagari": "रणभूमि अखाड़ा",
+    "category": "location"
+  },
+  "Loose Cultivator Market": {
+    "indianized": "Siddhantheen Sadhan Bazar",
+    "devanagari": "सिद्धान्तहीन साधन बाजार",
+    "category": "location"
+  },
+  "Great Rock Sect": {
+    "indianized": "Mahashila Sampraday",
+    "devanagari": "महाशिला संप्रदाय",
+    "category": "faction"
+  },
+  "Zhao Mang": {
+    "indianized": "Yodha Mangal",
+    "devanagari": "योद्धा मंगल",
+    "category": "character"
+  },
+  "Wang Dashan": {
+    "indianized": "Yodha Mahagiri",
+    "devanagari": "योद्धा महागिरि",
+    "category": "character"
+  },
+  "Bronze Skin and Iron Bones": {
+    "indianized": "Kanchana Twacha aur Loha Asthi",
+    "devanagari": "कांचन त्वचा और लोहा अस्थि",
+    "category": "artifact"
+  },
+  "Vajra Indestructibility": {
+    "indianized": "Vajra Abhedya Shaurya",
+    "devanagari": "वज्र अभेद्य शौर्य",
+    "category": "artifact"
+  },
+  "Great Derivation Five Elements-Source": {
+    "indianized": "Maha Utpatti Panchabhuta Srot",
+    "devanagari": "महा उत्पत्ति पंचभूत स्रोत",
+    "category": "artifact"
+  },
+  "Chaos Source Stone Fragment": {
+    "indianized": "Pralay Srot Shila Khand",
+    "devanagari": "प्रलय स्रोत शिला खंड",
+    "category": "artifact"
+  },
+  "Chaos Unseparated": {
+    "indianized": "Pralay Advaita",
+    "devanagari": "प्रलय अद्वैत",
+    "category": "artifact"
+  },
+  "Pulse-Protecting Pill": {
+    "indianized": "Prana-Raksha Vati",
+    "devanagari": "प्राण-रक्षा वटी",
+    "category": "artifact"
+  },
+  "Primordial Five Elements Dao Foundation": {
+    "indianized": "Adi Panchabhuta Yoga Pith",
+    "devanagari": "आदि पंचभूत योग पीठ",
+    "category": "artifact"
+  },
+  "Blood-Colored Secret Realm": {
+    "indianized": "Raktaranga Guhya Kshetra",
+    "devanagari": "रक्तरंग गुह्य क्षेत्र",
+    "category": "location"
+  },
+  "Internal Affairs Pavilion": {
+    "indianized": "Antarik Vibhag Mandap",
+    "devanagari": "आंतरिक विभाग मंडप",
+    "category": "location"
+  },
+  "Xuanyuan Qi Condensation Pill (Flawless)": {
+    "indianized": "Nirdosh Swayambhu Prana Vati",
+    "devanagari": "निर्दोष स्वयंभू प्राणा वटी",
+    "category": "artifact"
+  },
+  "Senior Sister": {
+    "indianized": "Agraja Jyeshtha Bhagini",
+    "devanagari": "अग्रजा ज्येष्ठ भगिनी",
+    "category": "character"
+  },
+  "Everliving Green Wood Shield": {
+    "indianized": "Sanatana Harit Vriksh Kavach",
+    "devanagari": "सनातन हरित वृक्ष कवच",
+    "category": "artifact"
+  },
+  "Profound Origin Qi Condensation Pills": {
+    "indianized": "Gambhira Srota Prana Sangraha Vati",
+    "devanagari": "गंभीर स्रोत प्राण संग्रह वटी",
+    "category": "artifact"
+  },
+  "Xiao Hanyi": {
+    "indianized": "Haimavati",
+    "devanagari": "हैमावती",
+    "category": "character"
+  },
+  "Lingmiao Main Peak": {
+    "indianized": "Divya-Cheti Mukhya Shikhar",
+    "devanagari": "दिव्य-चेती मुख्य शिखर",
+    "category": "location"
+  },
+  "Lianyun Mountain Range": {
+    "indianized": "Liyang Parvatmala",
+    "devanagari": "लीयंग पर्वतमाला",
+    "category": "location"
+  },
+  "Valley of Despair": {
+    "indianized": "Nirash Valley",
+    "devanagari": "निराश घाटी",
+    "category": "location"
+  },
+  "Blood Fiend Sect": {
+    "indianized": "Raktapishach Sampraday",
+    "devanagari": "रक्तपिशाच संप्रदाय",
+    "category": "faction"
+  },
+  "Yanyue Sect": {
+    "indianized": "Induchandra Sampraday",
+    "devanagari": "इंदुचंद्र संप्रदाय",
+    "category": "faction"
+  },
+  "Old Demon Bloodhand": {
+    "indianized": "Raktapani Mahapishach",
+    "devanagari": "रक्तपाणि महापिशाच",
+    "category": "character"
+  },
+  "Li Yan": {
+    "indianized": "Raghu",
+    "devanagari": "रघु",
+    "category": "character"
+  },
+  "Bloodthirsty Berserk": {
+    "indianized": "Raktapi Pishach Krodh",
+    "devanagari": "रक्तपी पिशाच क्रोध",
+    "category": "artifact"
+  },
+  "Water-Fire Dual Spiritual Root": {
+    "indianized": "Jal-Agni Dwi Divya Mool",
+    "devanagari": "जल-अग्नि द्वि दिव्य मूल",
+    "category": "artifact"
+  },
+  "A Thousand Miles as One Step": {
+    "indianized": "Ek Pad Yojan Gati",
+    "devanagari": "एक पद योजन गति",
+    "category": "artifact"
+  },
+  "Blood Blade Sect": {
+    "indianized": "Raktadhaar Akhada",
+    "devanagari": "रक्तधार अखाड़ा",
+    "category": "faction"
+  },
+  "Zhang San": {
+    "indianized": "Jayshankar",
+    "devanagari": "जयशंकर",
+    "category": "character"
+  },
+  "Li Si": {
+    "indianized": "Ratnakar",
+    "devanagari": "रत्नाकर",
+    "category": "character"
+  },
+  "Brother Blade": {
+    "indianized": "Asura Pradhan",
+    "devanagari": "असुर प्रधान",
+    "category": "character"
+  },
+  "Blood Demon Spirit-Destroying Slash": {
+    "indianized": "Raktasur Pran Nashak Astra",
+    "devanagari": "रक्तासुर प्राण नाशक अस्त्र",
+    "category": "artifact"
+  },
+  "Dayan Deception": {
+    "indianized": "Mahamaya Chhadma Rup",
+    "devanagari": "महामाया छद्म रूप",
+    "category": "artifact"
+  },
+  "Myriad Laws Return to Void": {
+    "indianized": "Sarva Shastra Shunya Pravah",
+    "devanagari": "सर्व शास्त्र शून्य प्रवाह",
+    "category": "artifact"
+  },
+  "Mad Blade True Intent": {
+    "indianized": "Unmattamati Asura Khadga Shaurya",
+    "devanagari": "उन्मत्तमति असुर खड्ग शौर्य",
+    "category": "artifact"
+  },
+  "Water-Earth Dual Spiritual Root": {
+    "indianized": "Jal-Prithvi Yugma Divya Beej",
+    "devanagari": "जल-पृथ्वी युग्म दिव्य बीज",
+    "category": "artifact"
+  },
+  "Liu Yue": {
+    "indianized": "Lalit",
+    "devanagari": "ललित",
+    "category": "character"
+  },
+  "Heavenly Sword Peak": {
+    "indianized": "Divyastra Shikhar",
+    "devanagari": "दिव्यास्त्र शिखर",
+    "category": "location"
+  },
+  "Zhao Yan": {
+    "indianized": "Jayant",
+    "devanagari": "जयंत",
+    "category": "character"
+  },
+  "Liehuo Peak": {
+    "indianized": "Agni Shikhar",
+    "devanagari": "अग्नि शिखर",
+    "category": "location"
+  },
+  "Su Wan": {
+    "indianized": "Suman",
+    "devanagari": "सुमन",
+    "category": "character"
+  },
+  "Hundred Flowers Peak": {
+    "indianized": "Shatpushpa Shikhar",
+    "devanagari": "शतपुष्प शिखर",
+    "category": "location"
+  },
+  "Old Ghost Gu": {
+    "indianized": "Mahapishach Gu",
+    "devanagari": "महापिशाच गु",
+    "category": "character"
+  },
+  "Ghost Crying Vine Forest": {
+    "indianized": "Pret Ruda Lata Van",
+    "devanagari": "प्रेत रुदा लता वन",
+    "category": "location"
+  },
+  "Weeping Blood Earth Spirit Saliva": {
+    "indianized": "Rudra Rakt Bhumi Sat",
+    "devanagari": "रुद्र रक्त भूमि सत्",
+    "category": "artifact"
+  },
+  "Foundation Establishment Pill": {
+    "indianized": "Bhoomi Sthapana Vati",
+    "devanagari": "भूमि स्थापना वटी",
+    "category": "artifact"
+  },
+  "Thirty miles": {
+    "indianized": "Tees Yojan",
+    "devanagari": "तीस योजन",
+    "category": "location"
+  },
+  "Blood-Weeping Earth Spirit Saliva": {
+    "indianized": "Raktashru Bhumi Prana Rasa",
+    "devanagari": "रक्ताश्रु भूमि प्राण रस",
+    "category": "artifact"
+  },
+  "Grade 4 Low Grade Earth Vein Dragon Marrow Liquid": {
+    "indianized": "Chaturtha Shreni Bhumi Shira Naga Majja Drava",
+    "devanagari": "चतुर्थ श्रेणी भूमि शिरा नाग मज्जा द्रव",
+    "category": "artifact"
+  },
+  "Secret in the Womb": {
+    "indianized": "Garbhastha Rahasya",
+    "devanagari": "गर्भस्थ रहस्य",
+    "category": "artifact"
+  },
+  "Three-Colored Soul-Nurturing Lotus": {
+    "indianized": "Tri-Varni Atma-Poshak Kamal",
+    "devanagari": "त्रिवर्णी आत्मा-पोषक कमल",
+    "category": "artifact"
+  },
+  "Nine-Colored Creation Lotus": {
+    "indianized": "Nava-Varni Srishti Kamal",
+    "devanagari": "नववर्णी सृष्टि कमल",
+    "category": "artifact"
+  },
+  "Innate Immortal True Spirit": {
+    "indianized": "Sahaj Amar Satya Atma",
+    "devanagari": "सहज अमर सत्य आत्मा",
+    "category": "artifact"
+  },
+  "Wu Kui": {
+    "indianized": "Vighnesh",
+    "devanagari": "विघ्नेश",
+    "category": "character"
+  },
+  "Baihua Peak": {
+    "indianized": "Pushpapuri Shikhar",
+    "devanagari": "पुष्पपुरी शिखर",
+    "category": "location"
+  },
+  "Qi Recovery Pill": {
+    "indianized": "Prana Sanjeevani Vati",
+    "devanagari": "प्राण संजीवनी वटी",
+    "category": "artifact"
+  },
+  "Qianjue Medicine Garden": {
+    "indianized": "Sahasra Aushadhibhi Vatika",
+    "devanagari": "सहस्र औषधि वाटिका",
+    "category": "location"
+  },
+  "Giant Sword Gate": {
+    "indianized": "Mahakhadga Akhada",
+    "devanagari": "महाखड्ग अखाड़ा",
+    "category": "faction"
+  },
+  "Spirit Beast Mountain": {
+    "indianized": "Divya Pashu Giri",
+    "devanagari": "दिव्य पशु गिरि",
+    "category": "location"
+  },
+  "Wang Hu": {
+    "indianized": "Vrishabh",
+    "devanagari": "वृषभ",
+    "category": "character"
+  },
+  "Sun Qian": {
+    "indianized": "Suryakant",
+    "devanagari": "सूर्यकांत",
+    "category": "character"
+  },
+  "Chen Tie": {
+    "indianized": "Chandresh",
+    "devanagari": "चंद्रेष",
+    "category": "character"
+  },
+  "Murong Bai": {
+    "indianized": "Mayank",
+    "devanagari": "मयांक",
+    "category": "character"
+  },
+  "Lei Kuang": {
+    "indianized": "Vidyutnath",
+    "devanagari": "विद्युतनाथ",
+    "category": "character"
+  },
+  "Tribulation-Extinguishing Thunder Body": {
+    "indianized": "Vajra Vidyut Deha",
+    "devanagari": "वज्र विद्युत देह",
+    "category": "artifact"
+  },
+  "Thunder Sea": {
+    "indianized": "Vidyut Samudra",
+    "devanagari": "विद्युत समुद्र",
+    "category": "location"
+  },
+  "Creation Blood Bodhi": {
+    "indianized": "Srishti Rakt Bodhi",
+    "devanagari": "सृष्टि रक्त बोधि",
+    "category": "artifact"
+  },
+  "Nirvana Creation Dao Fruit": {
+    "indianized": "Nirvana Srishti Fal",
+    "devanagari": "निर्वाण सृष्टि फल",
+    "category": "artifact"
+  },
+  "Cold Ice Sword": {
+    "indianized": "Sheetal Him Khadga",
+    "devanagari": "शीतल हिम खड्ग",
+    "category": "artifact"
+  },
+  "Blazing Sun Pill": {
+    "indianized": "Tejaswi Surya Vati",
+    "devanagari": "तेजस्वी सूर्य वटी",
+    "category": "artifact"
+  },
+  "Chaotic Profound Origin": {
+    "indianized": "Avashyak Shuddhi Urja",
+    "devanagari": "अराजक प्रगाढ़ ऊर्जा",
+    "category": "artifact"
+  },
+  "Elder Yan": {
+    "indianized": "Elder Vyom",
+    "devanagari": "एल्डर व्योम",
+    "category": "character"
+  },
+  "Grade 4 Low Grade Xuan Yin Ice Soul Sword": {
+    "indianized": "Chaturtha Shreni Shital Hima Khadga",
+    "devanagari": "चतुर्थ श्रेणी शीतल हिम खड्ग",
+    "category": "artifact"
+  },
+  "Grade 5 Low Grade Nine Yang Creation Pill": {
+    "indianized": "Pancham Shreni Navtej Utpatti Vati",
+    "devanagari": "पंचम श्रेणी नवतेज उत्पत्ति वटी",
+    "category": "artifact"
+  },
+  "Forbidden Land": {
+    "indianized": "Nishiddha Kshetra",
+    "devanagari": "निषिद्ध क्षेत्र",
+    "category": "location"
+  },
+  "Old Ancestor": {
+    "indianized": "Param Guru Devvrat",
+    "devanagari": "परम गुरु देवव्रत",
+    "category": "character"
+  },
+  "Heaven-Veiling Spirit-Hiding Formation": {
+    "indianized": "Gagan Chhadma Pranali",
+    "devanagari": "गगन छद्म प्रणाली",
+    "category": "artifact"
+  },
+  "Innate Dao Body Holy Embryo": {
+    "indianized": "Sahaj Yoga Divya Deha Pind",
+    "devanagari": "सहज योग दिव्य देह पिंड",
+    "category": "artifact"
+  },
+  "Ancient Qingyuan Art": {
+    "indianized": "Prachin Shuddha Jal Vidya",
+    "devanagari": "प्राचीन शुद्ध जल विद्या",
+    "category": "artifact"
+  },
+  "Breaking Delusions and Deceiving Heaven - Severing Karma": {
+    "indianized": "Maya Moh Vichchhedan - Karma Bandhan Mukti",
+    "devanagari": "माया मोह विच्छेदन - कर्म बंधन मुक्ति",
+    "category": "artifact"
+  },
+  "Huangfeng Valley": {
+    "indianized": "Peetvarna Ghati",
+    "devanagari": "पीतवर्ण घाटी",
+    "category": "location"
+  },
+  "Xiao Zhan": {
+    "indianized": "Suryakant",
+    "devanagari": "सूर्यकांत",
+    "category": "character"
+  },
+  "Tyrant Body": {
+    "indianized": "Vajra Mahabala Deha",
+    "devanagari": "वज्र महाबल देह",
+    "category": "artifact"
+  },
+  "Fire Spiritual Root": {
+    "indianized": "Agni Divya Urja Stot",
+    "devanagari": "अग्नि दिव्य ऊर्जा स्रोत",
+    "category": "artifact"
+  },
+  "Values Affection and Righteousness": {
+    "indianized": "Sneha Dharma Paraayan",
+    "devanagari": "स्नेह धर्म परायण",
+    "category": "artifact"
+  },
+  "Xiao Linger": {
+    "indianized": "Suryakanta Linger",
+    "devanagari": "सूर्यकान्ता लिंगर",
+    "category": "character"
+  },
+  "Origin-Devouring Body": {
+    "indianized": "Pran Gras Deha",
+    "devanagari": "प्राण ग्रास देह",
+    "category": "artifact"
+  },
+  "Supreme Yin Absolute Cold Physique": {
+    "indianized": "Param Shukla Shitala Deha",
+    "devanagari": "परम शुक्ल शीतला देह",
+    "category": "artifact"
+  },
+  "Mutated Ice Spiritual Root": {
+    "indianized": "Vikalshit Him Divya Strot",
+    "devanagari": "विकलित हिम दिव्य स्रोत",
+    "category": "artifact"
+  },
+  "Void Bright Ice Heart": {
+    "indianized": "Shunya Jyoti Him Hridaya",
+    "devanagari": "शून्य ज्योति हिम हृदय",
+    "category": "artifact"
+  },
+  "Qingyuan Sword Shadow Art": {
+    "indianized": "Chinmayamrit Talwar Chhaya Vidya",
+    "devanagari": "चिन्मयामृत तलवार छाया विद्या",
+    "category": "artifact"
+  },
+  "Taixu Sword Condensation Art": {
+    "indianized": "Paramakash Divyastra Vidya",
+    "devanagari": "पराकाश दिव्यास्त्र विद्या",
+    "category": "artifact"
+  },
+  "Person from Beyond the Heavens": {
+    "indianized": "Paralok Vasi",
+    "devanagari": "परलोक वासी",
+    "category": "artifact"
+  },
+  "Blue Star": {
+    "indianized": "Neelgagan",
+    "devanagari": "नीलगगन",
+    "category": "location"
+  },
+  "Tie Niu": {
+    "indianized": "Balram",
+    "devanagari": "बलराम",
+    "category": "character"
+  },
+  "Wu Tao": {
+    "indianized": "Vidyut",
+    "devanagari": "विद्युत",
+    "category": "character"
+  },
+  "Sun Li": {
+    "indianized": "Suraj",
+    "devanagari": "सूरज",
+    "category": "character"
+  },
+  "Lu Changfeng": {
+    "indianized": "Lakshman",
+    "devanagari": "लक्ष्मण",
+    "category": "character"
+  },
+  "Tianyun Platform": {
+    "indianized": "Swargayug Manch",
+    "devanagari": "स्वर्गयुग मंच",
+    "category": "location"
+  },
+  "Chu Xuanji": {
+    "indianized": "Chudamani",
+    "devanagari": "चूडामणि",
+    "category": "character"
+  },
+  "Divine Calculation": {
+    "indianized": "Divya Ganana",
+    "devanagari": "दिव्य गणना",
+    "category": "artifact"
+  },
+  "Bagua Formation Plate": {
+    "indianized": "Yantrika Chakra",
+    "devanagari": "यांत्रिक चक्र",
+    "category": "artifact"
+  },
+  "Water Spiritual Root": {
+    "indianized": "Jal Divya Urja Stot",
+    "devanagari": "जल दिव्य ऊर्जा स्रोत",
+    "category": "artifact"
+  },
+  "Nangong Wan'er": {
+    "indianized": "Nandini",
+    "devanagari": "नंदिनी",
+    "category": "character"
+  },
+  "Zhong Wu": {
+    "indianized": "Bhimsen",
+    "devanagari": "भीमसेन",
+    "category": "character"
+  },
+  "Chen Zhong": {
+    "indianized": "Raghvendra",
+    "devanagari": "राघवेन्द्र",
+    "category": "character"
+  }
+}

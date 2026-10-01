@@ -1,0 +1,590 @@
+{
+  "all-gods-starting-with-sss-level-talent": {
+    "characters": {
+      "yang fan": {
+        "gender": "Male",
+        "role": "yang_fan",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": ["brother fan", "master yang", "host", "brother yang", "god of evolution", "chairman yang", "president yang", "yahng fahn", "fahn"]
+      },
+      "yang da": {
+        "gender": "Male",
+        "role": "yang_da",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+2%",
+        "aliases": ["first apostle", "chief believer", "disciple yang da", "high apostle", "yahng dah"]
+      },
+      "lu wan": {
+        "gender": "Female",
+        "role": "lu_wan",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": ["wan'er", "wife wan'er", "female president", "director lu", "miss lu", "president lu", "ceo lu", "mother lu", "loo wahn", "wahn"]
+      },
+      "gu le": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": ["gu lu", "gulu", "gu le", "miss gu", "senior sister gu", "gu girl", "young lady gu", "sister gu", "wife luo"]
+      },
+      "luo bing": {
+        "gender": "Female",
+        "role": "wife_luo_bing",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": ["luo bing", "bing'er", "sister bing"]
+      },
+      "luo rou": {
+        "gender": "Female",
+        "role": "wife_luo_rou",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+6%",
+        "aliases": ["luo rou", "rou'er", "sister rou"]
+      },
+      "gu chengye": {
+        "gender": "Male",
+        "role": "child_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+4%",
+        "aliases": ["gu chengye", "chengye", "gu qingye", "qingye", "little fellow", "little guy", "son", "brat", "child"]
+      },
+      "yang chengrou": {
+        "gender": "Male",
+        "role": "child_character_2",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+12Hz",
+        "rate": "+6%",
+        "aliases": ["yang chengrou", "chengrou", "chengru", "older brother chengrou", "big brother chengrou"]
+      },
+      "ma yu": {
+        "gender": "Male",
+        "role": "manager_ma",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": ["general manager ma", "manager ma", "president ma", "ma yu", "mah yoo"]
+      },
+      "gu tianyu": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": ["ceo gu", "gu tianyu", "gu tianyou", "president gu", "patriarch gu"]
+      },
+      "sima zhao": {
+        "gender": "Male",
+        "role": "elder_sima",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+4%",
+        "aliases": ["sima zhao", "brother zhao", "elder brother sima"]
+      },
+      "sima tianci": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": ["sima tianci", "sima tianxi", "young master sima", "scion sima"]
+      },
+      "han jue": {
+        "gender": "Male",
+        "role": "scion_han",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": ["han jue", "han ju", "old han", "young master han", "scion han"]
+      },
+      "qin zheng": {
+        "gender": "Male",
+        "role": "scion_qin",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+3Hz",
+        "rate": "+8%",
+        "aliases": ["qin zheng", "qin zhang", "president qin", "young master qin", "scion qin"]
+      },
+      "li tiande": {
+        "gender": "Male",
+        "role": "male_young",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+8%",
+        "aliases": ["li tiande", "brother li", "disciple li"]
+      },
+      "smart robot": {
+        "gender": "Synthetic",
+        "role": "robot_assistant",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-16Hz",
+        "rate": "-4%",
+        "aliases": ["smart robot", "medical robot", "robot nanny", "intelligent life", "system assistant"]
+      },
+      "commander gu": {
+        "gender": "Male",
+        "role": "elder_god",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-12Hz",
+        "rate": "-2%",
+        "aliases": ["general gu", "elder gu", "military commander gu"]
+      },
+      "pavilion master": {
+        "gender": "Male",
+        "role": "elder_god",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-12Hz",
+        "rate": "-2%",
+        "aliases": ["exchange master", "appraiser elder", "grandmaster", "ancient god", "archgod", "sovereign"]
+      },
+      "believer legion commander": {
+        "gender": "Synthetic",
+        "role": "believer_mass",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": ["believers", "legion commander", "priest", "saint warrior", "apostle vanguard"]
+      },
+      "divine domain system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-22Hz",
+        "rate": "-8%",
+        "aliases": ["divine system", "system prompt", "faith log", "evolution prompt", "ding"]
+      }
+    },
+    "vocatives": {
+      "husband": { "speaker_gender": "Female", "role": "lu_wan" },
+      "darling": { "speaker_gender": "Female", "role": "lu_wan" },
+      "honey": { "speaker_gender": "Female", "role": "lu_wan" },
+      "gege": { "speaker_gender": "Female", "role": "lu_wan" },
+      "dad": { "speaker_gender": "Male", "role": "child_character" },
+      "daddy": { "speaker_gender": "Male", "role": "child_character" },
+      "good dad": { "speaker_gender": "Male", "role": "child_character" },
+      "mom": { "speaker_gender": "Male", "role": "child_character" },
+      "mommy": { "speaker_gender": "Male", "role": "child_character" },
+      "play with me": { "speaker_gender": "Male", "role": "child_character" },
+      "mistress": { "speaker_gender": "Male", "role": "manager_ma" },
+      "ceo lu": { "speaker_gender": "Male", "role": "corporate_boss" },
+      "ceo gu": { "speaker_gender": "Female", "role": "lu_wan" },
+      "general manager ma": { "speaker_gender": "Synthetic", "role": "robot_assistant" },
+      "mr. yang": { "speaker_gender": "Synthetic", "role": "robot_assistant" },
+      "president lu": { "speaker_gender": "Synthetic", "role": "robot_assistant" },
+      "president yang": { "speaker_gender": "Male", "role": "corporate_boss" },
+      "president qin": { "speaker_gender": "Male", "role": "scion_qin" },
+      "brother yang": { "speaker_gender": "Male", "role": "corporate_boss" },
+      "old han": { "speaker_gender": "Male", "role": "scion_qin" },
+      "bro": { "speaker_gender": "Male", "role": "scion_qin" },
+      "wise master": { "speaker_gender": "Male", "role": "yang_da" },
+      "this subordinate": { "speaker_gender": "Male", "role": "yang_da" },
+      "disciple": { "speaker_gender": "Male", "role": "yang_da" },
+      "your divine will": { "speaker_gender": "Male", "role": "yang_da" }
+    }
+  },
+
+  "one-evolution-point-per-second-i-slay-gods-with-a-single-arrow": {
+    "characters": {
+      "ye chen": {
+        "gender": "Male",
+        "role": "ye_chen",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": ["archer", "god slayer", "brother ye", "host", "lord of origin", "celestial archer"]
+      },
+      "fang xue": {
+        "gender": "Female",
+        "role": "fang_xue",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": ["miss fang", "xue'er", "school beauty fang"]
+      },
+      "lin qingxue": {
+        "gender": "Female",
+        "role": "lin_qingxue",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+10%",
+        "aliases": ["captain lin", "lin qingxue", "female officer", "vice commander lin", "instructor", "dean tang"]
+      },
+      "star realm saintess": {
+        "gender": "Female",
+        "role": "star_saintess",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+9%",
+        "aliases": ["saintess", "holy maiden", "fairy", "goddess", "support girl", "junior sister", "nurse", "healer"]
+      },
+      "qin tian": {
+        "gender": "Male",
+        "role": "qin_tian",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": ["commander qin", "qin tian", "general qin", "fortress supreme", "supreme commander", "general zhou", "fortress lord"]
+      },
+      "demigod ancestor": {
+        "gender": "Male",
+        "role": "old_ancestor",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-12Hz",
+        "rate": "-2%",
+        "aliases": ["old ancestor", "patriarch", "demigod elder", "elder wang", "ancestor wang", "wang zhen", "grandmaster", "sect master", "high god", "pavilion master"]
+      },
+      "astral holy son": {
+        "gender": "Male",
+        "role": "holy_son",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": ["holy son", "astral scion", "nangong", "supreme prodigy", "divine son", "god child", "capital young master"]
+      },
+      "wang teng": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+12%",
+        "aliases": ["young master wang", "scion wang", "chu tian", "young master chu", "sneered wang", "barked chu"]
+      },
+      "void assassin": {
+        "gender": "Male",
+        "role": "void_assassin",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-6Hz",
+        "rate": "+4%",
+        "aliases": ["shadow assassin", "shadow pavilion", "man in black", "infiltrator", "spy", "cultist", "traitor"]
+      },
+      "demon general": {
+        "gender": "Synthetic",
+        "role": "demon_general",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+3%",
+        "aliases": ["beast king", "beast monarch", "demon commander", "vanguard", "abyssal lord"]
+      },
+      "abyssal sovereign": {
+        "gender": "Synthetic",
+        "role": "abyssal_sovereign",
+        "voice": "en-US-EricNeural",
+        "pitch": "-25Hz",
+        "rate": "-8%",
+        "aliases": ["destruction god", "demon god", "cosmic entity", "demon wolf", "world-destroying demon wolf", "ancient sovereign", "true god"]
+      },
+      "arrow evolution system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": ["system prompt", "evolution point", "ding"]
+      }
+    },
+    "vocatives": {
+      "brother ye": { "speaker_gender": "Female", "role": "fang_xue" },
+      "ye chen": { "speaker_gender": "Female", "role": "fang_xue" },
+      "commander": { "speaker_gender": "Male", "role": "qin_tian" },
+      "general": { "speaker_gender": "Male", "role": "qin_tian" },
+      "captain": { "speaker_gender": "Female", "role": "lin_qingxue" },
+      "patriarch": { "speaker_gender": "Male", "role": "old_ancestor" },
+      "ancestor": { "speaker_gender": "Male", "role": "old_ancestor" },
+      "courting death": { "speaker_gender": "Male", "role": "arrogant_scion" }
+    }
+  },
+
+  "entry-cultivation-i-can-copy-entries": {
+    "characters": {
+      "li qing": {
+        "gender": "Male",
+        "role": "li_qing",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": ["young master li", "nephew li", "disciple li", "host"]
+      },
+      "li canghai": {
+        "gender": "Male",
+        "role": "li_canghai",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+0%",
+        "aliases": ["grandpa li canghai", "grandfather", "grandpa", "grand elder", "old man", "patriarch li"]
+      },
+      "su han": {
+        "gender": "Male",
+        "role": "su_han",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": ["sword scion", "junior brother su", "senior brother su", "swordsman su"]
+      },
+      "xiao ling'er": {
+        "gender": "Female",
+        "role": "female_junior",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": ["ling'er", "junior sister", "senior sister", "fairy", "maiden", "young girl", "cousin girl"]
+      },
+      "elder gu": {
+        "gender": "Male",
+        "role": "clan_elder",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-14Hz",
+        "rate": "-3%",
+        "aliases": ["second elder", "third elder", "sect elder", "pavilion master", "sect master", "daoist master", "grandmaster"]
+      },
+      "arrogant scion": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": ["rival scion", "clan rival", "cousin li", "arrogant junior"]
+      },
+      "myriad entry system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": ["entry system", "trait panel", "system prompt", "ding"]
+      }
+    },
+    "vocatives": {
+      "grandfather": { "speaker_gender": "Male", "role": "li_qing" },
+      "grandpa": { "speaker_gender": "Male", "role": "li_qing" },
+      "grand elder": { "speaker_gender": "Male", "role": "arrogant_scion" },
+      "senior brother": { "speaker_gender": "Female", "role": "female_junior" },
+      "brother qing": { "speaker_gender": "Female", "role": "female_junior" }
+    }
+  },
+
+  "national-fate-marriage-the-elf-queen-is-pregnant-at-the-start": {
+    "characters": {
+      "su chen": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": ["player su chen", "dragon kingdom representative", "host"]
+      },
+      "elf queen": {
+        "gender": "Female",
+        "role": "elf_queen",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+2Hz",
+        "rate": "+5%",
+        "aliases": ["queen", "her majesty", "elven sovereign", "elf maiden"]
+      },
+      "homeland host": {
+        "gender": "Female",
+        "role": "stream_host",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+3Hz",
+        "rate": "+8%",
+        "aliases": ["hostess", "commentator", "broadcast host"]
+      },
+      "foreign rival": {
+        "gender": "Male",
+        "role": "foreign_rival",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+10%",
+        "aliases": ["foreign competitor", "foreign player", "eagle player", "sakura player"]
+      },
+      "command general": {
+        "gender": "Male",
+        "role": "command_general",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": ["chief commander", "minister", "general", "veteran general", "headquarters commander"]
+      },
+      "national fate system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": ["destiny system", "worldwide announcement", "prompt system", "ding"]
+      }
+    },
+    "vocatives": {
+      "husband": { "speaker_gender": "Female", "role": "elf_queen" },
+      "my king": { "speaker_gender": "Female", "role": "elf_queen" },
+      "general": { "speaker_gender": "Male", "role": "command_general" },
+      "viewers": { "speaker_gender": "Female", "role": "stream_host" },
+      "audience": { "speaker_gender": "Female", "role": "stream_host" }
+    }
+  },
+
+  "game-descends-from-vampire-bat-to-loli-tyrant": {
+    "characters": {
+      "blood tyrant": {
+        "gender": "Female",
+        "role": "mc_tyrant",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+6%",
+        "aliases": ["vampire bat", "progenitor", "crimson monarch", "night sovereign", "loli tyrant", "bat"]
+      },
+      "guild commander": {
+        "gender": "Male",
+        "role": "guild_leader",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": ["guild leader", "captain", "veteran hunter", "tank leader"]
+      },
+      "arrogant player": {
+        "gender": "Male",
+        "role": "arrogant_player",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+10%",
+        "aliases": ["elite player", "s-rank hunter", "scion player", "trash mob hunter"]
+      },
+      "female mage": {
+        "gender": "Female",
+        "role": "female_mage",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+8%",
+        "aliases": ["priestess", "healer", "ice mage", "girl adventurer"]
+      },
+      "dungeon boss": {
+        "gender": "Synthetic",
+        "role": "beast_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": ["cavern king", "abyssal beast", "monarch", "beast boss", "serpent monarch"]
+      },
+      "evolution system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": ["game system", "bloodline prompt", "devour system", "ding"]
+      }
+    },
+    "vocatives": {
+      "captain": { "speaker_gender": "Male", "role": "arrogant_player" },
+      "leader": { "speaker_gender": "Female", "role": "female_mage" },
+      "help me": { "speaker_gender": "Female", "role": "female_mage" },
+      "healer": { "speaker_gender": "Male", "role": "guild_leader" }
+    }
+  },
+
+  "the-class-is-trying-to-survive-on-a-train-im-the-only-boy-in-the-whole-class": {
+    "characters": {
+      "hero narrator": {
+        "gender": "Male",
+        "role": "hero_narrator",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "+14%",
+        "aliases": ["boy", "protagonist", "sole male student", "i"]
+      },
+      "female teacher": {
+        "gender": "Female",
+        "role": "female_teacher",
+        "voice": "en-US-MichelleNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": ["sensei", "teacher", "chaperone", "homeroom teacher"]
+      },
+      "train system": {
+        "gender": "Synthetic",
+        "role": "train_system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-20Hz",
+        "rate": "-5%",
+        "aliases": ["intercom", "pa system", "automated broadcast", "chime rings", "speaker crackled"]
+      },
+      "train conductor": {
+        "gender": "Male",
+        "role": "train_conductor",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "+0%",
+        "aliases": ["conductor", "train master", "driver"]
+      },
+      "train guard": {
+        "gender": "Male",
+        "role": "train_guard",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-10Hz",
+        "rate": "+5%",
+        "aliases": ["security", "guard", "officer"]
+      },
+      "train passenger": {
+        "gender": "Male",
+        "role": "train_passenger",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+8%",
+        "aliases": ["passenger", "old man", "stranger"]
+      },
+      "class representative": {
+        "gender": "Female",
+        "role": "girl_01_strong",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+12%",
+        "aliases": ["class rep", "president", "female teen strong"]
+      },
+      "gentle girl": {
+        "gender": "Female",
+        "role": "girl_02_gentle",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+12%",
+        "aliases": ["female teen soft", "peacemaker"]
+      },
+      "panicked girl": {
+        "gender": "Female",
+        "role": "girl_20_crying",
+        "voice": "en-US-AshleyNeural",
+        "pitch": "+15Hz",
+        "rate": "+10%",
+        "aliases": ["whimpering girl", "crying student"]
+      },
+      "cool girl": {
+        "gender": "Female",
+        "role": "girl_04_cool",
+        "voice": "en-US-SaraNeural",
+        "pitch": "+0Hz",
+        "rate": "+12%",
+        "aliases": ["female teen cool", "kuudere", "analytical girl"]
+      },
+      "feisty girl": {
+        "gender": "Female",
+        "role": "girl_07_feisty",
+        "voice": "en-US-AmberNeural",
+        "pitch": "+0Hz",
+        "rate": "+12%",
+        "aliases": ["sarcastic girl", "sharp tongued girl"]
+      }
+    },
+    "vocatives": {
+      "sensei": { "speaker_gender": "Female", "role": "girl_01_strong" },
+      "teacher": { "speaker_gender": "Female", "role": "girl_01_strong" },
+      "conductor": { "speaker_gender": "Male", "role": "train_conductor" },
+      "help me": { "speaker_gender": "Female", "role": "girl_20_crying" }
+    }
+  }
+}

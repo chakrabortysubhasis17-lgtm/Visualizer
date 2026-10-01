@@ -1,0 +1,6 @@
+[Bb]uild_*/
+__pycache__/
+*.jpg
+*.mp3
+*.mp4
+*.srt
