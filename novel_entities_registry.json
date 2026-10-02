@@ -1478,5 +1478,1015 @@
         "role": "girl_20_crying"
       }
     }
+  },
+  "highway-survival-for-all-my-rvs-infinite-evolution": {
+    "characters": {
+      "lin hui": {
+        "gender": "Male",
+        "role": "lin_hui",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lin hui",
+          "brother lin",
+          "boss lin",
+          "mr. lin",
+          "driver lin",
+          "host",
+          "rv master",
+          "player lin hui"
+        ]
+      },
+      "su qingqian": {
+        "gender": "Female",
+        "role": "su_qingqian",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "su qingqian",
+          "qingqian",
+          "miss su",
+          "little su",
+          "co-pilot"
+        ]
+      },
+      "zhao tianba": {
+        "gender": "Male",
+        "role": "zhao_tianba",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "zhao tianba",
+          "alliance leader zhao",
+          "leader zhao",
+          "batian alliance",
+          "bald man",
+          "brother tianba"
+        ]
+      },
+      "scar face": {
+        "gender": "Male",
+        "role": "scar_face",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+10%",
+        "aliases": [
+          "brother scar",
+          "scar face",
+          "scar",
+          "dao scar",
+          "evil wolf leader",
+          "wolf guild master"
+        ]
+      },
+      "li lishuang": {
+        "gender": "Female",
+        "role": "li_lishuang",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "li lishuang",
+          "lishuang",
+          "gold digger",
+          "sister lishuang"
+        ]
+      },
+      "highway system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-22Hz",
+        "rate": "-6%",
+        "aliases": [
+          "highway survival game",
+          "rv system",
+          "system announcement",
+          "gold entry",
+          "infinite trait",
+          "ding"
+        ]
+      },
+      "regional channel survivor": {
+        "gender": "Male",
+        "role": "channel_player",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "area chat",
+          "regional player",
+          "scavenger",
+          "desperate player",
+          "driver"
+        ]
+      },
+      "li shuang": {
+        "gender": "Male",
+        "role": "li_shuang",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "li shuang"
+        ]
+      },
+      "bulletproof steel": {
+        "gender": "Male",
+        "role": "bulletproof_steel",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "bulletproof steel"
+        ]
+      },
+      "guo yong": {
+        "gender": "Male",
+        "role": "manager_ma",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": [
+          "guo yong"
+        ]
+      },
+      "tang chuan": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "tang chuan"
+        ]
+      },
+      "liu xi": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "liu xi"
+        ]
+      },
+      "tang": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "tang"
+        ]
+      },
+      "wang bin": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "wang bin"
+        ]
+      },
+      "lin bin": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "lin bin"
+        ]
+      },
+      "leather jacket": {
+        "gender": "Male",
+        "role": "leather_jacket",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "leather jacket"
+        ]
+      },
+      "black": {
+        "gender": "Male",
+        "role": "black",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "black"
+        ]
+      },
+      "boss yu": {
+        "gender": "Male",
+        "role": "boss_yu",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "boss yu"
+        ]
+      },
+      "goatee man": {
+        "gender": "Male",
+        "role": "goatee_man",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "goatee man"
+        ]
+      },
+      "haired girl": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "haired girl"
+        ]
+      },
+      "bai ling": {
+        "gender": "Male",
+        "role": "bai_ling",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "bai ling"
+        ]
+      },
+      "mutant species": {
+        "gender": "Male",
+        "role": "mutant_species",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "mutant species"
+        ]
+      },
+      "yang antong": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "yang antong"
+        ]
+      }
+    },
+    "vocatives": {
+      "boss": {
+        "speaker_gender": "Female",
+        "role": "su_qingqian"
+      },
+      "brother lin": {
+        "speaker_gender": "Female",
+        "role": "su_qingqian"
+      },
+      "lin hui": {
+        "speaker_gender": "Male",
+        "role": "zhao_tianba"
+      },
+      "save me": {
+        "speaker_gender": "Female",
+        "role": "li_lishuang"
+      },
+      "hand over the supplies": {
+        "speaker_gender": "Male",
+        "role": "scar_face"
+      },
+      "take me with you": {
+        "speaker_gender": "Female",
+        "role": "li_lishuang"
+      }
+    }
+  },
+  "after-i-hanged-up-i-became-the-strongest-beast-master": {
+    "characters": {
+      "chen xing": {
+        "gender": "Male",
+        "role": "chen_xing",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "chen xing",
+          "brother xing",
+          "student chen",
+          "ah xing",
+          "master chen",
+          "host",
+          "tamer chen"
+        ]
+      },
+      "gluttony": {
+        "gender": "Synthetic",
+        "role": "pet_gluttony",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+6%",
+        "aliases": [
+          "gluttony",
+          "saltwater crocodile",
+          "little crocodile",
+          "taotie",
+          "croc",
+          "tamed beast"
+        ]
+      },
+      "lu junxiang": {
+        "gender": "Male",
+        "role": "teacher_lu",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "teacher lu",
+          "instructor lu",
+          "lu junxiang",
+          "class teacher",
+          "examiner lu"
+        ]
+      },
+      "li zhixuan": {
+        "gender": "Female",
+        "role": "li_zhixuan",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+3Hz",
+        "rate": "+8%",
+        "aliases": [
+          "li zhixuan",
+          "zhixuan",
+          "classmate li",
+          "student li",
+          "monitor li"
+        ]
+      },
+      "wang qiming": {
+        "gender": "Male",
+        "role": "wang_qiming",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+4Hz",
+        "rate": "+10%",
+        "aliases": [
+          "wang qiming",
+          "qiming",
+          "classmate wang",
+          "fatty wang"
+        ]
+      },
+      "tong xuhua": {
+        "gender": "Male",
+        "role": "tong_xuhua",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "tong xuhua",
+          "xuhua",
+          "academy genius",
+          "prodigy tong"
+        ]
+      },
+      "stone book system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-20Hz",
+        "rate": "-6%",
+        "aliases": [
+          "pet trainer",
+          "stone tablet",
+          "stone book",
+          "tamer system",
+          "skill point",
+          "ding"
+        ]
+      },
+      "knowledge": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "knowledge"
+        ]
+      },
+      "huaxia": {
+        "gender": "Male",
+        "role": "huaxia",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "huaxia"
+        ]
+      },
+      "chen lingya": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "chen lingya"
+        ]
+      },
+      "zou minghan": {
+        "gender": "Male",
+        "role": "zou_minghan",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "zou minghan"
+        ]
+      },
+      "liu yuzhen": {
+        "gender": "Male",
+        "role": "liu_yuzhen",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "liu yuzhen"
+        ]
+      },
+      "chi yu": {
+        "gender": "Male",
+        "role": "chi_yu",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "chi yu"
+        ]
+      },
+      "wan hailong": {
+        "gender": "Male",
+        "role": "wan_hailong",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "wan hailong"
+        ]
+      },
+      "gaolin": {
+        "gender": "Male",
+        "role": "gaolin",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "gaolin"
+        ]
+      },
+      "chen guohai": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "chen guohai"
+        ]
+      },
+      "sun": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "sun"
+        ]
+      },
+      "xue jinbao": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "xue jinbao"
+        ]
+      },
+      "director sun": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "director sun"
+        ]
+      },
+      "reagents": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "reagents"
+        ]
+      },
+      "nutritional reagent": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "nutritional reagent"
+        ]
+      },
+      "middle school": {
+        "gender": "Male",
+        "role": "middle_school",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "middle school"
+        ]
+      },
+      "wan ning": {
+        "gender": "Male",
+        "role": "wan_ning",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "wan ning"
+        ]
+      },
+      "others": {
+        "gender": "Male",
+        "role": "others",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "others"
+        ]
+      },
+      "li xi": {
+        "gender": "Male",
+        "role": "li_xi",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "li xi"
+        ]
+      },
+      "xinghua road": {
+        "gender": "Male",
+        "role": "xinghua_road",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "xinghua road"
+        ]
+      },
+      "kuang shiyi": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "kuang shiyi"
+        ]
+      },
+      "zheng weixin": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "zheng weixin"
+        ]
+      },
+      "zhou hao": {
+        "gender": "Male",
+        "role": "zhou_hao",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "zhou hao"
+        ]
+      },
+      "wang bing": {
+        "gender": "Male",
+        "role": "wang_bing",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "wang bing"
+        ]
+      },
+      "yue zhongshan": {
+        "gender": "Male",
+        "role": "yue_zhongshan",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "yue zhongshan"
+        ]
+      },
+      "teacher kuang": {
+        "gender": "Male",
+        "role": "teacher_kuang",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "teacher kuang"
+        ]
+      },
+      "tian xuechuan": {
+        "gender": "Male",
+        "role": "tian_xuechuan",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "tian xuechuan"
+        ]
+      },
+      "essence": {
+        "gender": "Male",
+        "role": "essence",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "essence"
+        ]
+      },
+      "marrow": {
+        "gender": "Male",
+        "role": "marrow",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "marrow"
+        ]
+      },
+      "brother kuang": {
+        "gender": "Male",
+        "role": "brother_kuang",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "brother kuang"
+        ]
+      },
+      "wu ju": {
+        "gender": "Male",
+        "role": "wu_ju",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "wu ju"
+        ]
+      },
+      "chiyu": {
+        "gender": "Male",
+        "role": "chiyu",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "chiyu"
+        ]
+      },
+      "pei lingmin": {
+        "gender": "Male",
+        "role": "pei_lingmin",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "pei lingmin"
+        ]
+      },
+      "coach mu": {
+        "gender": "Male",
+        "role": "coach_mu",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "coach mu"
+        ]
+      },
+      "ruan jun": {
+        "gender": "Male",
+        "role": "ruan_jun",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "ruan jun"
+        ]
+      },
+      "qiu qiuyu": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "qiu qiuyu"
+        ]
+      },
+      "principal xue": {
+        "gender": "Male",
+        "role": "principal_xue",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "principal xue"
+        ]
+      },
+      "mom": {
+        "gender": "Male",
+        "role": "mom",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "mom"
+        ]
+      }
+    },
+    "vocatives": {
+      "teacher lu": {
+        "speaker_gender": "Male",
+        "role": "chen_xing"
+      },
+      "teacher": {
+        "speaker_gender": "Male",
+        "role": "chen_xing"
+      },
+      "brother xing": {
+        "speaker_gender": "Male",
+        "role": "wang_qiming"
+      },
+      "chen xing": {
+        "speaker_gender": "Female",
+        "role": "li_zhixuan"
+      },
+      "master": {
+        "speaker_gender": "Synthetic",
+        "role": "pet_gluttony"
+      }
+    }
+  },
+  "global-rainstorm-my-shelter-is-an-air-fortress": {
+    "characters": {
+      "lu zhou": {
+        "gender": "Male",
+        "role": "lu_zhou",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lu zhou",
+          "brother zhou",
+          "boss lu",
+          "master lu",
+          "shelter lord",
+          "host",
+          "commander lu"
+        ]
+      },
+      "aunt zhang": {
+        "gender": "Female",
+        "role": "aunt_zhang",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "aunt zhang",
+          "director zhang",
+          "neighborhood committee",
+          "mrs. zhang",
+          "committee head"
+        ]
+      },
+      "lin yiyi": {
+        "gender": "Female",
+        "role": "gold_digger_female",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "lin yiyi",
+          "yiyi",
+          "ex-girlfriend",
+          "school beauty",
+          "gold-digging woman"
+        ]
+      },
+      "sun hao": {
+        "gender": "Male",
+        "role": "arrogant_neighbor",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+10%",
+        "aliases": [
+          "sun hao",
+          "young master sun",
+          "scion sun",
+          "building bully",
+          "rich second generation"
+        ]
+      },
+      "provincial commander": {
+        "gender": "Male",
+        "role": "provincial_commander",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "+2%",
+        "aliases": [
+          "commander",
+          "general",
+          "provincial headquarters",
+          "fleet captain",
+          "disaster rescue lead"
+        ]
+      },
+      "fortress ai": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+4%",
+        "aliases": [
+          "void singularity",
+          "shelter system",
+          "fortress core",
+          "ai assistant",
+          "aerostat terminal",
+          "ding"
+        ]
+      },
+      "desperate neighbor": {
+        "gender": "Male",
+        "role": "neighbor_mob",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "neighbor",
+          "resident",
+          "survivor",
+          "building group",
+          "tenant"
+        ]
+      },
+      "lu": {
+        "gender": "Male",
+        "role": "manager_ma",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": [
+          "lu"
+        ]
+      },
+      "zhao qiang": {
+        "gender": "Male",
+        "role": "zhao_qiang",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "zhao qiang"
+        ]
+      },
+      "wang": {
+        "gender": "Male",
+        "role": "manager_ma",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": [
+          "wang"
+        ]
+      },
+      "auntie zhang": {
+        "gender": "Male",
+        "role": "auntie_zhang",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "auntie zhang"
+        ]
+      },
+      "wuling hongguang": {
+        "gender": "Male",
+        "role": "wuling_hongguang",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "wuling hongguang"
+        ]
+      },
+      "computer city": {
+        "gender": "Male",
+        "role": "computer_city",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "computer city"
+        ]
+      },
+      "zhang": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "zhang"
+        ]
+      },
+      "zhao": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "zhao"
+        ]
+      },
+      "su qingge": {
+        "gender": "Male",
+        "role": "su_qingge",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "su qingge"
+        ]
+      }
+    },
+    "vocatives": {
+      "lu zhou": {
+        "speaker_gender": "Female",
+        "role": "gold_digger_female"
+      },
+      "brother zhou": {
+        "speaker_gender": "Female",
+        "role": "gold_digger_female"
+      },
+      "open the door": {
+        "speaker_gender": "Female",
+        "role": "aunt_zhang"
+      },
+      "hand over the food": {
+        "speaker_gender": "Male",
+        "role": "arrogant_neighbor"
+      },
+      "commander": {
+        "speaker_gender": "Synthetic",
+        "role": "system"
+      },
+      "please save us": {
+        "speaker_gender": "Male",
+        "role": "neighbor_mob"
+      }
+    }
   }
 }
