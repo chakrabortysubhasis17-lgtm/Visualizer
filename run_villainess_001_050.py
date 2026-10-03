@@ -14,8 +14,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from entity_manager import EntityManager
 
 # ==================== ARCHITECTURAL TUNING ====================
-START_CHAPTER = 51
-END_CHAPTER = 100
+START_CHAPTER = 1
+END_CHAPTER = 50
 BATCH_SIZE = 5
 PARALLEL_CHAPTERS = 2
 GLOBAL_MAX_CONCURRENT_TTS = 3
@@ -25,173 +25,182 @@ TARGET_DIALOGUE_CHUNK_WORDS = 65
 CINZEL_URL = "https://github.com/google/fonts/raw/main/ofl/cinzeldecorative/CinzelDecorative-Bold.ttf"
 CINZEL_LOCAL_PATH = "CinzelDecorative-Bold.ttf"
 
+# Luminous, Sun-Drenched Shoujo Manhwa Romance Art
+STYLE_ANCHOR = (
+    "Masterpiece romantic fantasy manhwa illustration, official webtoon high-end cover art, "
+    "ultra-detailed clean delicate lineart, luminous porcelain skin, sparkling vibrant eyes, "
+    "radiant warm golden daylight, vibrant pastel flowers, blooming pink rose garden, sunbeams streaming "
+    "through golden arches, floating glowing petals and golden sparkles, colorful and vibrant aesthetic, "
+    "bright high-key lighting, 8k resolution, trending on Pixiv and Webtoon."
+)
+HERO_PLACEMENT = "waist-up view, graceful composition, gentle emotional resonance, bright front lighting"
+DAYLIGHT_BG = (
+    "bright radiant morning sky, blooming pink cherry blossom petals, sun-drenched grand white marble "
+    "royal terrace, vibrant lush flower garden with colorful blooming roses and sparkling fountains"
+)
+
 FORBIDDEN_TERMS = [
+    re.compile(r"\bbombardment\b", re.I),
+    re.compile(r"\bshatter\b", re.I),
+    re.compile(r"\bhostile fleet\b", re.I),
+    re.compile(r"\bwarfare\b", re.I),
+    re.compile(r"\bbloodshed\b", re.I),
     re.compile(r"\bchest\b", re.I),
     re.compile(r"\btattoos?\b", re.I),
-    re.compile(r"\bdeformed\b", re.I),
-    re.compile(r"\bmutilated\b", re.I),
-    re.compile(r"\bgrotesque\b", re.I),
-    re.compile(r"\bporcelain\b", re.I),
-    re.compile(r"\bethereal\b", re.I),
-    re.compile(r"\bdomes?\b", re.I),
-    re.compile(r"\bsplashing\b", re.I)
+    re.compile(r"\bgloomy\b", re.I),
+    re.compile(r"\bdarkness\b", re.I),
+    re.compile(r"\bnight\b", re.I),
+    re.compile(r"\btwilight\b", re.I)
 ]
 
 GRADIENT_PALETTES = [
-    ((225, 245, 255), (35, 120, 210)),   # Storm Cyan -> Deep Abyssal Blue
-    ((255, 240, 215), (235, 120, 35)),   # Shelter Amber -> Warm Firelight
-    ((230, 235, 245), (90, 110, 140)),   # Steel Alloy -> Fortress Slate
+    ((255, 248, 235), (255, 170, 195)),  # Ivory Pearl -> Soft Rose Pink
+    ((255, 240, 215), (248, 185, 95)),   # Warm Champagne -> Golden Honey
+    ((255, 255, 255), (235, 215, 230)),  # Pure White -> Delicate Lilac
 ]
 
-NOVEL_SLUG = "global-rainstorm-my-shelter-is-an-air-fortress"
-START_URL = "https://mtl-novel.com/novel/global-rainstorm-my-shelter-is-an-air-fortress/chapter-51-the-flesh-and-blood-grinder-of-zijin-mountain/"
-BUILD_DIR = "build_rainstorm_051_100"
-FINAL_AUDIO = "output_rainstorm_051_100.mp3"
-FINAL_VIDEO = "final_rainstorm_051_100.mp4"
-COVER_IMAGE = "cover_rainstorm_051_100.jpg"
-TIMESTAMPS_FILE = "youtube_timestamps_rainstorm_051_100.txt"
-SUBTITLES_FILE = "subtitles_rainstorm_051_100.srt"
-PAYLOAD_FILE = "youtube_upload_payload_rainstorm_051_100.json"
+NOVEL_SLUG = "the-villainess-marries-the-gentle-second-male-lead"
+START_URL = "https://mtl-novel.com/novel/the-villainess-marries-the-gentle-second-male-lead/chapter-1-waking-up-two-years-later/"
+BUILD_DIR = "build_villainess_001_050"
+FINAL_AUDIO = "output_villainess_001_050.mp3"
+FINAL_VIDEO = "final_villainess_001_050.mp4"
+COVER_IMAGE = "cover_villainess_001_050.jpg"
+TIMESTAMPS_FILE = "youtube_timestamps_villainess_001_050.txt"
+SUBTITLES_FILE = "subtitles_villainess_001_050.srt"
+PAYLOAD_FILE = "youtube_upload_payload_villainess_001_050.json"
 
-VIDEO_TITLE = "Flesh & Blood Grinder of Zijin Mountain! Upgrading Air Fortress | Rainstorm Apocalypse [Ch 51-100]"
+VIDEO_TITLE = "I Married The Gentle Second Male Lead & Dumped The Crown Prince! | Romance Audiobook [Ch 1-50]"
 TAGS = [
-    "Global Rainstorm My Shelter is an Air Fortress", "Global Rainstorm Audiobook",
-    "Lu Zhou", "Apocalypse Shelter", "Air Fortress", "Flood Apocalypse", "Doomsday Survival",
-    "Progression Fantasy", "Unabridged Audiobook", "Audiobook Marathon", "Being A Bong"
+    "Romance Audiobook", "The Villainess Marries the Gentle Second Male Lead",
+    "Villainess Transmigration", "Gentle Male Lead", "Second Male Lead Romance",
+    "Otome Isekai Audiobook", "Female Protagonist Audiobook", "Manhwa Audiobook",
+    "Romantic Fantasy", "Unabridged Audiobook", "Audiobook Marathon", "Being a Bong"
 ]
 
 DESC_HEADER = (
-    "A catastrophic eternal deluge engulfs the entire world in freezing floodwaters, plunging civilization "
-    "into desperate resource wars. Reborn with spatial dimensions and advanced technology, Lu Zhou transforms "
-    "his residential compound into an impenetrable, climate-controlled steel fortress.\n\n"
-    "As Chapter 51 unfolds with 'The Flesh and Blood Grinder of Zijin Mountain', starving survivor factions clash "
-    "viciously for the remaining high ground, while Lu Zhou watches coldly from his fortress, enjoying boiling hotpot "
-    "and activating heavy automated turrets to eradicate all trespassers!\n\n"
-    "Welcome to the complete 50-chapter marathon of 'Global Rainstorm: My Shelter is an Air Fortress' "
-    "(全球暴雨：我的避难所是空中堡垒) Chapters 51 to 100 in unabridged multi-voice narration!\n\n"
-    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Broadcast Dynamic Clarity).\n"
-    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for dialogue and fortress system prompts).\n"
-    "🎨 VISUAL ENGINE: 10 Progressive Doomsday Apocalypse Transitions + 15s Channel Outro Slate.\n\n"
+    "In the original story, the obsessed villainess died in disgrace while the courtly second male lead "
+    "gave up everything for an ungrateful heroine, only to be cast aside in silence.\n\n"
+    "Now, she transmigrates into the villainess's body two years after the wedding. Instead of scheming "
+    "to win back the arrogant Crown Prince, she chooses a quiet life of luxury and gives her gentle husband "
+    "the unconditional loyalty and emotional sanctuary he was always denied.\n\n"
+    "Welcome to the complete 50-chapter marathon of 'The Villainess Marries the Gentle Second Male Lead' "
+    "(恶毒女配嫁给温柔男二) in unabridged multi-voice narration!\n\n"
+    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Warm Romance Cadence).\n"
+    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for all dialogue and inner thoughts).\n"
+    "🎨 VISUAL ENGINE: 10 Vibrant Manhwa Visual Transitions + 15s Romantic Outro Slate.\n\n"
     "══════════════════════════════════════════════\nTIMESTAMPS:\n"
 )
 
 DESC_FOOTER = (
     "\n══════════════════════════════════════════════\n\n"
-    "🌧️ ARC HIGHLIGHTS:\n"
-    "• 00:00:00 - Chapter 51: The Flesh and Blood Grinder of Zijin Mountain\n"
-    "• Chapter 62: Luxury Dining in the Submerged Apocalypse & Cold Indifference\n"
-    "• Chapter 74: Aunt Zhang's Moral Kidnapping Annihilated by Electric Defenses\n"
-    "• Chapter 87: Freezing Rain Glaciation & Heavy Amphibious Raider Purge\n"
-    "• Chapter 100: Anti-Gravity Thruster Ignition – The Air Fortress Takes Flight!\n\n"
+    "🌸 ARC HIGHLIGHTS:\n"
+    "• 00:00:00 - Chapter 1: Waking Up Two Years Later in the Second Lead's Manor\n"
+    "• Chapter 8: The Domestic Truce & Calming the Fearful Servants\n"
+    "• Chapter 17: Royal Banquet Encounter: Complete Cold Indifference to the Crown Prince\n"
+    "• Chapter 28: Afternoon Tea & The Gentle Lord's Guarded Heart Thaws\n"
+    "• Chapter 38: Protecting My Husband: Publicly Humiliating the Arrogant Ex\n"
+    "• Chapter 50: The Shift in Allegiance: An Unbreakable Sacred Vow\n\n"
     "══════════════════════════════════════════════\n"
-    "DISCLAIMER:\nThis audiobook is an edited dramatized adaptation produced for storytelling, entertainment, "
-    "and doomsday literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
-    "#GlobalRainstorm #AirFortress #ApocalypseSurvival #DoomsdayAudiobook #ProgressionFantasy #FullAudiobook"
+    "DISCLAIMER:\nThis audiobook is an edited adaptation produced for storytelling, emotional character roleplay, "
+    "and romance literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
+    "#VillainessRomance #Audiobook #OtomeIsekai #GentleMaleLead #RomanticFantasy #FullAudiobook #AudiobookMarathon"
 )
 
 BASE_CHARACTERS = {
     "narrator": {"display_name": "Narrator", "gender": "Female", "line_type": "Narration", "voice": "en-US-JennyNeural", "pitch": "+1Hz", "rate": "+4%"},
-    "lu_zhou": {"display_name": "Lu Zhou", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "-2Hz", "rate": "+6%"},
-    "aunt_zhang": {"display_name": "Aunt Zhang", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-EmmaNeural", "pitch": "+2Hz", "rate": "+8%"},
-    "neighbor_villain": {"display_name": "Desperate Raider", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-EricNeural", "pitch": "+5Hz", "rate": "+10%"},
-    "gold_digger_female": {"display_name": "Pleading Survivor", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-AriaNeural", "pitch": "+2Hz", "rate": "+5%"},
-    "system": {"display_name": "Fortress System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-6%"}
+    "fl_villainess": {"display_name": "An Ling", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-AriaNeural", "pitch": "+0Hz", "rate": "+4%"},
+    "arrogant_ex_ml": {"display_name": "Lu Jingshen", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-EricNeural", "pitch": "+2Hz", "rate": "+6%"},
+    "gentle_ml": {"display_name": "Mr. Shen", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-AndrewNeural", "pitch": "-5Hz", "rate": "+2%"},
+    "white_lotus_fl": {"display_name": "Zhuo Wen", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-EmmaNeural", "pitch": "+3Hz", "rate": "+5%"},
+    "assistant": {"display_name": "Assistant", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-ChristopherNeural", "pitch": "-2Hz", "rate": "+5%"},
+    "maid_gossip": {"display_name": "Hospital Maid", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-JennyNeural", "pitch": "+2Hz", "rate": "+5%"},
+    "system": {"display_name": "Plot System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-4%"}
 }
 
 BLOCKS = [
     {
-        "index": 1, "range": (51, 55),
-        "hero_desc": "calm handsome 20-year-old survivor Lu Zhou wearing a black tactical sweater standing behind bulletproof glass",
-        "action": "holding a hot ceramic mug of coffee while looking down at desperate armed survivor gangs fighting below Zijin mountain",
-        "scene_bg": "heavily reinforced steel shelter observation room, multi-screen surveillance monitors, dark torrential rain outside",
-        "search_queries": ["anime survivor bunker", "anime rainstorm window", "anime male survivor apocalypse"],
-        "title": ["ZIJIN MOUNTAIN BATTLE", "FLESH & BLOOD GRINDER", "Chapters 51 – 55"],
-        "fallback_color": (25, 35, 45)
+        "index": 1, "range": (1, 5),
+        "hero_desc": "beautiful 20-year-old Asian noblewoman with long silky black hair in a flowing pastel peach-pink gown on a sunlit velvet couch",
+        "action": "blinking with wide curious eyes as radiant morning sunlight illuminates her elegant manor room filled with fresh colorful flowers",
+        "search_query": "anime noblewoman pastel pink dress sunlit room fresh flowers manhwa pixiv",
+        "title": ["WAKING UP TWO YEARS LATER", "THE UNEXPECTED MARRIAGE", "Chapters 1 – 5"],
+        "fallback_color": (245, 190, 205)
     },
     {
-        "index": 2, "range": (56, 60),
-        "hero_desc": "colossal steel fortress base situated on a high rocky cliff above stormy flood waters",
-        "action": "tall communication radar towers active as bright lightning flashes across the skyline of flooded skyscrapers",
-        "scene_bg": "vast flooded city ruins, buildings surrounded by deep water, dark storm clouds, heavy rainfall",
-        "search_queries": ["anime flooded city", "anime flood city", "anime submerged city", "anime apocalypse fortress"],
-        "title": ["RISING DELUGE", "SUBMERGED METROPOLIS", "Chapters 56 – 60"],
-        "fallback_color": (20, 30, 45)
+        "index": 2, "range": (6, 10),
+        "hero_desc": "handsome courtly noble gentleman with warm chocolate-brown hair serving hot floral tea in a sun-drenched rose garden gazebo",
+        "action": "gazing with tender surprise and gentle warmth as his wife smiles happily at him under floating cherry blossoms",
+        "search_query": "anime gentle handsome nobleman afternoon tea rose garden pastel manhwa pixiv",
+        "title": ["DOMESTIC SANCTUARY", "THE GENTLE LORD'S SURPRISE", "Chapters 6 – 10"],
+        "fallback_color": (240, 180, 195)
     },
     {
-        "index": 3, "range": (61, 65),
-        "hero_desc": "Lu Zhou sitting comfortably in a brightly lit modern living room with warm wooden furniture",
-        "action": "eating from a boiling copper hotpot with sliced wagyu beef while listening to outdoor storm reports",
-        "scene_bg": "luxurious warm apartment interior, ambient orange LED lighting, large fortified window showing stormy deluge",
-        "search_queries": ["anime luxury apartment rain", "anime cozy interior rain", "anime hotpot room"],
-        "title": ["LUXURY SANCTUARY", "FEAST IN THE APOCALYPSE", "Chapters 61 – 65"],
-        "fallback_color": (45, 30, 20)
+        "index": 3, "range": (11, 15),
+        "hero_desc": "graceful noblewoman walking through a vibrant sunlit garden courtyard surrounded by blooming pink and white roses",
+        "action": "smiling warmly at smiling young maidservants who carry baskets of fresh colorful fruit and flower bouquets",
+        "search_query": "anime noble lady sunlit flower garden colorful roses joyful manhwa pixiv",
+        "title": ["MANOR REFORMATION", "WINNING THE HOUSEHOLD", "Chapters 11 – 15"],
+        "fallback_color": (210, 230, 190)
     },
     {
-        "index": 4, "range": (66, 70),
-        "hero_desc": "frantic middle-aged woman Aunt Zhang clutching a megaphone alongside drenched shivering neighbors",
-        "action": "banging angrily on the massive blast doors of the shelter demanding food and moral concessions",
-        "scene_bg": "flooded shelter entrance corridor, water rising around their boots, emergency red warning lights flashing",
-        "search_queries": ["anime crowd fortress door", "anime angry crowd gate", "anime survival mob"],
-        "title": ["MORAL KIDNAPPING", "AUNT ZHANG'S SCHEME", "Chapters 66 – 70"],
-        "fallback_color": (40, 25, 30)
+        "index": 4, "range": (16, 20),
+        "hero_desc": "stunning noblewoman in a dazzling gold-embroidered pastel emerald ballgown standing in a sunlit imperial grand hall",
+        "action": "holding a sparkling champagne glass with an amused confident smile while ignoring the arrogant Crown Prince",
+        "search_query": "anime ball gown emerald gold grand royal hall bright sunlit banquet manhwa pixiv",
+        "title": ["IMPERIAL BANQUET", "COLD INDIFFERENCE", "Chapters 16 – 20"],
+        "fallback_color": (190, 225, 205)
     },
     {
-        "index": 5, "range": (71, 75),
-        "hero_desc": "automated dual-barrel heavy machine gun turrets and high-voltage electrified steel fences activating",
-        "action": "discharging brilliant blue electric arcs and tracer rounds that send armed scavengers scrambling in panic",
-        "scene_bg": "fortress perimeter ramparts, high voltage electrified barriers, heavy rainstorm at night",
-        "search_queries": ["anime defense turret fortress", "anime electric barrier sci-fi", "anime fortress defense"],
-        "title": ["ABSOLUTE DEFENSE", "HIGH-VOLTAGE REPEL", "Chapters 71 – 75"],
-        "fallback_color": (30, 40, 55)
+        "index": 5, "range": (21, 25),
+        "hero_desc": "handsome gentle second male lead in tailored white and gold noble attire smiling tenderly as his wife affectionately fixes his tie",
+        "action": "standing together radiant and luminous while the jealous ex-fiancé watches in utter shock in the background",
+        "search_query": "anime couple white gold attire happy romantic ballroom bright lighting manhwa pixiv",
+        "title": ["EX'S BEWILDERMENT", "TURNING THE TABLES", "Chapters 21 – 25"],
+        "fallback_color": (245, 205, 190)
     },
     {
-        "index": 6, "range": (76, 80),
-        "hero_desc": "glowing blue holographic shelter blueprint floating inside the main computer server vault",
-        "action": "displaying heavy anti-air missile batteries and vertical stabilization thruster installations completing",
-        "scene_bg": "underground server control hub, blue holographic 3D fortress model, high-tech server racks",
-        "search_queries": ["anime holographic blueprint", "anime sci-fi server room hologram", "anime holographic map"],
-        "title": ["SYSTEM BLUEPRINTS", "HEAVY UPGRADE COMPLETE", "Chapters 76 – 80"],
-        "fallback_color": (25, 45, 50)
+        "index": 6, "range": (26, 30),
+        "hero_desc": "the gentle noble husband and heroine sitting closely on a grand sunlit terrace surrounded by blooming pink wisteria vines",
+        "action": "interlocking fingers tenderly as warm golden sunlight filters through flower petals, healing past emotional scars",
+        "search_query": "anime couple holding hands wisteria flowers sunbeams golden hour romantic manhwa pixiv",
+        "title": ["SUNLIT CONFESSION", "HEALING A GUARDED HEART", "Chapters 26 – 30"],
+        "fallback_color": (235, 190, 225)
     },
     {
-        "index": 7, "range": (81, 85),
-        "hero_desc": "heavily modified armed speedboats and patrol craft carrying warlord raiders approaching the fortress perimeter",
-        "action": "being targeted by red laser designators before exploding in dramatic fireballs across the water",
-        "scene_bg": "stormy dark floodwaters, burning boat wreckage, heavy rainfall over ocean waves",
-        "search_queries": ["anime flooded city battle", "anime naval battle explosion", "anime boat combat"],
-        "title": ["AMPHIBIOUS SIEGE", "WARLORD FLOTILLA CRUSHED", "Chapters 81 – 85"],
-        "fallback_color": (45, 25, 20)
+        "index": 7, "range": (31, 35),
+        "hero_desc": "poised elegant noblewoman standing confidently with a brilliant radiant aura in a lavish royal parlor",
+        "action": "delivering witty graceful retorts with a sweet smile that completely silences gossiping aristocratic ladies",
+        "search_query": "anime noble lady confident smile lavish bright parlor pastel roses manhwa pixiv",
+        "title": ["PROTECTING MY HUSBAND", "SLAPPING THE GOSSIPS", "Chapters 31 – 35"],
+        "fallback_color": (245, 200, 215)
     },
     {
-        "index": 8, "range": (86, 90),
-        "hero_desc": "Lu Zhou wearing thermal winter parka looking out at the suddenly frozen wasteland",
-        "action": "watching freezing rain turn the entire flooded metropolis into a colossal sheet of jagged glacier ice",
-        "scene_bg": "frozen flooded city, skyscrapers encased in thick blue ice, blizzard winds, dark frozen horizon",
-        "search_queries": ["anime frozen city", "anime ice skyscrapers blizzard", "anime winter apocalypse city"],
-        "title": ["EXTREME FREEZE", "THE GLACIAL APOCALYPSE", "Chapters 86 – 90"],
-        "fallback_color": (30, 45, 60)
+        "index": 8, "range": (36, 40),
+        "hero_desc": "the gentle second male lead in regal sapphire-blue formal coat radiating confident aristocratic power and elegance",
+        "action": "presenting golden territorial decrees in the royal council room to secure absolute glory for his beloved wife",
+        "search_query": "anime handsome nobleman sapphire coat royal council chamber bright sunbeams manhwa pixiv",
+        "title": ["GENTLE YET POWERFUL", "THE SECOND LEAD'S MIGHT", "Chapters 36 – 40"],
+        "fallback_color": (185, 205, 245)
     },
     {
-        "index": 9, "range": (91, 95),
-        "hero_desc": "colossal anti-gravity turbine thrusters beneath the fortress glowing with intense cyan thermal plasma",
-        "action": "vibrating with thunderous power as the massive steel structure begins to detach from mountain bedrock",
-        "scene_bg": "fortress base, massive glowing blue plasma jet thrusters, steam and water vapor clouds",
-        "search_queries": ["anime flying fortress thrusters", "anime giant thruster plasma", "anime sci-fi mothership"],
-        "title": ["THRUSTER IGNITION", "DETACHING FROM BEDROCK", "Chapters 91 – 95"],
-        "fallback_color": (35, 50, 65)
+        "index": 9, "range": (41, 45),
+        "hero_desc": "original female lead looking distressed in a lavish tea room as the arrogant male lead bickers with advisors",
+        "action": "gazing through open sunny French windows in regret as the gentle second lead's romantic wedding carriage passes by",
+        "search_query": "anime sunny tea room lady regret window golden carriage manhwa pixiv",
+        "title": ["THE CRUMBLING ILLUSION", "REGRET OF THE ORIGINAL PAIR", "Chapters 41 – 45"],
+        "fallback_color": (230, 210, 220)
     },
     {
-        "index": 10, "range": (96, 100),
-        "hero_desc": "Lu Zhou standing at the helm bridge of the colossal flying Air Fortress rising triumphantly above the storm clouds",
-        "action": "looking out through panoramic windows into golden sunlight as the flooded world remains far below in darkness",
-        "scene_bg": "panoramic bridge of flying sky fortress, breaking through stormy rainclouds into bright golden stratosphere",
-        "search_queries": ["anime air fortress sky", "anime flying battleship clouds", "anime sky fortress sunrise"],
-        "title": ["AIR FORTRESS ASCENSION", "SOVEREIGN OF THE SKIES", "Chapters 96 – 100"],
-        "fallback_color": (40, 45, 30)
+        "index": 10, "range": (46, 50),
+        "hero_desc": "the gentle husband and radiant bride embracing lovingly before a breathtaking sunlit marble palace archway",
+        "action": "smiling warmly into each other's eyes as countless colorful flower petals rain down around them in pure eternal joy",
+        "search_query": "anime bride groom embrace palace archway falling flower petals bright joyful manhwa pixiv",
+        "title": ["AN UNBREAKABLE VOW", "TRUE HAPPINESS FOUND", "Chapters 46 – 50"],
+        "fallback_color": (255, 235, 200)
     }
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Shelter|Upgrade|Notice|Warning|Doomsday).*?(?:\]|】|〕|』|〗|］)", re.I)
+RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Notice|Warning|Plot).*?(?:\]|】|〕|』|〗|］)", re.I)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 WATERMARK_PATTERNS = [
     re.compile(r"\(End of this chapter\)", re.I),
@@ -213,13 +222,6 @@ RE_SENTENCE_SPLIT = re.compile(r'(?<=[.!?])\s+')
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 }
-LEXICA_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Origin": "https://lexica.art",
-    "Referer": "https://lexica.art/"
-}
 
 
 def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
@@ -237,11 +239,11 @@ def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
                 for name, cinfo in reg_chars.items():
                     entry = {
                         "display_name": name.title(),
-                        "gender": cinfo.get("gender", "Male"),
+                        "gender": cinfo.get("gender", "Female"),
                         "line_type": "Dialogue" if cinfo.get("role") != "system" else "System",
-                        "voice": cinfo.get("voice", "en-US-GuyNeural"),
-                        "pitch": cinfo.get("pitch", "-2Hz"),
-                        "rate": cinfo.get("rate", "+6%"),
+                        "voice": cinfo.get("voice", "en-US-JennyNeural"),
+                        "pitch": cinfo.get("pitch", "+0Hz"),
+                        "rate": cinfo.get("rate", "+4%"),
                         "aliases": cinfo.get("aliases", [])
                     }
                     char_map[name.lower()] = entry
@@ -295,7 +297,7 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     paragraphs = [p for p in paragraphs if p and RE_ALPHANUM.search(p)]
 
     if not paragraphs:
-        paragraphs = [f"Chapter {ch_num}. Torrential rain continues pouring outside the fortress."]
+        paragraphs = [f"Chapter {ch_num}. Life in the manor proceeds peacefully."]
 
     full_text = f"{title}.\n\n" + "\n\n".join(paragraphs)
 
@@ -326,66 +328,85 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     return title, full_text, next_url
 
 
-def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
+def classify_villainess_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
+    """Accurate dialogue classifier using word boundaries and addressee-inversion protection."""
     chunk_lower = chunk.lower()
     prev_lower = prev_narr.lower()
     next_lower = next_narr.lower()
 
-    if any(k in chunk_lower or k in prev_lower for k in [
-        "shelter upgrade", "system prompt", "ding!", "spatial dimension",
-        "air fortress module", "defense points increased"
-    ]):
+    # 1. System Prompt Announcement
+    if any(k in chunk_lower or k in prev_lower for k in ["character persona deviation", "plot completion", "forcing completion"]):
         return "system"
 
-    if re.search(r"\b(aunt\s+zhang|director\s+zhang|committee|middle-aged\s+woman\s+shouted)\b", prev_lower):
-        return "aunt_zhang"
+    # 2. Assistant Exclamation / Subordinates
+    if re.search(r"\bpresident\s+lu\b", chunk_lower) or "assistant's exclamation" in prev_lower or "rushed into the booth" in prev_lower:
+        return "assistant"
+    if re.search(r"\byoung\s+madam\b", chunk_lower):
+        return "assistant"
+
+    # 3. Hospital Nurses / Maids Whispering Outside Door
+    if any(k in prev_lower for k in ["hushed voices", "chatting outside", "maids whispered", "crowd fell silent"]):
+        return "maid_gossip"
+    if "is the person in this room madam shen" in chunk_lower or "you've got it wrong" in chunk_lower:
+        return "maid_gossip"
+
+    # 4. Mr. Shen's Command
+    if "take madam to the hospital" in chunk_lower or "low and slow" in prev_lower or "scent of pine" in prev_lower:
+        return "gentle_ml"
+
+    # 5. Explicit Speech Tags with Strict Word Boundaries in PRE-CONTEXT
+    # Check for male speaker cues:
+    if re.search(r"\b(man's\s+(?:cold\s+)?voice\s+(?:came|rang)|the\s+man\s+was\s+stunned|his\s+tone\s+turned\s+icy|his\s+eyes\s+were\s+filled\s+with\s+malice)\b", prev_lower):
+        return "arrogant_ex_ml"
+    if re.search(r"\b(he\s+(?:said|asked|sneered|gritted|frowned|warned)|lu\s+jingshen\s+(?:sneered|frowned|said))\b", prev_lower):
+        return "arrogant_ex_ml"
+
+    # Check for female speaker cues:
+    if re.search(r"\b(she\s+(?:sneered|said|asked|whispered|murmured|turned|looked|gasped|closed)|an\s+ling\s+(?:hesitantly|pressed|looked|asked|said))\b", prev_lower):
+        return "fl_villainess"
+    if re.search(r"\b(her\s+mouth\s+suddenly\s+opened|she\s+heard\s+her\s+own)\b", prev_lower):
+        return "fl_villainess"
+
+    # 6. Explicit Speech Tags with Strict Word Boundaries in POST-CONTEXT
+    if re.search(r"\b(she\s+(?:said|sneered|asked|whispered|muttered)|an\s+ling\s+said)\b", next_lower):
+        return "fl_villainess"
+    if re.search(r"\b(he\s+(?:said|sneered|asked|gritted)|lu\s+jingshen\s+said)\b", next_lower):
+        return "arrogant_ex_ml"
+
+    # 7. Addressee Detection inside Quote
+    # If the quote names "An Ling", the speaker is talking TO her (Lu Jingshen)
+    if re.search(r"\b(an\s+ling|ling'er)\b", chunk_lower):
+        return "arrogant_ex_ml"
+
+    # If the quote names "Jingshen" or pleads to marry, An Ling is speaking TO him
+    if re.search(r"\b(jingshen|lu\s+jingshen)\b", chunk_lower) or "why don't you marry me" in chunk_lower or "only this way will you remember me" in chunk_lower:
+        return "fl_villainess"
+
+    # If the quote addresses the gentle husband
+    if re.search(r"\b(mr\.?\s*shen|husband|qingci)\b", chunk_lower):
+        return "fl_villainess"
+
+    # 8. Unambiguous Character Dialogue Phrasing in Chapter 1
     if any(k in chunk_lower for k in [
-        "young man, have some conscience", "share your food", "neighborhood committee",
-        "you have so much food", "open the door and help everyone"
+        "carrying my shoes", "catch my breath", "do you want money",
+        "who on earth are you", "let go. what are you doing", "huh? me?",
+        "vicious supporting female", "how could i be", "it shouldn't be",
+        "don't flatter yourself", "which family's son"
     ]):
-        return "aunt_zhang"
-
-    if re.search(r"\b(girl\s+cried|woman\s+sobbed|she\s+begged|pleaded\s+tearfully)\b", prev_lower):
-        return "gold_digger_female"
-    if any(k in chunk_lower for k in [
-        "brother zhou, please let me in", "i'm freezing", "i can do anything for you", "save me"
-    ]):
-        return "gold_digger_female"
-
-    if re.search(r"\b(scavenger|raider|gang\s+leader|thug|neighbor\s+cursed|he\s+sneered|he\s+roared)\b", prev_lower):
-        return "neighbor_villain"
-    if any(k in chunk_lower for k in [
-        "smash the door", "kill him and take his food", "hand over the shelter",
-        "courting death", "shoot!", "he's just one person"
-    ]):
-        return "neighbor_villain"
-
-    if re.search(r"\b(aunt\s+zhang\s+said|aunt\s+zhang\s+screamed)\b", next_lower):
-        return "aunt_zhang"
-    if re.search(r"\b(lu\s+zhou\s+said|lu\s+zhou\s+sneered|he\s+replied|he\s+chuckled)\b", next_lower):
-        return "lu_zhou"
-    if re.search(r"\b(the\s+man\s+cursed|gang\s+leader\s+barked)\b", next_lower):
-        return "neighbor_villain"
-    if re.search(r"\b(she\s+sobbed|she\s+whimpered)\b", next_lower):
-        return "gold_digger_female"
+        return "fl_villainess"
 
     if any(k in chunk_lower for k in [
-        "get lost", "activate turrets", "upgrade the fortress", "electrify the fence",
-        "enjoy my hotpot", "none of my business", "fire"
+        "stinking love", "wouldn't sleep with even if", "acting pitiful for after hitting",
+        "warning you for the last time", "stop playing these little tricks", "make you pay the price"
     ]):
-        return "lu_zhou"
+        return "arrogant_ex_ml"
 
-    if re.search(r"\b(lu\s+zhou|brother\s+zhou|boss\s+lu)\b", chunk_lower):
-        if any(k in chunk_lower for k in ["die", "kill", "hand over", "smash"]):
-            return "neighbor_villain"
-        if any(k in chunk_lower for k in ["save", "freeze", "cold", "please"]):
-            return "gold_digger_female"
-        return "aunt_zhang"
-
-    return "lu_zhou"
+    # 9. Default: Female Lead in female POV novel
+    return "fl_villainess"
 
 
 def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map: dict, voc_map: dict) -> list:
+    """Sequential cross-paragraph tokenizer preserving surrounding context across paragraph boundaries."""
     paragraphs = text.split("\n\n")
     raw_tokens = []
 
@@ -414,16 +435,16 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
             prev_narr = ""
             for back_idx in range(idx - 1, -1, -1):
                 if not raw_tokens[back_idx]["is_quote"]:
-                    prev_narr = raw_tokens[back_idx]["text"][-75:]
+                    prev_narr = raw_tokens[back_idx]["text"][-200:]
                     break
 
             next_narr = ""
             for fwd_idx in range(idx + 1, len(raw_tokens)):
                 if not raw_tokens[fwd_idx]["is_quote"]:
-                    next_narr = raw_tokens[fwd_idx]["text"][:75]
+                    next_narr = raw_tokens[fwd_idx]["text"][:200]
                     break
 
-            role_key = classify_rainstorm_dialogue(token["text"], prev_narr, next_narr)
+            role_key = classify_villainess_dialogue(token["text"], prev_narr, next_narr)
 
             if role_key == "system":
                 staged_segments.append({"role_key": "system", "line_type": "System", "text": token["text"]})
@@ -444,7 +465,7 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
     line_seq = 1
     for seg in consolidated:
         rk = seg["role_key"]
-        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("lu_zhou", char_map["narrator"])))
+        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("fl_villainess", char_map["narrator"])))
         words = seg["text"].split()
         sub_chunks = []
         chunk_ceiling = MAX_NARRATION_MERGE_WORDS if seg["line_type"] == "Narration" else TARGET_DIALOGUE_CHUNK_WORDS
@@ -499,15 +520,11 @@ def ensure_cinzel_font() -> str:
     return "arialbd.ttf"
 
 
-def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str, scene_bg: str) -> str:
-    cleaned_action = dynamic_action
+def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str) -> str:
+    cleaned = dynamic_action
     for forbidden in FORBIDDEN_TERMS:
-        cleaned_action = forbidden.sub("tactical survival gear", cleaned_action)
-    return (
-        f"{hero_desc}, {cleaned_action}. "
-        f"Background: {scene_bg}. "
-        f"Official manhwa webtoon cover art, cinematic atmospheric lighting, vibrant colors, ultra-detailed clean lineart, 8k resolution."
-    )
+        cleaned = forbidden.sub("radiant emotional warmth", cleaned)
+    return f"{STYLE_ANCHOR} {hero_desc}, {HERO_PLACEMENT}, {cleaned}, {DAYLIGHT_BG}."
 
 
 def fit_and_crop_1080p(img: Image.Image) -> Image.Image:
@@ -528,7 +545,7 @@ def fit_and_crop_1080p(img: Image.Image) -> Image.Image:
     return img.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
 
-def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = None) -> bool:
+def fetch_flux_native_1080p(prompt: str, out_path: str, search_query: str = "anime manhwa romance noblewoman sunlit flower garden pastel") -> bool:
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return True
 
@@ -536,77 +553,58 @@ def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = N
     seed = random.randint(10000, 9999999)
 
     pollinations_urls = [
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&nofeed=true", "Pollinations Auto-Route 720p", 35),
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux&nologo=true&nofeed=true", "Pollinations Flux Dedicated 720p", 45)
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1920&height=1080&seed={seed}&model=flux&nologo=true", "Flux 1080p"),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux", "Flux 720p Std"),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=turbo", "Turbo Fallback")
     ]
 
-    pollinations_blocked = False
-    for attempt, (url, label, req_timeout) in enumerate(pollinations_urls, 1):
-        if pollinations_blocked:
-            break
+    for attempt, (url, label) in enumerate(pollinations_urls, 1):
         try:
             print(f"     [Image Engine] Requesting {label} (Attempt {attempt}/{len(pollinations_urls)})...", flush=True)
-            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, timeout=req_timeout)
-            if resp.status_code == 200 and len(resp.content) > 15000:
+            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, timeout=45)
+            if resp.status_code == 200 and len(resp.content) > 10000:
                 with open(out_path, "wb") as f:
                     f.write(resp.content)
                 print(f"     [Image Engine] {label} successfully synthesized ({len(resp.content)} bytes).", flush=True)
                 return True
-            elif resp.status_code == 402:
-                print(f"     [Image Engine] Pollinations quota reached (HTTP 402). Immediately bypassing to High-Res Manhwa Engine...", flush=True)
-                pollinations_blocked = True
-                break
             else:
                 print(f"     [Image Engine] {label} returned HTTP {resp.status_code}", flush=True)
         except Exception as e:
-            print(f"     [Image Engine] {label} failed: {e}", flush=True)
+            print(f"     [Image Engine] {label} connection failed: {e}", flush=True)
         time.sleep(1)
 
-    active_queries = list(search_queries) if search_queries else []
-    active_queries.extend(["anime flood city", "anime submerged city", "anime apocalypse fortress", "anime rain city"])
-
-    for q in active_queries:
-        try:
-            print(f"     [Image Engine] Querying High-Res Art Engine for: '{q}'...", flush=True)
-            lex_url = f"https://lexica.art/api/v1/search?q={urllib.parse.quote(q)}"
-            resp = requests.get(lex_url, headers=LEXICA_HEADERS, timeout=18)
-            if resp.status_code == 200:
-                images = resp.json().get("images", [])
-                if images:
-                    img_url = images[0].get("src") or images[0].get("srcSmall")
-                    if img_url:
-                        img_resp = requests.get(img_url, headers=LEXICA_HEADERS, timeout=25)
-                        if img_resp.status_code == 200 and len(img_resp.content) > 10000:
-                            with open(out_path, "wb") as f:
-                                f.write(img_resp.content)
-                            print(f"     [Image Engine] Successfully downloaded high-res art ('{q}', {len(img_resp.content)} bytes).", flush=True)
-                            return True
-        except Exception as le:
-            print(f"     [Image Engine] Art Engine note: {le}", flush=True)
-        time.sleep(1)
-
-    # Secondary High-Res Aesthetic Fallback
     try:
-        p_resp = requests.get("https://picsum.photos/1920/1080", headers=LEXICA_HEADERS, timeout=15)
-        if p_resp.status_code == 200 and len(p_resp.content) > 10000:
-            with open(out_path, "wb") as f:
-                f.write(p_resp.content)
-            print(f"     [Image Engine] Downloaded high-res backdrop from secondary fallback.", flush=True)
-            return True
-    except Exception:
-        pass
+        print(f"     [Image Engine] Querying Lexica Romance Engine for '{search_query}'...", flush=True)
+        lex_q = urllib.parse.quote(search_query)
+        lex_url = f"https://lexica.art/api/v1/search?q={lex_q}"
+        resp = requests.get(lex_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        if resp.status_code == 200:
+            data = resp.json()
+            images = data.get("images", [])
+            if images:
+                img_url = images[0].get("src") or images[0].get("srcSmall")
+                if img_url:
+                    img_resp = requests.get(img_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+                    if img_resp.status_code == 200 and len(img_resp.content) > 10000:
+                        with open(out_path, "wb") as f:
+                            f.write(img_resp.content)
+                        print(f"     [Image Engine] Lexica High-Res Romance Art downloaded ({len(img_resp.content)} bytes).", flush=True)
+                        return True
+    except Exception as le:
+        print(f"     [Image Engine] Lexica retrieval error: {le}", flush=True)
 
     return False
 
 
 def apply_lower_third_vignette(base: Image.Image) -> Image.Image:
+    """Soft, translucent rose-plum gradient at the bottom 18% keeping pastel colors bright."""
     width, height = base.size
     overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     v_draw = ImageDraw.Draw(overlay)
     vig_start = int(height * 0.82)
     for y in range(vig_start, height):
-        alpha = int(80 * (((y - vig_start) / (height - vig_start)) ** 1.3))
-        v_draw.line([(0, y), (width, y)], fill=(12, 18, 24, alpha))
+        alpha = int(75 * (((y - vig_start) / (height - vig_start)) ** 1.3))
+        v_draw.line([(0, y), (width, y)], fill=(45, 20, 35, alpha))
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
@@ -614,7 +612,7 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     draw = ImageDraw.Draw(base)
     wx, wy = 55, 45
     crest_r = 22
-    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(35, 120, 190, 255), outline=(230, 245, 255, 255), width=2)
+    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(255, 175, 195, 255), outline=(255, 245, 220, 255), width=2)
     star_font = None
     for fp in ["C:/Windows/Fonts/seguisym.ttf", "C:/Windows/Fonts/arial.ttf"]:
         if os.path.exists(fp):
@@ -635,10 +633,10 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     name_font = ImageFont.truetype(name_fp, 36)
     handle_font = ImageFont.truetype(name_fp, 22)
     tx = wx + 36
-    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(10, 15, 25, 255), font=name_font)
+    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(45, 15, 25, 255), font=name_font)
     draw.text((tx, wy - 18), "Being a Bong", fill=(255, 255, 255, 255), font=name_font)
-    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(8, 12, 20, 220), font=handle_font)
-    draw.text((tx, wy + 20), "@beingabong", fill=(180, 225, 255, 255), font=handle_font)
+    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(30, 10, 20, 220), font=handle_font)
+    draw.text((tx, wy + 20), "@beingabong", fill=(255, 225, 150, 255), font=handle_font)
     return base
 
 
@@ -675,8 +673,8 @@ def stamp_3d_metallic_flame_typography(base: Image.Image, lines: list) -> Image.
         text_h = bbox[3] - bbox[1]
         x = (width - text_w) // 2
         y = start_y + (i * line_spacing)
-        draw.text((x + 3, y + 4), line, font=active_font, fill=(15, 20, 30, 255), stroke_width=5, stroke_fill=(15, 20, 30, 255))
-        draw.text((x, y), line, font=active_font, fill=(25, 35, 55, 255), stroke_width=3, stroke_fill=(25, 35, 55, 255))
+        draw.text((x + 3, y + 4), line, font=active_font, fill=(45, 12, 28, 255), stroke_width=5, stroke_fill=(45, 12, 28, 255))
+        draw.text((x, y), line, font=active_font, fill=(65, 15, 38, 255), stroke_width=3, stroke_fill=(65, 15, 38, 255))
         palette = GRADIENT_PALETTES[min(i, len(GRADIENT_PALETTES) - 1)]
         grad_layer = create_vertical_gradient_text_mask(text_w + 20, text_h + 20, line, active_font, palette[0], palette[1])
         base.paste(grad_layer, (x, y), grad_layer)
@@ -691,8 +689,9 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
         print(f"[{NOVEL_SLUG}] [Cached Image] Block {cfg['index']} Cover ready: '{out_file}'", flush=True)
         return
 
-    dynamic_prompt = construct_dynamic_scene_prompt(cfg["hero_desc"], cfg["action"], cfg["scene_bg"])
-    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_queries=cfg.get("search_queries", []))
+    dynamic_prompt = construct_dynamic_scene_prompt(cfg["hero_desc"], cfg["action"])
+    search_kw = cfg.get("search_query", "anime manhwa romance noblewoman sunlit flower garden pastel")
+    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_query=search_kw)
 
     if os.path.exists(raw_art) and os.path.getsize(raw_art) > 10000:
         raw_img = Image.open(raw_art).convert("RGBA")
@@ -712,7 +711,7 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
 def create_dynamic_outro_slate(out_path: str):
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return
-    base = Image.new("RGB", (1920, 1080), (16, 22, 32))
+    base = Image.new("RGB", (1920, 1080), (252, 240, 244))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
     draw = ImageDraw.Draw(base)
@@ -720,51 +719,52 @@ def create_dynamic_outro_slate(out_path: str):
     head_font = ImageFont.truetype(font_path, 54)
     cta_font = ImageFont.truetype(font_path, 42)
     line1 = "NEXT CHAPTERS COMING SOON"
-    line2 = "SUBSCRIBE FOR THE NEXT MARATHON"
+    line2 = "SUBSCRIBE WHILE WAITING FOR BATCH 2"
     for i, txt in enumerate([line1, line2]):
         font = head_font if i == 0 else cta_font
         bbox = draw.textbbox((0, 0), txt, font=font)
         tw = bbox[2] - bbox[0]
         x = (1920 - tw) // 2
         y = 480 + (i * 80)
-        draw.text((x + 3, y + 4), txt, font=font, fill=(8, 12, 18, 255))
-        draw.text((x, y), txt, font=font, fill=(200, 230, 255, 255) if i == 0 else (255, 255, 255, 255))
+        draw.text((x + 3, y + 4), txt, font=font, fill=(50, 15, 30, 255))
+        draw.text((x, y), txt, font=font, fill=(255, 245, 220, 255) if i == 0 else (255, 255, 255, 255))
     base.convert("RGB").save(out_path, "JPEG", quality=95)
-    print(f"[{NOVEL_SLUG}] [Outro Slate] Generated 15s outro card: '{out_path}'", flush=True)
+    print(f"[{NOVEL_SLUG}] [Outro Slate] Generated 15s romance end card: '{out_path}'", flush=True)
 
 
 def generate_50ch_ensemble_cover(slug: str, build_dir: str, master_cover_path: str, entity_mgr: EntityManager, char_map: dict):
     print(f"\n[{slug}] [Phase 5] Synthesizing Multi-Character Master Cover from 50-Chapter Registry...", flush=True)
 
     ensemble_prompt = (
-        "Grand doomsday flood apocalypse anime ensemble composition, waist-up view. Confident hero Lu Zhou wearing black tactical jacket "
-        "stands on the bridge of a colossal hovering steel Air Fortress bristling with automated turrets. "
-        "In the stormy sky behind him, torrential rain falls into a completely submerged flooded city under lightning flashes, "
-        "high contrast dramatic lighting, clean sharp lineart, official manhwa cover art, vibrant colors, 8k resolution."
+        f"{STYLE_ANCHOR} Romantic ensemble group composition, waist-up view. Beautiful graceful noble heroine An Ling "
+        f"in flowing radiant pastel peach and ivory silk dress stands confident and smiling front-center. Beside her, gently holding her waist, "
+        f"is her handsome courtly husband Mr. Shen in a luxurious gold-trimmed white and navy noble suit with devoted, warm eyes. "
+        f"In the bright sunny background stands arrogant Lu Jingshen looking on in shock amidst a sun-drenched grand royal garden conservatory "
+        f"filled with blooming pink roses, falling petals, and golden sunbeams. Ultra-detailed, masterpiece Pixiv."
     )
 
     raw_ensemble = os.path.join(build_dir, "raw_master_cover_ensemble.jpg")
-    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_queries=["anime air fortress flood apocalypse hero", "anime flying fortress sky", "anime flood city"])
+    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_query="anime manhwa romance couple gentle husband villainess noblewoman sunlit roses garden pixiv")
 
     if os.path.exists(raw_ensemble) and os.path.getsize(raw_ensemble) > 10000:
         raw_img = Image.open(raw_ensemble).convert("RGBA")
         base = fit_and_crop_1080p(raw_img)
     else:
         print(f"[{slug}] [Cover Warning] Fallback applied for ensemble cover.", flush=True)
-        base = Image.new("RGBA", (1920, 1080), (25, 35, 45, 255))
+        base = Image.new("RGBA", (1920, 1080), (240, 180, 195, 255))
 
     base = base.filter(ImageFilter.UnsharpMask(radius=2.4, percent=180, threshold=2))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
 
     master_title_lines = [
-        "GLOBAL RAINSTORM: MY SHELTER",
-        "IS AN AIR FORTRESS",
-        "Complete Marathon • Ch. 51–100"
+        "THE VILLAINESS MARRIES",
+        "THE GENTLE SECOND LEAD",
+        "Complete Marathon • Ch. 1–50"
     ]
     base = stamp_3d_metallic_flame_typography(base, master_title_lines)
     base.convert("RGB").save(master_cover_path, "JPEG", quality=98)
-    print(f"[{slug}] [Master Thumbnail Complete] Saved Multi-Character Cover to '{master_cover_path}'", flush=True)
+    print(f"[{slug}] [Master Thumbnail Complete] Saved Multi-Character Romance Cover to '{master_cover_path}'", flush=True)
 
 
 async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphore, max_retries: int = 5):
@@ -775,7 +775,7 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
             try:
                 active_voice = voice
                 if attempt >= 4:
-                    active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
+                    active_voice = "en-US-JennyNeural" if row.get("gender") == "Female" else "en-US-AndrewNeural"
                 comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
                 await asyncio.wait_for(comm.save(out_file), timeout=chunk_timeout)
                 if os.path.exists(out_file) and os.path.getsize(out_file) > 100:
@@ -818,7 +818,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         with open(chapter_meta, "r", encoding="utf-8") as f:
             meta = json.load(f)
         if meta.get("duration", 0) > 60:
-            print(f"[{NOVEL_SLUG}] [Cached Audio] Ch.{ch_num:03d} ({format_timestamp(meta['duration'])})", flush=True)
+            print(f"[{NOVEL_SLUG}] [Cached Audio] Ch.{ch_num:02d} ({format_timestamp(meta['duration'])})", flush=True)
             return ch_num, chapter_mp3, meta["duration"], meta["title"], meta["relative_subtitles"]
 
     temp_dir = os.path.join(build_dir, f"temp_ch_{ch_num:03d}")
@@ -858,7 +858,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     try: os.rmdir(temp_dir)
     except OSError: pass
 
-    print(f"[{NOVEL_SLUG}] [Synthesized Audio] Ch.{ch_num:03d}: '{title}' ({format_timestamp(final_dur)})", flush=True)
+    print(f"[{NOVEL_SLUG}] [Synthesized Audio] Ch.{ch_num:02d}: '{title}' ({format_timestamp(final_dur)})", flush=True)
     return ch_num, chapter_mp3, final_dur, title, rel_subtitles
 
 
@@ -869,7 +869,7 @@ def assemble_multi_image_video(block_durations: dict, final_audio_path: str, out
         b_idx = cfg["index"]
         dur = block_durations.get(b_idx, 0.0)
         if dur <= 0.1:
-            dur = 60.0
+            continue
         cfg["cover_file"] = os.path.join(BUILD_DIR, f"cover_block_{cfg['range'][0]}_{cfg['range'][1]}.jpg")
         ensure_block_cover_jit(cfg, BUILD_DIR)
         segment_video = os.path.join(BUILD_DIR, f"v_seg_block_{b_idx}.mp4")
@@ -912,7 +912,7 @@ def assemble_multi_image_video(block_durations: dict, final_audio_path: str, out
 
 async def main():
     os.makedirs(BUILD_DIR, exist_ok=True)
-    print(f"=== Starting Global Rainstorm Air Fortress Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
+    print(f"=== Starting Villainess Second Lead Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
 
     char_map, voc_map = load_characters_and_vocatives(NOVEL_SLUG, BASE_CHARACTERS)
     entity_mgr = EntityManager(novel_slug=NOVEL_SLUG, build_dir=BUILD_DIR)
@@ -927,14 +927,35 @@ async def main():
                 break
             ch_json = os.path.join(BUILD_DIR, f"ch_{ch_num:03d}_staged.json")
 
+            # Strict Auto-repair: check if any line of An Ling was marked Male
+            reparse = False
             if os.path.exists(ch_json):
+                with open(ch_json, "r", encoding="utf-8") as f:
+                    cached_lines = json.load(f)
+                for row in cached_lines:
+                    txt = row["text"].lower()
+                    if ("carrying my shoes" in txt or "how could i be a vicious" in txt or "do you want money" in txt or "don't flatter yourself" in txt) and row["gender"] != "Female":
+                        reparse = True
+                        break
+                    if ("warning you for the last time" in txt or "don't be so lowly" in txt) and row["gender"] != "Male":
+                        reparse = True
+                        break
+
+                if reparse:
+                    print(f"[{NOVEL_SLUG}] Auto-repair: Gender misattribution detected in Ch.{ch_num:03d}. Purging cache...", flush=True)
+                    for bad_file in [ch_json, os.path.join(BUILD_DIR, f"ch_{ch_num:03d}.mp3"), os.path.join(BUILD_DIR, f"ch_{ch_num:03d}_meta.json")]:
+                        if os.path.exists(bad_file):
+                            try: os.remove(bad_file)
+                            except OSError: pass
+
+            if os.path.exists(ch_json) and not reparse:
                 with open(ch_json, "r", encoding="utf-8") as f:
                     rows = json.load(f)
                 title, _, next_url = scrape_chapter_content(session, curr_url, ch_num)
                 print(f"[{NOVEL_SLUG}] [Cached Ch.{ch_num:03d}] {title} ({len(rows)} lines)", flush=True)
             else:
                 title, text, next_url = scrape_chapter_content(session, curr_url, ch_num)
-                entity_mgr.scan_chapter_for_entities(text, default_female_role="aunt_zhang", default_male_role="lu_zhou")
+                entity_mgr.scan_chapter_for_entities(text, default_female_role="fl_villainess", default_male_role="gentle_ml")
                 rows = parse_chapter_to_staged_json(text, entity_mgr, char_map, voc_map)
                 with open(ch_json, "w", encoding="utf-8") as f:
                     json.dump(rows, f, indent=2, ensure_ascii=False)

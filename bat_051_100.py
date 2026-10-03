@@ -32,166 +32,165 @@ FORBIDDEN_TERMS = [
     re.compile(r"\bmutilated\b", re.I),
     re.compile(r"\bgrotesque\b", re.I),
     re.compile(r"\bporcelain\b", re.I),
-    re.compile(r"\bethereal\b", re.I),
-    re.compile(r"\bdomes?\b", re.I),
-    re.compile(r"\bsplashing\b", re.I)
+    re.compile(r"\bethereal\b", re.I)
 ]
 
 GRADIENT_PALETTES = [
-    ((225, 245, 255), (35, 120, 210)),   # Storm Cyan -> Deep Abyssal Blue
-    ((255, 240, 215), (235, 120, 35)),   # Shelter Amber -> Warm Firelight
-    ((230, 235, 245), (90, 110, 140)),   # Steel Alloy -> Fortress Slate
+    ((255, 235, 235), (230, 45, 75)),   # Crimson Pearl -> Blood Ruby
+    ((255, 220, 245), (185, 45, 195)),  # Abyssal Orchid -> Vivid Magenta
+    ((255, 245, 215), (240, 130, 40)),  # Golden Moonlight -> Blood Amber
 ]
 
-NOVEL_SLUG = "global-rainstorm-my-shelter-is-an-air-fortress"
-START_URL = "https://mtl-novel.com/novel/global-rainstorm-my-shelter-is-an-air-fortress/chapter-51-the-flesh-and-blood-grinder-of-zijin-mountain/"
-BUILD_DIR = "build_rainstorm_051_100"
-FINAL_AUDIO = "output_rainstorm_051_100.mp3"
-FINAL_VIDEO = "final_rainstorm_051_100.mp4"
-COVER_IMAGE = "cover_rainstorm_051_100.jpg"
-TIMESTAMPS_FILE = "youtube_timestamps_rainstorm_051_100.txt"
-SUBTITLES_FILE = "subtitles_rainstorm_051_100.srt"
-PAYLOAD_FILE = "youtube_upload_payload_rainstorm_051_100.json"
+NOVEL_SLUG = "game-descends-from-vampire-bat-to-loli-tyrant"
+START_URL = "https://mtl-novel.com/novel/game-descends-from-vampire-bat-to-loli-tyrant/chapter-51-nightfall/"
+BUILD_DIR = "build_bat_051_100"
+FINAL_AUDIO = "output_bat_051_100.mp3"
+FINAL_VIDEO = "final_bat_051_100.mp4"
+COVER_IMAGE = "cover_bat_051_100.jpg"
+TIMESTAMPS_FILE = "youtube_timestamps_bat_051_100.txt"
+SUBTITLES_FILE = "subtitles_bat_051_100.srt"
+PAYLOAD_FILE = "youtube_upload_payload_bat_051_100.json"
 
-VIDEO_TITLE = "Flesh & Blood Grinder of Zijin Mountain! Upgrading Air Fortress | Rainstorm Apocalypse [Ch 51-100]"
+VIDEO_TITLE = "Nightfall! Devouring S-Rank Hunters As The Blood Tyrant | LitRPG Audiobook [Ch 51-100]"
 TAGS = [
-    "Global Rainstorm My Shelter is an Air Fortress", "Global Rainstorm Audiobook",
-    "Lu Zhou", "Apocalypse Shelter", "Air Fortress", "Flood Apocalypse", "Doomsday Survival",
-    "Progression Fantasy", "Unabridged Audiobook", "Audiobook Marathon", "Being A Bong"
+    "Game Descends From Vampire Bat to Loli Tyrant", "Vampire Bat", "Loli Tyrant",
+    "LitRPG Audiobook", "Progression Fantasy", "Evolution Audiobook", "Blood Tyrant",
+    "Female Monster Protagonist", "Unabridged Audiobook", "Audiobook Marathon", "Being A Bong"
 ]
 
 DESC_HEADER = (
-    "A catastrophic eternal deluge engulfs the entire world in freezing floodwaters, plunging civilization "
-    "into desperate resource wars. Reborn with spatial dimensions and advanced technology, Lu Zhou transforms "
-    "his residential compound into an impenetrable, climate-controlled steel fortress.\n\n"
-    "As Chapter 51 unfolds with 'The Flesh and Blood Grinder of Zijin Mountain', starving survivor factions clash "
-    "viciously for the remaining high ground, while Lu Zhou watches coldly from his fortress, enjoying boiling hotpot "
-    "and activating heavy automated turrets to eradicate all trespassers!\n\n"
-    "Welcome to the complete 50-chapter marathon of 'Global Rainstorm: My Shelter is an Air Fortress' "
-    "(全球暴雨：我的避难所是空中堡垒) Chapters 51 to 100 in unabridged multi-voice narration!\n\n"
-    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Broadcast Dynamic Clarity).\n"
-    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for dialogue and fortress system prompts).\n"
-    "🎨 VISUAL ENGINE: 10 Progressive Doomsday Apocalypse Transitions + 15s Channel Outro Slate.\n\n"
+    "Reincarnated as the weakest bottom-feeder cave bat in a lethal descending game world, "
+    "she unlocks infinite bloodline devouring, mutating step by step toward the supreme progenitor of the night!\n\n"
+    "As Chapter 51 begins with 'Nightfall', the subterranean abyssal depths awaken. "
+    "Elite human guild expeditions enter the cavern only to realize they are trapped in the domain of an unstoppable, "
+    "ruthless crimson monarch with supreme ancient authority.\n\n"
+    "Welcome to the complete 50-chapter marathon of 'Game Descends: From Vampire Bat to Loli Tyrant' "
+    "(游戏降临：从吸血蝙蝠到萝莉暴君) Chapters 51 to 100 in unabridged multi-voice narration!\n\n"
+    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Punchy Fantasy Clarity).\n"
+    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for dialogue and evolution prompts).\n"
+    "🎨 VISUAL ENGINE: 10 Progressive Gothic Manhwa Transitions + 15s Channel Outro Slate.\n\n"
     "══════════════════════════════════════════════\nTIMESTAMPS:\n"
 )
 
 DESC_FOOTER = (
     "\n══════════════════════════════════════════════\n\n"
-    "🌧️ ARC HIGHLIGHTS:\n"
-    "• 00:00:00 - Chapter 51: The Flesh and Blood Grinder of Zijin Mountain\n"
-    "• Chapter 62: Luxury Dining in the Submerged Apocalypse & Cold Indifference\n"
-    "• Chapter 74: Aunt Zhang's Moral Kidnapping Annihilated by Electric Defenses\n"
-    "• Chapter 87: Freezing Rain Glaciation & Heavy Amphibious Raider Purge\n"
-    "• Chapter 100: Anti-Gravity Thruster Ignition – The Air Fortress Takes Flight!\n\n"
+    "🦇 ARC HIGHLIGHTS:\n"
+    "• 00:00:00 - Chapter 51: Nightfall – The Ancient Cavern Awakens\n"
+    "• Chapter 58: Annihilating the Vanguard & Bloodline Devour Rank-Up\n"
+    "• Chapter 69: S-Rank Hunter Guild Annihilation: The Tyrant Shows No Mercy\n"
+    "• Chapter 82: Unlocking the Ancient Night Progenitor's Throne Room\n"
+    "• Chapter 100: Surface Breach – Humanity Trembles Before the Crimson Sovereign\n\n"
     "══════════════════════════════════════════════\n"
     "DISCLAIMER:\nThis audiobook is an edited dramatized adaptation produced for storytelling, entertainment, "
-    "and doomsday literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
-    "#GlobalRainstorm #AirFortress #ApocalypseSurvival #DoomsdayAudiobook #ProgressionFantasy #FullAudiobook"
+    "and fantasy literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
+    "#VampireBat #LoliTyrant #LitRPG #Audiobook #MonsterEvolution #ProgressionFantasy #AudiobookMarathon"
 )
 
 BASE_CHARACTERS = {
     "narrator": {"display_name": "Narrator", "gender": "Female", "line_type": "Narration", "voice": "en-US-JennyNeural", "pitch": "+1Hz", "rate": "+4%"},
-    "lu_zhou": {"display_name": "Lu Zhou", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "-2Hz", "rate": "+6%"},
-    "aunt_zhang": {"display_name": "Aunt Zhang", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-EmmaNeural", "pitch": "+2Hz", "rate": "+8%"},
-    "neighbor_villain": {"display_name": "Desperate Raider", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-EricNeural", "pitch": "+5Hz", "rate": "+10%"},
-    "gold_digger_female": {"display_name": "Pleading Survivor", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-AriaNeural", "pitch": "+2Hz", "rate": "+5%"},
-    "system": {"display_name": "Fortress System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-6%"}
+    "mc_tyrant": {"display_name": "Blood Tyrant", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-JennyNeural", "pitch": "-2Hz", "rate": "+6%"},
+    "night_progenitor": {"display_name": "Night Progenitor", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-AriaNeural", "pitch": "+0Hz", "rate": "+4%"},
+    "guild_leader": {"display_name": "Guild Commander", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-RogerNeural", "pitch": "-6Hz", "rate": "+2%"},
+    "arrogant_player": {"display_name": "Arrogant Hunter", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-EricNeural", "pitch": "+5Hz", "rate": "+10%"},
+    "female_mage": {"display_name": "Female Mage", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-EmmaNeural", "pitch": "+3Hz", "rate": "+8%"},
+    "dungeon_boss": {"display_name": "Dungeon Boss", "gender": "Synthetic", "line_type": "Dialogue", "voice": "en-US-SteffanNeural", "pitch": "-15Hz", "rate": "+4%"},
+    "system": {"display_name": "Evolution System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-6%"}
 }
 
 BLOCKS = [
     {
         "index": 1, "range": (51, 55),
-        "hero_desc": "calm handsome 20-year-old survivor Lu Zhou wearing a black tactical sweater standing behind bulletproof glass",
-        "action": "holding a hot ceramic mug of coffee while looking down at desperate armed survivor gangs fighting below Zijin mountain",
-        "scene_bg": "heavily reinforced steel shelter observation room, multi-screen surveillance monitors, dark torrential rain outside",
-        "search_queries": ["anime survivor bunker", "anime rainstorm window", "anime male survivor apocalypse"],
-        "title": ["ZIJIN MOUNTAIN BATTLE", "FLESH & BLOOD GRINDER", "Chapters 51 – 55"],
-        "fallback_color": (25, 35, 45)
+        "hero_desc": "petite anime vampire girl with twin-tail silver hair, sharp ruby red eyes, wearing a gothic black and crimson ruffled dress",
+        "action": "hovering mid-air with grand shadowy crimson bat wings outstretched, smiling mischievously with visible cute fangs",
+        "scene_bg": "dark ancient gothic cathedral interior, shattered stained-glass windows, giant red blood moon outside",
+        "search_query": "anime vampire girl bat wings",
+        "title": ["NIGHTFALL", "PROGENITOR AWAKENING", "Chapters 51 – 55"],
+        "fallback_color": (35, 12, 20)
     },
     {
         "index": 2, "range": (56, 60),
-        "hero_desc": "colossal steel fortress base situated on a high rocky cliff above stormy flood waters",
-        "action": "tall communication radar towers active as bright lightning flashes across the skyline of flooded skyscrapers",
-        "scene_bg": "vast flooded city ruins, buildings surrounded by deep water, dark storm clouds, heavy rainfall",
-        "search_queries": ["anime flooded city", "anime flood city", "anime submerged city", "anime apocalypse fortress"],
-        "title": ["RISING DELUGE", "SUBMERGED METROPOLIS", "Chapters 56 – 60"],
-        "fallback_color": (20, 30, 45)
+        "hero_desc": "the petite silver-haired vampire girl raising her hand with a cold authoritative sneer",
+        "action": "summoning thousands of glowing red silhouette bats that swirl into a massive vortex around her",
+        "scene_bg": "deep subterranean cavern, glowing red crystal stalactites, stone pillars, dark ominous mist",
+        "search_query": "anime vampire girl summoning bats",
+        "title": ["SWARM COMMAND", "BLOODLINE DEVOURING", "Chapters 56 – 60"],
+        "fallback_color": (40, 15, 25)
     },
     {
         "index": 3, "range": (61, 65),
-        "hero_desc": "Lu Zhou sitting comfortably in a brightly lit modern living room with warm wooden furniture",
-        "action": "eating from a boiling copper hotpot with sliced wagyu beef while listening to outdoor storm reports",
-        "scene_bg": "luxurious warm apartment interior, ambient orange LED lighting, large fortified window showing stormy deluge",
-        "search_queries": ["anime luxury apartment rain", "anime cozy interior rain", "anime hotpot room"],
-        "title": ["LUXURY SANCTUARY", "FEAST IN THE APOCALYPSE", "Chapters 61 – 65"],
-        "fallback_color": (45, 30, 20)
+        "hero_desc": "elite armored human hunter strike team with glowing blue shields and broadswords led by a tall male captain",
+        "action": "crouching in defensive combat stance while staring in sheer horror at creeping red shadows",
+        "scene_bg": "subterranean tunnel entrance, glowing warning runes on stone walls, darkness ahead",
+        "search_query": "anime armored hunters dungeon party",
+        "title": ["HUNTER EXPEDITION", "INTO THE ABYSS", "Chapters 61 – 65"],
+        "fallback_color": (25, 20, 35)
     },
     {
         "index": 4, "range": (66, 70),
-        "hero_desc": "frantic middle-aged woman Aunt Zhang clutching a megaphone alongside drenched shivering neighbors",
-        "action": "banging angrily on the massive blast doors of the shelter demanding food and moral concessions",
-        "scene_bg": "flooded shelter entrance corridor, water rising around their boots, emergency red warning lights flashing",
-        "search_queries": ["anime crowd fortress door", "anime angry crowd gate", "anime survival mob"],
-        "title": ["MORAL KIDNAPPING", "AUNT ZHANG'S SCHEME", "Chapters 66 – 70"],
-        "fallback_color": (40, 25, 30)
+        "hero_desc": "arrogant blond male S-rank hunter with broken flaming sword kneeling on one knee bruised and exhausted",
+        "action": "looking up in disbelief as the petite vampire girl stands effortlessly upon his fallen greatshield",
+        "scene_bg": "cracked stone cavern floor, smoking embers, shattered weapon fragments, red ambient glow",
+        "search_query": "anime defeated warrior broken sword",
+        "title": ["S-RANK HUMILIATION", "THE TYRANT'S MIGHT", "Chapters 66 – 70"],
+        "fallback_color": (45, 15, 20)
     },
     {
         "index": 5, "range": (71, 75),
-        "hero_desc": "automated dual-barrel heavy machine gun turrets and high-voltage electrified steel fences activating",
-        "action": "discharging brilliant blue electric arcs and tracer rounds that send armed scavengers scrambling in panic",
-        "scene_bg": "fortress perimeter ramparts, high voltage electrified barriers, heavy rainstorm at night",
-        "search_queries": ["anime defense turret fortress", "anime electric barrier sci-fi", "anime fortress defense"],
-        "title": ["ABSOLUTE DEFENSE", "HIGH-VOLTAGE REPEL", "Chapters 71 – 75"],
-        "fallback_color": (30, 40, 55)
+        "hero_desc": "a massive multifaceted ruby crystal cocoon pulsing with intense scarlet electrical arcs",
+        "action": "cracking down the center to reveal the glowing silhouette of the evolving vampire monarch",
+        "scene_bg": "ancient subterranean altar chamber, pools of glowing liquid crimson mana, ancient carved stone glyphs",
+        "search_query": "anime glowing red crystal cocoon",
+        "title": ["BLOODLINE EVOLUTION", "CRIMSON BREAKTHROUGH", "Chapters 71 – 75"],
+        "fallback_color": (50, 10, 25)
     },
     {
         "index": 6, "range": (76, 80),
-        "hero_desc": "glowing blue holographic shelter blueprint floating inside the main computer server vault",
-        "action": "displaying heavy anti-air missile batteries and vertical stabilization thruster installations completing",
-        "scene_bg": "underground server control hub, blue holographic 3D fortress model, high-tech server racks",
-        "search_queries": ["anime holographic blueprint", "anime sci-fi server room hologram", "anime holographic map"],
-        "title": ["SYSTEM BLUEPRINTS", "HEAVY UPGRADE COMPLETE", "Chapters 76 – 80"],
-        "fallback_color": (25, 45, 50)
+        "hero_desc": "a gigantic subterranean venom serpent beast with black scales roaring in agony",
+        "action": "being crushed downward onto jagged rocks under a descending crimson gravity seal",
+        "scene_bg": "molten magma cavern, glowing lava streams, dark obsidian crags, volcanic smoke",
+        "search_query": "anime giant serpent monster battle",
+        "title": ["SERPENT TITAN", "DEVOURING THE BOSS", "Chapters 76 – 80"],
+        "fallback_color": (40, 20, 15)
     },
     {
         "index": 7, "range": (81, 85),
-        "hero_desc": "heavily modified armed speedboats and patrol craft carrying warlord raiders approaching the fortress perimeter",
-        "action": "being targeted by red laser designators before exploding in dramatic fireballs across the water",
-        "scene_bg": "stormy dark floodwaters, burning boat wreckage, heavy rainfall over ocean waves",
-        "search_queries": ["anime flooded city battle", "anime naval battle explosion", "anime boat combat"],
-        "title": ["AMPHIBIOUS SIEGE", "WARLORD FLOTILLA CRUSHED", "Chapters 81 – 85"],
-        "fallback_color": (45, 25, 20)
+        "hero_desc": "tall majestic spectral vampire empress in flowing lace robes placing a dark ruby tiara onto the little girl's head",
+        "action": "smiling with ancient maternal pride as crimson energy transfers between their fingertips",
+        "scene_bg": "grand forgotten royal crypt, towering obsidian columns, stained glass showing bat crests",
+        "search_query": "anime vampire queen crowning gothic",
+        "title": ["ANCIENT LEGACY", "CROWN OF THE PROGENITOR", "Chapters 81 – 85"],
+        "fallback_color": (35, 15, 30)
     },
     {
         "index": 8, "range": (86, 90),
-        "hero_desc": "Lu Zhou wearing thermal winter parka looking out at the suddenly frozen wasteland",
-        "action": "watching freezing rain turn the entire flooded metropolis into a colossal sheet of jagged glacier ice",
-        "scene_bg": "frozen flooded city, skyscrapers encased in thick blue ice, blizzard winds, dark frozen horizon",
-        "search_queries": ["anime frozen city", "anime ice skyscrapers blizzard", "anime winter apocalypse city"],
-        "title": ["EXTREME FREEZE", "THE GLACIAL APOCALYPSE", "Chapters 86 – 90"],
-        "fallback_color": (30, 45, 60)
+        "hero_desc": "petite silver-haired anime vampire girl with cute fangs and glowing ruby eyes wearing a gothic crimson dress and grand bat wings",
+        "action": "floating majestically high above a neon-lit futuristic city skyline at twilight with an amused confident smile",
+        "scene_bg": "futuristic metropolis skyline at dusk, glowing purple neon city lights, searchlights sweeping across dark clouds",
+        "search_query": "anime vampire girl city skyline",
+        "title": ["SURFACE BREACH", "THE WORLD IN PANIC", "Chapters 86 – 90"],
+        "fallback_color": (30, 15, 35)
     },
     {
         "index": 9, "range": (91, 95),
-        "hero_desc": "colossal anti-gravity turbine thrusters beneath the fortress glowing with intense cyan thermal plasma",
-        "action": "vibrating with thunderous power as the massive steel structure begins to detach from mountain bedrock",
-        "scene_bg": "fortress base, massive glowing blue plasma jet thrusters, steam and water vapor clouds",
-        "search_queries": ["anime flying fortress thrusters", "anime giant thruster plasma", "anime sci-fi mothership"],
-        "title": ["THRUSTER IGNITION", "DETACHING FROM BEDROCK", "Chapters 91 – 95"],
-        "fallback_color": (35, 50, 65)
+        "hero_desc": "tactical military defense fighter jets and attack helicopters spinning and exploding in mid-air",
+        "action": "the little vampire girl effortlessly floating through shockwaves protected by a glowing crimson barrier",
+        "scene_bg": "sunset sky above metropolitan skyline, billowing black smoke, dramatic fireballs and shockwaves",
+        "search_query": "anime girl explosions shockwaves sky",
+        "title": ["MILITARY CRUSHED", "UNSTOPPABLE REIGN", "Chapters 91 – 95"],
+        "fallback_color": (50, 15, 20)
     },
     {
         "index": 10, "range": (96, 100),
-        "hero_desc": "Lu Zhou standing at the helm bridge of the colossal flying Air Fortress rising triumphantly above the storm clouds",
-        "action": "looking out through panoramic windows into golden sunlight as the flooded world remains far below in darkness",
-        "scene_bg": "panoramic bridge of flying sky fortress, breaking through stormy rainclouds into bright golden stratosphere",
-        "search_queries": ["anime air fortress sky", "anime flying battleship clouds", "anime sky fortress sunrise"],
-        "title": ["AIR FORTRESS ASCENSION", "SOVEREIGN OF THE SKIES", "Chapters 96 – 100"],
-        "fallback_color": (40, 45, 30)
+        "hero_desc": "the Blood Tyrant sitting regally with legs crossed upon a colossal gothic obsidian and ruby throne",
+        "action": "sipping red wine from a fine crystal goblet while looking down triumphantly over the night world",
+        "scene_bg": "cathedral summit terrace, gigantic blood moon shining in the scarlet night sky, swirling red mist",
+        "search_query": "anime vampire queen throne blood moon",
+        "title": ["SOVEREIGN OF NIGHT", "ABSOLUTE RULE", "Chapters 96 – 100"],
+        "fallback_color": (55, 10, 20)
     }
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Shelter|Upgrade|Notice|Warning|Doomsday).*?(?:\]|】|〕|』|〗|］)", re.I)
+RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Bloodline|Devour|Notice|Warning|Prompt).*?(?:\]|】|〕|』|〗|］)", re.I)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 WATERMARK_PATTERNS = [
     re.compile(r"\(End of this chapter\)", re.I),
@@ -213,13 +212,6 @@ RE_SENTENCE_SPLIT = re.compile(r'(?<=[.!?])\s+')
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 }
-LEXICA_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Origin": "https://lexica.art",
-    "Referer": "https://lexica.art/"
-}
 
 
 def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
@@ -237,10 +229,10 @@ def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
                 for name, cinfo in reg_chars.items():
                     entry = {
                         "display_name": name.title(),
-                        "gender": cinfo.get("gender", "Male"),
+                        "gender": cinfo.get("gender", "Female"),
                         "line_type": "Dialogue" if cinfo.get("role") != "system" else "System",
-                        "voice": cinfo.get("voice", "en-US-GuyNeural"),
-                        "pitch": cinfo.get("pitch", "-2Hz"),
+                        "voice": cinfo.get("voice", "en-US-JennyNeural"),
+                        "pitch": cinfo.get("pitch", "+0Hz"),
                         "rate": cinfo.get("rate", "+6%"),
                         "aliases": cinfo.get("aliases", [])
                     }
@@ -295,7 +287,7 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     paragraphs = [p for p in paragraphs if p and RE_ALPHANUM.search(p)]
 
     if not paragraphs:
-        paragraphs = [f"Chapter {ch_num}. Torrential rain continues pouring outside the fortress."]
+        paragraphs = [f"Chapter {ch_num}. Night deepens in the cavern."]
 
     full_text = f"{title}.\n\n" + "\n\n".join(paragraphs)
 
@@ -326,63 +318,58 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     return title, full_text, next_url
 
 
-def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
+def classify_bat_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
     chunk_lower = chunk.lower()
     prev_lower = prev_narr.lower()
     next_lower = next_narr.lower()
 
     if any(k in chunk_lower or k in prev_lower for k in [
-        "shelter upgrade", "system prompt", "ding!", "spatial dimension",
-        "air fortress module", "defense points increased"
+        "bloodline evolution", "devoured successfully", "gained blood essence",
+        "system prompt", "ding!", "attribute points increased", "unlocked skill"
     ]):
         return "system"
 
-    if re.search(r"\b(aunt\s+zhang|director\s+zhang|committee|middle-aged\s+woman\s+shouted)\b", prev_lower):
-        return "aunt_zhang"
+    if re.search(r"\b(female\s+mage|priestess|healer|girl\s+screamed|she\s+cried\s+out|she\s+trembled)\b", prev_lower):
+        return "female_mage"
+    if any(k in chunk_lower for k in ["help me", "captain, save me", "healing light", "what kind of monster is this", "run away"]):
+        return "female_mage"
+
+    if re.search(r"\b(guild\s+leader|captain\s+shouted|commander\s+roared|tank\s+leader|veteran\s+hunter\s+ordered)\b", prev_lower):
+        return "guild_leader"
+    if any(k in chunk_lower for k in ["hold the line", "raise shields", "defensive formation", "don't panic", "retreat!"]):
+        return "guild_leader"
+
+    if re.search(r"\b(arrogant|s-rank\s+hunter|young\s+master|scion|sneered|scoffed\s+coldly)\b", prev_lower):
+        return "arrogant_player"
     if any(k in chunk_lower for k in [
-        "young man, have some conscience", "share your food", "neighborhood committee",
-        "you have so much food", "open the door and help everyone"
+        "trash", "courting death", "do you know who my guild is", "just a mere bat", "die for me", "kneel!"
     ]):
-        return "aunt_zhang"
+        return "arrogant_player"
 
-    if re.search(r"\b(girl\s+cried|woman\s+sobbed|she\s+begged|pleaded\s+tearfully)\b", prev_lower):
-        return "gold_digger_female"
-    if any(k in chunk_lower for k in [
-        "brother zhou, please let me in", "i'm freezing", "i can do anything for you", "save me"
-    ]):
-        return "gold_digger_female"
+    if re.search(r"\b(beast\s+boss|monarch\s+roared|serpent\s+hissed|demon\s+king\s+bellowed)\b", prev_lower):
+        return "dungeon_boss"
 
-    if re.search(r"\b(scavenger|raider|gang\s+leader|thug|neighbor\s+cursed|he\s+sneered|he\s+roared)\b", prev_lower):
-        return "neighbor_villain"
-    if any(k in chunk_lower for k in [
-        "smash the door", "kill him and take his food", "hand over the shelter",
-        "courting death", "shoot!", "he's just one person"
-    ]):
-        return "neighbor_villain"
+    if re.search(r"\b(ancient\s+progenitor|queen\s+of\s+the\s+night|ancestral\s+voice|blood\s+empress)\b", prev_lower):
+        return "night_progenitor"
+    if any(k in chunk_lower for k in ["my bloodline child", "inheritor of the night", "awaken, my descendant"]):
+        return "night_progenitor"
 
-    if re.search(r"\b(aunt\s+zhang\s+said|aunt\s+zhang\s+screamed)\b", next_lower):
-        return "aunt_zhang"
-    if re.search(r"\b(lu\s+zhou\s+said|lu\s+zhou\s+sneered|he\s+replied|he\s+chuckled)\b", next_lower):
-        return "lu_zhou"
-    if re.search(r"\b(the\s+man\s+cursed|gang\s+leader\s+barked)\b", next_lower):
-        return "neighbor_villain"
-    if re.search(r"\b(she\s+sobbed|she\s+whimpered)\b", next_lower):
-        return "gold_digger_female"
+    if re.search(r"\b(su\s+li\s+sneered|blood\s+tyrant\s+said|little\s+girl\s+giggled|she\s+smiled\s+cruelly)\b", next_lower):
+        return "mc_tyrant"
+    if re.search(r"\b(captain\s+barked|guild\s+leader\s+commanded|he\s+shouted)\b", next_lower):
+        return "guild_leader"
+    if re.search(r"\b(mage\s+screamed|priestess\s+gasped|she\s+sobbed)\b", next_lower):
+        return "female_mage"
+    if re.search(r"\b(arrogant\s+hunter\s+yelled|he\s+sneered)\b", next_lower):
+        return "arrogant_player"
 
     if any(k in chunk_lower for k in [
-        "get lost", "activate turrets", "upgrade the fortress", "electrify the fence",
-        "enjoy my hotpot", "none of my business", "fire"
+        "tasty blood", "blood essence", "such weak humans", "become my nourishment",
+        "kneel before me", "you dare invade my territory", "delicious", "crunch"
     ]):
-        return "lu_zhou"
+        return "mc_tyrant"
 
-    if re.search(r"\b(lu\s+zhou|brother\s+zhou|boss\s+lu)\b", chunk_lower):
-        if any(k in chunk_lower for k in ["die", "kill", "hand over", "smash"]):
-            return "neighbor_villain"
-        if any(k in chunk_lower for k in ["save", "freeze", "cold", "please"]):
-            return "gold_digger_female"
-        return "aunt_zhang"
-
-    return "lu_zhou"
+    return "mc_tyrant"
 
 
 def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map: dict, voc_map: dict) -> list:
@@ -423,7 +410,7 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
                     next_narr = raw_tokens[fwd_idx]["text"][:75]
                     break
 
-            role_key = classify_rainstorm_dialogue(token["text"], prev_narr, next_narr)
+            role_key = classify_bat_dialogue(token["text"], prev_narr, next_narr)
 
             if role_key == "system":
                 staged_segments.append({"role_key": "system", "line_type": "System", "text": token["text"]})
@@ -444,7 +431,7 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
     line_seq = 1
     for seg in consolidated:
         rk = seg["role_key"]
-        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("lu_zhou", char_map["narrator"])))
+        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("mc_tyrant", char_map["narrator"])))
         words = seg["text"].split()
         sub_chunks = []
         chunk_ceiling = MAX_NARRATION_MERGE_WORDS if seg["line_type"] == "Narration" else TARGET_DIALOGUE_CHUNK_WORDS
@@ -502,11 +489,12 @@ def ensure_cinzel_font() -> str:
 def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str, scene_bg: str) -> str:
     cleaned_action = dynamic_action
     for forbidden in FORBIDDEN_TERMS:
-        cleaned_action = forbidden.sub("tactical survival gear", cleaned_action)
+        cleaned_action = forbidden.sub("crimson aura", cleaned_action)
     return (
         f"{hero_desc}, {cleaned_action}. "
         f"Background: {scene_bg}. "
-        f"Official manhwa webtoon cover art, cinematic atmospheric lighting, vibrant colors, ultra-detailed clean lineart, 8k resolution."
+        f"Detailed expressive anime face, sharp ruby eyes, cute fangs, "
+        f"official manhwa cover art, vibrant gothic colors, clean sharp lineart, 8k resolution, cinematic rim lighting."
     )
 
 
@@ -528,7 +516,7 @@ def fit_and_crop_1080p(img: Image.Image) -> Image.Image:
     return img.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
 
-def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = None) -> bool:
+def fetch_flux_native_1080p(prompt: str, out_path: str, search_query: str = "") -> bool:
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return True
 
@@ -536,14 +524,13 @@ def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = N
     seed = random.randint(10000, 9999999)
 
     pollinations_urls = [
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&nofeed=true", "Pollinations Auto-Route 720p", 35),
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux&nologo=true&nofeed=true", "Pollinations Flux Dedicated 720p", 45)
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&nofeed=true", "Pollinations Auto-Route 720p", 45),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux&nologo=true&nofeed=true", "Pollinations Flux Dedicated 720p", 60),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux-anime&nologo=true&nofeed=true", "Pollinations Anime 720p", 45),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=576&seed={seed}&nologo=true&nofeed=true", "Pollinations 576p Fallback", 30)
     ]
 
-    pollinations_blocked = False
     for attempt, (url, label, req_timeout) in enumerate(pollinations_urls, 1):
-        if pollinations_blocked:
-            break
         try:
             print(f"     [Image Engine] Requesting {label} (Attempt {attempt}/{len(pollinations_urls)})...", flush=True)
             resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, timeout=req_timeout)
@@ -552,49 +539,37 @@ def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = N
                     f.write(resp.content)
                 print(f"     [Image Engine] {label} successfully synthesized ({len(resp.content)} bytes).", flush=True)
                 return True
-            elif resp.status_code == 402:
-                print(f"     [Image Engine] Pollinations quota reached (HTTP 402). Immediately bypassing to High-Res Manhwa Engine...", flush=True)
-                pollinations_blocked = True
-                break
             else:
-                print(f"     [Image Engine] {label} returned HTTP {resp.status_code}", flush=True)
+                print(f"     [Image Engine] {label} returned HTTP {resp.status_code} ({len(resp.content)} bytes).", flush=True)
         except Exception as e:
-            print(f"     [Image Engine] {label} failed: {e}", flush=True)
+            print(f"     [Image Engine] {label} attempt failed: {e}", flush=True)
         time.sleep(1)
 
-    active_queries = list(search_queries) if search_queries else []
-    active_queries.extend(["anime flood city", "anime submerged city", "anime apocalypse fortress", "anime rain city"])
+    if search_query:
+        queries_to_try = [search_query]
+        words = search_query.split()
+        if len(words) > 2:
+            queries_to_try.append(" ".join(words[:3]))
+            queries_to_try.append(f"anime {words[1]}")
 
-    for q in active_queries:
-        try:
-            print(f"     [Image Engine] Querying High-Res Art Engine for: '{q}'...", flush=True)
-            lex_url = f"https://lexica.art/api/v1/search?q={urllib.parse.quote(q)}"
-            resp = requests.get(lex_url, headers=LEXICA_HEADERS, timeout=18)
-            if resp.status_code == 200:
-                images = resp.json().get("images", [])
-                if images:
-                    img_url = images[0].get("src") or images[0].get("srcSmall")
-                    if img_url:
-                        img_resp = requests.get(img_url, headers=LEXICA_HEADERS, timeout=25)
-                        if img_resp.status_code == 200 and len(img_resp.content) > 10000:
-                            with open(out_path, "wb") as f:
-                                f.write(img_resp.content)
-                            print(f"     [Image Engine] Successfully downloaded high-res art ('{q}', {len(img_resp.content)} bytes).", flush=True)
-                            return True
-        except Exception as le:
-            print(f"     [Image Engine] Art Engine note: {le}", flush=True)
-        time.sleep(1)
-
-    # Secondary High-Res Aesthetic Fallback
-    try:
-        p_resp = requests.get("https://picsum.photos/1920/1080", headers=LEXICA_HEADERS, timeout=15)
-        if p_resp.status_code == 200 and len(p_resp.content) > 10000:
-            with open(out_path, "wb") as f:
-                f.write(p_resp.content)
-            print(f"     [Image Engine] Downloaded high-res backdrop from secondary fallback.", flush=True)
-            return True
-    except Exception:
-        pass
+        for q in queries_to_try:
+            try:
+                print(f"     [Image Engine] Querying Lexica for: '{q}'...", flush=True)
+                lex_url = f"https://lexica.art/api/v1/search?q={urllib.parse.quote(q)}"
+                resp = requests.get(lex_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+                if resp.status_code == 200:
+                    images = resp.json().get("images", [])
+                    if images:
+                        img_url = images[0].get("src") or images[0].get("srcSmall")
+                        if img_url:
+                            img_resp = requests.get(img_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+                            if img_resp.status_code == 200 and len(img_resp.content) > 10000:
+                                with open(out_path, "wb") as f:
+                                    f.write(img_resp.content)
+                                print(f"     [Image Engine] Downloaded high-res art from Lexica ('{q}').", flush=True)
+                                return True
+            except Exception as le:
+                print(f"     [Image Engine] Lexica error: {le}", flush=True)
 
     return False
 
@@ -605,8 +580,8 @@ def apply_lower_third_vignette(base: Image.Image) -> Image.Image:
     v_draw = ImageDraw.Draw(overlay)
     vig_start = int(height * 0.82)
     for y in range(vig_start, height):
-        alpha = int(80 * (((y - vig_start) / (height - vig_start)) ** 1.3))
-        v_draw.line([(0, y), (width, y)], fill=(12, 18, 24, alpha))
+        alpha = int(85 * (((y - vig_start) / (height - vig_start)) ** 1.3))
+        v_draw.line([(0, y), (width, y)], fill=(20, 5, 12, alpha))
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
@@ -614,7 +589,7 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     draw = ImageDraw.Draw(base)
     wx, wy = 55, 45
     crest_r = 22
-    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(35, 120, 190, 255), outline=(230, 245, 255, 255), width=2)
+    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(180, 30, 50, 255), outline=(255, 220, 220, 255), width=2)
     star_font = None
     for fp in ["C:/Windows/Fonts/seguisym.ttf", "C:/Windows/Fonts/arial.ttf"]:
         if os.path.exists(fp):
@@ -635,10 +610,10 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     name_font = ImageFont.truetype(name_fp, 36)
     handle_font = ImageFont.truetype(name_fp, 22)
     tx = wx + 36
-    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(10, 15, 25, 255), font=name_font)
+    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(30, 5, 10, 255), font=name_font)
     draw.text((tx, wy - 18), "Being a Bong", fill=(255, 255, 255, 255), font=name_font)
-    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(8, 12, 20, 220), font=handle_font)
-    draw.text((tx, wy + 20), "@beingabong", fill=(180, 225, 255, 255), font=handle_font)
+    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(20, 5, 10, 220), font=handle_font)
+    draw.text((tx, wy + 20), "@beingabong", fill=(255, 180, 180, 255), font=handle_font)
     return base
 
 
@@ -675,8 +650,8 @@ def stamp_3d_metallic_flame_typography(base: Image.Image, lines: list) -> Image.
         text_h = bbox[3] - bbox[1]
         x = (width - text_w) // 2
         y = start_y + (i * line_spacing)
-        draw.text((x + 3, y + 4), line, font=active_font, fill=(15, 20, 30, 255), stroke_width=5, stroke_fill=(15, 20, 30, 255))
-        draw.text((x, y), line, font=active_font, fill=(25, 35, 55, 255), stroke_width=3, stroke_fill=(25, 35, 55, 255))
+        draw.text((x + 3, y + 4), line, font=active_font, fill=(35, 5, 15, 255), stroke_width=5, stroke_fill=(35, 5, 15, 255))
+        draw.text((x, y), line, font=active_font, fill=(55, 10, 25, 255), stroke_width=3, stroke_fill=(55, 10, 25, 255))
         palette = GRADIENT_PALETTES[min(i, len(GRADIENT_PALETTES) - 1)]
         grad_layer = create_vertical_gradient_text_mask(text_w + 20, text_h + 20, line, active_font, palette[0], palette[1])
         base.paste(grad_layer, (x, y), grad_layer)
@@ -692,7 +667,8 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
         return
 
     dynamic_prompt = construct_dynamic_scene_prompt(cfg["hero_desc"], cfg["action"], cfg["scene_bg"])
-    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_queries=cfg.get("search_queries", []))
+    search_kw = cfg.get("search_query", "anime vampire bat girl crimson eyes gothic manhwa")
+    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_query=search_kw)
 
     if os.path.exists(raw_art) and os.path.getsize(raw_art) > 10000:
         raw_img = Image.open(raw_art).convert("RGBA")
@@ -712,7 +688,7 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
 def create_dynamic_outro_slate(out_path: str):
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return
-    base = Image.new("RGB", (1920, 1080), (16, 22, 32))
+    base = Image.new("RGB", (1920, 1080), (28, 8, 16))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
     draw = ImageDraw.Draw(base)
@@ -727,8 +703,8 @@ def create_dynamic_outro_slate(out_path: str):
         tw = bbox[2] - bbox[0]
         x = (1920 - tw) // 2
         y = 480 + (i * 80)
-        draw.text((x + 3, y + 4), txt, font=font, fill=(8, 12, 18, 255))
-        draw.text((x, y), txt, font=font, fill=(200, 230, 255, 255) if i == 0 else (255, 255, 255, 255))
+        draw.text((x + 3, y + 4), txt, font=font, fill=(15, 5, 8, 255))
+        draw.text((x, y), txt, font=font, fill=(255, 190, 200, 255) if i == 0 else (255, 255, 255, 255))
     base.convert("RGB").save(out_path, "JPEG", quality=95)
     print(f"[{NOVEL_SLUG}] [Outro Slate] Generated 15s outro card: '{out_path}'", flush=True)
 
@@ -737,29 +713,29 @@ def generate_50ch_ensemble_cover(slug: str, build_dir: str, master_cover_path: s
     print(f"\n[{slug}] [Phase 5] Synthesizing Multi-Character Master Cover from 50-Chapter Registry...", flush=True)
 
     ensemble_prompt = (
-        "Grand doomsday flood apocalypse anime ensemble composition, waist-up view. Confident hero Lu Zhou wearing black tactical jacket "
-        "stands on the bridge of a colossal hovering steel Air Fortress bristling with automated turrets. "
-        "In the stormy sky behind him, torrential rain falls into a completely submerged flooded city under lightning flashes, "
-        "high contrast dramatic lighting, clean sharp lineart, official manhwa cover art, vibrant colors, 8k resolution."
+        "Grand gothic dark fantasy anime ensemble composition, waist-up view. Petite silver-haired anime vampire girl with cute fangs "
+        "and ruby eyes stands front-center in a royal black and crimson dress with huge bat wings outstretched. Beside her is the majestic "
+        "ancient Night Progenitor queen in dark lace robes, with trembling defeated armored hunters in the background under a giant blood moon, "
+        "shattered cathedral spires, clean sharp lineart, official manhwa cover art, vibrant colors, 8k resolution, cinematic lighting."
     )
 
     raw_ensemble = os.path.join(build_dir, "raw_master_cover_ensemble.jpg")
-    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_queries=["anime air fortress flood apocalypse hero", "anime flying fortress sky", "anime flood city"])
+    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_query="anime vampire queen gothic throne")
 
     if os.path.exists(raw_ensemble) and os.path.getsize(raw_ensemble) > 10000:
         raw_img = Image.open(raw_ensemble).convert("RGBA")
         base = fit_and_crop_1080p(raw_img)
     else:
         print(f"[{slug}] [Cover Warning] Fallback applied for ensemble cover.", flush=True)
-        base = Image.new("RGBA", (1920, 1080), (25, 35, 45, 255))
+        base = Image.new("RGBA", (1920, 1080), (45, 12, 20, 255))
 
     base = base.filter(ImageFilter.UnsharpMask(radius=2.4, percent=180, threshold=2))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
 
     master_title_lines = [
-        "GLOBAL RAINSTORM: MY SHELTER",
-        "IS AN AIR FORTRESS",
+        "GAME DESCENDS: VAMPIRE BAT",
+        "TO LOLI TYRANT",
         "Complete Marathon • Ch. 51–100"
     ]
     base = stamp_3d_metallic_flame_typography(base, master_title_lines)
@@ -775,7 +751,7 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
             try:
                 active_voice = voice
                 if attempt >= 4:
-                    active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
+                    active_voice = "en-US-JennyNeural" if row.get("gender") == "Female" else "en-US-RogerNeural"
                 comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
                 await asyncio.wait_for(comm.save(out_file), timeout=chunk_timeout)
                 if os.path.exists(out_file) and os.path.getsize(out_file) > 100:
@@ -912,7 +888,7 @@ def assemble_multi_image_video(block_durations: dict, final_audio_path: str, out
 
 async def main():
     os.makedirs(BUILD_DIR, exist_ok=True)
-    print(f"=== Starting Global Rainstorm Air Fortress Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
+    print(f"=== Starting Vampire Bat to Loli Tyrant Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
 
     char_map, voc_map = load_characters_and_vocatives(NOVEL_SLUG, BASE_CHARACTERS)
     entity_mgr = EntityManager(novel_slug=NOVEL_SLUG, build_dir=BUILD_DIR)
@@ -934,7 +910,7 @@ async def main():
                 print(f"[{NOVEL_SLUG}] [Cached Ch.{ch_num:03d}] {title} ({len(rows)} lines)", flush=True)
             else:
                 title, text, next_url = scrape_chapter_content(session, curr_url, ch_num)
-                entity_mgr.scan_chapter_for_entities(text, default_female_role="aunt_zhang", default_male_role="lu_zhou")
+                entity_mgr.scan_chapter_for_entities(text, default_female_role="mc_tyrant", default_male_role="guild_leader")
                 rows = parse_chapter_to_staged_json(text, entity_mgr, char_map, voc_map)
                 with open(ch_json, "w", encoding="utf-8") as f:
                     json.dump(rows, f, indent=2, ensure_ascii=False)

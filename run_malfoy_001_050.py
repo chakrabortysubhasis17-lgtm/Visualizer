@@ -14,8 +14,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from entity_manager import EntityManager
 
 # ==================== ARCHITECTURAL TUNING ====================
-START_CHAPTER = 51
-END_CHAPTER = 100
+START_CHAPTER = 1
+END_CHAPTER = 50
 BATCH_SIZE = 5
 PARALLEL_CHAPTERS = 2
 GLOBAL_MAX_CONCURRENT_TTS = 3
@@ -25,173 +25,179 @@ TARGET_DIALOGUE_CHUNK_WORDS = 65
 CINZEL_URL = "https://github.com/google/fonts/raw/main/ofl/cinzeldecorative/CinzelDecorative-Bold.ttf"
 CINZEL_LOCAL_PATH = "CinzelDecorative-Bold.ttf"
 
+# Luminous, Vibrant Magical Fantasy Style Anchor
+STYLE_ANCHOR = (
+    "Masterpiece fantasy anime illustration, official light novel high-end art, "
+    "intricate delicate clean lineart, piercing expressive violet-gray eyes, "
+    "radiant Scottish highland golden sunset, floating warm golden candles, glowing silver spell sparks, "
+    "emerald and silver noble robes, colorful magical potion bottles and blooming magical flowers, "
+    "vibrant colorful aesthetic, bright warm lighting, 8k resolution, masterpiece Pixiv."
+)
+HERO_PLACEMENT = "waist-up view, aristocratic elegance, poised and composed, vibrant front lighting"
+DAYLIGHT_BG = (
+    "vibrant sunset sky with golden and lilac clouds over Hogwarts castle towers, "
+    "glowing stained-glass windows overlooking lush green highland hills and shimmering blue lake"
+)
+
 FORBIDDEN_TERMS = [
+    re.compile(r"\bbombardment\b", re.I),
+    re.compile(r"\bshatter\b", re.I),
+    re.compile(r"\bhostile fleet\b", re.I),
+    re.compile(r"\bwarfare\b", re.I),
+    re.compile(r"\bbloodshed\b", re.I),
     re.compile(r"\bchest\b", re.I),
     re.compile(r"\btattoos?\b", re.I),
-    re.compile(r"\bdeformed\b", re.I),
-    re.compile(r"\bmutilated\b", re.I),
-    re.compile(r"\bgrotesque\b", re.I),
-    re.compile(r"\bporcelain\b", re.I),
-    re.compile(r"\bethereal\b", re.I),
-    re.compile(r"\bdomes?\b", re.I),
-    re.compile(r"\bsplashing\b", re.I)
+    re.compile(r"\bgloomy\b", re.I),
+    re.compile(r"\bdarkness\b", re.I),
+    re.compile(r"\bnight\b", re.I)
 ]
 
 GRADIENT_PALETTES = [
-    ((225, 245, 255), (35, 120, 210)),   # Storm Cyan -> Deep Abyssal Blue
-    ((255, 240, 215), (235, 120, 35)),   # Shelter Amber -> Warm Firelight
-    ((230, 235, 245), (90, 110, 140)),   # Steel Alloy -> Fortress Slate
+    ((235, 255, 245), (105, 210, 155)),  # Mint Champagne -> Slytherin Emerald
+    ((255, 248, 220), (235, 185, 80)),   # Pearl Ivory -> Royal Amber Gold
+    ((230, 245, 255), (125, 165, 240)),  # Soft Celestial -> Violet Sapphire
 ]
 
-NOVEL_SLUG = "global-rainstorm-my-shelter-is-an-air-fortress"
-START_URL = "https://mtl-novel.com/novel/global-rainstorm-my-shelter-is-an-air-fortress/chapter-51-the-flesh-and-blood-grinder-of-zijin-mountain/"
-BUILD_DIR = "build_rainstorm_051_100"
-FINAL_AUDIO = "output_rainstorm_051_100.mp3"
-FINAL_VIDEO = "final_rainstorm_051_100.mp4"
-COVER_IMAGE = "cover_rainstorm_051_100.jpg"
-TIMESTAMPS_FILE = "youtube_timestamps_rainstorm_051_100.txt"
-SUBTITLES_FILE = "subtitles_rainstorm_051_100.srt"
-PAYLOAD_FILE = "youtube_upload_payload_rainstorm_051_100.json"
+NOVEL_SLUG = "hp-miss-malfoy-doesnt-want-to-romance-her-parents-generation"
+START_URL = "https://mtl-novel.com/novel/hp-miss-malfoy-doesnt-want-to-romance-her-parents-generation/chapter-1-the-start-of-term/"
+BUILD_DIR = "build_malfoy_001_050"
+FINAL_AUDIO = "output_malfoy_001_050.mp3"
+FINAL_VIDEO = "final_malfoy_001_050.mp4"
+COVER_IMAGE = "cover_malfoy_001_050.jpg"
+TIMESTAMPS_FILE = "youtube_timestamps_malfoy_001_050.txt"
+SUBTITLES_FILE = "subtitles_malfoy_001_050.srt"
+PAYLOAD_FILE = "youtube_upload_payload_malfoy_001_050.json"
 
-VIDEO_TITLE = "Flesh & Blood Grinder of Zijin Mountain! Upgrading Air Fortress | Rainstorm Apocalypse [Ch 51-100]"
+VIDEO_TITLE = "I Reincarnated As Lucius Malfoy’s Sister & Refused To Date Marauders! | HP Audiobook [Ch 1-50]"
 TAGS = [
-    "Global Rainstorm My Shelter is an Air Fortress", "Global Rainstorm Audiobook",
-    "Lu Zhou", "Apocalypse Shelter", "Air Fortress", "Flood Apocalypse", "Doomsday Survival",
-    "Progression Fantasy", "Unabridged Audiobook", "Audiobook Marathon", "Being A Bong"
+    "Harry Potter Fanfiction Audiobook", "Marauders Era", "Miss Malfoy",
+    "Slytherin Female Protagonist", "Severus Snape", "Sirius Black", "James Potter",
+    "Lucius Malfoy", "Unabridged Audiobook", "Audiobook Marathon", "Being a Bong"
 ]
 
 DESC_HEADER = (
-    "A catastrophic eternal deluge engulfs the entire world in freezing floodwaters, plunging civilization "
-    "into desperate resource wars. Reborn with spatial dimensions and advanced technology, Lu Zhou transforms "
-    "his residential compound into an impenetrable, climate-controlled steel fortress.\n\n"
-    "As Chapter 51 unfolds with 'The Flesh and Blood Grinder of Zijin Mountain', starving survivor factions clash "
-    "viciously for the remaining high ground, while Lu Zhou watches coldly from his fortress, enjoying boiling hotpot "
-    "and activating heavy automated turrets to eradicate all trespassers!\n\n"
-    "Welcome to the complete 50-chapter marathon of 'Global Rainstorm: My Shelter is an Air Fortress' "
-    "(全球暴雨：我的避难所是空中堡垒) Chapters 51 to 100 in unabridged multi-voice narration!\n\n"
-    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Broadcast Dynamic Clarity).\n"
-    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for dialogue and fortress system prompts).\n"
-    "🎨 VISUAL ENGINE: 10 Progressive Doomsday Apocalypse Transitions + 15s Channel Outro Slate.\n\n"
+    "Reincarnated into the noble House of Malfoy during the volatile Marauders Era, "
+    "Miss Malfoy knows the grim tragedy awaiting wizarding Britain.\n\n"
+    "While teenage witches swoon over arrogant Gryffindors or get dragged into dark factional wars, "
+    "her life goal is singular: zero romance with her parents' generation, ruthless academic mastery, "
+    "and complete personal autonomy through ancient spellcraft and alchemy.\n\n"
+    "Welcome to Chapters 1 through 50 of 'HP: Miss Malfoy Doesn’t Want to Romance Her Parents’ Generation' "
+    "(HP：马尔福小姐不想谈父世代恋爱) in unabridged multi-voice narration!\n\n"
+    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, British Aristocratic Cadence).\n"
+    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for all spells, letters, and potion recipes).\n"
+    "🎨 VISUAL ENGINE: 10 Luminous Hogwarts Visual Transitions + 15s Slytherin Outro Slate.\n\n"
     "══════════════════════════════════════════════\nTIMESTAMPS:\n"
 )
 
 DESC_FOOTER = (
     "\n══════════════════════════════════════════════\n\n"
-    "🌧️ ARC HIGHLIGHTS:\n"
-    "• 00:00:00 - Chapter 51: The Flesh and Blood Grinder of Zijin Mountain\n"
-    "• Chapter 62: Luxury Dining in the Submerged Apocalypse & Cold Indifference\n"
-    "• Chapter 74: Aunt Zhang's Moral Kidnapping Annihilated by Electric Defenses\n"
-    "• Chapter 87: Freezing Rain Glaciation & Heavy Amphibious Raider Purge\n"
-    "• Chapter 100: Anti-Gravity Thruster Ignition – The Air Fortress Takes Flight!\n\n"
+    "🐍 ARC HIGHLIGHTS:\n"
+    "• 00:00:00 - Chapter 1: The Start of Term & The Hogwarts Express Carriage Dispute\n"
+    "• Chapter 7: The Sorting Hat's Dilemma: Claiming My Seat in Slytherin\n"
+    "• Chapter 15: Slughorn's Advanced Potions: Academic Alliance with Young Snape\n"
+    "• Chapter 24: Outsmarting Marauder Pranks: Freezing Sirius Black's Hexes\n"
+    "• Chapter 35: Pureblood Winter Gala: Navigating Lucius's Overprotective Paranoia\n"
+    "• Chapter 50: The Line in the Sand: Establishing an Independent Third Faction\n\n"
     "══════════════════════════════════════════════\n"
-    "DISCLAIMER:\nThis audiobook is an edited dramatized adaptation produced for storytelling, entertainment, "
-    "and doomsday literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
-    "#GlobalRainstorm #AirFortress #ApocalypseSurvival #DoomsdayAudiobook #ProgressionFantasy #FullAudiobook"
+    "DISCLAIMER:\nThis audiobook is an edited transformative adaptation produced for fanfiction appreciation, "
+    "storytelling, and community enjoyment. All Harry Potter world-building rights belong to J.K. Rowling and Warner Bros. Subscribe for more!\n\n"
+    "#HarryPotter #MaraudersEra #Slytherin #Audiobook #FanfictionAudiobook #SeverusSnape #AudiobookMarathon"
 )
 
 BASE_CHARACTERS = {
-    "narrator": {"display_name": "Narrator", "gender": "Female", "line_type": "Narration", "voice": "en-US-JennyNeural", "pitch": "+1Hz", "rate": "+4%"},
-    "lu_zhou": {"display_name": "Lu Zhou", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "-2Hz", "rate": "+6%"},
-    "aunt_zhang": {"display_name": "Aunt Zhang", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-EmmaNeural", "pitch": "+2Hz", "rate": "+8%"},
-    "neighbor_villain": {"display_name": "Desperate Raider", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-EricNeural", "pitch": "+5Hz", "rate": "+10%"},
-    "gold_digger_female": {"display_name": "Pleading Survivor", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-AriaNeural", "pitch": "+2Hz", "rate": "+5%"},
-    "system": {"display_name": "Fortress System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-6%"}
+    "narrator": {"display_name": "Narrator", "gender": "Female", "line_type": "Narration", "voice": "en-GB-SoniaNeural", "pitch": "+0Hz", "rate": "+4%"},
+    "miss_malfoy": {"display_name": "Evelyn Malfoy", "gender": "Female", "line_type": "Dialogue", "voice": "en-GB-SoniaNeural", "pitch": "+1Hz", "rate": "+4%"},
+    "lucius_malfoy": {"display_name": "Lucius Malfoy", "gender": "Male", "line_type": "Dialogue", "voice": "en-GB-RyanNeural", "pitch": "-3Hz", "rate": "+3%"},
+    "sirius_black": {"display_name": "Sirius Black", "gender": "Male", "line_type": "Dialogue", "voice": "en-GB-ThomasNeural", "pitch": "+4Hz", "rate": "+7%"},
+    "james_potter": {"display_name": "James Potter", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "+2Hz", "rate": "+6%"},
+    "severus_snape": {"display_name": "Severus Snape", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-ChristopherNeural", "pitch": "-8Hz", "rate": "+1%"},
+    "lily_evans": {"display_name": "Lily Evans", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-JennyNeural", "pitch": "+2Hz", "rate": "+5%"}
 }
 
 BLOCKS = [
     {
-        "index": 1, "range": (51, 55),
-        "hero_desc": "calm handsome 20-year-old survivor Lu Zhou wearing a black tactical sweater standing behind bulletproof glass",
-        "action": "holding a hot ceramic mug of coffee while looking down at desperate armed survivor gangs fighting below Zijin mountain",
-        "scene_bg": "heavily reinforced steel shelter observation room, multi-screen surveillance monitors, dark torrential rain outside",
-        "search_queries": ["anime survivor bunker", "anime rainstorm window", "anime male survivor apocalypse"],
-        "title": ["ZIJIN MOUNTAIN BATTLE", "FLESH & BLOOD GRINDER", "Chapters 51 – 55"],
-        "fallback_color": (25, 35, 45)
+        "index": 1, "range": (1, 5),
+        "hero_desc": "poised 11-year-old platinum-blonde girl in bright scarlet velvet travelling cloak sitting in a sunlit vintage train carriage",
+        "action": "reading a glowing golden spellbook with calm poise while golden sunbeams stream through the train window",
+        "search_query": "anime blonde noble girl train carriage bright sunlit vintage fantasy pixiv",
+        "title": ["HOGWARTS EXPRESS", "THE START OF TERM", "Chapters 1 – 5"],
+        "fallback_color": (175, 220, 195)
     },
     {
-        "index": 2, "range": (56, 60),
-        "hero_desc": "colossal steel fortress base situated on a high rocky cliff above stormy flood waters",
-        "action": "tall communication radar towers active as bright lightning flashes across the skyline of flooded skyscrapers",
-        "scene_bg": "vast flooded city ruins, buildings surrounded by deep water, dark storm clouds, heavy rainfall",
-        "search_queries": ["anime flooded city", "anime flood city", "anime submerged city", "anime apocalypse fortress"],
-        "title": ["RISING DELUGE", "SUBMERGED METROPOLIS", "Chapters 56 – 60"],
-        "fallback_color": (20, 30, 45)
+        "index": 2, "range": (6, 10),
+        "hero_desc": "platinum-blonde girl sitting composed beneath the ancient Sorting Hat in the radiant Great Hall",
+        "action": "illuminated by thousands of warm floating golden candles as the entire student body watches in awe",
+        "search_query": "anime great hall floating candles bright golden light noble girl sorting pixiv",
+        "title": ["THE SORTING HAT", "THE SLYTHERIN HEIRESS", "Chapters 6 – 10"],
+        "fallback_color": (165, 210, 180)
     },
     {
-        "index": 3, "range": (61, 65),
-        "hero_desc": "Lu Zhou sitting comfortably in a brightly lit modern living room with warm wooden furniture",
-        "action": "eating from a boiling copper hotpot with sliced wagyu beef while listening to outdoor storm reports",
-        "scene_bg": "luxurious warm apartment interior, ambient orange LED lighting, large fortified window showing stormy deluge",
-        "search_queries": ["anime luxury apartment rain", "anime cozy interior rain", "anime hotpot room"],
-        "title": ["LUXURY SANCTUARY", "FEAST IN THE APOCALYPSE", "Chapters 61 – 65"],
-        "fallback_color": (45, 30, 20)
+        "index": 3, "range": (11, 15),
+        "hero_desc": "Miss Malfoy standing beside young dark-haired Severus Snape in a bright conservatory potions lab",
+        "action": "brewing a radiant shimmering iridescent potion with glowing lavender and emerald bubbles",
+        "search_query": "anime potions classroom glowing colorful bottles iridescent bubbles magic pixiv",
+        "title": ["POTIONS MASTERY", "PEER-LEVEL ALLIANCE", "Chapters 11 – 15"],
+        "fallback_color": (195, 180, 225)
     },
     {
-        "index": 4, "range": (66, 70),
-        "hero_desc": "frantic middle-aged woman Aunt Zhang clutching a megaphone alongside drenched shivering neighbors",
-        "action": "banging angrily on the massive blast doors of the shelter demanding food and moral concessions",
-        "scene_bg": "flooded shelter entrance corridor, water rising around their boots, emergency red warning lights flashing",
-        "search_queries": ["anime crowd fortress door", "anime angry crowd gate", "anime survival mob"],
-        "title": ["MORAL KIDNAPPING", "AUNT ZHANG'S SCHEME", "Chapters 66 – 70"],
-        "fallback_color": (40, 25, 30)
+        "index": 4, "range": (16, 20),
+        "hero_desc": "Miss Malfoy casually flicking her elegant wand in a bright sunlit castle courtyard",
+        "action": "turning a Marauder spell into a shower of sparkling pink and gold flower petals as students cheer",
+        "search_query": "anime girl wand spell sunlit courtyard colorful flower petals magic duel pixiv",
+        "title": ["MARAUDER PRANKS", "EFFORTLESS COUNTER-HEX", "Chapters 16 – 20"],
+        "fallback_color": (225, 195, 205)
     },
     {
-        "index": 5, "range": (71, 75),
-        "hero_desc": "automated dual-barrel heavy machine gun turrets and high-voltage electrified steel fences activating",
-        "action": "discharging brilliant blue electric arcs and tracer rounds that send armed scavengers scrambling in panic",
-        "scene_bg": "fortress perimeter ramparts, high voltage electrified barriers, heavy rainstorm at night",
-        "search_queries": ["anime defense turret fortress", "anime electric barrier sci-fi", "anime fortress defense"],
-        "title": ["ABSOLUTE DEFENSE", "HIGH-VOLTAGE REPEL", "Chapters 71 – 75"],
-        "fallback_color": (30, 40, 55)
+        "index": 5, "range": (21, 25),
+        "hero_desc": "young aristocratic girl relaxing in a luxurious emerald and silver common room bathed in warm fireplace glow",
+        "action": "reading an ancient illuminated parchment while enjoying hot tea served in fine porcelain",
+        "search_query": "anime noble girl reading emerald armchair cozy fireplace tea magic pixiv",
+        "title": ["SLYTHERIN COMMON ROOM", "UNTOUCHABLE INTELLECT", "Chapters 21 – 25"],
+        "fallback_color": (160, 210, 180)
     },
     {
-        "index": 6, "range": (76, 80),
-        "hero_desc": "glowing blue holographic shelter blueprint floating inside the main computer server vault",
-        "action": "displaying heavy anti-air missile batteries and vertical stabilization thruster installations completing",
-        "scene_bg": "underground server control hub, blue holographic 3D fortress model, high-tech server racks",
-        "search_queries": ["anime holographic blueprint", "anime sci-fi server room hologram", "anime holographic map"],
-        "title": ["SYSTEM BLUEPRINTS", "HEAVY UPGRADE COMPLETE", "Chapters 76 – 80"],
-        "fallback_color": (25, 45, 50)
+        "index": 6, "range": (26, 30),
+        "hero_desc": "Lucius Malfoy in aristocratic formal robes standing protectively beside his sister in a sparkling snowy village",
+        "action": "Evelyn holding a warm foaming mug of golden butterbeer under cheerful holiday fairy lights",
+        "search_query": "anime winter snow village warm fairy lights butterbeer noble siblings pixiv",
+        "title": ["HOGSMEADE WINTER", "THE PROTECTIVE BROTHER", "Chapters 26 – 30"],
+        "fallback_color": (200, 210, 235)
     },
     {
-        "index": 7, "range": (81, 85),
-        "hero_desc": "heavily modified armed speedboats and patrol craft carrying warlord raiders approaching the fortress perimeter",
-        "action": "being targeted by red laser designators before exploding in dramatic fireballs across the water",
-        "scene_bg": "stormy dark floodwaters, burning boat wreckage, heavy rainfall over ocean waves",
-        "search_queries": ["anime flooded city battle", "anime naval battle explosion", "anime boat combat"],
-        "title": ["AMPHIBIOUS SIEGE", "WARLORD FLOTILLA CRUSHED", "Chapters 81 – 85"],
-        "fallback_color": (45, 25, 20)
+        "index": 7, "range": (31, 35),
+        "hero_desc": "Miss Malfoy and graceful Narcissa Black in sparkling silk ballgowns at a grand sunlit conservatory gala",
+        "action": "laughing together as crystalline chandeliers cast dancing rainbow light across marble floors",
+        "search_query": "anime noble ladies crystal chandeliers grand ballroom pastel ballgowns pixiv",
+        "title": ["MALFOY MANOR GALA", "ARISTOCRATIC SPLENDOR", "Chapters 31 – 35"],
+        "fallback_color": (225, 185, 215)
     },
     {
-        "index": 8, "range": (86, 90),
-        "hero_desc": "Lu Zhou wearing thermal winter parka looking out at the suddenly frozen wasteland",
-        "action": "watching freezing rain turn the entire flooded metropolis into a colossal sheet of jagged glacier ice",
-        "scene_bg": "frozen flooded city, skyscrapers encased in thick blue ice, blizzard winds, dark frozen horizon",
-        "search_queries": ["anime frozen city", "anime ice skyscrapers blizzard", "anime winter apocalypse city"],
-        "title": ["EXTREME FREEZE", "THE GLACIAL APOCALYPSE", "Chapters 86 – 90"],
-        "fallback_color": (30, 45, 60)
+        "index": 8, "range": (36, 40),
+        "hero_desc": "Miss Malfoy and Lily Evans studying together in a bright stained-glass library alcove",
+        "action": "sharing notes on ancient charms as colorful rainbow sunlight streams through the tall arched windows",
+        "search_query": "anime sunny library stained glass two girls studying magic friendship pixiv",
+        "title": ["LIBRARY TRUCE", "RESPECT ACROSS HOUSES", "Chapters 36 – 40"],
+        "fallback_color": (235, 210, 170)
     },
     {
-        "index": 9, "range": (91, 95),
-        "hero_desc": "colossal anti-gravity turbine thrusters beneath the fortress glowing with intense cyan thermal plasma",
-        "action": "vibrating with thunderous power as the massive steel structure begins to detach from mountain bedrock",
-        "scene_bg": "fortress base, massive glowing blue plasma jet thrusters, steam and water vapor clouds",
-        "search_queries": ["anime flying fortress thrusters", "anime giant thruster plasma", "anime sci-fi mothership"],
-        "title": ["THRUSTER IGNITION", "DETACHING FROM BEDROCK", "Chapters 91 – 95"],
-        "fallback_color": (35, 50, 65)
+        "index": 9, "range": (41, 45),
+        "hero_desc": "Miss Malfoy watching the Quidditch match from high stadium towers bathed in vibrant sunset colors",
+        "action": "laughing with friends while broomsticks trace glowing golden trails against the lilac sky",
+        "search_query": "anime quidditch stadium vibrant sunset sky broomsticks magic trails pixiv",
+        "title": ["QUIDDITCH SEASON", "IMMUNE TO CHARISMA", "Chapters 41 – 45"],
+        "fallback_color": (210, 180, 230)
     },
     {
-        "index": 10, "range": (96, 100),
-        "hero_desc": "Lu Zhou standing at the helm bridge of the colossal flying Air Fortress rising triumphantly above the storm clouds",
-        "action": "looking out through panoramic windows into golden sunlight as the flooded world remains far below in darkness",
-        "scene_bg": "panoramic bridge of flying sky fortress, breaking through stormy rainclouds into bright golden stratosphere",
-        "search_queries": ["anime air fortress sky", "anime flying battleship clouds", "anime sky fortress sunrise"],
-        "title": ["AIR FORTRESS ASCENSION", "SOVEREIGN OF THE SKIES", "Chapters 96 – 100"],
-        "fallback_color": (40, 45, 30)
+        "index": 10, "range": (46, 50),
+        "hero_desc": "Miss Malfoy standing tall in the high castle astronomy tower under a dazzling golden sunrise",
+        "action": "conjuring a glorious sparkling silver patronus that illuminates the entire sky with pure celestial radiance",
+        "search_query": "anime astronomy tower sunrise golden light patronus silver sparkles magic pixiv",
+        "title": ["THE ASTRONOMY TOWER", "AN INDEPENDENT PATH", "Chapters 46 – 50"],
+        "fallback_color": (250, 225, 180)
     }
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Shelter|Upgrade|Notice|Warning|Doomsday).*?(?:\]|】|〕|』|〗|］)", re.I)
+RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Notice|Warning|Letter|Daily Prophet).*?(?:\]|】|〕|』|〗|］)", re.I)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 WATERMARK_PATTERNS = [
     re.compile(r"\(End of this chapter\)", re.I),
@@ -213,13 +219,6 @@ RE_SENTENCE_SPLIT = re.compile(r'(?<=[.!?])\s+')
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 }
-LEXICA_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Origin": "https://lexica.art",
-    "Referer": "https://lexica.art/"
-}
 
 
 def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
@@ -237,11 +236,11 @@ def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
                 for name, cinfo in reg_chars.items():
                     entry = {
                         "display_name": name.title(),
-                        "gender": cinfo.get("gender", "Male"),
+                        "gender": cinfo.get("gender", "Female"),
                         "line_type": "Dialogue" if cinfo.get("role") != "system" else "System",
-                        "voice": cinfo.get("voice", "en-US-GuyNeural"),
-                        "pitch": cinfo.get("pitch", "-2Hz"),
-                        "rate": cinfo.get("rate", "+6%"),
+                        "voice": cinfo.get("voice", "en-GB-SoniaNeural"),
+                        "pitch": cinfo.get("pitch", "+0Hz"),
+                        "rate": cinfo.get("rate", "+4%"),
                         "aliases": cinfo.get("aliases", [])
                     }
                     char_map[name.lower()] = entry
@@ -270,7 +269,7 @@ def clean_and_normalize_text(text: str) -> str:
 
 def balance_paragraph_quotes(paragraph: str) -> str:
     if paragraph.count('"') % 2 != 0:
-        if re.search(r'\b(said|replied|whispered|murmured|asked|smiled|sneered)\b', paragraph, re.I):
+        if re.search(r'\b(said|replied|sneered|drawled|whispered|asked)\b', paragraph, re.I):
             paragraph = paragraph + '"'
         else:
             paragraph = '"' + paragraph
@@ -295,7 +294,7 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     paragraphs = [p for p in paragraphs if p and RE_ALPHANUM.search(p)]
 
     if not paragraphs:
-        paragraphs = [f"Chapter {ch_num}. Torrential rain continues pouring outside the fortress."]
+        paragraphs = [f"Chapter {ch_num}. Academic research ongoing at Hogwarts."]
 
     full_text = f"{title}.\n\n" + "\n\n".join(paragraphs)
 
@@ -326,63 +325,53 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     return title, full_text, next_url
 
 
-def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
+def classify_hp_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
+    """Accurate HP dialogue speaker routing with word boundaries and addressee protection."""
     chunk_lower = chunk.lower()
     prev_lower = prev_narr.lower()
     next_lower = next_narr.lower()
 
-    if any(k in chunk_lower or k in prev_lower for k in [
-        "shelter upgrade", "system prompt", "ding!", "spatial dimension",
-        "air fortress module", "defense points increased"
-    ]):
-        return "system"
+    # Pre-context speech tags with word boundaries
+    if re.search(r"\b(sirius\s+(?:sneered|said|barked|frowned)|black\s+laughed)\b", prev_lower):
+        return "sirius_black"
+    if re.search(r"\b(james\s+(?:laughed|said|grinned)|potter\s+said)\b", prev_lower):
+        return "james_potter"
+    if re.search(r"\b(lucius\s+(?:drawled|sneered|warned|said)|her\s+brother\s+said)\b", prev_lower):
+        return "lucius_malfoy"
+    if re.search(r"\b(snape\s+whispered|severus\s+(?:murmured|said))\b", prev_lower):
+        return "severus_snape"
+    if re.search(r"\b(evelyn\s+(?:replied|drawled|said)|she\s+(?:drawled|said|noted|replied))\b", prev_lower):
+        return "miss_malfoy"
 
-    if re.search(r"\b(aunt\s+zhang|director\s+zhang|committee|middle-aged\s+woman\s+shouted)\b", prev_lower):
-        return "aunt_zhang"
-    if any(k in chunk_lower for k in [
-        "young man, have some conscience", "share your food", "neighborhood committee",
-        "you have so much food", "open the door and help everyone"
-    ]):
-        return "aunt_zhang"
+    # Post-context speech tags
+    if re.search(r"\b(she\s+said|evelyn\s+said|she\s+replied|she\s+drawled)\b", next_lower):
+        return "miss_malfoy"
+    if re.search(r"\b(sirius\s+said|black\s+sneered)\b", next_lower):
+        return "sirius_black"
+    if re.search(r"\b(james\s+said|potter\s+laughed)\b", next_lower):
+        return "james_potter"
+    if re.search(r"\b(lucius\s+said|her\s+brother\s+drawled)\b", next_lower):
+        return "lucius_malfoy"
 
-    if re.search(r"\b(girl\s+cried|woman\s+sobbed|she\s+begged|pleaded\s+tearfully)\b", prev_lower):
-        return "gold_digger_female"
-    if any(k in chunk_lower for k in [
-        "brother zhou, please let me in", "i'm freezing", "i can do anything for you", "save me"
-    ]):
-        return "gold_digger_female"
+    # Addressee protection
+    if re.search(r"\b(evelyn|miss\s+malfoy|little\s+malfoy|lyn)\b", chunk_lower):
+        if any(k in prev_lower or k in next_lower for k in ["sirius", "black", "padfoot"]):
+            return "sirius_black"
+        elif any(k in prev_lower or k in next_lower for k in ["james", "potter"]):
+            return "james_potter"
+        elif any(k in prev_lower or k in next_lower for k in ["severus", "snape"]):
+            return "severus_snape"
+        return "lucius_malfoy"
 
-    if re.search(r"\b(scavenger|raider|gang\s+leader|thug|neighbor\s+cursed|he\s+sneered|he\s+roared)\b", prev_lower):
-        return "neighbor_villain"
-    if any(k in chunk_lower for k in [
-        "smash the door", "kill him and take his food", "hand over the shelter",
-        "courting death", "shoot!", "he's just one person"
-    ]):
-        return "neighbor_villain"
+    if re.search(r"\b(brother|big\s+brother|lucius)\b", chunk_lower):
+        return "miss_malfoy"
+    if re.search(r"\b(severus|snape)\b", chunk_lower):
+        return "miss_malfoy"
+    if re.search(r"\b(lily|evans)\b", chunk_lower):
+        return "james_potter"
 
-    if re.search(r"\b(aunt\s+zhang\s+said|aunt\s+zhang\s+screamed)\b", next_lower):
-        return "aunt_zhang"
-    if re.search(r"\b(lu\s+zhou\s+said|lu\s+zhou\s+sneered|he\s+replied|he\s+chuckled)\b", next_lower):
-        return "lu_zhou"
-    if re.search(r"\b(the\s+man\s+cursed|gang\s+leader\s+barked)\b", next_lower):
-        return "neighbor_villain"
-    if re.search(r"\b(she\s+sobbed|she\s+whimpered)\b", next_lower):
-        return "gold_digger_female"
-
-    if any(k in chunk_lower for k in [
-        "get lost", "activate turrets", "upgrade the fortress", "electrify the fence",
-        "enjoy my hotpot", "none of my business", "fire"
-    ]):
-        return "lu_zhou"
-
-    if re.search(r"\b(lu\s+zhou|brother\s+zhou|boss\s+lu)\b", chunk_lower):
-        if any(k in chunk_lower for k in ["die", "kill", "hand over", "smash"]):
-            return "neighbor_villain"
-        if any(k in chunk_lower for k in ["save", "freeze", "cold", "please"]):
-            return "gold_digger_female"
-        return "aunt_zhang"
-
-    return "lu_zhou"
+    # Default to heroine in female POV novel
+    return "miss_malfoy"
 
 
 def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map: dict, voc_map: dict) -> list:
@@ -414,23 +403,17 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
             prev_narr = ""
             for back_idx in range(idx - 1, -1, -1):
                 if not raw_tokens[back_idx]["is_quote"]:
-                    prev_narr = raw_tokens[back_idx]["text"][-75:]
+                    prev_narr = raw_tokens[back_idx]["text"][-200:]
                     break
 
             next_narr = ""
             for fwd_idx in range(idx + 1, len(raw_tokens)):
                 if not raw_tokens[fwd_idx]["is_quote"]:
-                    next_narr = raw_tokens[fwd_idx]["text"][:75]
+                    next_narr = raw_tokens[fwd_idx]["text"][:200]
                     break
 
-            role_key = classify_rainstorm_dialogue(token["text"], prev_narr, next_narr)
-
-            if role_key == "system":
-                staged_segments.append({"role_key": "system", "line_type": "System", "text": token["text"]})
-            elif role_key == "narrator":
-                staged_segments.append({"role_key": "narrator", "line_type": "Narration", "text": token["text"]})
-            else:
-                staged_segments.append({"role_key": role_key, "line_type": "Dialogue", "text": token["text"]})
+            role_key = classify_hp_dialogue(token["text"], prev_narr, next_narr)
+            staged_segments.append({"role_key": role_key, "line_type": "Dialogue", "text": token["text"]})
 
     consolidated = []
     for seg in staged_segments:
@@ -444,7 +427,7 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
     line_seq = 1
     for seg in consolidated:
         rk = seg["role_key"]
-        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("lu_zhou", char_map["narrator"])))
+        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("miss_malfoy", char_map["narrator"])))
         words = seg["text"].split()
         sub_chunks = []
         chunk_ceiling = MAX_NARRATION_MERGE_WORDS if seg["line_type"] == "Narration" else TARGET_DIALOGUE_CHUNK_WORDS
@@ -499,15 +482,11 @@ def ensure_cinzel_font() -> str:
     return "arialbd.ttf"
 
 
-def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str, scene_bg: str) -> str:
-    cleaned_action = dynamic_action
+def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str) -> str:
+    cleaned = dynamic_action
     for forbidden in FORBIDDEN_TERMS:
-        cleaned_action = forbidden.sub("tactical survival gear", cleaned_action)
-    return (
-        f"{hero_desc}, {cleaned_action}. "
-        f"Background: {scene_bg}. "
-        f"Official manhwa webtoon cover art, cinematic atmospheric lighting, vibrant colors, ultra-detailed clean lineart, 8k resolution."
-    )
+        cleaned = forbidden.sub("radiant silver spellcraft", cleaned)
+    return f"{STYLE_ANCHOR} {hero_desc}, {HERO_PLACEMENT}, {cleaned}, {DAYLIGHT_BG}."
 
 
 def fit_and_crop_1080p(img: Image.Image) -> Image.Image:
@@ -528,7 +507,7 @@ def fit_and_crop_1080p(img: Image.Image) -> Image.Image:
     return img.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
 
-def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = None) -> bool:
+def fetch_flux_native_1080p(prompt: str, out_path: str, search_query: str = "anime slytherin noble girl wand castle sunlit pixiv") -> bool:
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return True
 
@@ -536,65 +515,45 @@ def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = N
     seed = random.randint(10000, 9999999)
 
     pollinations_urls = [
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&nofeed=true", "Pollinations Auto-Route 720p", 35),
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux&nologo=true&nofeed=true", "Pollinations Flux Dedicated 720p", 45)
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1920&height=1080&seed={seed}&model=flux&nologo=true", "Flux 1080p"),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux", "Flux 720p Std"),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=turbo", "Turbo Fallback")
     ]
 
-    pollinations_blocked = False
-    for attempt, (url, label, req_timeout) in enumerate(pollinations_urls, 1):
-        if pollinations_blocked:
-            break
+    for attempt, (url, label) in enumerate(pollinations_urls, 1):
         try:
             print(f"     [Image Engine] Requesting {label} (Attempt {attempt}/{len(pollinations_urls)})...", flush=True)
-            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, timeout=req_timeout)
-            if resp.status_code == 200 and len(resp.content) > 15000:
+            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, timeout=45)
+            if resp.status_code == 200 and len(resp.content) > 10000:
                 with open(out_path, "wb") as f:
                     f.write(resp.content)
                 print(f"     [Image Engine] {label} successfully synthesized ({len(resp.content)} bytes).", flush=True)
                 return True
-            elif resp.status_code == 402:
-                print(f"     [Image Engine] Pollinations quota reached (HTTP 402). Immediately bypassing to High-Res Manhwa Engine...", flush=True)
-                pollinations_blocked = True
-                break
             else:
                 print(f"     [Image Engine] {label} returned HTTP {resp.status_code}", flush=True)
         except Exception as e:
-            print(f"     [Image Engine] {label} failed: {e}", flush=True)
+            print(f"     [Image Engine] {label} connection failed: {e}", flush=True)
         time.sleep(1)
 
-    active_queries = list(search_queries) if search_queries else []
-    active_queries.extend(["anime flood city", "anime submerged city", "anime apocalypse fortress", "anime rain city"])
-
-    for q in active_queries:
-        try:
-            print(f"     [Image Engine] Querying High-Res Art Engine for: '{q}'...", flush=True)
-            lex_url = f"https://lexica.art/api/v1/search?q={urllib.parse.quote(q)}"
-            resp = requests.get(lex_url, headers=LEXICA_HEADERS, timeout=18)
-            if resp.status_code == 200:
-                images = resp.json().get("images", [])
-                if images:
-                    img_url = images[0].get("src") or images[0].get("srcSmall")
-                    if img_url:
-                        img_resp = requests.get(img_url, headers=LEXICA_HEADERS, timeout=25)
-                        if img_resp.status_code == 200 and len(img_resp.content) > 10000:
-                            with open(out_path, "wb") as f:
-                                f.write(img_resp.content)
-                            print(f"     [Image Engine] Successfully downloaded high-res art ('{q}', {len(img_resp.content)} bytes).", flush=True)
-                            return True
-        except Exception as le:
-            print(f"     [Image Engine] Art Engine note: {le}", flush=True)
-        time.sleep(1)
-
-    # Secondary High-Res Aesthetic Fallback
     try:
-        p_resp = requests.get("https://picsum.photos/1920/1080", headers=LEXICA_HEADERS, timeout=15)
-        if p_resp.status_code == 200 and len(p_resp.content) > 10000:
-            with open(out_path, "wb") as f:
-                f.write(p_resp.content)
-            print(f"     [Image Engine] Downloaded high-res backdrop from secondary fallback.", flush=True)
-            return True
-    except Exception:
-        pass
+        print(f"     [Image Engine] Querying Lexica Dark Fantasy Engine for '{search_query}'...", flush=True)
+        lex_q = urllib.parse.quote(search_query)
+        lex_url = f"https://lexica.art/api/v1/search?q={lex_q}"
+        resp = requests.get(lex_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        if resp.status_code == 200:
+            data = resp.json()
+            images = data.get("images", [])
+            if images:
+                img_url = images[0].get("src") or images[0].get("srcSmall")
+                if img_url:
+                    img_resp = requests.get(img_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+                    if img_resp.status_code == 200 and len(img_resp.content) > 10000:
+                        with open(out_path, "wb") as f:
+                            f.write(img_resp.content)
+                        print(f"     [Image Engine] Lexica High-Res Gothic Visual downloaded ({len(img_resp.content)} bytes).", flush=True)
+                        return True
+    except Exception as le:
+        print(f"     [Image Engine] Lexica retrieval error: {le}", flush=True)
 
     return False
 
@@ -605,8 +564,8 @@ def apply_lower_third_vignette(base: Image.Image) -> Image.Image:
     v_draw = ImageDraw.Draw(overlay)
     vig_start = int(height * 0.82)
     for y in range(vig_start, height):
-        alpha = int(80 * (((y - vig_start) / (height - vig_start)) ** 1.3))
-        v_draw.line([(0, y), (width, y)], fill=(12, 18, 24, alpha))
+        alpha = int(75 * (((y - vig_start) / (height - vig_start)) ** 1.3))
+        v_draw.line([(0, y), (width, y)], fill=(20, 35, 25, alpha))
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
@@ -614,7 +573,7 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     draw = ImageDraw.Draw(base)
     wx, wy = 55, 45
     crest_r = 22
-    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(35, 120, 190, 255), outline=(230, 245, 255, 255), width=2)
+    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(110, 205, 155, 255), outline=(235, 255, 240, 255), width=2)
     star_font = None
     for fp in ["C:/Windows/Fonts/seguisym.ttf", "C:/Windows/Fonts/arial.ttf"]:
         if os.path.exists(fp):
@@ -635,10 +594,10 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     name_font = ImageFont.truetype(name_fp, 36)
     handle_font = ImageFont.truetype(name_fp, 22)
     tx = wx + 36
-    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(10, 15, 25, 255), font=name_font)
+    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(12, 28, 18, 255), font=name_font)
     draw.text((tx, wy - 18), "Being a Bong", fill=(255, 255, 255, 255), font=name_font)
-    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(8, 12, 20, 220), font=handle_font)
-    draw.text((tx, wy + 20), "@beingabong", fill=(180, 225, 255, 255), font=handle_font)
+    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(12, 24, 16, 220), font=handle_font)
+    draw.text((tx, wy + 20), "@beingabong", fill=(245, 215, 130, 255), font=handle_font)
     return base
 
 
@@ -675,8 +634,8 @@ def stamp_3d_metallic_flame_typography(base: Image.Image, lines: list) -> Image.
         text_h = bbox[3] - bbox[1]
         x = (width - text_w) // 2
         y = start_y + (i * line_spacing)
-        draw.text((x + 3, y + 4), line, font=active_font, fill=(15, 20, 30, 255), stroke_width=5, stroke_fill=(15, 20, 30, 255))
-        draw.text((x, y), line, font=active_font, fill=(25, 35, 55, 255), stroke_width=3, stroke_fill=(25, 35, 55, 255))
+        draw.text((x + 3, y + 4), line, font=active_font, fill=(15, 32, 20, 255), stroke_width=5, stroke_fill=(15, 32, 20, 255))
+        draw.text((x, y), line, font=active_font, fill=(25, 55, 35, 255), stroke_width=3, stroke_fill=(25, 55, 35, 255))
         palette = GRADIENT_PALETTES[min(i, len(GRADIENT_PALETTES) - 1)]
         grad_layer = create_vertical_gradient_text_mask(text_w + 20, text_h + 20, line, active_font, palette[0], palette[1])
         base.paste(grad_layer, (x, y), grad_layer)
@@ -691,8 +650,9 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
         print(f"[{NOVEL_SLUG}] [Cached Image] Block {cfg['index']} Cover ready: '{out_file}'", flush=True)
         return
 
-    dynamic_prompt = construct_dynamic_scene_prompt(cfg["hero_desc"], cfg["action"], cfg["scene_bg"])
-    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_queries=cfg.get("search_queries", []))
+    dynamic_prompt = construct_dynamic_scene_prompt(cfg["hero_desc"], cfg["action"])
+    search_kw = cfg.get("search_query", "anime slytherin noble girl wand castle sunlit pixiv")
+    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_query=search_kw)
 
     if os.path.exists(raw_art) and os.path.getsize(raw_art) > 10000:
         raw_img = Image.open(raw_art).convert("RGBA")
@@ -712,7 +672,7 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
 def create_dynamic_outro_slate(out_path: str):
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return
-    base = Image.new("RGB", (1920, 1080), (16, 22, 32))
+    base = Image.new("RGB", (1920, 1080), (242, 252, 246))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
     draw = ImageDraw.Draw(base)
@@ -720,51 +680,52 @@ def create_dynamic_outro_slate(out_path: str):
     head_font = ImageFont.truetype(font_path, 54)
     cta_font = ImageFont.truetype(font_path, 42)
     line1 = "NEXT CHAPTERS COMING SOON"
-    line2 = "SUBSCRIBE FOR THE NEXT MARATHON"
+    line2 = "SUBSCRIBE WHILE WAITING FOR BATCH 2"
     for i, txt in enumerate([line1, line2]):
         font = head_font if i == 0 else cta_font
         bbox = draw.textbbox((0, 0), txt, font=font)
         tw = bbox[2] - bbox[0]
         x = (1920 - tw) // 2
         y = 480 + (i * 80)
-        draw.text((x + 3, y + 4), txt, font=font, fill=(8, 12, 18, 255))
-        draw.text((x, y), txt, font=font, fill=(200, 230, 255, 255) if i == 0 else (255, 255, 255, 255))
+        draw.text((x + 3, y + 4), txt, font=font, fill=(20, 35, 25, 255))
+        draw.text((x, y), txt, font=font, fill=(245, 255, 248, 255) if i == 0 else (255, 255, 255, 255))
     base.convert("RGB").save(out_path, "JPEG", quality=95)
-    print(f"[{NOVEL_SLUG}] [Outro Slate] Generated 15s outro card: '{out_path}'", flush=True)
+    print(f"[{NOVEL_SLUG}] [Outro Slate] Generated 15s Slytherin end card: '{out_path}'", flush=True)
 
 
 def generate_50ch_ensemble_cover(slug: str, build_dir: str, master_cover_path: str, entity_mgr: EntityManager, char_map: dict):
     print(f"\n[{slug}] [Phase 5] Synthesizing Multi-Character Master Cover from 50-Chapter Registry...", flush=True)
 
     ensemble_prompt = (
-        "Grand doomsday flood apocalypse anime ensemble composition, waist-up view. Confident hero Lu Zhou wearing black tactical jacket "
-        "stands on the bridge of a colossal hovering steel Air Fortress bristling with automated turrets. "
-        "In the stormy sky behind him, torrential rain falls into a completely submerged flooded city under lightning flashes, "
-        "high contrast dramatic lighting, clean sharp lineart, official manhwa cover art, vibrant colors, 8k resolution."
+        f"{STYLE_ANCHOR} Gothic academy romantic ensemble group composition, waist-up view. Beautiful 15-year-old "
+        f"platinum-blonde Slytherin heiress Evelyn Malfoy in elegant emerald and silver robes stands poised front-center "
+        f"holding her custom wand with a luminous silver Patronus aura circling her. Beside her stands proud older brother "
+        f"Lucius Malfoy with matching platinum hair and silver-headed cane. Behind them, bathed in warm golden sunset and candlelight, "
+        f"stand young Severus Snape, Sirius Black, and James Potter under an ancient stone archway. Vibrant colorful sky, masterpiece Pixiv."
     )
 
     raw_ensemble = os.path.join(build_dir, "raw_master_cover_ensemble.jpg")
-    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_queries=["anime air fortress flood apocalypse hero", "anime flying fortress sky", "anime flood city"])
+    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_query="anime slytherin noble girl blonde lucius snape sirius black hogwarts sunlit pixiv")
 
     if os.path.exists(raw_ensemble) and os.path.getsize(raw_ensemble) > 10000:
         raw_img = Image.open(raw_ensemble).convert("RGBA")
         base = fit_and_crop_1080p(raw_img)
     else:
         print(f"[{slug}] [Cover Warning] Fallback applied for ensemble cover.", flush=True)
-        base = Image.new("RGBA", (1920, 1080), (25, 35, 45, 255))
+        base = Image.new("RGBA", (1920, 1080), (170, 215, 190, 255))
 
     base = base.filter(ImageFilter.UnsharpMask(radius=2.4, percent=180, threshold=2))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
 
     master_title_lines = [
-        "GLOBAL RAINSTORM: MY SHELTER",
-        "IS AN AIR FORTRESS",
-        "Complete Marathon • Ch. 51–100"
+        "HP: MISS MALFOY",
+        "NO PARENTS' ERA ROMANCE",
+        "Complete Marathon • Ch. 1–50"
     ]
     base = stamp_3d_metallic_flame_typography(base, master_title_lines)
     base.convert("RGB").save(master_cover_path, "JPEG", quality=98)
-    print(f"[{slug}] [Master Thumbnail Complete] Saved Multi-Character Cover to '{master_cover_path}'", flush=True)
+    print(f"[{slug}] [Master Thumbnail Complete] Saved Multi-Character HP Cover to '{master_cover_path}'", flush=True)
 
 
 async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphore, max_retries: int = 5):
@@ -775,7 +736,7 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
             try:
                 active_voice = voice
                 if attempt >= 4:
-                    active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
+                    active_voice = "en-GB-SoniaNeural" if row.get("gender") == "Female" else "en-GB-RyanNeural"
                 comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
                 await asyncio.wait_for(comm.save(out_file), timeout=chunk_timeout)
                 if os.path.exists(out_file) and os.path.getsize(out_file) > 100:
@@ -818,7 +779,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         with open(chapter_meta, "r", encoding="utf-8") as f:
             meta = json.load(f)
         if meta.get("duration", 0) > 60:
-            print(f"[{NOVEL_SLUG}] [Cached Audio] Ch.{ch_num:03d} ({format_timestamp(meta['duration'])})", flush=True)
+            print(f"[{NOVEL_SLUG}] [Cached Audio] Ch.{ch_num:02d} ({format_timestamp(meta['duration'])})", flush=True)
             return ch_num, chapter_mp3, meta["duration"], meta["title"], meta["relative_subtitles"]
 
     temp_dir = os.path.join(build_dir, f"temp_ch_{ch_num:03d}")
@@ -858,7 +819,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     try: os.rmdir(temp_dir)
     except OSError: pass
 
-    print(f"[{NOVEL_SLUG}] [Synthesized Audio] Ch.{ch_num:03d}: '{title}' ({format_timestamp(final_dur)})", flush=True)
+    print(f"[{NOVEL_SLUG}] [Synthesized Audio] Ch.{ch_num:02d}: '{title}' ({format_timestamp(final_dur)})", flush=True)
     return ch_num, chapter_mp3, final_dur, title, rel_subtitles
 
 
@@ -869,7 +830,7 @@ def assemble_multi_image_video(block_durations: dict, final_audio_path: str, out
         b_idx = cfg["index"]
         dur = block_durations.get(b_idx, 0.0)
         if dur <= 0.1:
-            dur = 60.0
+            continue
         cfg["cover_file"] = os.path.join(BUILD_DIR, f"cover_block_{cfg['range'][0]}_{cfg['range'][1]}.jpg")
         ensure_block_cover_jit(cfg, BUILD_DIR)
         segment_video = os.path.join(BUILD_DIR, f"v_seg_block_{b_idx}.mp4")
@@ -912,7 +873,7 @@ def assemble_multi_image_video(block_durations: dict, final_audio_path: str, out
 
 async def main():
     os.makedirs(BUILD_DIR, exist_ok=True)
-    print(f"=== Starting Global Rainstorm Air Fortress Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
+    print(f"=== Starting HP Miss Malfoy Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
 
     char_map, voc_map = load_characters_and_vocatives(NOVEL_SLUG, BASE_CHARACTERS)
     entity_mgr = EntityManager(novel_slug=NOVEL_SLUG, build_dir=BUILD_DIR)
@@ -926,7 +887,6 @@ async def main():
                 print(f"[{NOVEL_SLUG}] Pagination exhausted early at Ch.{ch_num}.", flush=True)
                 break
             ch_json = os.path.join(BUILD_DIR, f"ch_{ch_num:03d}_staged.json")
-
             if os.path.exists(ch_json):
                 with open(ch_json, "r", encoding="utf-8") as f:
                     rows = json.load(f)
@@ -934,7 +894,7 @@ async def main():
                 print(f"[{NOVEL_SLUG}] [Cached Ch.{ch_num:03d}] {title} ({len(rows)} lines)", flush=True)
             else:
                 title, text, next_url = scrape_chapter_content(session, curr_url, ch_num)
-                entity_mgr.scan_chapter_for_entities(text, default_female_role="aunt_zhang", default_male_role="lu_zhou")
+                entity_mgr.scan_chapter_for_entities(text, default_female_role="miss_malfoy", default_male_role="lucius_malfoy")
                 rows = parse_chapter_to_staged_json(text, entity_mgr, char_map, voc_map)
                 with open(ch_json, "w", encoding="utf-8") as f:
                     json.dump(rows, f, indent=2, ensure_ascii=False)

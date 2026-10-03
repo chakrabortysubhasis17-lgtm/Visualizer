@@ -32,9 +32,7 @@ FORBIDDEN_TERMS = [
     re.compile(r"\bmutilated\b", re.I),
     re.compile(r"\bgrotesque\b", re.I),
     re.compile(r"\bporcelain\b", re.I),
-    re.compile(r"\bethereal\b", re.I),
-    re.compile(r"\bdomes?\b", re.I),
-    re.compile(r"\bsplashing\b", re.I)
+    re.compile(r"\bethereal\b", re.I)
 ]
 
 GRADIENT_PALETTES = [
@@ -102,18 +100,18 @@ BLOCKS = [
     {
         "index": 1, "range": (51, 55),
         "hero_desc": "calm handsome 20-year-old survivor Lu Zhou wearing a black tactical sweater standing behind bulletproof glass",
-        "action": "holding a hot ceramic mug of coffee while looking down at desperate armed survivor gangs fighting below Zijin mountain",
+        "action": "holding a hot porcelain cup of coffee while looking down at desperate armed survivor gangs fighting below Zijin mountain",
         "scene_bg": "heavily reinforced steel shelter observation room, multi-screen surveillance monitors, dark torrential rain outside",
-        "search_queries": ["anime survivor bunker", "anime rainstorm window", "anime male survivor apocalypse"],
+        "search_query": "anime male survivor observation bunker rainstorm",
         "title": ["ZIJIN MOUNTAIN BATTLE", "FLESH & BLOOD GRINDER", "Chapters 51 – 55"],
         "fallback_color": (25, 35, 45)
     },
     {
         "index": 2, "range": (56, 60),
-        "hero_desc": "colossal steel fortress base situated on a high rocky cliff above stormy flood waters",
-        "action": "tall communication radar towers active as bright lightning flashes across the skyline of flooded skyscrapers",
-        "scene_bg": "vast flooded city ruins, buildings surrounded by deep water, dark storm clouds, heavy rainfall",
-        "search_queries": ["anime flooded city", "anime flood city", "anime submerged city", "anime apocalypse fortress"],
+        "hero_desc": "colossal steel fortress structure perched on high rocky ground with water waves splashing against reinforced concrete walls",
+        "action": "radar domes scanning the stormy horizon as continuous lightning illuminates flooded skyscraper rooftops",
+        "scene_bg": "apocalyptic flooded city, skyscrapers submerged underwater, dark stormy clouds, heavy torrential rain",
+        "search_query": "anime apocalyptic flood submerged city fortress lightning",
         "title": ["RISING DELUGE", "SUBMERGED METROPOLIS", "Chapters 56 – 60"],
         "fallback_color": (20, 30, 45)
     },
@@ -122,7 +120,7 @@ BLOCKS = [
         "hero_desc": "Lu Zhou sitting comfortably in a brightly lit modern living room with warm wooden furniture",
         "action": "eating from a boiling copper hotpot with sliced wagyu beef while listening to outdoor storm reports",
         "scene_bg": "luxurious warm apartment interior, ambient orange LED lighting, large fortified window showing stormy deluge",
-        "search_queries": ["anime luxury apartment rain", "anime cozy interior rain", "anime hotpot room"],
+        "search_query": "anime man eating hotpot luxury apartment rain outside",
         "title": ["LUXURY SANCTUARY", "FEAST IN THE APOCALYPSE", "Chapters 61 – 65"],
         "fallback_color": (45, 30, 20)
     },
@@ -130,8 +128,8 @@ BLOCKS = [
         "index": 4, "range": (66, 70),
         "hero_desc": "frantic middle-aged woman Aunt Zhang clutching a megaphone alongside drenched shivering neighbors",
         "action": "banging angrily on the massive blast doors of the shelter demanding food and moral concessions",
-        "scene_bg": "flooded shelter entrance corridor, water rising around their boots, emergency red warning lights flashing",
-        "search_queries": ["anime crowd fortress door", "anime angry crowd gate", "anime survival mob"],
+        "scene_bg": "flooded shelter entrance corridor, water sloshing at their boots, emergency red warning lights flashing",
+        "search_query": "anime angry crowd banging on fortress steel door",
         "title": ["MORAL KIDNAPPING", "AUNT ZHANG'S SCHEME", "Chapters 66 – 70"],
         "fallback_color": (40, 25, 30)
     },
@@ -140,7 +138,7 @@ BLOCKS = [
         "hero_desc": "automated dual-barrel heavy machine gun turrets and high-voltage electrified steel fences activating",
         "action": "discharging brilliant blue electric arcs and tracer rounds that send armed scavengers scrambling in panic",
         "scene_bg": "fortress perimeter ramparts, high voltage electrified barriers, heavy rainstorm at night",
-        "search_queries": ["anime defense turret fortress", "anime electric barrier sci-fi", "anime fortress defense"],
+        "search_query": "anime automated defense turret electric barrier night rain",
         "title": ["ABSOLUTE DEFENSE", "HIGH-VOLTAGE REPEL", "Chapters 71 – 75"],
         "fallback_color": (30, 40, 55)
     },
@@ -149,7 +147,7 @@ BLOCKS = [
         "hero_desc": "glowing blue holographic shelter blueprint floating inside the main computer server vault",
         "action": "displaying heavy anti-air missile batteries and vertical stabilization thruster installations completing",
         "scene_bg": "underground server control hub, blue holographic 3D fortress model, high-tech server racks",
-        "search_queries": ["anime holographic blueprint", "anime sci-fi server room hologram", "anime holographic map"],
+        "search_query": "anime holographic blueprint sci-fi fortress server room",
         "title": ["SYSTEM BLUEPRINTS", "HEAVY UPGRADE COMPLETE", "Chapters 76 – 80"],
         "fallback_color": (25, 45, 50)
     },
@@ -157,8 +155,8 @@ BLOCKS = [
         "index": 7, "range": (81, 85),
         "hero_desc": "heavily modified armed speedboats and patrol craft carrying warlord raiders approaching the fortress perimeter",
         "action": "being targeted by red laser designators before exploding in dramatic fireballs across the water",
-        "scene_bg": "stormy dark floodwaters, burning boat wreckage, heavy rainfall over ocean waves",
-        "search_queries": ["anime flooded city battle", "anime naval battle explosion", "anime boat combat"],
+        "scene_bg": "stormy dark floodwaters, burning boat wreckage, rain splashing on water surface",
+        "search_query": "anime naval raid missile explosion flooded city",
         "title": ["AMPHIBIOUS SIEGE", "WARLORD FLOTILLA CRUSHED", "Chapters 81 – 85"],
         "fallback_color": (45, 25, 20)
     },
@@ -167,7 +165,7 @@ BLOCKS = [
         "hero_desc": "Lu Zhou wearing thermal winter parka looking out at the suddenly frozen wasteland",
         "action": "watching freezing rain turn the entire flooded metropolis into a colossal sheet of jagged glacier ice",
         "scene_bg": "frozen flooded city, skyscrapers encased in thick blue ice, blizzard winds, dark frozen horizon",
-        "search_queries": ["anime frozen city", "anime ice skyscrapers blizzard", "anime winter apocalypse city"],
+        "search_query": "anime frozen flooded city ice skyscrapers blizzard",
         "title": ["EXTREME FREEZE", "THE GLACIAL APOCALYPSE", "Chapters 86 – 90"],
         "fallback_color": (30, 45, 60)
     },
@@ -176,7 +174,7 @@ BLOCKS = [
         "hero_desc": "colossal anti-gravity turbine thrusters beneath the fortress glowing with intense cyan thermal plasma",
         "action": "vibrating with thunderous power as the massive steel structure begins to detach from mountain bedrock",
         "scene_bg": "fortress base, massive glowing blue plasma jet thrusters, steam and water vapor clouds",
-        "search_queries": ["anime flying fortress thrusters", "anime giant thruster plasma", "anime sci-fi mothership"],
+        "search_query": "anime flying fortress thrusters glowing plasma takeoff",
         "title": ["THRUSTER IGNITION", "DETACHING FROM BEDROCK", "Chapters 91 – 95"],
         "fallback_color": (35, 50, 65)
     },
@@ -185,7 +183,7 @@ BLOCKS = [
         "hero_desc": "Lu Zhou standing at the helm bridge of the colossal flying Air Fortress rising triumphantly above the storm clouds",
         "action": "looking out through panoramic windows into golden sunlight as the flooded world remains far below in darkness",
         "scene_bg": "panoramic bridge of flying sky fortress, breaking through stormy rainclouds into bright golden stratosphere",
-        "search_queries": ["anime air fortress sky", "anime flying battleship clouds", "anime sky fortress sunrise"],
+        "search_query": "anime air fortress breaking through dark clouds into sunlight",
         "title": ["AIR FORTRESS ASCENSION", "SOVEREIGN OF THE SKIES", "Chapters 96 – 100"],
         "fallback_color": (40, 45, 30)
     }
@@ -212,13 +210,6 @@ RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 RE_SENTENCE_SPLIT = re.compile(r'(?<=[.!?])\s+')
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-}
-LEXICA_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Origin": "https://lexica.art",
-    "Referer": "https://lexica.art/"
 }
 
 
@@ -331,12 +322,14 @@ def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> s
     prev_lower = prev_narr.lower()
     next_lower = next_narr.lower()
 
+    # 1. System Prompt Announcements
     if any(k in chunk_lower or k in prev_lower for k in [
         "shelter upgrade", "system prompt", "ding!", "spatial dimension",
         "air fortress module", "defense points increased"
     ]):
         return "system"
 
+    # 2. Aunt Zhang / Neighborhood Committee Moral Kidnapping
     if re.search(r"\b(aunt\s+zhang|director\s+zhang|committee|middle-aged\s+woman\s+shouted)\b", prev_lower):
         return "aunt_zhang"
     if any(k in chunk_lower for k in [
@@ -345,6 +338,7 @@ def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> s
     ]):
         return "aunt_zhang"
 
+    # 3. Pleading Female / Gold Digger
     if re.search(r"\b(girl\s+cried|woman\s+sobbed|she\s+begged|pleaded\s+tearfully)\b", prev_lower):
         return "gold_digger_female"
     if any(k in chunk_lower for k in [
@@ -352,6 +346,7 @@ def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> s
     ]):
         return "gold_digger_female"
 
+    # 4. Desperate Raiders / Neighbor Villains
     if re.search(r"\b(scavenger|raider|gang\s+leader|thug|neighbor\s+cursed|he\s+sneered|he\s+roared)\b", prev_lower):
         return "neighbor_villain"
     if any(k in chunk_lower for k in [
@@ -360,6 +355,7 @@ def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> s
     ]):
         return "neighbor_villain"
 
+    # 5. Post-Context Tags
     if re.search(r"\b(aunt\s+zhang\s+said|aunt\s+zhang\s+screamed)\b", next_lower):
         return "aunt_zhang"
     if re.search(r"\b(lu\s+zhou\s+said|lu\s+zhou\s+sneered|he\s+replied|he\s+chuckled)\b", next_lower):
@@ -369,12 +365,14 @@ def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> s
     if re.search(r"\b(she\s+sobbed|she\s+whimpered)\b", next_lower):
         return "gold_digger_female"
 
+    # 6. Protagonist Dialogue (Lu Zhou)
     if any(k in chunk_lower for k in [
         "get lost", "activate turrets", "upgrade the fortress", "electrify the fence",
         "enjoy my hotpot", "none of my business", "fire"
     ]):
         return "lu_zhou"
 
+    # 7. Addressee Detection
     if re.search(r"\b(lu\s+zhou|brother\s+zhou|boss\s+lu)\b", chunk_lower):
         if any(k in chunk_lower for k in ["die", "kill", "hand over", "smash"]):
             return "neighbor_villain"
@@ -382,6 +380,7 @@ def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> s
             return "gold_digger_female"
         return "aunt_zhang"
 
+    # 8. Default: Male Protagonist
     return "lu_zhou"
 
 
@@ -506,7 +505,8 @@ def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str, scene_bg
     return (
         f"{hero_desc}, {cleaned_action}. "
         f"Background: {scene_bg}. "
-        f"Official manhwa webtoon cover art, cinematic atmospheric lighting, vibrant colors, ultra-detailed clean lineart, 8k resolution."
+        f"Detailed expressive anime face, sharp detailed eyes, distinct facial features, "
+        f"official manhwa cover art, vibrant colors, clean sharp lineart, 8k resolution, cinematic rim lighting."
     )
 
 
@@ -528,7 +528,7 @@ def fit_and_crop_1080p(img: Image.Image) -> Image.Image:
     return img.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
 
-def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = None) -> bool:
+def fetch_flux_native_1080p(prompt: str, out_path: str, search_query: str = "") -> bool:
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return True
 
@@ -536,65 +536,51 @@ def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = N
     seed = random.randint(10000, 9999999)
 
     pollinations_urls = [
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&nofeed=true", "Pollinations Auto-Route 720p", 35),
-        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux&nologo=true&nofeed=true", "Pollinations Flux Dedicated 720p", 45)
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&nofeed=true", "Pollinations Auto-Route 720p", 45),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux&nologo=true&nofeed=true", "Pollinations Flux Dedicated 720p", 60),
+        (f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&model=flux-anime&nologo=true&nofeed=true", "Pollinations Anime 720p", 45)
     ]
 
-    pollinations_blocked = False
     for attempt, (url, label, req_timeout) in enumerate(pollinations_urls, 1):
-        if pollinations_blocked:
-            break
         try:
             print(f"     [Image Engine] Requesting {label} (Attempt {attempt}/{len(pollinations_urls)})...", flush=True)
-            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, timeout=req_timeout)
+            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=req_timeout)
             if resp.status_code == 200 and len(resp.content) > 15000:
                 with open(out_path, "wb") as f:
                     f.write(resp.content)
                 print(f"     [Image Engine] {label} successfully synthesized ({len(resp.content)} bytes).", flush=True)
                 return True
-            elif resp.status_code == 402:
-                print(f"     [Image Engine] Pollinations quota reached (HTTP 402). Immediately bypassing to High-Res Manhwa Engine...", flush=True)
-                pollinations_blocked = True
-                break
             else:
-                print(f"     [Image Engine] {label} returned HTTP {resp.status_code}", flush=True)
+                print(f"     [Image Engine] {label} returned HTTP {resp.status_code} ({len(resp.content)} bytes).", flush=True)
         except Exception as e:
-            print(f"     [Image Engine] {label} failed: {e}", flush=True)
+            print(f"     [Image Engine] {label} attempt failed: {e}", flush=True)
         time.sleep(1)
 
-    active_queries = list(search_queries) if search_queries else []
-    active_queries.extend(["anime flood city", "anime submerged city", "anime apocalypse fortress", "anime rain city"])
+    if search_query:
+        queries_to_try = [search_query]
+        words = search_query.split()
+        if len(words) > 2:
+            queries_to_try.append(" ".join(words[:3]))
+            queries_to_try.append(f"anime {words[1]}")
 
-    for q in active_queries:
-        try:
-            print(f"     [Image Engine] Querying High-Res Art Engine for: '{q}'...", flush=True)
-            lex_url = f"https://lexica.art/api/v1/search?q={urllib.parse.quote(q)}"
-            resp = requests.get(lex_url, headers=LEXICA_HEADERS, timeout=18)
-            if resp.status_code == 200:
-                images = resp.json().get("images", [])
-                if images:
-                    img_url = images[0].get("src") or images[0].get("srcSmall")
-                    if img_url:
-                        img_resp = requests.get(img_url, headers=LEXICA_HEADERS, timeout=25)
-                        if img_resp.status_code == 200 and len(img_resp.content) > 10000:
-                            with open(out_path, "wb") as f:
-                                f.write(img_resp.content)
-                            print(f"     [Image Engine] Successfully downloaded high-res art ('{q}', {len(img_resp.content)} bytes).", flush=True)
-                            return True
-        except Exception as le:
-            print(f"     [Image Engine] Art Engine note: {le}", flush=True)
-        time.sleep(1)
-
-    # Secondary High-Res Aesthetic Fallback
-    try:
-        p_resp = requests.get("https://picsum.photos/1920/1080", headers=LEXICA_HEADERS, timeout=15)
-        if p_resp.status_code == 200 and len(p_resp.content) > 10000:
-            with open(out_path, "wb") as f:
-                f.write(p_resp.content)
-            print(f"     [Image Engine] Downloaded high-res backdrop from secondary fallback.", flush=True)
-            return True
-    except Exception:
-        pass
+        for q in queries_to_try:
+            try:
+                print(f"     [Image Engine] Querying Lexica for: '{q}'...", flush=True)
+                lex_url = f"https://lexica.art/api/v1/search?q={urllib.parse.quote(q)}"
+                resp = requests.get(lex_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+                if resp.status_code == 200:
+                    images = resp.json().get("images", [])
+                    if images:
+                        img_url = images[0].get("src") or images[0].get("srcSmall")
+                        if img_url:
+                            img_resp = requests.get(img_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+                            if img_resp.status_code == 200 and len(img_resp.content) > 10000:
+                                with open(out_path, "wb") as f:
+                                    f.write(img_resp.content)
+                                print(f"     [Image Engine] Downloaded high-res art from Lexica ('{q}').", flush=True)
+                                return True
+            except Exception as le:
+                print(f"     [Image Engine] Lexica error: {le}", flush=True)
 
     return False
 
@@ -692,7 +678,8 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
         return
 
     dynamic_prompt = construct_dynamic_scene_prompt(cfg["hero_desc"], cfg["action"], cfg["scene_bg"])
-    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_queries=cfg.get("search_queries", []))
+    search_kw = cfg.get("search_query", "anime apocalypse shelter flood rainstorm")
+    fetch_flux_native_1080p(dynamic_prompt, raw_art, search_query=search_kw)
 
     if os.path.exists(raw_art) and os.path.getsize(raw_art) > 10000:
         raw_img = Image.open(raw_art).convert("RGBA")
@@ -744,7 +731,7 @@ def generate_50ch_ensemble_cover(slug: str, build_dir: str, master_cover_path: s
     )
 
     raw_ensemble = os.path.join(build_dir, "raw_master_cover_ensemble.jpg")
-    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_queries=["anime air fortress flood apocalypse hero", "anime flying fortress sky", "anime flood city"])
+    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_query="anime air fortress flood apocalypse hero")
 
     if os.path.exists(raw_ensemble) and os.path.getsize(raw_ensemble) > 10000:
         raw_img = Image.open(raw_ensemble).convert("RGBA")

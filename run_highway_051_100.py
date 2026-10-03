@@ -32,166 +32,160 @@ FORBIDDEN_TERMS = [
     re.compile(r"\bmutilated\b", re.I),
     re.compile(r"\bgrotesque\b", re.I),
     re.compile(r"\bporcelain\b", re.I),
-    re.compile(r"\bethereal\b", re.I),
-    re.compile(r"\bdomes?\b", re.I),
-    re.compile(r"\bsplashing\b", re.I)
+    re.compile(r"\bethereal\b", re.I)
 ]
 
 GRADIENT_PALETTES = [
-    ((225, 245, 255), (35, 120, 210)),   # Storm Cyan -> Deep Abyssal Blue
-    ((255, 240, 215), (235, 120, 35)),   # Shelter Amber -> Warm Firelight
-    ((230, 235, 245), (90, 110, 140)),   # Steel Alloy -> Fortress Slate
+    ((255, 240, 215), (230, 110, 40)),   # Desert Amber -> Rust Orange
+    ((220, 240, 255), (40, 130, 210)),   # Highway Steel -> Metallic Blue
+    ((255, 230, 230), (210, 45, 45)),    # Hazard Red -> Crimson Glow
 ]
 
-NOVEL_SLUG = "global-rainstorm-my-shelter-is-an-air-fortress"
-START_URL = "https://mtl-novel.com/novel/global-rainstorm-my-shelter-is-an-air-fortress/chapter-51-the-flesh-and-blood-grinder-of-zijin-mountain/"
-BUILD_DIR = "build_rainstorm_051_100"
-FINAL_AUDIO = "output_rainstorm_051_100.mp3"
-FINAL_VIDEO = "final_rainstorm_051_100.mp4"
-COVER_IMAGE = "cover_rainstorm_051_100.jpg"
-TIMESTAMPS_FILE = "youtube_timestamps_rainstorm_051_100.txt"
-SUBTITLES_FILE = "subtitles_rainstorm_051_100.srt"
-PAYLOAD_FILE = "youtube_upload_payload_rainstorm_051_100.json"
+NOVEL_SLUG = "highway-survival-for-all-my-rvs-infinite-evolution"
+START_URL = "https://mtl-novel.com/novel/highway-survival-for-all-my-rvs-infinite-evolution/chapter-51-third-brother-is-truly-a-loyal-brother/"
+BUILD_DIR = "build_highway_051_100"
+FINAL_AUDIO = "output_highway_051_100.mp3"
+FINAL_VIDEO = "final_highway_051_100.mp4"
+COVER_IMAGE = "cover_highway_051_100.jpg"
+TIMESTAMPS_FILE = "youtube_timestamps_highway_051_100.txt"
+SUBTITLES_FILE = "subtitles_highway_051_100.srt"
+PAYLOAD_FILE = "youtube_upload_payload_highway_051_100.json"
 
-VIDEO_TITLE = "Flesh & Blood Grinder of Zijin Mountain! Upgrading Air Fortress | Rainstorm Apocalypse [Ch 51-100]"
+VIDEO_TITLE = "Third Brother Is Truly Loyal! Upgrading The Infinite RV | Highway Survival Audiobook [Ch 51-100]"
 TAGS = [
-    "Global Rainstorm My Shelter is an Air Fortress", "Global Rainstorm Audiobook",
-    "Lu Zhou", "Apocalypse Shelter", "Air Fortress", "Flood Apocalypse", "Doomsday Survival",
+    "Highway Survival for All My RVs Infinite Evolution", "Highway Survival Audiobook",
+    "Lin Hui", "RV Survival", "Infinite Evolution", "LitRPG Audiobook", "Apocalypse Survival",
     "Progression Fantasy", "Unabridged Audiobook", "Audiobook Marathon", "Being A Bong"
 ]
 
 DESC_HEADER = (
-    "A catastrophic eternal deluge engulfs the entire world in freezing floodwaters, plunging civilization "
-    "into desperate resource wars. Reborn with spatial dimensions and advanced technology, Lu Zhou transforms "
-    "his residential compound into an impenetrable, climate-controlled steel fortress.\n\n"
-    "As Chapter 51 unfolds with 'The Flesh and Blood Grinder of Zijin Mountain', starving survivor factions clash "
-    "viciously for the remaining high ground, while Lu Zhou watches coldly from his fortress, enjoying boiling hotpot "
-    "and activating heavy automated turrets to eradicate all trespassers!\n\n"
-    "Welcome to the complete 50-chapter marathon of 'Global Rainstorm: My Shelter is an Air Fortress' "
-    "(全球暴雨：我的避难所是空中堡垒) Chapters 51 to 100 in unabridged multi-voice narration!\n\n"
-    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Broadcast Dynamic Clarity).\n"
-    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for dialogue and fortress system prompts).\n"
-    "🎨 VISUAL ENGINE: 10 Progressive Doomsday Apocalypse Transitions + 15s Channel Outro Slate.\n\n"
+    "Thrown into an endless lethal highway apocalypse where vehicles are the only sanctuary, "
+    "Lin Hui binds the Infinite RV Evolution system, upgrading his motorhome into an impenetrable armored fortress.\n\n"
+    "As Chapter 51 unfolds with 'Third Brother Is Truly a Loyal Brother', alliance tests emerge on the endless road, "
+    "faction betrayals spark fierce combat, and the RV undergoes another game-breaking technological leap!\n\n"
+    "Welcome to the complete 50-chapter marathon of 'Highway Survival for All: My RV’s Infinite Evolution' "
+    "(全民公路求生：我的房车无限进化) Chapters 51 to 100 in unabridged multi-voice narration!\n\n"
+    "🎧 AUDIO MASTER: Mobile-Engineered Speech Standard (-14 LUFS, Broadcast Clarity).\n"
+    "📖 CLOSED CAPTIONS: English Soft Subtitles (CC Enabled for dialogue and system announcements).\n"
+    "🎨 VISUAL ENGINE: 10 Progressive Apocalyptic Highway Transitions + 15s Channel Outro Slate.\n\n"
     "══════════════════════════════════════════════\nTIMESTAMPS:\n"
 )
 
 DESC_FOOTER = (
     "\n══════════════════════════════════════════════\n\n"
-    "🌧️ ARC HIGHLIGHTS:\n"
-    "• 00:00:00 - Chapter 51: The Flesh and Blood Grinder of Zijin Mountain\n"
-    "• Chapter 62: Luxury Dining in the Submerged Apocalypse & Cold Indifference\n"
-    "• Chapter 74: Aunt Zhang's Moral Kidnapping Annihilated by Electric Defenses\n"
-    "• Chapter 87: Freezing Rain Glaciation & Heavy Amphibious Raider Purge\n"
-    "• Chapter 100: Anti-Gravity Thruster Ignition – The Air Fortress Takes Flight!\n\n"
+    "🛣️ ARC HIGHLIGHTS:\n"
+    "• 00:00:00 - Chapter 51: Third Brother Is Truly a Loyal Brother\n"
+    "• Chapter 62: Upgrading the RV Armor & Heavy Gatling Turrets\n"
+    "• Chapter 75: Ambush at the Supply Depot & Faction Showdown\n"
+    "• Chapter 88: Entering the Hazardous Fog Sector with Co-Pilot Su Qingqian\n"
+    "• Chapter 100: Tier-3 Motorhome Transformation & Unstoppable Highway Rule\n\n"
     "══════════════════════════════════════════════\n"
     "DISCLAIMER:\nThis audiobook is an edited dramatized adaptation produced for storytelling, entertainment, "
-    "and doomsday literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
-    "#GlobalRainstorm #AirFortress #ApocalypseSurvival #DoomsdayAudiobook #ProgressionFantasy #FullAudiobook"
+    "and fantasy literature commentary. All original story concepts belong to the original author. Subscribe for more!\n\n"
+    "#HighwaySurvival #RVEvolution #ApocalypseAudiobook #LitRPG #ProgressionFantasy #FullAudiobook #AudiobookMarathon"
 )
 
 BASE_CHARACTERS = {
     "narrator": {"display_name": "Narrator", "gender": "Female", "line_type": "Narration", "voice": "en-US-JennyNeural", "pitch": "+1Hz", "rate": "+4%"},
-    "lu_zhou": {"display_name": "Lu Zhou", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "-2Hz", "rate": "+6%"},
-    "aunt_zhang": {"display_name": "Aunt Zhang", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-EmmaNeural", "pitch": "+2Hz", "rate": "+8%"},
-    "neighbor_villain": {"display_name": "Desperate Raider", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-EricNeural", "pitch": "+5Hz", "rate": "+10%"},
-    "gold_digger_female": {"display_name": "Pleading Survivor", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-AriaNeural", "pitch": "+2Hz", "rate": "+5%"},
-    "system": {"display_name": "Fortress System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-6%"}
+    "lin_hui": {"display_name": "Lin Hui", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "+0Hz", "rate": "+6%"},
+    "su_qingqian": {"display_name": "Su Qingqian", "gender": "Female", "line_type": "Dialogue", "voice": "en-US-JennyNeural", "pitch": "+2Hz", "rate": "+8%"},
+    "system": {"display_name": "Evolution System", "gender": "Synthetic", "line_type": "System", "voice": "en-US-SteffanNeural", "pitch": "-18Hz", "rate": "-6%"}
 }
 
 BLOCKS = [
     {
         "index": 1, "range": (51, 55),
-        "hero_desc": "calm handsome 20-year-old survivor Lu Zhou wearing a black tactical sweater standing behind bulletproof glass",
-        "action": "holding a hot ceramic mug of coffee while looking down at desperate armed survivor gangs fighting below Zijin mountain",
-        "scene_bg": "heavily reinforced steel shelter observation room, multi-screen surveillance monitors, dark torrential rain outside",
-        "search_queries": ["anime survivor bunker", "anime rainstorm window", "anime male survivor apocalypse"],
-        "title": ["ZIJIN MOUNTAIN BATTLE", "FLESH & BLOOD GRINDER", "Chapters 51 – 55"],
-        "fallback_color": (25, 35, 45)
-    },
-    {
-        "index": 2, "range": (56, 60),
-        "hero_desc": "colossal steel fortress base situated on a high rocky cliff above stormy flood waters",
-        "action": "tall communication radar towers active as bright lightning flashes across the skyline of flooded skyscrapers",
-        "scene_bg": "vast flooded city ruins, buildings surrounded by deep water, dark storm clouds, heavy rainfall",
-        "search_queries": ["anime flooded city", "anime flood city", "anime submerged city", "anime apocalypse fortress"],
-        "title": ["RISING DELUGE", "SUBMERGED METROPOLIS", "Chapters 56 – 60"],
-        "fallback_color": (20, 30, 45)
-    },
-    {
-        "index": 3, "range": (61, 65),
-        "hero_desc": "Lu Zhou sitting comfortably in a brightly lit modern living room with warm wooden furniture",
-        "action": "eating from a boiling copper hotpot with sliced wagyu beef while listening to outdoor storm reports",
-        "scene_bg": "luxurious warm apartment interior, ambient orange LED lighting, large fortified window showing stormy deluge",
-        "search_queries": ["anime luxury apartment rain", "anime cozy interior rain", "anime hotpot room"],
-        "title": ["LUXURY SANCTUARY", "FEAST IN THE APOCALYPSE", "Chapters 61 – 65"],
+        "hero_desc": "rugged handsome apocalypse survivor Lin Hui wearing tactical jacket inside a high-tech armored RV cabin",
+        "action": "holding a steering wheel while looking out the reinforced windshield at an endless desolate asphalt highway",
+        "scene_bg": "futuristic armored RV interior, glowing holographic dashboard screens, endless desert highway outside",
+        "search_queries": ["anime rv interior", "anime vehicle cockpit", "anime desert highway"],
+        "title": ["LOYALTY TEST", "THE ENDLESS HIGHWAY", "Chapters 51 – 55"],
         "fallback_color": (45, 30, 20)
     },
     {
+        "index": 2, "range": (56, 60),
+        "hero_desc": "capable female co-pilot Su Qingqian with neat hair and tactical gear operating navigational monitors",
+        "action": "pointing forward with an alert expression as a massive convoy appears on the horizon",
+        "scene_bg": "RV control room, radar screens glowing green, sunset highway stretching into the distance",
+        "search_queries": ["anime female copilot", "anime vehicle interior", "anime highway convoy"],
+        "title": ["CO-PILOT ALLIANCE", "CONVOY SIGHTED", "Chapters 56 – 60"],
+        "fallback_color": (30, 35, 45)
+    },
+    {
+        "index": 3, "range": (61, 65),
+        "hero_desc": "colossal heavy-duty armored motorhome covered in steel plates, automated gun turrets, and glowing blue energy shields",
+        "action": "cruising at high speed through a swarm of mutated highway beasts",
+        "scene_bg": "apocalyptic wasteland highway, dust clouds, glowing energy shields deflecting monster attacks",
+        "search_queries": ["anime armored truck", "anime armored vehicle", "anime combat vehicle"],
+        "title": ["ARMORED FORTRESS", "TURRET ACTIVATION", "Chapters 61 – 65"],
+        "fallback_color": (35, 40, 35)
+    },
+    {
         "index": 4, "range": (66, 70),
-        "hero_desc": "frantic middle-aged woman Aunt Zhang clutching a megaphone alongside drenched shivering neighbors",
-        "action": "banging angrily on the massive blast doors of the shelter demanding food and moral concessions",
-        "scene_bg": "flooded shelter entrance corridor, water rising around their boots, emergency red warning lights flashing",
-        "search_queries": ["anime crowd fortress door", "anime angry crowd gate", "anime survival mob"],
-        "title": ["MORAL KIDNAPPING", "AUNT ZHANG'S SCHEME", "Chapters 66 – 70"],
-        "fallback_color": (40, 25, 30)
+        "hero_desc": "hostile rival scavenger gang leaders standing on modified pickup trucks brandishing spiked metal bats",
+        "action": "gesturing aggressively while attempting to block the highway path with barricades",
+        "scene_bg": "abandoned toll plaza, rusted cars blocking the road, gloomy overcast sky",
+        "search_queries": ["anime wasteland bandits", "anime road barricade", "anime scavenger gang"],
+        "title": ["SCAVENGER AMBUSH", "TOLL PLAZA SHOWDOWN", "Chapters 66 – 70"],
+        "fallback_color": (50, 25, 20)
     },
     {
         "index": 5, "range": (71, 75),
-        "hero_desc": "automated dual-barrel heavy machine gun turrets and high-voltage electrified steel fences activating",
-        "action": "discharging brilliant blue electric arcs and tracer rounds that send armed scavengers scrambling in panic",
-        "scene_bg": "fortress perimeter ramparts, high voltage electrified barriers, heavy rainstorm at night",
-        "search_queries": ["anime defense turret fortress", "anime electric barrier sci-fi", "anime fortress defense"],
-        "title": ["ABSOLUTE DEFENSE", "HIGH-VOLTAGE REPEL", "Chapters 71 – 75"],
-        "fallback_color": (30, 40, 55)
+        "hero_desc": "glowing holographic system upgrade interface floating inside the RV cabin displaying 3D blueprints",
+        "action": "pulsing with bright blue light as mechanical parts assemble themselves automatically",
+        "scene_bg": "high-tech workshop inside RV, glowing blue holographic screens, robotic arms upgrading armor",
+        "search_queries": ["anime holographic interface", "anime sci-fi workshop", "anime vehicle blueprint"],
+        "title": ["SYSTEM EVOLUTION", "TIER-2 UPGRADE", "Chapters 71 – 75"],
+        "fallback_color": (20, 35, 50)
     },
     {
         "index": 6, "range": (76, 80),
-        "hero_desc": "glowing blue holographic shelter blueprint floating inside the main computer server vault",
-        "action": "displaying heavy anti-air missile batteries and vertical stabilization thruster installations completing",
-        "scene_bg": "underground server control hub, blue holographic 3D fortress model, high-tech server racks",
-        "search_queries": ["anime holographic blueprint", "anime sci-fi server room hologram", "anime holographic map"],
-        "title": ["SYSTEM BLUEPRINTS", "HEAVY UPGRADE COMPLETE", "Chapters 76 – 80"],
-        "fallback_color": (25, 45, 50)
+        "hero_desc": "Lin Hui operating dual heavy Gatling gun consoles with intense focused determination",
+        "action": "firing a relentless stream of tracer rounds into an oncoming pack of mutant predators",
+        "scene_bg": "RV gunner bay, muzzle flashes illuminating dark interior, highway battlefield at twilight",
+        "search_queries": ["anime heavy turret", "anime machine gun vehicle", "anime combat wasteland"],
+        "title": ["SUPPLY DEPOT BATTLE", "RELENTLESS FIREPOWER", "Chapters 76 – 80"],
+        "fallback_color": (45, 20, 25)
     },
     {
         "index": 7, "range": (81, 85),
-        "hero_desc": "heavily modified armed speedboats and patrol craft carrying warlord raiders approaching the fortress perimeter",
-        "action": "being targeted by red laser designators before exploding in dramatic fireballs across the water",
-        "scene_bg": "stormy dark floodwaters, burning boat wreckage, heavy rainfall over ocean waves",
-        "search_queries": ["anime flooded city battle", "anime naval battle explosion", "anime boat combat"],
-        "title": ["AMPHIBIOUS SIEGE", "WARLORD FLOTILLA CRUSHED", "Chapters 81 – 85"],
-        "fallback_color": (45, 25, 20)
+        "hero_desc": "Su Qingqian and Lin Hui sharing a quiet moment over hot canned rations inside the cozy RV lounge",
+        "action": "smiling warmly across a metallic table while reviewing regional survival chat logs",
+        "scene_bg": "cozy RV interior living quarters, warm LED lights, secure windows showing starry night outside",
+        "search_queries": ["anime cozy rv", "anime camper van night", "anime vehicle interior"],
+        "title": ["REST STOP SANCTUARY", "SHARED BURDENS", "Chapters 81 – 85"],
+        "fallback_color": (40, 35, 30)
     },
     {
         "index": 8, "range": (86, 90),
-        "hero_desc": "Lu Zhou wearing thermal winter parka looking out at the suddenly frozen wasteland",
-        "action": "watching freezing rain turn the entire flooded metropolis into a colossal sheet of jagged glacier ice",
-        "scene_bg": "frozen flooded city, skyscrapers encased in thick blue ice, blizzard winds, dark frozen horizon",
-        "search_queries": ["anime frozen city", "anime ice skyscrapers blizzard", "anime winter apocalypse city"],
-        "title": ["EXTREME FREEZE", "THE GLACIAL APOCALYPSE", "Chapters 86 – 90"],
-        "fallback_color": (30, 45, 60)
+        "hero_desc": "the armored RV plowing through an impenetrable wall of thick radioactive white fog",
+        "action": "headlights cutting through swirling vapors as ominous giant silhouettes loom in the mist",
+        "scene_bg": "dangerous radioactive highway sector, thick white fog, eerie glowing hazard signs",
+        "search_queries": ["anime fog highway", "anime spooky road", "anime misty wasteland"],
+        "title": ["HAZARDOUS FOG SECTOR", "UNKNOWN TERRITORY", "Chapters 86 – 90"],
+        "fallback_color": (30, 30, 35)
     },
     {
         "index": 9, "range": (91, 95),
-        "hero_desc": "colossal anti-gravity turbine thrusters beneath the fortress glowing with intense cyan thermal plasma",
-        "action": "vibrating with thunderous power as the massive steel structure begins to detach from mountain bedrock",
-        "scene_bg": "fortress base, massive glowing blue plasma jet thrusters, steam and water vapor clouds",
-        "search_queries": ["anime flying fortress thrusters", "anime giant thruster plasma", "anime sci-fi mothership"],
-        "title": ["THRUSTER IGNITION", "DETACHING FROM BEDROCK", "Chapters 91 – 95"],
-        "fallback_color": (35, 50, 65)
+        "hero_desc": "massive biomechanical highway boss creature with glowing red core blocking all lanes ahead",
+        "action": "raising gigantic clawed limbs to smash incoming vehicles as the RV charges forward at full throttle",
+        "scene_bg": "ruined highway overpass, shattered concrete, dark stormy sky with red lightning",
+        "search_queries": ["anime giant mutant monster", "anime wasteland boss", "anime mecha beast"],
+        "title": ["HIGHWAY BOSS", "COLLISION COURSE", "Chapters 91 – 95"],
+        "fallback_color": (55, 15, 15)
     },
     {
         "index": 10, "range": (96, 100),
-        "hero_desc": "Lu Zhou standing at the helm bridge of the colossal flying Air Fortress rising triumphantly above the storm clouds",
-        "action": "looking out through panoramic windows into golden sunlight as the flooded world remains far below in darkness",
-        "scene_bg": "panoramic bridge of flying sky fortress, breaking through stormy rainclouds into bright golden stratosphere",
-        "search_queries": ["anime air fortress sky", "anime flying battleship clouds", "anime sky fortress sunrise"],
-        "title": ["AIR FORTRESS ASCENSION", "SOVEREIGN OF THE SKIES", "Chapters 96 – 100"],
-        "fallback_color": (40, 45, 30)
+        "hero_desc": "Lin Hui and Su Qingqian standing proudly atop the fully evolved tier-3 mobile palace RV",
+        "action": "watching the sunrise over a vast reclaimed highway network stretching across the continent",
+        "scene_bg": "elevated highway bridge overlooking mountain horizon, brilliant golden sunrise, clear skies",
+        "search_queries": ["anime highway sunrise", "anime luxury rv", "anime vehicle sunrise", "anime futuristic truck"],
+        "title": ["TIER-3 MOTORHOME", "SUPREME HIGHWAY SOVEREIGN", "Chapters 96 – 100"],
+        "fallback_color": (45, 35, 25)
     }
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Shelter|Upgrade|Notice|Warning|Doomsday).*?(?:\]|】|〕|』|〗|］)", re.I)
+RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Upgrade|Notice|Warning|Survival).*?(?:\]|】|〕|』|〗|］)", re.I)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 WATERMARK_PATTERNS = [
     re.compile(r"\(End of this chapter\)", re.I),
@@ -240,7 +234,7 @@ def load_characters_and_vocatives(slug: str, base_defaults: dict) -> tuple:
                         "gender": cinfo.get("gender", "Male"),
                         "line_type": "Dialogue" if cinfo.get("role") != "system" else "System",
                         "voice": cinfo.get("voice", "en-US-GuyNeural"),
-                        "pitch": cinfo.get("pitch", "-2Hz"),
+                        "pitch": cinfo.get("pitch", "+0Hz"),
                         "rate": cinfo.get("rate", "+6%"),
                         "aliases": cinfo.get("aliases", [])
                     }
@@ -295,7 +289,7 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     paragraphs = [p for p in paragraphs if p and RE_ALPHANUM.search(p)]
 
     if not paragraphs:
-        paragraphs = [f"Chapter {ch_num}. Torrential rain continues pouring outside the fortress."]
+        paragraphs = [f"Chapter {ch_num}. The highway journey continues safely."]
 
     full_text = f"{title}.\n\n" + "\n\n".join(paragraphs)
 
@@ -326,63 +320,36 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int):
     return title, full_text, next_url
 
 
-def classify_rainstorm_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
+def classify_highway_dialogue(chunk: str, prev_narr: str, next_narr: str) -> str:
     chunk_lower = chunk.lower()
     prev_lower = prev_narr.lower()
     next_lower = next_narr.lower()
 
     if any(k in chunk_lower or k in prev_lower for k in [
-        "shelter upgrade", "system prompt", "ding!", "spatial dimension",
-        "air fortress module", "defense points increased"
+        "survival system", "upgrade successful", "rv blueprint", "material reward",
+        "system prompt", "ding!", "vehicle level increased"
     ]):
         return "system"
 
-    if re.search(r"\b(aunt\s+zhang|director\s+zhang|committee|middle-aged\s+woman\s+shouted)\b", prev_lower):
-        return "aunt_zhang"
-    if any(k in chunk_lower for k in [
-        "young man, have some conscience", "share your food", "neighborhood committee",
-        "you have so much food", "open the door and help everyone"
-    ]):
-        return "aunt_zhang"
+    if re.search(r"\b(su\s+qingqian|qingqian|she\s+asked|she\s+replied|she\s+whispered)\b", prev_lower):
+        return "su_qingqian"
+    if any(k in chunk_lower for k in ["brother lin", "boss", "let me check the radar", "supply box", "be careful"]):
+        return "su_qingqian"
 
-    if re.search(r"\b(girl\s+cried|woman\s+sobbed|she\s+begged|pleaded\s+tearfully)\b", prev_lower):
-        return "gold_digger_female"
-    if any(k in chunk_lower for k in [
-        "brother zhou, please let me in", "i'm freezing", "i can do anything for you", "save me"
-    ]):
-        return "gold_digger_female"
-
-    if re.search(r"\b(scavenger|raider|gang\s+leader|thug|neighbor\s+cursed|he\s+sneered|he\s+roared)\b", prev_lower):
-        return "neighbor_villain"
-    if any(k in chunk_lower for k in [
-        "smash the door", "kill him and take his food", "hand over the shelter",
-        "courting death", "shoot!", "he's just one person"
-    ]):
-        return "neighbor_villain"
-
-    if re.search(r"\b(aunt\s+zhang\s+said|aunt\s+zhang\s+screamed)\b", next_lower):
-        return "aunt_zhang"
-    if re.search(r"\b(lu\s+zhou\s+said|lu\s+zhou\s+sneered|he\s+replied|he\s+chuckled)\b", next_lower):
-        return "lu_zhou"
-    if re.search(r"\b(the\s+man\s+cursed|gang\s+leader\s+barked)\b", next_lower):
-        return "neighbor_villain"
-    if re.search(r"\b(she\s+sobbed|she\s+whimpered)\b", next_lower):
-        return "gold_digger_female"
+    if re.search(r"\b(lin\s+hui|he\s+said|he\s+commanded|he\s+shouted)\b", prev_lower):
+        return "lin_hui"
+    if re.search(r"\b(su\s+qingqian\s+said|she\s+said)\b", next_lower):
+        return "su_qingqian"
+    if re.search(r"\b(lin\s+hui\s+said|he\s+replied)\b", next_lower):
+        return "lin_hui"
 
     if any(k in chunk_lower for k in [
-        "get lost", "activate turrets", "upgrade the fortress", "electrify the fence",
-        "enjoy my hotpot", "none of my business", "fire"
+        "upgrade the rv", "step aside", "leave the supplies", "open fire",
+        "let's move", "third brother", "this highway"
     ]):
-        return "lu_zhou"
+        return "lin_hui"
 
-    if re.search(r"\b(lu\s+zhou|brother\s+zhou|boss\s+lu)\b", chunk_lower):
-        if any(k in chunk_lower for k in ["die", "kill", "hand over", "smash"]):
-            return "neighbor_villain"
-        if any(k in chunk_lower for k in ["save", "freeze", "cold", "please"]):
-            return "gold_digger_female"
-        return "aunt_zhang"
-
-    return "lu_zhou"
+    return "lin_hui"
 
 
 def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map: dict, voc_map: dict) -> list:
@@ -423,7 +390,7 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
                     next_narr = raw_tokens[fwd_idx]["text"][:75]
                     break
 
-            role_key = classify_rainstorm_dialogue(token["text"], prev_narr, next_narr)
+            role_key = classify_highway_dialogue(token["text"], prev_narr, next_narr)
 
             if role_key == "system":
                 staged_segments.append({"role_key": "system", "line_type": "System", "text": token["text"]})
@@ -444,7 +411,7 @@ def parse_chapter_to_staged_json(text: str, entity_mgr: EntityManager, char_map:
     line_seq = 1
     for seg in consolidated:
         rk = seg["role_key"]
-        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("lu_zhou", char_map["narrator"])))
+        role_meta = char_map.get(rk, char_map.get(rk.replace(" ", "_"), char_map.get("lin_hui", char_map["narrator"])))
         words = seg["text"].split()
         sub_chunks = []
         chunk_ceiling = MAX_NARRATION_MERGE_WORDS if seg["line_type"] == "Narration" else TARGET_DIALOGUE_CHUNK_WORDS
@@ -502,11 +469,12 @@ def ensure_cinzel_font() -> str:
 def construct_dynamic_scene_prompt(hero_desc: str, dynamic_action: str, scene_bg: str) -> str:
     cleaned_action = dynamic_action
     for forbidden in FORBIDDEN_TERMS:
-        cleaned_action = forbidden.sub("tactical survival gear", cleaned_action)
+        cleaned_action = forbidden.sub("tactical gear", cleaned_action)
     return (
         f"{hero_desc}, {cleaned_action}. "
         f"Background: {scene_bg}. "
-        f"Official manhwa webtoon cover art, cinematic atmospheric lighting, vibrant colors, ultra-detailed clean lineart, 8k resolution."
+        f"Detailed expressive anime face, sharp detailed eyes, distinct facial features, "
+        f"official manhwa cover art, vibrant colors, clean sharp lineart, 8k resolution, cinematic lighting."
     )
 
 
@@ -563,7 +531,7 @@ def fetch_flux_native_1080p(prompt: str, out_path: str, search_queries: list = N
         time.sleep(1)
 
     active_queries = list(search_queries) if search_queries else []
-    active_queries.extend(["anime flood city", "anime submerged city", "anime apocalypse fortress", "anime rain city"])
+    active_queries.extend(["anime highway sunrise", "anime camper van", "anime futuristic vehicle", "anime wasteland road"])
 
     for q in active_queries:
         try:
@@ -606,7 +574,7 @@ def apply_lower_third_vignette(base: Image.Image) -> Image.Image:
     vig_start = int(height * 0.82)
     for y in range(vig_start, height):
         alpha = int(80 * (((y - vig_start) / (height - vig_start)) ** 1.3))
-        v_draw.line([(0, y), (width, y)], fill=(12, 18, 24, alpha))
+        v_draw.line([(0, y), (width, y)], fill=(20, 15, 10, alpha))
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
@@ -614,7 +582,7 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     draw = ImageDraw.Draw(base)
     wx, wy = 55, 45
     crest_r = 22
-    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(35, 120, 190, 255), outline=(230, 245, 255, 255), width=2)
+    draw.ellipse([(wx - crest_r, wy - crest_r), (wx + crest_r, wy + crest_r)], fill=(210, 130, 40, 255), outline=(255, 245, 220, 255), width=2)
     star_font = None
     for fp in ["C:/Windows/Fonts/seguisym.ttf", "C:/Windows/Fonts/arial.ttf"]:
         if os.path.exists(fp):
@@ -635,10 +603,10 @@ def stamp_channel_watermark(base: Image.Image) -> Image.Image:
     name_font = ImageFont.truetype(name_fp, 36)
     handle_font = ImageFont.truetype(name_fp, 22)
     tx = wx + 36
-    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(10, 15, 25, 255), font=name_font)
+    draw.text((tx + 2, wy - 18 + 2), "Being a Bong", fill=(20, 10, 5, 255), font=name_font)
     draw.text((tx, wy - 18), "Being a Bong", fill=(255, 255, 255, 255), font=name_font)
-    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(8, 12, 20, 220), font=handle_font)
-    draw.text((tx, wy + 20), "@beingabong", fill=(180, 225, 255, 255), font=handle_font)
+    draw.text((tx + 1, wy + 20 + 1), "@beingabong", fill=(15, 8, 3, 220), font=handle_font)
+    draw.text((tx, wy + 20), "@beingabong", fill=(255, 220, 150, 255), font=handle_font)
     return base
 
 
@@ -675,8 +643,8 @@ def stamp_3d_metallic_flame_typography(base: Image.Image, lines: list) -> Image.
         text_h = bbox[3] - bbox[1]
         x = (width - text_w) // 2
         y = start_y + (i * line_spacing)
-        draw.text((x + 3, y + 4), line, font=active_font, fill=(15, 20, 30, 255), stroke_width=5, stroke_fill=(15, 20, 30, 255))
-        draw.text((x, y), line, font=active_font, fill=(25, 35, 55, 255), stroke_width=3, stroke_fill=(25, 35, 55, 255))
+        draw.text((x + 3, y + 4), line, font=active_font, fill=(30, 15, 5, 255), stroke_width=5, stroke_fill=(30, 15, 5, 255))
+        draw.text((x, y), line, font=active_font, fill=(45, 25, 10, 255), stroke_width=3, stroke_fill=(45, 25, 10, 255))
         palette = GRADIENT_PALETTES[min(i, len(GRADIENT_PALETTES) - 1)]
         grad_layer = create_vertical_gradient_text_mask(text_w + 20, text_h + 20, line, active_font, palette[0], palette[1])
         base.paste(grad_layer, (x, y), grad_layer)
@@ -712,7 +680,7 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str):
 def create_dynamic_outro_slate(out_path: str):
     if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
         return
-    base = Image.new("RGB", (1920, 1080), (16, 22, 32))
+    base = Image.new("RGB", (1920, 1080), (30, 20, 12))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
     draw = ImageDraw.Draw(base)
@@ -727,8 +695,8 @@ def create_dynamic_outro_slate(out_path: str):
         tw = bbox[2] - bbox[0]
         x = (1920 - tw) // 2
         y = 480 + (i * 80)
-        draw.text((x + 3, y + 4), txt, font=font, fill=(8, 12, 18, 255))
-        draw.text((x, y), txt, font=font, fill=(200, 230, 255, 255) if i == 0 else (255, 255, 255, 255))
+        draw.text((x + 3, y + 4), txt, font=font, fill=(15, 10, 5, 255))
+        draw.text((x, y), txt, font=font, fill=(255, 210, 140, 255) if i == 0 else (255, 255, 255, 255))
     base.convert("RGB").save(out_path, "JPEG", quality=95)
     print(f"[{NOVEL_SLUG}] [Outro Slate] Generated 15s outro card: '{out_path}'", flush=True)
 
@@ -737,29 +705,28 @@ def generate_50ch_ensemble_cover(slug: str, build_dir: str, master_cover_path: s
     print(f"\n[{slug}] [Phase 5] Synthesizing Multi-Character Master Cover from 50-Chapter Registry...", flush=True)
 
     ensemble_prompt = (
-        "Grand doomsday flood apocalypse anime ensemble composition, waist-up view. Confident hero Lu Zhou wearing black tactical jacket "
-        "stands on the bridge of a colossal hovering steel Air Fortress bristling with automated turrets. "
-        "In the stormy sky behind him, torrential rain falls into a completely submerged flooded city under lightning flashes, "
-        "high contrast dramatic lighting, clean sharp lineart, official manhwa cover art, vibrant colors, 8k resolution."
+        "Grand apocalyptic highway survival anime ensemble composition, waist-up view. Rugged hero Lin Hui and capable co-pilot "
+        "Su Qingqian standing confident in front of a massive futuristic armored RV motorhome equipped with heavy turrets. "
+        "Endless desert highway background at sunset, glowing holographic upgrade interfaces, official manhwa cover art, vibrant colors, 8k resolution."
     )
 
     raw_ensemble = os.path.join(build_dir, "raw_master_cover_ensemble.jpg")
-    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_queries=["anime air fortress flood apocalypse hero", "anime flying fortress sky", "anime flood city"])
+    fetch_flux_native_1080p(ensemble_prompt, raw_ensemble, search_queries=["anime apocalypse survival motorhome highway", "anime futuristic rv sunrise"])
 
     if os.path.exists(raw_ensemble) and os.path.getsize(raw_ensemble) > 10000:
         raw_img = Image.open(raw_ensemble).convert("RGBA")
         base = fit_and_crop_1080p(raw_img)
     else:
         print(f"[{slug}] [Cover Warning] Fallback applied for ensemble cover.", flush=True)
-        base = Image.new("RGBA", (1920, 1080), (25, 35, 45, 255))
+        base = Image.new("RGBA", (1920, 1080), (45, 30, 20, 255))
 
     base = base.filter(ImageFilter.UnsharpMask(radius=2.4, percent=180, threshold=2))
     base = apply_lower_third_vignette(base)
     base = stamp_channel_watermark(base)
 
     master_title_lines = [
-        "GLOBAL RAINSTORM: MY SHELTER",
-        "IS AN AIR FORTRESS",
+        "HIGHWAY SURVIVAL: MY RV",
+        "INFINITE EVOLUTION",
         "Complete Marathon • Ch. 51–100"
     ]
     base = stamp_3d_metallic_flame_typography(base, master_title_lines)
@@ -912,7 +879,7 @@ def assemble_multi_image_video(block_durations: dict, final_audio_path: str, out
 
 async def main():
     os.makedirs(BUILD_DIR, exist_ok=True)
-    print(f"=== Starting Global Rainstorm Air Fortress Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
+    print(f"=== Starting Highway Survival Pipeline: Ch.{START_CHAPTER}–{END_CHAPTER} ===", flush=True)
 
     char_map, voc_map = load_characters_and_vocatives(NOVEL_SLUG, BASE_CHARACTERS)
     entity_mgr = EntityManager(novel_slug=NOVEL_SLUG, build_dir=BUILD_DIR)
@@ -934,7 +901,7 @@ async def main():
                 print(f"[{NOVEL_SLUG}] [Cached Ch.{ch_num:03d}] {title} ({len(rows)} lines)", flush=True)
             else:
                 title, text, next_url = scrape_chapter_content(session, curr_url, ch_num)
-                entity_mgr.scan_chapter_for_entities(text, default_female_role="aunt_zhang", default_male_role="lu_zhou")
+                entity_mgr.scan_chapter_for_entities(text, default_female_role="su_qingqian", default_male_role="lin_hui")
                 rows = parse_chapter_to_staged_json(text, entity_mgr, char_map, voc_map)
                 with open(ch_json, "w", encoding="utf-8") as f:
                     json.dump(rows, f, indent=2, ensure_ascii=False)
