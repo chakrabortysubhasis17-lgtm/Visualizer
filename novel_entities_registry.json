@@ -1,119 +1,1121 @@
-"transforming-beasts-into-demons-the-beast-taming-immortal-clan-begins-as-hunters": {
+{
+"the-end-of-the-world-my-woman-is-a-billion-points-stronger": {
     "characters": {
-      "lu changsheng": {
+      "mc": {
         "gender": "Male",
         "role": "mc",
         "voice": "en-US-GuyNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
+          "host",
+          "reborn",
+          "protagonist",
+          "boss",
+          "brother"
+        ]
+      },
+      "female_lead": {
+        "gender": "Female",
+        "role": "overpowered_heroine",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "my woman",
+          "goddess",
+          "sister",
+          "miss",
+          "heroine"
+        ]
+      },
+      "doomsday_system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "system",
+          "doomsday system",
+          "gods' system",
+          "system prompt",
+          "world announcement",
+          "warning",
+          "ding"
+        ]
+      },
+      "ancient_gods": {
+        "gender": "Synthetic",
+        "role": "ancient_gods",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-12Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gods",
+          "primordial god",
+          "cosmic watcher",
+          "divine entity"
+        ]
+      },
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      }
+    },
+    "vocatives": {
+      "boss": {
+        "speaker_gender": "Female",
+        "role": "overpowered_heroine"
+      },
+      "brother": {
+        "speaker_gender": "Female",
+        "role": "overpowered_heroine"
+      }
+    }
+  },
+  "all-gods-starting-with-sss-level-talent": {
+    "characters": {
+      "yang fan": {
+        "gender": "Male",
+        "role": "yang_fan",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "yang fan",
+          "brother fan",
+          "master yang",
+          "host",
+          "brother yang",
+          "god of evolution",
+          "chairman yang",
+          "president yang"
+        ]
+      },
+      "lu wan": {
+        "gender": "Female",
+        "role": "lu_wan",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "wan'er",
+          "wife wan'er",
+          "female president",
+          "director lu",
+          "miss lu",
+          "president lu",
+          "ceo lu"
+        ]
+      }
+    },
+    "vocatives": {
+      "husband": {
+        "speaker_gender": "Female",
+        "role": "lu_wan"
+      }
+    }
+  },
+  "highway-survival-for-all-my-rvs-infinite-evolution": {
+    "characters": {
+      "lin hui": {
+        "gender": "Male",
+        "role": "lin_hui",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lin hui",
+          "brother lin",
+          "boss lin",
+          "driver lin",
+          "host"
+        ]
+      },
+      "su qingqian": {
+        "gender": "Female",
+        "role": "su_qingqian",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "su qingqian",
+          "qingqian",
+          "miss su",
+          "co-pilot"
+        ]
+      },
+      "li feifei": {
+        "gender": "Female",
+        "role": "li_feifei",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "li feifei",
+          "feifei"
+        ]
+      },
+      "yang ruoling": {
+        "gender": "Female",
+        "role": "yang_ruoling",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "yang ruoling",
+          "ruoling"
+        ]
+      },
+      "guo tiantian": {
+        "gender": "Female",
+        "role": "guo_tiantian",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+6%",
+        "aliases": [
+          "guo tiantian",
+          "tiantian"
+        ]
+      },
+      "yang antong": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "yang antong"
+        ]
+      },
+      "zhang yaoyang": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "zhang yaoyang"
+        ]
+      },
+      "cao hui": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "cao hui",
+          "cao"
+        ]
+      }
+    },
+    "vocatives": {
+      "boss": {
+        "speaker_gender": "Female",
+        "role": "su_qingqian"
+      },
+      "brother lin": {
+        "speaker_gender": "Female",
+        "role": "su_qingqian"
+      }
+    }
+  },
+  "after-i-hanged-up-i-became-the-strongest-beast-master": {
+    "characters": {
+      "chen xing": {
+        "gender": "Male",
+        "role": "chen_xing",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "chen xing",
+          "brother xing",
+          "student chen",
+          "tamer chen",
+          "host"
+        ]
+      },
+      "gluttony": {
+        "gender": "Synthetic",
+        "role": "pet_gluttony",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+6%",
+        "aliases": [
+          "gluttony",
+          "saltwater crocodile",
+          "taotie",
+          "croc"
+        ]
+      }
+    },
+    "vocatives": {
+      "teacher lu": {
+        "speaker_gender": "Male",
+        "role": "chen_xing"
+      },
+      "brother xing": {
+        "speaker_gender": "Male",
+        "role": "wang_qiming"
+      }
+    }
+  },
+  "global-rainstorm-my-shelter-is-an-air-fortress": {
+    "characters": {
+      "lu zhou": {
+        "gender": "Male",
+        "role": "lu_zhou",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lu zhou",
+          "brother zhou",
+          "boss lu",
+          "shelter lord",
+          "host"
+        ]
+      },
+      "aunt zhang": {
+        "gender": "Female",
+        "role": "aunt_zhang",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "aunt zhang",
+          "director zhang",
+          "committee head"
+        ]
+      },
+      "boss xu": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "boss xu"
+        ]
+      },
+      "liu shishi": {
+        "gender": "Female",
+        "role": "liu_shishi",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "liu shishi",
+          "shishi"
+        ]
+      },
+      "fortress system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "fortress system",
+          "system prompt",
+          "ding",
+          "fortress core",
+          "air fortress module"
+        ]
+      }
+    },
+    "vocatives": {
+      "lu zhou": {
+        "speaker_gender": "Female",
+        "role": "neighbor_female"
+      },
+      "brother zhou": {
+        "speaker_gender": "Female",
+        "role": "neighbor_female"
+      },
+      "boss lu": {
+        "speaker_gender": "Male",
+        "role": "scavenger"
+      }
+    }
+  },
+  "game-arrives-i-can-evolve-my-talents-infinitely": {
+    "characters": {
+      "zhou han": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "zhou han",
+          "xia ming",
+          "brother han",
+          "boss zhou",
+          "master zhou",
+          "player zhou han",
+          "god zhou",
+          "host"
+        ]
+      },
+      "game system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "game system",
+          "system",
+          "evolution system",
+          "system announcement",
+          "world announcement",
+          "server announcement",
+          "system prompt",
+          "talent system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "roxy": {
+        "gender": "Female",
+        "role": "water_saintess",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "roxy",
+          "saintess roxy",
+          "water blue saintess",
+          "miss roxy",
+          "saintess"
+        ]
+      },
+      "felicia": {
+        "gender": "Female",
+        "role": "ancient_demigod",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+4%",
+        "aliases": [
+          "felicia",
+          "ancestor",
+          "demigod felicia",
+          "ancestor felicia"
+        ]
+      },
+      "xiang yinsha": {
+        "gender": "Female",
+        "role": "high_tier_ally",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+1Hz",
+        "rate": "+5%",
+        "aliases": [
+          "xiang yinsha",
+          "yin sha",
+          "yinsha",
+          "miss xiang"
+        ]
+      },
+      "xiang nana": {
+        "gender": "Female",
+        "role": "companion",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+4Hz",
+        "rate": "+7%",
+        "aliases": [
+          "xiang nana",
+          "nana",
+          "miss nana"
+        ]
+      },
+      "fourth prince": {
+        "gender": "Male",
+        "role": "imperial_prince",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+3%",
+        "aliases": [
+          "fourth prince",
+          "prince",
+          "his highness",
+          "fourth highness"
+        ]
+      },
+      "first prince": {
+        "gender": "Male",
+        "role": "traitor_prince",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "first prince",
+          "eldest prince",
+          "eldest brother"
+        ]
+      },
+      "constantine": {
+        "gender": "Male",
+        "role": "enemy_general",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "constantine",
+          "general constantine",
+          "commander constantine"
+        ]
+      },
+      "grand elder": {
+        "gender": "Male",
+        "role": "sect_elder",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "+2%",
+        "aliases": [
+          "grand elder",
+          "elder",
+          "first elder",
+          "supreme elder"
+        ]
+      },
+      "hoffman": {
+        "gender": "Male",
+        "role": "canaan_leader",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-3Hz",
+        "rate": "+4%",
+        "aliases": [
+          "hoffman",
+          "duke hoffman",
+          "lord hoffman"
+        ]
+      },
+      "black moon": {
+        "gender": "Male",
+        "role": "alliance_master",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-5Hz",
+        "rate": "+4%",
+        "aliases": [
+          "black moon",
+          "alliance master black moon",
+          "black moon leader"
+        ]
+      },
+      "han xue": {
+        "gender": "Female",
+        "role": "heroine_mage",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "han xue",
+          "xue'er",
+          "miss han",
+          "ice mage"
+        ]
+      },
+      "jiang ning": {
+        "gender": "Female",
+        "role": "female_companion",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+6%",
+        "aliases": [
+          "jiang ning",
+          "ning'er",
+          "miss jiang"
+        ]
+      },
+      "leina": {
+        "gender": "Female",
+        "role": "female_companion",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+1Hz",
+        "rate": "+4%",
+        "aliases": [
+          "leina",
+          "lena",
+          "reina"
+        ]
+      },
+      "dungeon boss": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": [
+          "abyssal lord",
+          "dungeon boss",
+          "beast king",
+          "shadow dragon",
+          "death knight"
+        ]
+      },
+      "canaan": {
+        "gender": "Male",
+        "role": "canaan",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "canaan"
+        ]
+      },
+      "lord lid": {
+        "gender": "Male",
+        "role": "lord_lid",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lord lid"
+        ]
+      },
+      "pope": {
+        "gender": "Male",
+        "role": "pope",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "pope"
+        ]
+      },
+      "wang luo": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "wang luo"
+        ]
+      },
+      "har": {
+        "gender": "Male",
+        "role": "har",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "har"
+        ]
+      },
+      "legendary souls": {
+        "gender": "Male",
+        "role": "legendary_souls",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "legendary souls"
+        ]
+      },
+      "gloria": {
+        "gender": "Male",
+        "role": "gloria",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "gloria"
+        ]
+      },
+      "legendary soul": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "legendary soul"
+        ]
+      },
+      "xiang hongling": {
+        "gender": "Male",
+        "role": "xiang_hongling",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "xiang hongling"
+        ]
+      },
+      "transfer players": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "transfer players"
+        ]
+      },
+      "some": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "some"
+        ]
+      }
+    },
+    "vocatives": {
+      "master": {
+        "speaker_gender": "Female",
+        "role": "high_tier_ally"
+      },
+      "my lord": {
+        "speaker_gender": "Female",
+        "role": "companion"
+      },
+      "ancestor": {
+        "speaker_gender": "Female",
+        "role": "water_saintess"
+      },
+      "brother han": {
+        "speaker_gender": "Female",
+        "role": "heroine_mage"
+      },
+      "mr. li": {
+        "speaker_gender": "Male",
+        "role": "imperial_prince"
+      }
+    }
+  },
+  "transforming-beasts-into-demons-the-beast-taming-immortal-clan-begins-as-hunters": {
+    "characters": {
+      "zhao fangnian": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "zhao fangnian",
+          "fangnian",
+          "brother fangnian",
+          "brother nian",
+          "hunter zhao",
+          "dad",
+          "father",
+          "husband",
           "lu changsheng",
           "changsheng",
-          "hunter lu",
-          "brother changsheng",
           "patriarch",
           "clan head",
           "master lu",
           "host"
         ]
       },
-      "myriad beast stele": {
-        "gender": "Synthetic",
-        "role": "stele_spirit",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
-        "aliases": [
-          "myriad beast stele",
-          "beast stele",
-          "ancient stele",
-          "stele spirit",
-          "mysterious stele",
-          "demon stele",
-          "stele prompt",
-          "bloodline resonance"
-        ]
-      },
-      "lu miaoge": {
+      "huang wanyun": {
         "gender": "Female",
-        "role": "clan_maiden",
+        "role": "wife",
         "voice": "en-US-JennyNeural",
         "pitch": "+2Hz",
         "rate": "+6%",
         "aliases": [
+          "huang wanyun",
+          "wanyun",
+          "wife",
+          "mom",
+          "mother",
+          "sister wanyun",
           "lu miaoge",
-          "miaoge",
-          "sister miaoge",
-          "fairy lu",
-          "miss lu",
-          "cousin"
+          "miaoge"
         ]
       },
-      "elder lu": {
+      "zhao zhengze": {
         "gender": "Male",
-        "role": "clan_elder",
-        "voice": "en-US-RogerNeural",
-        "pitch": "-8Hz",
-        "rate": "+2%",
+        "role": "eldest_son",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+5Hz",
+        "rate": "+6%",
         "aliases": [
-          "elder lu",
-          "old hunter",
-          "clan elder",
-          "fourth uncle",
-          "second grandfather",
-          "village chief",
-          "father"
+          "zhao zhengze",
+          "zhengze",
+          "big brother",
+          "elder brother",
+          "son",
+          "disciple"
         ]
       },
-      "arrogant cultivator": {
+      "zhao zhengchuan": {
         "gender": "Male",
-        "role": "arrogant_cultivator",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
+        "role": "second_son",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+7Hz",
+        "rate": "+6%",
         "aliases": [
-          "arrogant cultivator",
-          "immortal master",
-          "sect disciple",
-          "rogue cultivator",
-          "young master chen",
-          "cultivator zhao",
-          "daoist"
+          "zhao zhengchuan",
+          "zhengchuan",
+          "younger brother",
+          "second son",
+          "little brother"
         ]
       },
-      "shadow demon wolf": {
+      "xiao hei": {
         "gender": "Synthetic",
         "role": "demon_pet",
         "voice": "en-US-SteffanNeural",
         "pitch": "-14Hz",
         "rate": "+4%",
         "aliases": [
-          "shadow demon wolf",
-          "demon wolf",
+          "xiao hei",
+          "xiaohei",
           "little black",
-          "black wolf",
-          "azure falcon",
-          "spirit dog",
-          "beast king"
+          "black dog",
+          "hunting dog",
+          "demon dog",
+          "shadow demon wolf"
+        ]
+      },
+      "xiao cai": {
+        "gender": "Synthetic",
+        "role": "demon_pet",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-10Hz",
+        "rate": "+6%",
+        "aliases": [
+          "xiao cai",
+          "xiaocai",
+          "little colorful",
+          "crow",
+          "spirit crow",
+          "azure falcon"
+        ]
+      },
+      "zhang yidao": {
+        "gender": "Male",
+        "role": "butcher_friend",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": [
+          "zhang yidao",
+          "old zhang",
+          "brother zhang",
+          "butcher zhang"
+        ]
+      },
+      "yang qingzhou": {
+        "gender": "Male",
+        "role": "martial_master",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "yang qingzhou",
+          "head yang",
+          "master",
+          "school head"
+        ]
+      },
+      "constable li": {
+        "gender": "Male",
+        "role": "constable",
+        "voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "constable li",
+          "officer li",
+          "lord li",
+          "master hu"
+        ]
+      },
+      "li youtian": {
+        "gender": "Male",
+        "role": "villain_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "li youtian",
+          "li pockmark",
+          "pockmark li"
+        ]
+      },
+      "wang shipeng": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "wang shipeng",
+          "young master wang",
+          "eldest young master",
+          "young master"
+        ]
+      },
+      "myriad beast stele": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "myriad beast stele",
+          "beast stele",
+          "myriad beast grotto-heaven",
+          "ancient stele",
+          "stele spirit",
+          "stele prompt",
+          "bloodline resonance",
+          "ding"
+        ]
+      },
+      "chen dan": {
+        "gender": "Male",
+        "role": "chen_dan",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "chen dan"
+        ]
+      },
+      "wang": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "wang"
+        ]
+      },
+      "martial artists": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "martial artists"
+        ]
+      },
+      "martial artist": {
+        "gender": "Male",
+        "role": "martial_artist",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "martial artist"
+        ]
+      },
+      "beast taming": {
+        "gender": "Male",
+        "role": "beast_taming",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "beast taming"
+        ]
+      },
+      "yao beast": {
+        "gender": "Male",
+        "role": "yao_beast",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "yao beast"
+        ]
+      },
+      "myriad beast": {
+        "gender": "Male",
+        "role": "myriad_beast",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "myriad beast"
+        ]
+      },
+      "origin monkey": {
+        "gender": "Male",
+        "role": "origin_monkey",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "origin monkey"
+        ]
+      },
+      "immortals": {
+        "gender": "Male",
+        "role": "immortals",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "immortals"
+        ]
+      },
+      "wang zhenlin": {
+        "gender": "Male",
+        "role": "wang_zhenlin",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "wang zhenlin"
+        ]
+      },
+      "zhao": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "zhao"
+        ]
+      },
+      "zhao zezhe": {
+        "gender": "Male",
+        "role": "child_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+4%",
+        "aliases": [
+          "zhao zezhe"
+        ]
+      },
+      "fu yourong": {
+        "gender": "Male",
+        "role": "child_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+4%",
+        "aliases": [
+          "fu yourong"
+        ]
+      },
+      "yao beasts": {
+        "gender": "Male",
+        "role": "yao_beasts",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "yao beasts"
+        ]
+      },
+      "military official": {
+        "gender": "Male",
+        "role": "military_official",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "military official"
+        ]
+      },
+      "fu": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "fu"
+        ]
+      },
+      "ten thousand": {
+        "gender": "Male",
+        "role": "ten_thousand",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "ten thousand"
+        ]
+      },
+      "fu dao": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-10Hz",
+        "rate": "+2%",
+        "aliases": [
+          "fu dao"
+        ]
+      },
+      "li qingshan": {
+        "gender": "Male",
+        "role": "li_qingshan",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "li qingshan"
+        ]
+      },
+      "magical artifact": {
+        "gender": "Male",
+        "role": "child_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+4%",
+        "aliases": [
+          "magical artifact"
+        ]
+      },
+      "demonic path": {
+        "gender": "Male",
+        "role": "child_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+8Hz",
+        "rate": "+4%",
+        "aliases": [
+          "demonic path"
         ]
       }
     },
     "vocatives": {
-      "clan head": {
-        "speaker_gender": "Male",
-        "role": "clan_elder"
-      },
-      "brother changsheng": {
+      "brother nian": {
         "speaker_gender": "Female",
-        "role": "clan_maiden"
+        "role": "wife"
       },
-      "immortal master": {
+      "dad": {
         "speaker_gender": "Male",
-        "role": "mc"
+        "role": "eldest_son"
       },
       "father": {
+        "speaker_gender": "Male",
+        "role": "eldest_son"
+      },
+      "master": {
+        "speaker_gender": "Male",
+        "role": "eldest_son"
+      },
+      "brother fangnian": {
+        "speaker_gender": "Male",
+        "role": "butcher_friend"
+      },
+      "constable li": {
         "speaker_gender": "Male",
         "role": "mc"
       }
     }
   }
+}
