@@ -1,5 +1,5 @@
 {
-"the-end-of-the-world-my-woman-is-a-billion-points-stronger": {
+  "the-end-of-the-world-my-woman-is-a-billion-points-stronger": {
     "characters": {
       "mc": {
         "gender": "Male",
@@ -77,6 +77,176 @@
       "brother": {
         "speaker_gender": "Female",
         "role": "overpowered_heroine"
+      }
+    }
+  },
+  "national-fate-marriage-the-elf-queen-is-pregnant-at-the-start": {
+    "characters": {
+      "xiao haoyan": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "xiao haoyan",
+          "god xiao",
+          "brother xiao",
+          "player xiao",
+          "host",
+          "husband",
+          "xiao"
+        ]
+      },
+      "elf queen": {
+        "gender": "Female",
+        "role": "elf_queen",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "elf queen",
+          "queen",
+          "her majesty",
+          "queen of the elves",
+          "wife"
+        ]
+      },
+      "swarm queen": {
+        "gender": "Female",
+        "role": "swarm_queen",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+4%",
+        "aliases": [
+          "swarm queen",
+          "queen of the swarm",
+          "zerg queen",
+          "insect queen",
+          "bug queen",
+          "mother queen"
+        ]
+      },
+      "liya": {
+        "gender": "Female",
+        "role": "companion_liya",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+7%",
+        "aliases": [
+          "liya",
+          "sister liya",
+          "little sister liya"
+        ]
+      },
+      "yun shu": {
+        "gender": "Female",
+        "role": "empress_yun_shu",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+4%",
+        "aliases": [
+          "yun shu",
+          "empress yun shu",
+          "aloof empress",
+          "empress"
+        ]
+      },
+      "tyche": {
+        "gender": "Female",
+        "role": "goddess_tyche",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+6Hz",
+        "rate": "+8%",
+        "aliases": [
+          "tyche",
+          "goddess of luck",
+          "luck goddess"
+        ]
+      },
+      "national fate system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "national fate system",
+          "marriage game system",
+          "system",
+          "hint",
+          "hidden hint",
+          "prompt",
+          "ding",
+          "world announcement",
+          "national destiny game"
+        ]
+      },
+      "xiao sa": {
+        "gender": "Male",
+        "role": "commentator_xiao_sa",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+4%",
+        "aliases": [
+          "xiao sa",
+          "host xiao sa",
+          "cctv host"
+        ]
+      },
+      "viktor": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "viktor",
+          "brother asan",
+          "player viktor"
+        ]
+      },
+      "netizens": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "netizens",
+          "viewers",
+          "kyushu netizens",
+          "bullet screen",
+          "audience"
+        ]
+      },
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      }
+    },
+    "vocatives": {
+      "husband": {
+        "speaker_gender": "Female",
+        "role": "elf_queen"
+      },
+      "god xiao": {
+        "speaker_gender": "Male",
+        "role": "panicked_mob"
+      },
+      "brother xiao": {
+        "speaker_gender": "Female",
+        "role": "companion_liya"
+      },
+      "queen": {
+        "speaker_gender": "Male",
+        "role": "mc"
       }
     }
   },
@@ -271,6 +441,16 @@
   },
   "global-rainstorm-my-shelter-is-an-air-fortress": {
     "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
       "lu zhou": {
         "gender": "Male",
         "role": "lu_zhou",
@@ -282,7 +462,64 @@
           "brother zhou",
           "boss lu",
           "shelter lord",
+          "fortress commander",
+          "captain lu",
           "host"
+        ]
+      },
+      "fortress system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "fortress system",
+          "system prompt",
+          "ding",
+          "fortress core",
+          "air fortress module",
+          "spatial warp module",
+          "warp engine",
+          "abyssal scanner",
+          "defense core"
+        ]
+      },
+      "liu shishi": {
+        "gender": "Female",
+        "role": "liu_shishi",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "liu shishi",
+          "shishi",
+          "deputy liu"
+        ]
+      },
+      "boss xu": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "boss xu",
+          "xu wan",
+          "director xu"
+        ]
+      },
+      "chu rou": {
+        "gender": "Female",
+        "role": "medical_officer",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+1Hz",
+        "rate": "+5%",
+        "aliases": [
+          "chu rou",
+          "doctor chu",
+          "officer chu",
+          "miss chu"
         ]
       },
       "aunt zhang": {
@@ -297,54 +534,87 @@
           "committee head"
         ]
       },
-      "boss xu": {
-        "gender": "Female",
-        "role": "goddess_peer",
-        "voice": "en-US-JennyNeural",
+      "abyssal lord": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": [
+          "abyssal lord",
+          "eye of the abyss",
+          "deep sea leviathan",
+          "abyssal kraken",
+          "mutant behemoth",
+          "sea beast sovereign"
+        ]
+      },
+      "fleet commander": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "+2%",
+        "aliases": [
+          "fleet commander",
+          "admiral",
+          "carrier commander",
+          "battleship captain",
+          "shelter alliance leader"
+        ]
+      },
+      "raider captain": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "raider captain",
+          "pirate leader",
+          "scavenger boss",
+          "mutant raider"
+        ]
+      },
+      "survivors": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
         "pitch": "+2Hz",
         "rate": "+8%",
         "aliases": [
-          "boss xu"
-        ]
-      },
-      "liu shishi": {
-        "gender": "Female",
-        "role": "liu_shishi",
-        "voice": "en-US-JennyNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "liu shishi",
-          "shishi"
-        ]
-      },
-      "fortress system": {
-        "gender": "Synthetic",
-        "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
-        "aliases": [
-          "fortress system",
-          "system prompt",
-          "ding",
-          "fortress core",
-          "air fortress module"
+          "survivors",
+          "panicked survivors",
+          "refugees",
+          "crew members",
+          "scavengers"
         ]
       }
     },
     "vocatives": {
-      "lu zhou": {
-        "speaker_gender": "Female",
-        "role": "neighbor_female"
-      },
       "brother zhou": {
         "speaker_gender": "Female",
-        "role": "neighbor_female"
+        "role": "liu_shishi"
       },
       "boss lu": {
         "speaker_gender": "Male",
-        "role": "scavenger"
+        "role": "survivors"
+      },
+      "shelter lord": {
+        "speaker_gender": "Male",
+        "role": "survivors"
+      },
+      "commander": {
+        "speaker_gender": "Female",
+        "role": "chu_rou"
+      },
+      "captain": {
+        "speaker_gender": "Male",
+        "role": "survivors"
+      },
+      "my lord": {
+        "speaker_gender": "Female",
+        "role": "liu_shishi"
       }
     }
   },
@@ -436,6 +706,28 @@
           "xiang nana",
           "nana",
           "miss nana"
+        ]
+      },
+      "sophie": {
+        "gender": "Female",
+        "role": "merchant_sophie",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+6%",
+        "aliases": [
+          "sophie",
+          "miss sophie"
+        ]
+      },
+      "soya": {
+        "gender": "Female",
+        "role": "merchant_soya",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "soya",
+          "miss soya"
         ]
       },
       "fourth prince": {
@@ -561,6 +853,20 @@
           "beast king",
           "shadow dragon",
           "death knight"
+        ]
+      },
+      "upper realm being": {
+        "gender": "Synthetic",
+        "role": "ancient_gods",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-12Hz",
+        "rate": "-4%",
+        "aliases": [
+          "upper realm being",
+          "upper realm envoy",
+          "radiant existence",
+          "cosmic god",
+          "upper realm messenger"
         ]
       },
       "canaan": {
@@ -694,6 +1000,10 @@
       "mr. li": {
         "speaker_gender": "Male",
         "role": "imperial_prince"
+      },
+      "god zhou": {
+        "speaker_gender": "Male",
+        "role": "transfer players"
       }
     }
   },
@@ -766,6 +1076,43 @@
           "younger brother",
           "second son",
           "little brother"
+        ]
+      },
+      "zhao xingfeng": {
+        "gender": "Male",
+        "role": "zhao_xingfeng",
+        "voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "zhao xingfeng",
+          "xingfeng",
+          "nephew xingfeng",
+          "brother xingfeng"
+        ]
+      },
+      "city lord": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "city lord",
+          "lord of linglan city",
+          "city lord linglan",
+          "lord linglan"
+        ]
+      },
+      "bai feng": {
+        "gender": "Female",
+        "role": "goddess_peer",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "bai feng",
+          "miss bai"
         ]
       },
       "xiao hei": {
@@ -1113,6 +1460,14 @@
         "role": "butcher_friend"
       },
       "constable li": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      },
+      "xingfeng": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      },
+      "city lord": {
         "speaker_gender": "Male",
         "role": "mc"
       }
