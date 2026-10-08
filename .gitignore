@@ -5,3 +5,4 @@ __pycache__/
 *.mp4
 *.srt
 youtube_*
+api_credentials.json

@@ -534,7 +534,7 @@
           "committee head"
         ]
       },
-      "abyssal lord": {
+      "abyssal_lord": {
         "gender": "Synthetic",
         "role": "dungeon_boss",
         "voice": "en-US-SteffanNeural",
@@ -546,7 +546,9 @@
           "deep sea leviathan",
           "abyssal kraken",
           "mutant behemoth",
-          "sea beast sovereign"
+          "sea beast sovereign",
+          "abyssal divinity",
+          "godhead"
         ]
       },
       "fleet commander": {
@@ -868,116 +870,6 @@
           "cosmic god",
           "upper realm messenger"
         ]
-      },
-      "canaan": {
-        "gender": "Male",
-        "role": "canaan",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "canaan"
-        ]
-      },
-      "lord lid": {
-        "gender": "Male",
-        "role": "lord_lid",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "lord lid"
-        ]
-      },
-      "pope": {
-        "gender": "Male",
-        "role": "pope",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "pope"
-        ]
-      },
-      "wang luo": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "wang luo"
-        ]
-      },
-      "har": {
-        "gender": "Male",
-        "role": "har",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "har"
-        ]
-      },
-      "legendary souls": {
-        "gender": "Male",
-        "role": "legendary_souls",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "legendary souls"
-        ]
-      },
-      "gloria": {
-        "gender": "Male",
-        "role": "gloria",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "gloria"
-        ]
-      },
-      "legendary soul": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "legendary soul"
-        ]
-      },
-      "xiang hongling": {
-        "gender": "Male",
-        "role": "xiang_hongling",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "xiang hongling"
-        ]
-      },
-      "transfer players": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "transfer players"
-        ]
-      },
-      "some": {
-        "gender": "Male",
-        "role": "corporate_boss",
-        "voice": "en-US-RogerNeural",
-        "pitch": "-10Hz",
-        "rate": "+2%",
-        "aliases": [
-          "some"
-        ]
       }
     },
     "vocatives": {
@@ -996,14 +888,6 @@
       "brother han": {
         "speaker_gender": "Female",
         "role": "heroine_mage"
-      },
-      "mr. li": {
-        "speaker_gender": "Male",
-        "role": "imperial_prince"
-      },
-      "god zhou": {
-        "speaker_gender": "Male",
-        "role": "transfer players"
       }
     }
   },
@@ -1104,17 +988,6 @@
           "lord linglan"
         ]
       },
-      "bai feng": {
-        "gender": "Female",
-        "role": "goddess_peer",
-        "voice": "en-US-JennyNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "bai feng",
-          "miss bai"
-        ]
-      },
       "xiao hei": {
         "gender": "Synthetic",
         "role": "demon_pet",
@@ -1181,33 +1054,7 @@
         "aliases": [
           "constable li",
           "officer li",
-          "lord li",
-          "master hu"
-        ]
-      },
-      "li youtian": {
-        "gender": "Male",
-        "role": "villain_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "li youtian",
-          "li pockmark",
-          "pockmark li"
-        ]
-      },
-      "wang shipeng": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+4Hz",
-        "rate": "+8%",
-        "aliases": [
-          "wang shipeng",
-          "young master wang",
-          "eldest young master",
-          "young master"
+          "lord li"
         ]
       },
       "myriad beast stele": {
@@ -1225,216 +1072,6 @@
           "stele prompt",
           "bloodline resonance",
           "ding"
-        ]
-      },
-      "chen dan": {
-        "gender": "Male",
-        "role": "chen_dan",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "chen dan"
-        ]
-      },
-      "wang": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "wang"
-        ]
-      },
-      "martial artists": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "martial artists"
-        ]
-      },
-      "martial artist": {
-        "gender": "Male",
-        "role": "martial_artist",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "martial artist"
-        ]
-      },
-      "beast taming": {
-        "gender": "Male",
-        "role": "beast_taming",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "beast taming"
-        ]
-      },
-      "yao beast": {
-        "gender": "Male",
-        "role": "yao_beast",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "yao beast"
-        ]
-      },
-      "myriad beast": {
-        "gender": "Male",
-        "role": "myriad_beast",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "myriad beast"
-        ]
-      },
-      "origin monkey": {
-        "gender": "Male",
-        "role": "origin_monkey",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "origin monkey"
-        ]
-      },
-      "immortals": {
-        "gender": "Male",
-        "role": "immortals",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "immortals"
-        ]
-      },
-      "wang zhenlin": {
-        "gender": "Male",
-        "role": "wang_zhenlin",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "wang zhenlin"
-        ]
-      },
-      "zhao": {
-        "gender": "Male",
-        "role": "arrogant_scion",
-        "voice": "en-US-EricNeural",
-        "pitch": "+6Hz",
-        "rate": "+10%",
-        "aliases": [
-          "zhao"
-        ]
-      },
-      "zhao zezhe": {
-        "gender": "Male",
-        "role": "child_character",
-        "voice": "en-US-AnaNeural",
-        "pitch": "+8Hz",
-        "rate": "+4%",
-        "aliases": [
-          "zhao zezhe"
-        ]
-      },
-      "fu yourong": {
-        "gender": "Male",
-        "role": "child_character",
-        "voice": "en-US-AnaNeural",
-        "pitch": "+8Hz",
-        "rate": "+4%",
-        "aliases": [
-          "fu yourong"
-        ]
-      },
-      "yao beasts": {
-        "gender": "Male",
-        "role": "yao_beasts",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "yao beasts"
-        ]
-      },
-      "military official": {
-        "gender": "Male",
-        "role": "military_official",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "military official"
-        ]
-      },
-      "fu": {
-        "gender": "Male",
-        "role": "corporate_boss",
-        "voice": "en-US-RogerNeural",
-        "pitch": "-10Hz",
-        "rate": "+2%",
-        "aliases": [
-          "fu"
-        ]
-      },
-      "ten thousand": {
-        "gender": "Male",
-        "role": "ten_thousand",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "ten thousand"
-        ]
-      },
-      "fu dao": {
-        "gender": "Male",
-        "role": "corporate_boss",
-        "voice": "en-US-RogerNeural",
-        "pitch": "-10Hz",
-        "rate": "+2%",
-        "aliases": [
-          "fu dao"
-        ]
-      },
-      "li qingshan": {
-        "gender": "Male",
-        "role": "li_qingshan",
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "aliases": [
-          "li qingshan"
-        ]
-      },
-      "magical artifact": {
-        "gender": "Male",
-        "role": "child_character",
-        "voice": "en-US-AnaNeural",
-        "pitch": "+8Hz",
-        "rate": "+4%",
-        "aliases": [
-          "magical artifact"
-        ]
-      },
-      "demonic path": {
-        "gender": "Male",
-        "role": "child_character",
-        "voice": "en-US-AnaNeural",
-        "pitch": "+8Hz",
-        "rate": "+4%",
-        "aliases": [
-          "demonic path"
         ]
       }
     },
@@ -1458,18 +1095,1129 @@
       "brother fangnian": {
         "speaker_gender": "Male",
         "role": "butcher_friend"
+      }
+    }
+  },
+  "game-descends-from-vampire-bat-to-loli-tyrant": {
+    "characters": {
+      "mc": {
+        "gender": "Female",
+        "role": "mc",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+5Hz",
+        "rate": "+6%",
+        "aliases": [
+          "mo wu",
+          "ink dance",
+          "she",
+          "loli",
+          "little girl",
+          "white hair",
+          "bat tyrant",
+          "tyrant"
+        ]
       },
-      "constable li": {
-        "speaker_gender": "Male",
-        "role": "mc"
+      "main_god_system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "system",
+          "main god system",
+          "main god",
+          "notice",
+          "warning",
+          "prompt",
+          "evolution",
+          "devour",
+          "ding"
+        ]
       },
-      "xingfeng": {
-        "speaker_gender": "Male",
-        "role": "mc"
+      "hunter_leader": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "hunter leader",
+          "jason",
+          "jack",
+          "boss",
+          "hunter"
+        ]
       },
-      "city lord": {
+      "allied_subordinate": {
+        "gender": "Female",
+        "role": "companion",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "allied hunter",
+          "girl",
+          "sister",
+          "comrade"
+        ]
+      },
+      "general": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "commander",
+          "general",
+          "officer"
+        ]
+      },
+      "panicked_mob": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "panicked players",
+          "survivor",
+          "crowd",
+          "players",
+          "hunters"
+        ]
+      },
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      }
+    },
+    "vocatives": {
+      "boss": {
+        "speaker_gender": "Female",
+        "role": "companion"
+      },
+      "lady tyrant": {
         "speaker_gender": "Male",
-        "role": "mc"
+        "role": "panicked_mob"
+      }
+    }
+  },
+  "lord-start-in-exile-and-build-an-immortal-dragon-kingdom": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lord",
+          "my lord",
+          "exiled lord",
+          "young lord",
+          "prince",
+          "host",
+          "master",
+          "commander",
+          "boss"
+        ]
+      },
+      "divine_oracle": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "divine oracle",
+          "oracle",
+          "system",
+          "first oracle",
+          "second oracle",
+          "third oracle",
+          "system prompt",
+          "prompt",
+          "world announcement",
+          "ding"
+        ]
+      },
+      "dragon_companion": {
+        "gender": "Synthetic",
+        "role": "pet_dragon",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-12Hz",
+        "rate": "+4%",
+        "aliases": [
+          "immortal dragon",
+          "dragon",
+          "dragon whelp",
+          "little dragon",
+          "black dragon",
+          "red dragon",
+          "ancient dragon"
+        ]
+      },
+      "knight_captain": {
+        "gender": "Male",
+        "role": "loyal_knight",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": [
+          "knight captain",
+          "knight",
+          "commander",
+          "guard captain",
+          "captain",
+          "old knight"
+        ]
+      },
+      "loyal_maid": {
+        "gender": "Female",
+        "role": "loyal_maid",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "maid",
+          "anna",
+          "lucy",
+          "little maid"
+        ]
+      },
+      "enemy_assassin": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "assassin",
+          "killer",
+          "shadow assassin",
+          "bandit leader",
+          "scion"
+        ]
+      },
+      "rival_lord": {
+        "gender": "Male",
+        "role": "corporate_boss",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "+2%",
+        "aliases": [
+          "rival lord",
+          "enemy lord",
+          "noble",
+          "viscount",
+          "count",
+          "duke"
+        ]
+      },
+      "subordinates": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "settlers",
+          "soldiers",
+          "citizens",
+          "peasants",
+          "refugees"
+        ]
+      }
+    },
+    "vocatives": {
+      "my lord": {
+        "speaker_gender": "Male",
+        "role": "loyal_knight"
+      },
+      "young master": {
+        "speaker_gender": "Female",
+        "role": "loyal_maid"
+      },
+      "lord": {
+        "speaker_gender": "Male",
+        "role": "panicked_mob"
+      }
+    }
+  },
+  "daily-life-starting-from-the-dungeon": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "mu qinglin",
+          "qinglin",
+          "dungeon master",
+          "dungeon core",
+          "dungeon",
+          "boss",
+          "host"
+        ]
+      },
+      "dungeon_core": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "dungeon system",
+          "dungeon core",
+          "core",
+          "system prompt",
+          "system",
+          "prompt",
+          "world announcement",
+          "flesh absorption",
+          "ding"
+        ]
+      },
+      "linor": {
+        "gender": "Female",
+        "role": "female_mage",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "linor",
+          "miss linor",
+          "mage linor",
+          "sorceress"
+        ]
+      },
+      "vera": {
+        "gender": "Female",
+        "role": "female_thief",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+1Hz",
+        "rate": "+6%",
+        "aliases": [
+          "vera",
+          "thief vera",
+          "scout vera"
+        ]
+      },
+      "barton": {
+        "gender": "Male",
+        "role": "adventurer_captain",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "barton",
+          "captain barton",
+          "captain"
+        ]
+      },
+      "kaelen": {
+        "gender": "Male",
+        "role": "thief_scout",
+        "voice": "en-US-EricNeural",
+        "pitch": "+3Hz",
+        "rate": "+7%",
+        "aliases": [
+          "kaelen",
+          "thief kaelen",
+          "scout"
+        ]
+      },
+      "glenn": {
+        "gender": "Male",
+        "role": "knight_commander",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-6Hz",
+        "rate": "+4%",
+        "aliases": [
+          "glenn",
+          "knight glenn",
+          "commander glenn"
+        ]
+      },
+      "kannan": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "kannan",
+          "captain kannan"
+        ]
+      },
+      "merlin": {
+        "gender": "Male",
+        "role": "elder_mage",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "+2%",
+        "aliases": [
+          "merlin",
+          "mage merlin",
+          "master merlin"
+        ]
+      },
+      "adventurers": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "adventurers",
+          "invaders",
+          "knights",
+          "miners",
+          "merchants",
+          "scavengers",
+          "crowd"
+        ]
+      }
+    },
+    "vocatives": {
+      "captain": {
+        "speaker_gender": "Male",
+        "role": "thief_scout"
+      },
+      "dungeon master": {
+        "speaker_gender": "Male",
+        "role": "panicked_mob"
+      },
+      "boss": {
+        "speaker_gender": "Male",
+        "role": "adventurer_captain"
+      }
+    }
+  },
+  "everyones-a-monster-but-im-the-only-player": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lin ye",
+          "player",
+          "the only player",
+          "only player",
+          "brother lin",
+          "host",
+          "boss lin"
+        ]
+      },
+      "player_system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "player system",
+          "game system",
+          "system prompt",
+          "ding",
+          "talent system",
+          "prompt",
+          "world announcement",
+          "panel"
+        ]
+      },
+      "su_ran": {
+        "gender": "Female",
+        "role": "female_companion",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "su ran",
+          "miss su",
+          "sister su",
+          "ran'er"
+        ]
+      },
+      "monster_overlord": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-16Hz",
+        "rate": "-4%",
+        "aliases": [
+          "monster overlord",
+          "mutant sovereign",
+          "highway behemoth",
+          "calamity beast",
+          "abyssal titan"
+        ]
+      },
+      "mutant_raider": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "mutant raider",
+          "highway bandit",
+          "hunter captain",
+          "scavenger leader",
+          "bandit"
+        ]
+      },
+      "survivors": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "survivors",
+          "monsters",
+          "mutants",
+          "refugees",
+          "drivers",
+          "panicked crowd"
+        ]
+      },
+      "chu ge": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "chu ge"
+        ]
+      },
+      "wang rui": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "wang rui"
+        ]
+      },
+      "mo yu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "mo yu"
+        ]
+      },
+      "ling yue": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ling yue"
+        ]
+      }
+    },
+    "vocatives": {
+      "player": {
+        "speaker_gender": "Female",
+        "role": "female_companion"
+      },
+      "boss lin": {
+        "speaker_gender": "Male",
+        "role": "survivors"
+      },
+      "monster": {
+        "speaker_gender": "Male",
+        "role": "mutant_raider"
+      }
+    }
+  },
+  "only-i-level-up-wn": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "sung jin-woo": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "sung jin-woo",
+          "jin-woo",
+          "seong jin-woo",
+          "hunter sung",
+          "mr. sung",
+          "player",
+          "e-rank hunter",
+          "the weakest hunter",
+          "weakest hunter",
+          "monarch",
+          "shadow monarch"
+        ]
+      },
+      "system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "system",
+          "the system",
+          "quest",
+          "daily quest",
+          "emergency quest",
+          "penalty quest",
+          "system prompt",
+          "announcement",
+          "level up",
+          "ding"
+        ]
+      },
+      "lee joo-hee": {
+        "gender": "Female",
+        "role": "healer_companion",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lee joo-hee",
+          "joo-hee",
+          "miss joo-hee",
+          "healer",
+          "b-rank healer"
+        ]
+      },
+      "sung jin-ah": {
+        "gender": "Female",
+        "role": "younger_sister",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+4Hz",
+        "rate": "+7%",
+        "aliases": [
+          "sung jin-ah",
+          "jin-ah",
+          "sister",
+          "little sister"
+        ]
+      },
+      "yoo jin-ho": {
+        "gender": "Male",
+        "role": "loyal_sidekick",
+        "voice": "en-US-EricNeural",
+        "pitch": "+3Hz",
+        "rate": "+7%",
+        "aliases": [
+          "yoo jin-ho",
+          "jin-ho",
+          "vice-master",
+          "vice-chairman",
+          "young master yoo"
+        ]
+      },
+      "song chi-yul": {
+        "gender": "Male",
+        "role": "veteran_hunter",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "song chi-yul",
+          "mr. song",
+          "leader song",
+          "c-rank hunter song",
+          "elder song"
+        ]
+      },
+      "hwang dong-suk": {
+        "gender": "Male",
+        "role": "villain_raider",
+        "voice": "en-US-EricNeural",
+        "pitch": "+6Hz",
+        "rate": "+10%",
+        "aliases": [
+          "hwang dong-suk",
+          "dong-suk",
+          "captain hwang",
+          "lizard leader"
+        ]
+      },
+      "woo jin-chul": {
+        "gender": "Male",
+        "role": "association_inspector",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "woo jin-chul",
+          "chief woo",
+          "inspector woo",
+          "surveillance chief"
+        ]
+      },
+      "go gun-hee": {
+        "gender": "Male",
+        "role": "association_president",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "+2%",
+        "aliases": [
+          "go gun-hee",
+          "president go",
+          "chairman go",
+          "association president"
+        ]
+      },
+      "hunters": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "hunters",
+          "raid party",
+          "survivors",
+          "strikers",
+          "adventurers",
+          "crowd"
+        ]
+      },
+      "choi yu-rah": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "choi yu-rah"
+        ]
+      },
+      "association employee": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "association employee"
+        ]
+      },
+      "joh gyu-hwan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "joh gyu-hwan"
+        ]
+      },
+      "lee cheol-jin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lee cheol-jin"
+        ]
+      },
+      "kahng tae-sik": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "kahng tae-sik"
+        ]
+      },
+      "convict 1": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "convict 1"
+        ]
+      },
+      "convict 2": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "convict 2"
+        ]
+      },
+      "goblin": {
+        "gender": "Neutral",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "goblin"
+        ]
+      },
+      "hunter 1": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hunter 1"
+        ]
+      },
+      "hunter 2": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hunter 2"
+        ]
+      },
+      "ahn sahng-min": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ahn sahng-min"
+        ]
+      },
+      "hyun ki-cheol": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hyun ki-cheol"
+        ]
+      },
+      "baek yun-ho": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "baek yun-ho"
+        ]
+      },
+      "female colleague": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "female colleague"
+        ]
+      },
+      "hahn song-yi": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "hahn song-yi"
+        ]
+      },
+      "ju seong-chan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ju seong-chan"
+        ]
+      },
+      "iron 1": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "iron 1"
+        ]
+      },
+      "park hui-jin": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "park hui-jin"
+        ]
+      },
+      "goh myung-hwan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "goh myung-hwan"
+        ]
+      },
+      "yun ki-joong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "yun ki-joong"
+        ]
+      },
+      "boss": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "boss"
+        ]
+      },
+      "seong il-hwan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "seong il-hwan"
+        ]
+      },
+      "jeong ki-soo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "jeong ki-soo"
+        ]
+      },
+      "yun jeong-hoon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "yun jeong-hoon"
+        ]
+      },
+      "doctor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "doctor"
+        ]
+      },
+      "go gun-hui": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "go gun-hui"
+        ]
+      },
+      "im tae-gyu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "im tae-gyu"
+        ]
+      },
+      "lee seong-gu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lee seong-gu"
+        ]
+      },
+      "foreman bae": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "foreman bae"
+        ]
+      },
+      "sohn ki-hoon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "sohn ki-hoon"
+        ]
+      },
+      "cha hae-in": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "cha hae-in"
+        ]
+      },
+      "woo jin-cheol": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "woo jin-cheol"
+        ]
+      },
+      "rhee min-seong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "rhee min-seong"
+        ]
+      },
+      "kim jeong-ki": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "kim jeong-ki"
+        ]
+      },
+      "appraiser": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "appraiser"
+        ]
+      },
+      "yu myung-han": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "yu myung-han"
+        ]
+      }
+    },
+    "vocatives": {
+      "hyung-nim": {
+        "speaker_gender": "Male",
+        "role": "loyal_sidekick"
+      },
+      "oppa": {
+        "speaker_gender": "Female",
+        "role": "younger_sister"
+      },
+      "jin-woo": {
+        "speaker_gender": "Female",
+        "role": "healer_companion"
+      },
+      "hunter sung": {
+        "speaker_gender": "Male",
+        "role": "association_inspector"
       }
     }
   }
