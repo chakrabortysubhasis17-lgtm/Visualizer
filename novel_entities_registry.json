@@ -2220,5 +2220,726 @@
         "role": "association_inspector"
       }
     }
+  },
+  "dungeon-diver-stealing-a-monsters-power": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "jay": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "jay",
+          "jay soju",
+          "hunter jay",
+          "porter",
+          "porter jay",
+          "kid",
+          "rookie",
+          "host"
+        ]
+      },
+      "system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "system",
+          "status",
+          "status screen",
+          "system prompt",
+          "unique skill",
+          "skill stolen",
+          "ding",
+          "prompt",
+          "announcement"
+        ]
+      },
+      "ember": {
+        "gender": "Synthetic",
+        "role": "dragon_companion",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-8Hz",
+        "rate": "+3%",
+        "aliases": [
+          "ember",
+          "flame spirit",
+          "dragon",
+          "partner"
+        ]
+      },
+      "natalie": {
+        "gender": "Female",
+        "role": "healer_companion",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "natalie",
+          "healer natalie",
+          "miss natalie",
+          "healer"
+        ]
+      },
+      "dane": {
+        "gender": "Male",
+        "role": "long_range_attacker",
+        "voice": "en-US-EricNeural",
+        "pitch": "+3Hz",
+        "rate": "+7%",
+        "aliases": [
+          "dane",
+          "wind user",
+          "archer dane"
+        ]
+      },
+      "chester": {
+        "gender": "Male",
+        "role": "merchant_partner",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "chester",
+          "merchant chester",
+          "mr. chester"
+        ]
+      },
+      "party_leader": {
+        "gender": "Male",
+        "role": "veteran_hunter",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "party leader",
+          "leader",
+          "captain",
+          "veteran hunter"
+        ]
+      },
+      "receptionist": {
+        "gender": "Female",
+        "role": "guild_receptionist",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "receptionist",
+          "association staff",
+          "staff"
+        ]
+      },
+      "hunters": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "hunters",
+          "dungeon divers",
+          "porters",
+          "applicants",
+          "crowd",
+          "mob"
+        ]
+      },
+      "monsters": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": [
+          "goblin",
+          "ogre",
+          "mutant boss",
+          "minotaur",
+          "monsters",
+          "beast"
+        ]
+      },
+      "landlord": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "landlord"
+        ]
+      },
+      "sister": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "sister"
+        ]
+      },
+      "maria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "maria"
+        ]
+      },
+      "merchant": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "merchant"
+        ]
+      },
+      "abby": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "abby"
+        ]
+      },
+      "guards": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "guards"
+        ]
+      },
+      "jack": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jack"
+        ]
+      },
+      "rei": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "rei"
+        ]
+      },
+      "talia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "talia"
+        ]
+      },
+      "cori": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "cori"
+        ]
+      },
+      "daniel": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "daniel"
+        ]
+      }
+    },
+    "vocatives": {
+      "master": {
+        "speaker_gender": "Synthetic",
+        "role": "dragon_companion"
+      },
+      "kid": {
+        "speaker_gender": "Male",
+        "role": "veteran_hunter"
+      },
+      "leader": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      }
+    }
+  },
+  "10000x-reward-multiplier-hell-level-kingdom-building": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "floki": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "floki",
+          "floki ironside",
+          "chief floki",
+          "young chief",
+          "chief",
+          "lord floki",
+          "lord",
+          "host"
+        ]
+      },
+      "multiplier_system": {
+        "gender": "Synthetic",
+        "role": "system",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-18Hz",
+        "rate": "-6%",
+        "aliases": [
+          "multiplier system",
+          "system",
+          "10000x multiplier",
+          "infinite multiplier",
+          "reward multiplier",
+          "quest provider",
+          "character status",
+          "system prompt",
+          "ding",
+          "prompt"
+        ]
+      },
+      "viktor": {
+        "gender": "Male",
+        "role": "barbarian_hunter",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "viktor",
+          "brother viktor",
+          "hunter viktor"
+        ]
+      },
+      "anton": {
+        "gender": "Male",
+        "role": "barbarian_guard",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-5Hz",
+        "rate": "+4%",
+        "aliases": [
+          "anton",
+          "brother anton",
+          "guard anton"
+        ]
+      },
+      "jabba": {
+        "gender": "Male",
+        "role": "barbarian_guard",
+        "voice": "en-US-EricNeural",
+        "pitch": "-3Hz",
+        "rate": "+4%",
+        "aliases": [
+          "jabba",
+          "guard jabba"
+        ]
+      },
+      "old_charleston": {
+        "gender": "Male",
+        "role": "elder_farmer",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-8Hz",
+        "rate": "-2%",
+        "aliases": [
+          "old charleston",
+          "charleston",
+          "old man charleston",
+          "farmer charleston"
+        ]
+      },
+      "charlestons_wife": {
+        "gender": "Female",
+        "role": "villager_wife",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+5%",
+        "aliases": [
+          "charleston's wife",
+          "wife",
+          "villager woman",
+          "women of wayan"
+        ]
+      },
+      "kellan_blackstone": {
+        "gender": "Male",
+        "role": "rival_lord",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "kellan blackstone",
+          "kellan",
+          "blackstone commander",
+          "lord blackstone"
+        ]
+      },
+      "noah": {
+        "gender": "Male",
+        "role": "earth_friend",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "noah",
+          "little noah",
+          "friend noah"
+        ]
+      },
+      "magnus": {
+        "gender": "Male",
+        "role": "earth_friend",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "magnus"
+        ]
+      },
+      "villagers": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "villagers",
+          "followers",
+          "ironside villagers",
+          "people of ironside",
+          "barbarians",
+          "crowd"
+        ]
+      },
+      "monsters": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": [
+          "goblin king",
+          "goblins",
+          "hobgoblins",
+          "flame-wolves",
+          "beasts"
+        ]
+      },
+      "breeze": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "breeze"
+        ]
+      },
+      "angelina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "angelina"
+        ]
+      }
+    },
+    "vocatives": {
+      "young chief": {
+        "speaker_gender": "Male",
+        "role": "elder_farmer"
+      },
+      "chief": {
+        "speaker_gender": "Male",
+        "role": "barbarian_guard"
+      },
+      "my husband": {
+        "speaker_gender": "Female",
+        "role": "villager_wife"
+      }
+    }
+  },
+  "isekai-yururi-kikou-raising-children-while-being-an-adventurer": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "takumi": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "takumi kayano",
+          "takumi",
+          "onii-chan",
+          "big brother",
+          "foster father",
+          "adventurer takumi"
+        ]
+      },
+      "sylphreel": {
+        "gender": "Male",
+        "role": "wind_god",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+2Hz",
+        "rate": "+5%",
+        "aliases": [
+          "sylphreel",
+          "syl",
+          "wind god",
+          "god of wind",
+          "god sylphreel",
+          "god"
+        ]
+      },
+      "allen": {
+        "gender": "Male",
+        "role": "twin_boy",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+7Hz",
+        "rate": "+8%",
+        "aliases": [
+          "allen",
+          "alan",
+          "brother",
+          "little allen",
+          "twin boy"
+        ]
+      },
+      "elena": {
+        "gender": "Female",
+        "role": "twin_girl",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+9Hz",
+        "rate": "+8%",
+        "aliases": [
+          "elena",
+          "sister",
+          "little elena",
+          "twin girl"
+        ]
+      },
+      "guild_receptionist": {
+        "gender": "Female",
+        "role": "guild_receptionist",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "receptionist",
+          "guild staff",
+          "guild receptionist",
+          "miss receptionist"
+        ]
+      },
+      "isaac_risner": {
+        "gender": "Male",
+        "role": "guild_master",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "isaac risner",
+          "isaac",
+          "guild master",
+          "master risner"
+        ]
+      },
+      "adventurers": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "adventurers",
+          "party",
+          "merchants",
+          "villagers",
+          "townspeople",
+          "crowd"
+        ]
+      },
+      "monsters": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-14Hz",
+        "rate": "+4%",
+        "aliases": [
+          "red wolf",
+          "giant boar",
+          "monsters",
+          "beast",
+          "wolves"
+        ]
+      },
+      "system": {
+        "gender": "Neutral",
+        "role": "system",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "system"
+        ]
+      },
+      "wald": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "wald"
+        ]
+      },
+      "derrick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "derrick"
+        ]
+      },
+      "philip_callan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "philip_callan"
+        ]
+      },
+      "road": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "road"
+        ]
+      },
+      "mirena": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "mirena"
+        ]
+      },
+      "miko himesama": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "miko himesama"
+        ]
+      },
+      "gard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "gard"
+        ]
+      },
+      "stall_owner": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "stall_owner"
+        ]
+      }
+    },
+    "vocatives": {
+      "onii-chan": {
+        "speaker_gender": "Female",
+        "role": "twin_girl"
+      },
+      "big brother": {
+        "speaker_gender": "Male",
+        "role": "twin_boy"
+      },
+      "syl": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      },
+      "takumi-san": {
+        "speaker_gender": "Female",
+        "role": "guild_receptionist"
+      }
+    }
   }
 }

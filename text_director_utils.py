@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import time
 import unicodedata
 import urllib.parse
 import requests
@@ -113,7 +114,7 @@ def clean_chapter_title_for_seo(raw_title: str, ch_num: int, default_topic: str 
     return f"Ch {ch_num:03d}: {cleaned.title()}"
 
 def clean_and_normalize_text(text: str) -> str:
-    # 1. Normalize Unicode symbols (turns mathematical bold/italic into standard ASCII)
+    # 1. Normalize Unicode symbols (math bold/italic font hack to ASCII)
     text = unicodedata.normalize('NFKC', text)
     text = text.translate(FULLWIDTH_TO_ASCII)
     text = RE_SCENE_DIVIDER.sub("", text)
@@ -171,15 +172,15 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
 
     # Universal Next Chapter Resolution
     next_url = None
-    
-    # 1. Target dedicated next buttons (FreeWebNovel / NovelBin / NovelFull)
+
+    # 1. Target dedicated next button
     next_btn = soup.find("a", id=re.compile(r"next_chap", re.I)) or soup.find("a", class_=re.compile(r"next-chap", re.I))
     if next_btn and next_btn.get("href"):
         full_next = urllib.parse.urljoin(url, next_btn["href"].strip())
         if full_next != url:
             next_url = full_next
 
-    # 2. Target general next links
+    # 2. Target general next text links
     if not next_url:
         for a in soup.find_all("a", href=True):
             href = a["href"].strip()
@@ -200,7 +201,7 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
                 next_url = urllib.parse.urljoin(url, a["href"])
                 break
 
-    # 4. Deterministic URL substitution fallback (Works for both mtl-novel and freewebnovel)
+    # 4. Fallback: string substitution
     if not next_url:
         pattern_curr = re.compile(rf"(chapter[-_/]){ch_num}([/-]|$)", re.I)
         if pattern_curr.search(url):
@@ -248,39 +249,49 @@ ACTIVE STAGED CHARACTERS:
 
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{raw_text[:7000]}"
 
-    try:
-        response = client.models.generate_content(
-            model="gemini-flash-lite-latest",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                response_mime_type="application/json",
-                response_schema=ChapterNarrationManifest,
-                temperature=0.1
+    # Dedicated 10s cooldown retry loop for handling Gemini high demand & rate spikes
+    max_gemini_retries = 10
+    retry_delay_seconds = 10
+
+    for attempt in range(1, max_gemini_retries + 1):
+        try:
+            response = client.models.generate_content(
+                model="gemini-flash-lite-latest",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    response_mime_type="application/json",
+                    response_schema=ChapterNarrationManifest,
+                    temperature=0.1
+                )
             )
-        )
-        if response and response.text:
-            data = json.loads(response.text)
-            staged = []
-            for s in data.get("segments", []):
-                pitch, rate = calculate_prosody_adjustments(s)
-                staged.append({
-                    "line_id": s.get("line_id", "0001"),
-                    "speaker": s.get("speaker_role", "Narrator"),
-                    "gender": s.get("gender", "Male"),
-                    "line_type": s.get("line_type", "Narration"),
-                    "emotion": s.get("emotion", "neutral"),
-                    "age_category": s.get("age_category", "young"),
-                    "text": s.get("text", "").strip(),
-                    "voice": s.get("edge_tts_voice", "en-US-GuyNeural"),
-                    "pitch": pitch,
-                    "rate": rate
-                })
-            if staged:
-                sync_new_characters_to_staging(stage_file, staged)
-                return staged
-    except Exception as e:
-        print(f"     [Gemini Director Notice] {e}. Using fallback staging...", flush=True)
+            if response and response.text:
+                data = json.loads(response.text)
+                staged = []
+                for s in data.get("segments", []):
+                    pitch, rate = calculate_prosody_adjustments(s)
+                    staged.append({
+                        "line_id": s.get("line_id", "0001"),
+                        "speaker": s.get("speaker_role", "Narrator"),
+                        "gender": s.get("gender", "Male"),
+                        "line_type": s.get("line_type", "Narration"),
+                        "emotion": s.get("emotion", "neutral"),
+                        "age_category": s.get("age_category", "young"),
+                        "text": s.get("text", "").strip(),
+                        "voice": s.get("edge_tts_voice", "en-US-GuyNeural"),
+                        "pitch": pitch,
+                        "rate": rate
+                    })
+                if staged:
+                    sync_new_characters_to_staging(stage_file, staged)
+                    return staged
+        except Exception as e:
+            print(f"     [Gemini Director] Demand spike/error (Attempt {attempt}/{max_gemini_retries}): {e}", flush=True)
+            if attempt < max_gemini_retries:
+                print(f"     [Gemini Cooldown] Waiting {retry_delay_seconds}s before retrying...", flush=True)
+                time.sleep(retry_delay_seconds)
+            else:
+                print(f"     [Gemini Director Notice] Exhausted {max_gemini_retries} attempts ({max_gemini_retries * retry_delay_seconds}s cooldown). Switching to rule-based fallback staging...", flush=True)
 
     return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
 
@@ -302,7 +313,7 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
     for token in raw_tokens:
         if not token["is_quote"]:
             line_type = "System" if RE_SYSTEM.search(token["text"]) else "Narration"
-            rk = "player_system" if "player_system" in char_map and line_type == "System" else ("system" if line_type == "System" else "narrator")
+            rk = "system" if line_type == "System" else "narrator"
             staged_segments.append({"role_key": rk, "line_type": line_type, "text": token["text"]})
         else:
             staged_segments.append({"role_key": "mc", "line_type": "Dialogue", "text": token["text"]})
