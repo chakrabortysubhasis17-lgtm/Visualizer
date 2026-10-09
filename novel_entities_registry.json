@@ -30,11 +30,11 @@
         ]
       },
       "doomsday_system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "system",
           "doomsday system",
@@ -165,11 +165,11 @@
         ]
       },
       "national fate system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "national fate system",
           "marriage game system",
@@ -269,6 +269,21 @@
           "president yang"
         ]
       },
+      "system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "sss-level system",
+          "talent system",
+          "system prompt",
+          "ding",
+          "announcement"
+        ]
+      },
       "lu wan": {
         "gender": "Female",
         "role": "lu_wan",
@@ -307,6 +322,21 @@
           "boss lin",
           "driver lin",
           "host"
+        ]
+      },
+      "system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "survival system",
+          "infinite evolution system",
+          "rv system",
+          "system prompt",
+          "ding"
         ]
       },
       "su qingqian": {
@@ -414,6 +444,20 @@
           "host"
         ]
       },
+      "system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "hang-up system",
+          "idle system",
+          "system prompt",
+          "ding"
+        ]
+      },
       "gluttony": {
         "gender": "Synthetic",
         "role": "pet_gluttony",
@@ -468,11 +512,11 @@
         ]
       },
       "fortress system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "fortress system",
           "system prompt",
@@ -640,11 +684,11 @@
         ]
       },
       "game system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "game system",
           "system",
@@ -1058,11 +1102,11 @@
         ]
       },
       "myriad beast stele": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "myriad beast stele",
           "beast stele",
@@ -1118,11 +1162,11 @@
         ]
       },
       "main_god_system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "system",
           "main god system",
@@ -1241,11 +1285,11 @@
         ]
       },
       "divine_oracle": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "divine oracle",
           "oracle",
@@ -1391,11 +1435,11 @@
         ]
       },
       "dungeon_core": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "dungeon system",
           "dungeon core",
@@ -1553,11 +1597,11 @@
         ]
       },
       "player_system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "player system",
           "game system",
@@ -1714,11 +1758,11 @@
         ]
       },
       "system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "system",
           "the system",
@@ -2251,11 +2295,11 @@
         ]
       },
       "system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "system",
           "status",
@@ -2482,6 +2526,196 @@
         "aliases": [
           "daniel"
         ]
+      },
+      "nessa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "nessa"
+        ]
+      },
+      "hudson": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hudson"
+        ]
+      },
+      "bri": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bri"
+        ]
+      },
+      "bernard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bernard"
+        ]
+      },
+      "chloe": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "chloe"
+        ]
+      },
+      "zoe": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zoe"
+        ]
+      },
+      "dagger user": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "dagger user"
+        ]
+      },
+      "announcer": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "announcer"
+        ]
+      },
+      "xavier": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "xavier"
+        ]
+      },
+      "theodore": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "theodore"
+        ]
+      },
+      "innkeeper": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "innkeeper"
+        ]
+      },
+      "arnold": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "arnold"
+        ]
+      },
+      "rodrigo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "rodrigo"
+        ]
+      },
+      "george": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "george"
+        ]
+      },
+      "bruce": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bruce"
+        ]
+      },
+      "tripp": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "tripp"
+        ]
+      },
+      "mike": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mike"
+        ]
+      },
+      "sandra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "sandra"
+        ]
+      },
+      "hunter": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "hunter"
+        ]
       }
     },
     "vocatives": {
@@ -2529,11 +2763,11 @@
         ]
       },
       "multiplier_system": {
-        "gender": "Synthetic",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-SteffanNeural",
-        "pitch": "-18Hz",
-        "rate": "-6%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
           "multiplier system",
           "system",
@@ -2833,13 +3067,16 @@
         ]
       },
       "system": {
-        "gender": "Neutral",
+        "gender": "Female",
         "role": "system",
-        "voice": "en-US-JennyNeural",
-        "pitch": "+0Hz",
-        "rate": "+5%",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
         "aliases": [
-          "system"
+          "system",
+          "appraisal",
+          "status window",
+          "ding"
         ]
       },
       "wald": {
@@ -2939,6 +3176,702 @@
       "takumi-san": {
         "speaker_gender": "Female",
         "role": "guild_receptionist"
+      }
+    }
+  },
+  "five-element-overlord-i-can-upgrade-everything": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "lu_chen": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lu chen",
+          "chen'er",
+          "brother lu",
+          "junior brother lu",
+          "master lu",
+          "disciple lu",
+          "host"
+        ]
+      },
+      "upgrade_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "upgrade system",
+          "system",
+          "infinite upgrade panel",
+          "upgrade panel",
+          "divine upgrade",
+          "panel",
+          "system prompt",
+          "ding",
+          "prompt",
+          "evolution"
+        ]
+      },
+      "su_linger": {
+        "gender": "Female",
+        "role": "senior_sister",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "su ling'er",
+          "su linger",
+          "senior sister su",
+          "senior sister",
+          "sister ling'er",
+          "ling'er"
+        ]
+      },
+      "elder_gu": {
+        "gender": "Male",
+        "role": "sect_elder",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "elder gu",
+          "elder",
+          "master gu",
+          "hall master"
+        ]
+      },
+      "wang_tian": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "wang tian",
+          "senior brother wang",
+          "young master wang",
+          "brother wang"
+        ]
+      },
+      "disciples": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "disciples",
+          "outer disciples",
+          "inner disciples",
+          "onlookers",
+          "crowd",
+          "fellow disciples"
+        ]
+      },
+      "blood_sword_spy": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "blood_sword_spy"
+        ]
+      },
+      "zhou_kang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "zhou_kang"
+        ]
+      },
+      "xu_hong": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "xu_hong"
+        ]
+      },
+      "wei_ping": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wei_ping"
+        ]
+      },
+      "new_disciple": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "new_disciple"
+        ]
+      },
+      "mu_zhiheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "mu_zhiheng"
+        ]
+      },
+      "mu_shouxin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "mu_shouxin"
+        ]
+      },
+      "mu_shulan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mu_shulan"
+        ]
+      },
+      "wang_ming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wang_ming"
+        ]
+      },
+      "wang_yang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "wang_yang"
+        ]
+      },
+      "jiang_son": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jiang_son"
+        ]
+      }
+    },
+    "vocatives": {
+      "junior brother lu": {
+        "speaker_gender": "Female",
+        "role": "senior_sister"
+      },
+      "elder": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      },
+      "senior sister": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      }
+    }
+  },
+  "investing-in-my-three-crippled-wives-get-10000x-times-return": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "gu_chen": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "gu chen",
+          "young master gu",
+          "patriarch gu",
+          "brother gu",
+          "husband",
+          "host"
+        ]
+      },
+      "investment_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "investment system",
+          "10000x return system",
+          "return system",
+          "system",
+          "investment return",
+          "critical return",
+          "system prompt",
+          "ding",
+          "prompt"
+        ]
+      },
+      "ye_qingxue": {
+        "gender": "Female",
+        "role": "first_wife",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+1Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ye qingxue",
+          "qingxue",
+          "first wife",
+          "sister qingxue",
+          "sword saintess",
+          "miss ye"
+        ]
+      },
+      "jiang_luoli": {
+        "gender": "Female",
+        "role": "second_wife",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+1Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jiang luoli",
+          "luoli",
+          "second wife",
+          "sister luoli",
+          "empress luoli",
+          "princess"
+        ]
+      },
+      "bai_ling": {
+        "gender": "Female",
+        "role": "third_wife",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+4Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bai ling",
+          "ling'er",
+          "third wife",
+          "little ling",
+          "sister ling",
+          "beast princess"
+        ]
+      },
+      "elder_gu": {
+        "gender": "Male",
+        "role": "clan_elder",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "elder gu",
+          "first elder",
+          "grand elder",
+          "uncle gu"
+        ]
+      },
+      "clan_members": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "clan members",
+          "gu family members",
+          "disciples",
+          "guests",
+          "crowd",
+          "servants"
+        ]
+      },
+      "valentina_ashford": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "valentina_ashford"
+        ]
+      },
+      "new_character": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "new_character"
+        ]
+      },
+      "investigator": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "investigator"
+        ]
+      },
+      "young_policeman": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "young_policeman"
+        ]
+      },
+      "senior_inspector_harris": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "senior_inspector_harris"
+        ]
+      },
+      "mira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mira"
+        ]
+      },
+      "lyra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lyra"
+        ]
+      }
+    },
+    "vocatives": {
+      "husband": {
+        "speaker_gender": "Female",
+        "role": "first_wife"
+      },
+      "young master": {
+        "speaker_gender": "Male",
+        "role": "clan_members"
+      },
+      "first elder": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      }
+    }
+  },
+  "harem-powered-kingdom-building-empire-of-carnal-sin": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "arthur": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "arthur",
+          "lord arthur",
+          "lord",
+          "my lord",
+          "emperor",
+          "sovereign",
+          "master",
+          "commander",
+          "host"
+        ]
+      },
+      "carnal_empire_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "carnal empire system",
+          "empire system",
+          "kingdom system",
+          "sin system",
+          "system",
+          "domain status",
+          "system prompt",
+          "ding",
+          "prompt"
+        ]
+      },
+      "elysia": {
+        "gender": "Female",
+        "role": "elf_consort",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "elysia",
+          "lady elysia",
+          "elf consort",
+          "queen elysia",
+          "first consort"
+        ]
+      },
+      "valeria": {
+        "gender": "Female",
+        "role": "beastkin_general",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+7%",
+        "aliases": [
+          "valeria",
+          "general valeria",
+          "commander valeria",
+          "beastkin general"
+        ]
+      },
+      "morrigan": {
+        "gender": "Female",
+        "role": "court_sorceress",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+4%",
+        "aliases": [
+          "morrigan",
+          "madam morrigan",
+          "lady morrigan",
+          "court mage",
+          "sorceress"
+        ]
+      },
+      "enemy_warlord": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "enemy warlord",
+          "rival baron",
+          "warlord",
+          "invading commander"
+        ]
+      },
+      "subjects": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "subjects",
+          "citizens",
+          "soldiers",
+          "guards",
+          "peasants",
+          "crowd"
+        ]
+      },
+      "bob": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bob"
+        ]
+      },
+      "tara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "tara"
+        ]
+      },
+      "furina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "furina"
+        ]
+      },
+      "hiro": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "hiro"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "shuvene": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "shuvene"
+        ]
+      },
+      "barbara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "barbara"
+        ]
+      },
+      "shuvichi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "shuvichi"
+        ]
+      },
+      "shuvsan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "shuvsan"
+        ]
+      },
+      "vasquen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "vasquen"
+        ]
+      },
+      "targon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "targon"
+        ]
+      },
+      "hema": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "hema"
+        ]
+      },
+      "fiona": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "fiona"
+        ]
+      }
+    },
+    "vocatives": {
+      "my lord": {
+        "speaker_gender": "Female",
+        "role": "elf_consort"
+      },
+      "commander": {
+        "speaker_gender": "Female",
+        "role": "beastkin_general"
+      },
+      "sire": {
+        "speaker_gender": "Female",
+        "role": "court_sorceress"
       }
     }
   }

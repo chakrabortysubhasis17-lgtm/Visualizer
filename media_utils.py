@@ -32,11 +32,9 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
 
     pause_dur = row.get("pause_duration")
     raw_text = row.get("text", "").strip()
-
-    # Strip bracketed pause markers so TTS never speaks "bracket pause X sec bracket"
     text = RE_PAUSE_TAGS.sub("", raw_text).strip()
 
-    # Generate programmatic silent audio gap
+    # Programmatic silence gap for pauses
     if pause_dur or not text or not RE_ALPHANUM.search(text):
         dur = float(pause_dur) if pause_dur else 0.5
         subprocess.run([
@@ -45,21 +43,56 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return
 
-    voice, pitch, rate = row["voice"], row["pitch"], row["rate"]
+    line_type = row.get("line_type", "Narration")
+    is_system = (line_type == "System")
+
+    # Narrator remains completely standard en-US-GuyNeural
+    if is_system:
+        # Female mecha voice strictly for System prompts
+        voice = "en-US-AriaNeural"
+        pitch = "-2Hz"
+        rate = "+0%"
+    else:
+        # Dialogue and Narrator keep their configured voices
+        voice = row.get("voice", "en-US-GuyNeural")
+        pitch = row.get("pitch", "+0Hz")
+        rate = row.get("rate", "+5%")
+
     chunk_timeout = max(35.0, 25.0 + (len(text.split()) * 0.40))
+    raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
 
     async with sem:
         for attempt in range(1, max_retries + 1):
             try:
                 active_voice = voice
                 if attempt >= 4:
-                    active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
+                    if is_system:
+                        active_voice = "en-US-AriaNeural"
+                    else:
+                        active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
+
                 comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
-                await asyncio.wait_for(comm.save(out_file), timeout=chunk_timeout)
+                await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
+
+                # Metallic mecha DSP filter applied EXCLUSIVELY to System lines
+                if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 100:
+                    subprocess.run([
+                        "ffmpeg", "-y", "-i", raw_tts_file,
+                        "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
+                        "-q:a", "2", "-acodec", "libmp3lame", out_file
+                    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    try:
+                        os.remove(raw_tts_file)
+                    except OSError:
+                        pass
+                    return
+
+                # Normal Narration and Dialogue write straight to out_file with zero filters
                 if os.path.exists(out_file) and os.path.getsize(out_file) > 100:
                     return
             except Exception:
                 pass
+
             if attempt == max_retries:
                 subprocess.run([
                     "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
@@ -99,7 +132,6 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             dur = get_audio_duration(cf)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
 
-            # Only append subtitles if there is audible speech (skip silent pauses)
             if raw_text and not row.get("pause_duration"):
                 sub_text = f"[{row['speaker']}]: {raw_text}" if row.get("line_type") == "Dialogue" else raw_text
                 rel_subtitles.append((rel_time, rel_time + dur, sub_text))

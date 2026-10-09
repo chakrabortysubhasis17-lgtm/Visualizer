@@ -27,7 +27,7 @@ CONTAINER_SELECTORS = [
     ("article", {}),
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［)(Ding!|System|Notice|Warning|Announcement|Prompt|Quest|Stat|Skill|Level|Inventory|Reward).*?(?:\]|】|〕|』|〗|］)", re.I)
+RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［|\{)(Ding!|System|Notice|Warning|Announcement|Prompt|Quest|Stat|Skill|Level|Lv\.|Inventory|Reward).*?(?:\]|】|〕|』|〗|］|\})", re.I)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 
 WATERMARK_PATTERNS = [
@@ -114,7 +114,7 @@ def clean_chapter_title_for_seo(raw_title: str, ch_num: int, default_topic: str 
     return f"Ch {ch_num:03d}: {cleaned.title()}"
 
 def clean_and_normalize_text(text: str) -> str:
-    # 1. Normalize Unicode symbols (math bold/italic font hack to ASCII)
+    # 1. Normalize Unicode symbols
     text = unicodedata.normalize('NFKC', text)
     text = text.translate(FULLWIDTH_TO_ASCII)
     text = RE_SCENE_DIVIDER.sub("", text)
@@ -142,7 +142,7 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
 
-    # Title Resolution (Works across MTL-Novel and FreeWebNovel)
+    # Title Resolution
     h1 = soup.find("h1") or soup.find("h2", class_=re.compile(r"(title|chapter-title)", re.I))
     raw_title = h1.get_text(strip=True) if h1 else f"Chapter {ch_num}"
     clean_title = clean_chapter_title_for_seo(raw_title, ch_num, default_topic)
@@ -158,29 +158,42 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
         container = soup.find("body")
 
     paragraphs = []
-    for p in container.find_all("p"):
-        ptxt = clean_and_normalize_text(p.get_text(strip=True))
-        if ptxt and RE_ALPHANUM.search(ptxt):
-            if re.search(r"^(?:freewebnovel|novelbin|mtl-novel|read novel)\b", ptxt, re.I):
-                continue
-            paragraphs.append(ptxt)
+    # Primary: check <p> elements
+    p_tags = container.find_all("p")
+    if len(p_tags) >= 3:
+        for p in p_tags:
+            ptxt = clean_and_normalize_text(p.get_text(strip=True))
+            if ptxt and RE_ALPHANUM.search(ptxt):
+                if re.search(r"^(?:freewebnovel|novelbin|mtl-novel|read novel)\b", ptxt, re.I):
+                    continue
+                paragraphs.append(ptxt)
+    else:
+        # Fallback: check raw text with <br> breaks
+        raw_html = str(container)
+        text_with_newlines = re.sub(r"<br\s*/?>", "\n", raw_html, flags=re.I)
+        fallback_soup = BeautifulSoup(text_with_newlines, "html.parser")
+        lines = fallback_soup.get_text().split("\n")
+        for line in lines:
+            ltxt = clean_and_normalize_text(line)
+            if ltxt and RE_ALPHANUM.search(ltxt):
+                if re.search(r"^(?:freewebnovel|novelbin|mtl-novel|read novel)\b", ltxt, re.I):
+                    continue
+                paragraphs.append(ltxt)
 
     if not paragraphs:
         paragraphs = [f"Chapter {ch_num}. Exposition details continue."]
 
     full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
+    print(f"[Scraper] [✓] Scraped {len(paragraphs)} paragraphs ({len(full_text.split())} words) for Ch.{ch_num:03d}", flush=True)
 
-    # Universal Next Chapter Resolution
+    # Next Chapter URL Resolution
     next_url = None
-
-    # 1. Target dedicated next button
     next_btn = soup.find("a", id=re.compile(r"next_chap", re.I)) or soup.find("a", class_=re.compile(r"next-chap", re.I))
     if next_btn and next_btn.get("href"):
         full_next = urllib.parse.urljoin(url, next_btn["href"].strip())
         if full_next != url:
             next_url = full_next
 
-    # 2. Target general next text links
     if not next_url:
         for a in soup.find_all("a", href=True):
             href = a["href"].strip()
@@ -193,7 +206,6 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
                     next_url = full_next
                     break
 
-    # 3. Target next chapter index regex pattern
     if not next_url:
         target_pattern = re.compile(rf"/chapter-{ch_num + 1}(?:[/-]|$)", re.I)
         for a in soup.find_all("a", href=True):
@@ -201,13 +213,74 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
                 next_url = urllib.parse.urljoin(url, a["href"])
                 break
 
-    # 4. Fallback: string substitution
     if not next_url:
         pattern_curr = re.compile(rf"(chapter[-_/]){ch_num}([/-]|$)", re.I)
         if pattern_curr.search(url):
             next_url = pattern_curr.sub(rf"\g<1>{ch_num + 1}\g<2>", url)
 
     return clean_title, full_text, next_url
+
+def split_text_into_paragraph_chunks(raw_text: str, max_chunk_chars: int = 8000) -> list[str]:
+    """Splits full chapter text across clean paragraph boundaries without truncating."""
+    paragraphs = raw_text.split("\n\n")
+    chunks = []
+    current_chunk = []
+    current_len = 0
+
+    for p in paragraphs:
+        p_len = len(p) + 2
+        if current_len + p_len > max_chunk_chars and current_chunk:
+            chunks.append("\n\n".join(current_chunk))
+            current_chunk = [p]
+            current_len = p_len
+        else:
+            current_chunk.append(p)
+            current_len += p_len
+
+    if current_chunk:
+        chunks.append("\n\n".join(current_chunk))
+
+    return chunks if chunks else [raw_text]
+
+def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 10, retry_delay: int = 10) -> list:
+    prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = client.models.generate_content(
+                model="gemini-flash-lite-latest",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    response_mime_type="application/json",
+                    response_schema=ChapterNarrationManifest,
+                    temperature=0.1
+                )
+            )
+            if response and response.text:
+                data = json.loads(response.text)
+                staged = []
+                for s in data.get("segments", []):
+                    pitch, rate = calculate_prosody_adjustments(s)
+                    staged.append({
+                        "line_id": s.get("line_id", "0001"),
+                        "speaker": s.get("speaker_role", "Narrator"),
+                        "gender": s.get("gender", "Male"),
+                        "line_type": s.get("line_type", "Narration"),
+                        "emotion": s.get("emotion", "neutral"),
+                        "age_category": s.get("age_category", "young"),
+                        "text": s.get("text", "").strip(),
+                        "voice": s.get("edge_tts_voice", "en-US-GuyNeural"),
+                        "pitch": pitch,
+                        "rate": rate
+                    })
+                if staged:
+                    return staged
+        except Exception as e:
+            print(f"     [Gemini Director] Demand spike/error (Attempt {attempt}/{max_retries}): {e}", flush=True)
+            if attempt < max_retries:
+                print(f"     [Gemini Cooldown] Waiting {retry_delay}s before retrying...", flush=True)
+                time.sleep(retry_delay)
+    return []
 
 def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_file: str, max_narr_merge: int = 210) -> list:
     staged_chars = {}
@@ -247,51 +320,29 @@ ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
 """
 
-    prompt = f"CHAPTER: {title}\n\nCONTENT:\n{raw_text[:7000]}"
+    # Split into clean paragraph chunks without character slicing
+    chunks = split_text_into_paragraph_chunks(raw_text, max_chunk_chars=8000)
+    all_staged = []
 
-    # Dedicated 10s cooldown retry loop for handling Gemini high demand & rate spikes
-    max_gemini_retries = 10
-    retry_delay_seconds = 10
+    for c_idx, chunk in enumerate(chunks, 1):
+        if len(chunks) > 1:
+            print(f"     [Gemini Director] Processing Part {c_idx}/{len(chunks)} ({len(chunk.split())} words)...", flush=True)
 
-    for attempt in range(1, max_gemini_retries + 1):
-        try:
-            response = client.models.generate_content(
-                model="gemini-flash-lite-latest",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_instruction,
-                    response_mime_type="application/json",
-                    response_schema=ChapterNarrationManifest,
-                    temperature=0.1
-                )
-            )
-            if response and response.text:
-                data = json.loads(response.text)
-                staged = []
-                for s in data.get("segments", []):
-                    pitch, rate = calculate_prosody_adjustments(s)
-                    staged.append({
-                        "line_id": s.get("line_id", "0001"),
-                        "speaker": s.get("speaker_role", "Narrator"),
-                        "gender": s.get("gender", "Male"),
-                        "line_type": s.get("line_type", "Narration"),
-                        "emotion": s.get("emotion", "neutral"),
-                        "age_category": s.get("age_category", "young"),
-                        "text": s.get("text", "").strip(),
-                        "voice": s.get("edge_tts_voice", "en-US-GuyNeural"),
-                        "pitch": pitch,
-                        "rate": rate
-                    })
-                if staged:
-                    sync_new_characters_to_staging(stage_file, staged)
-                    return staged
-        except Exception as e:
-            print(f"     [Gemini Director] Demand spike/error (Attempt {attempt}/{max_gemini_retries}): {e}", flush=True)
-            if attempt < max_gemini_retries:
-                print(f"     [Gemini Cooldown] Waiting {retry_delay_seconds}s before retrying...", flush=True)
-                time.sleep(retry_delay_seconds)
-            else:
-                print(f"     [Gemini Director Notice] Exhausted {max_gemini_retries} attempts ({max_gemini_retries * retry_delay_seconds}s cooldown). Switching to rule-based fallback staging...", flush=True)
+        chunk_staged = parse_single_chunk_via_gemini(client, title, chunk, system_instruction)
+        if chunk_staged:
+            all_staged.extend(chunk_staged)
+        else:
+            print(f"     [Gemini Fallback] Using rule-based staging for Part {c_idx}...", flush=True)
+            fallback_part = fallback_rule_based_staging(chunk, staged_chars, max_narr_merge)
+            all_staged.extend(fallback_part)
+
+    # Re-index line IDs sequentially across all chunks
+    for idx, seg in enumerate(all_staged, 1):
+        seg["line_id"] = f"{idx:04d}"
+
+    if all_staged:
+        sync_new_characters_to_staging(stage_file, all_staged)
+        return all_staged
 
     return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
 
