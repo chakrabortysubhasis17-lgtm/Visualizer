@@ -2,6 +2,7 @@ import os
 import re
 import json
 import time
+import math
 import unicodedata
 import urllib.parse
 import requests
@@ -114,12 +115,10 @@ def clean_chapter_title_for_seo(raw_title: str, ch_num: int, default_topic: str 
     return f"Ch {ch_num:03d}: {cleaned.title()}"
 
 def clean_and_normalize_text(text: str) -> str:
-    # 1. Normalize Unicode symbols
     text = unicodedata.normalize('NFKC', text)
     text = text.translate(FULLWIDTH_TO_ASCII)
     text = RE_SCENE_DIVIDER.sub("", text)
 
-    # 2. Strip watermarks
     for pat in WATERMARK_PATTERNS:
         text = pat.sub("", text)
 
@@ -142,12 +141,10 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
 
-    # Title Resolution
     h1 = soup.find("h1") or soup.find("h2", class_=re.compile(r"(title|chapter-title)", re.I))
     raw_title = h1.get_text(strip=True) if h1 else f"Chapter {ch_num}"
     clean_title = clean_chapter_title_for_seo(raw_title, ch_num, default_topic)
 
-    # Universal Container Detection
     container = None
     for tag, attrs in CONTAINER_SELECTORS:
         found = soup.find(tag, attrs)
@@ -158,7 +155,6 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
         container = soup.find("body")
 
     paragraphs = []
-    # Primary: check <p> elements
     p_tags = container.find_all("p")
     if len(p_tags) >= 3:
         for p in p_tags:
@@ -168,12 +164,10 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
                     continue
                 paragraphs.append(ptxt)
     else:
-        # Fallback: check raw text with <br> breaks
         raw_html = str(container)
         text_with_newlines = re.sub(r"<br\s*/?>", "\n", raw_html, flags=re.I)
         fallback_soup = BeautifulSoup(text_with_newlines, "html.parser")
-        lines = fallback_soup.get_text().split("\n")
-        for line in lines:
+        for line in fallback_soup.get_text().split("\n"):
             ltxt = clean_and_normalize_text(line)
             if ltxt and RE_ALPHANUM.search(ltxt):
                 if re.search(r"^(?:freewebnovel|novelbin|mtl-novel|read novel)\b", ltxt, re.I):
@@ -186,7 +180,6 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
     print(f"[Scraper] [✓] Scraped {len(paragraphs)} paragraphs ({len(full_text.split())} words) for Ch.{ch_num:03d}", flush=True)
 
-    # Next Chapter URL Resolution
     next_url = None
     next_btn = soup.find("a", id=re.compile(r"next_chap", re.I)) or soup.find("a", class_=re.compile(r"next-chap", re.I))
     if next_btn and next_btn.get("href"):
@@ -220,30 +213,67 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
 
     return clean_title, full_text, next_url
 
-def split_text_into_paragraph_chunks(raw_text: str, max_chunk_chars: int = 8000) -> list[str]:
-    """Splits full chapter text across clean paragraph boundaries without truncating."""
-    paragraphs = raw_text.split("\n\n")
-    chunks = []
-    current_chunk = []
+def split_text_into_logical_parts(raw_text: str, target_part_chars: int = 3500) -> list[str]:
+    """Dynamically partitions chapter text into 1, 2, 3, 4, or 5 balanced parts."""
+    paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
+    if not paragraphs:
+        return [raw_text]
+
+    total_chars = sum(len(p) for p in paragraphs)
+    if total_chars <= target_part_chars:
+        return ["\n\n".join(paragraphs)]
+
+    num_parts = max(1, math.ceil(total_chars / target_part_chars))
+    target_chars_per_part = total_chars / num_parts
+
+    parts = []
+    current_part = []
     current_len = 0
 
     for p in paragraphs:
-        p_len = len(p) + 2
-        if current_len + p_len > max_chunk_chars and current_chunk:
-            chunks.append("\n\n".join(current_chunk))
-            current_chunk = [p]
-            current_len = p_len
-        else:
-            current_chunk.append(p)
-            current_len += p_len
+        current_part.append(p)
+        current_len += len(p)
 
-    if current_chunk:
-        chunks.append("\n\n".join(current_chunk))
+        if current_len >= target_chars_per_part and len(parts) < num_parts - 1:
+            parts.append("\n\n".join(current_part))
+            current_part = []
+            current_len = 0
 
-    return chunks if chunks else [raw_text]
+    if current_part:
+        parts.append("\n\n".join(current_part))
 
-def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 10, retry_delay: int = 10) -> list:
+    return parts
+
+def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
+    """
+    Parses Google API's dynamic cooldown delay or applies incremental 15s steps:
+    15s -> 30s -> 45s -> 60s
+    """
+    err_str = str(error_obj)
+
+    # 1. Matches "Please retry in 39.339940317s"
+    m1 = re.search(r"retry in (\d+(?:\.\d+)?)s", err_str, re.I)
+    if m1:
+        return math.ceil(float(m1.group(1))) + 2.0
+
+    # 2. Matches "'retryDelay': '39s'"
+    m2 = re.search(r"retryDelay['\":\s]+(\d+)s", err_str, re.I)
+    if m2:
+        return float(m2.group(1)) + 2.0
+
+    # 3. Dynamic incremental 15s backoff if no specific delay is given
+    return float(attempt * 15.0)
+
+def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 6) -> list:
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
+
+    safety_settings = [
+        types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold=types.HarmBlockThreshold.BLOCK_NONE),
+        types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_HARASSMENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
+        types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
+        types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
+    ]
+
     for attempt in range(1, max_retries + 1):
         try:
             response = client.models.generate_content(
@@ -253,11 +283,25 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
                     response_schema=ChapterNarrationManifest,
+                    safety_settings=safety_settings,
                     temperature=0.1
                 )
             )
-            if response and response.text:
-                data = json.loads(response.text)
+
+            raw_json = None
+            if response:
+                if response.text:
+                    raw_json = response.text
+                elif response.candidates:
+                    first_cand = response.candidates[0]
+                    if hasattr(first_cand, "content") and first_cand.content and first_cand.content.parts:
+                        for part in first_cand.content.parts:
+                            if hasattr(part, "text") and part.text:
+                                raw_json = part.text
+                                break
+
+            if raw_json:
+                data = json.loads(raw_json)
                 staged = []
                 for s in data.get("segments", []):
                     pitch, rate = calculate_prosody_adjustments(s)
@@ -274,12 +318,16 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                         "rate": rate
                     })
                 if staged:
+                    time.sleep(4.5)  # Enforces safe throughput under the 15 RPM cap
                     return staged
+
         except Exception as e:
-            print(f"     [Gemini Director] Demand spike/error (Attempt {attempt}/{max_retries}): {e}", flush=True)
+            delay = extract_retry_delay_seconds(e, attempt)
+            print(f"     [Gemini Director] Rate Limit Event (Attempt {attempt}/{max_retries}): {e}", flush=True)
             if attempt < max_retries:
-                print(f"     [Gemini Cooldown] Waiting {retry_delay}s before retrying...", flush=True)
-                time.sleep(retry_delay)
+                print(f"     [Dynamic Cooldown] Waiting {delay:.1f}s before retrying...", flush=True)
+                time.sleep(delay)
+
     return []
 
 def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_file: str, max_narr_merge: int = 210) -> list:
@@ -320,23 +368,24 @@ ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
 """
 
-    # Split into clean paragraph chunks without character slicing
-    chunks = split_text_into_paragraph_chunks(raw_text, max_chunk_chars=8000)
+    parts = split_text_into_logical_parts(raw_text, target_part_chars=3500)
     all_staged = []
 
-    for c_idx, chunk in enumerate(chunks, 1):
-        if len(chunks) > 1:
-            print(f"     [Gemini Director] Processing Part {c_idx}/{len(chunks)} ({len(chunk.split())} words)...", flush=True)
+    if len(parts) > 1:
+        print(f"     [Gemini Director] Partitioned chapter into {len(parts)} balanced logical parts...", flush=True)
 
-        chunk_staged = parse_single_chunk_via_gemini(client, title, chunk, system_instruction)
-        if chunk_staged:
-            all_staged.extend(chunk_staged)
+    for p_idx, part in enumerate(parts, 1):
+        if len(parts) > 1:
+            print(f"     [Gemini Director] Processing Part {p_idx}/{len(parts)} ({len(part.split())} words)...", flush=True)
+
+        part_staged = parse_single_chunk_via_gemini(client, title, part, system_instruction)
+        if part_staged:
+            all_staged.extend(part_staged)
         else:
-            print(f"     [Gemini Fallback] Using rule-based staging for Part {c_idx}...", flush=True)
-            fallback_part = fallback_rule_based_staging(chunk, staged_chars, max_narr_merge)
+            print(f"     [Gemini Fallback] Using rule-based staging for Part {p_idx}...", flush=True)
+            fallback_part = fallback_rule_based_staging(part, staged_chars, max_narr_merge)
             all_staged.extend(fallback_part)
 
-    # Re-index line IDs sequentially across all chunks
     for idx, seg in enumerate(all_staged, 1):
         seg["line_id"] = f"{idx:04d}"
 
