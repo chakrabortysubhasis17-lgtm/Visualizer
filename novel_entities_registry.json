@@ -3595,6 +3595,126 @@
         "aliases": [
           "lyra"
         ]
+      },
+      "marcus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "marcus"
+        ]
+      },
+      "fiona": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "fiona"
+        ]
+      },
+      "selene": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "selene"
+        ]
+      },
+      "gregor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "gregor"
+        ]
+      },
+      "dexter": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "dexter"
+        ]
+      },
+      "henry": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "henry"
+        ]
+      },
+      "tessa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "tessa"
+        ]
+      },
+      "violette": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "violette"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "jasmine": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jasmine"
+        ]
+      },
+      "simon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "simon"
+        ]
+      },
+      "rachel": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "rachel"
+        ]
       }
     },
     "vocatives": {
@@ -3858,6 +3978,56 @@
         "aliases": [
           "fiona"
         ]
+      },
+      "rhonia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "rhonia"
+        ]
+      },
+      "refugee": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "refugee"
+        ]
+      },
+      "starius": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "starius"
+        ]
+      },
+      "carnalia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "carnalia"
+        ]
+      },
+      "selune": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "selune"
+        ]
       }
     },
     "vocatives": {
@@ -3992,6 +4162,556 @@
           "crowd",
           "tamers",
           "citizens"
+        ]
+      },
+      "new_character": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "new_character"
+        ]
+      },
+      "luna": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "luna"
+        ]
+      },
+      "ivy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "ivy"
+        ]
+      },
+      "lysandra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lysandra"
+        ]
+      },
+      "leona": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "leona"
+        ]
+      },
+      "thristle": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "thristle"
+        ]
+      },
+      "king hrothgar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "king hrothgar"
+        ]
+      },
+      "king garruk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "king garruk"
+        ]
+      },
+      "orc warlord": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "orc warlord"
+        ]
+      },
+      "throk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "throk"
+        ]
+      },
+      "tira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "tira"
+        ]
+      },
+      "garruk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "garruk"
+        ]
+      },
+      "arisha": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "arisha"
+        ]
+      },
+      "adrish": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "adrish"
+        ]
+      },
+      "aurora": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "aurora"
+        ]
+      },
+      "groth": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "groth"
+        ]
+      },
+      "lindash": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lindash"
+        ]
+      },
+      "griselda": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "griselda"
+        ]
+      },
+      "vegia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "vegia"
+        ]
+      },
+      "korgath bloodfist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "korgath bloodfist"
+        ]
+      },
+      "vork stonefist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "vork stonefist"
+        ]
+      },
+      "grimp darkblade": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "grimp darkblade"
+        ]
+      },
+      "eline": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+25%",
+        "aliases": [
+          "eline"
+        ]
+      },
+      "kroth": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kroth"
+        ]
+      },
+      "madoka": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "madoka"
+        ]
+      },
+      "kragg": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kragg"
+        ]
+      },
+      "aiden": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "aiden"
+        ]
+      },
+      "messenger": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "messenger"
+        ]
+      },
+      "kin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kin"
+        ]
+      },
+      "nyxion": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nyxion"
+        ]
+      },
+      "zera": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zera"
+        ]
+      },
+      "zera erako": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zera erako"
+        ]
+      },
+      "selvaria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "selvaria"
+        ]
+      },
+      "alethea": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "alethea"
+        ]
+      },
+      "seraphina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "seraphina"
+        ]
+      },
+      "kairi": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+6Hz",
+        "rate": "+23%",
+        "aliases": [
+          "kairi"
+        ]
+      },
+      "veythar": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "veythar"
+        ]
+      },
+      "renn": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "renn"
+        ]
+      },
+      "serica": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "serica"
+        ]
+      },
+      "fiora": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "fiora"
+        ]
+      },
+      "meyla": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "meyla"
+        ]
+      },
+      "vorrak": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "vorrak"
+        ]
+      },
+      "thyria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "thyria"
+        ]
+      },
+      "morvath": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "morvath"
+        ]
+      },
+      "kaelith": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kaelith"
+        ]
+      },
+      "xerath": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "xerath"
+        ]
+      },
+      "lazira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lazira"
+        ]
+      },
+      "venya": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "venya"
+        ]
+      },
+      "varra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "varra"
+        ]
+      },
+      "nivara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nivara"
+        ]
+      },
+      "selvara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "selvara"
+        ]
+      },
+      "sylara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "sylara"
+        ]
+      },
+      "valeforia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "valeforia"
+        ]
+      },
+      "xylendra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "xylendra"
+        ]
+      },
+      "aethoniel": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "aethoniel"
         ]
       }
     },

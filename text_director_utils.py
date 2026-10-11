@@ -214,7 +214,6 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     return clean_title, full_text, next_url
 
 def split_text_into_logical_parts(raw_text: str, target_part_chars: int = 3500) -> list[str]:
-    """Dynamically partitions chapter text into 1, 2, 3, 4, or 5 balanced parts."""
     paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
     if not paragraphs:
         return [raw_text]
@@ -245,10 +244,6 @@ def split_text_into_logical_parts(raw_text: str, target_part_chars: int = 3500) 
     return parts
 
 def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
-    """
-    Parses Google API's dynamic cooldown delay or applies incremental 15s steps:
-    15s -> 30s -> 45s -> 60s
-    """
     err_str = str(error_obj)
 
     # 1. Matches "Please retry in 39.339940317s"
@@ -261,10 +256,10 @@ def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
     if m2:
         return float(m2.group(1)) + 2.0
 
-    # 3. Dynamic incremental 15s backoff if no specific delay is given
+    # 3. Dynamic stepped backoff: 15s -> 30s -> 45s -> ...
     return float(attempt * 15.0)
 
-def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 6) -> list:
+def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 5) -> list:
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
 
     safety_settings = [
@@ -293,12 +288,19 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                 if response.text:
                     raw_json = response.text
                 elif response.candidates:
-                    first_cand = response.candidates[0]
-                    if hasattr(first_cand, "content") and first_cand.content and first_cand.content.parts:
-                        for part in first_cand.content.parts:
-                            if hasattr(part, "text") and part.text:
+                    cand = response.candidates[0]
+                    finish_reason = getattr(cand, "finish_reason", "UNKNOWN")
+                    # Inspect function_call if candidate formatted as AFC
+                    if hasattr(cand, "content") and cand.content and cand.content.parts:
+                        for part in cand.content.parts:
+                            if hasattr(part, "function_call") and part.function_call:
+                                raw_json = json.dumps(part.function_call.args)
+                                break
+                            elif hasattr(part, "text") and part.text:
                                 raw_json = part.text
                                 break
+                    if not raw_json:
+                        print(f"     [Gemini Director] Attempt {attempt}/{max_retries} returned no content. FinishReason: {finish_reason}", flush=True)
 
             if raw_json:
                 data = json.loads(raw_json)
@@ -317,13 +319,22 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                         "pitch": pitch,
                         "rate": rate
                     })
+
                 if staged:
-                    time.sleep(4.5)  # Enforces safe throughput under the 15 RPM cap
+                    time.sleep(4.5)  # Enforce pacing under the 15 RPM cap
                     return staged
+                else:
+                    print(f"     [Gemini Director] Attempt {attempt}/{max_retries} produced empty segments list.", flush=True)
+
+            # If response yielded no staged segments, explicitly retry after cooldown
+            if attempt < max_retries:
+                retry_wait = float(attempt * 10.0)
+                print(f"     [Gemini Cooldown] Retrying chunk (Attempt {attempt + 1}/{max_retries}) in {retry_wait:.1f}s...", flush=True)
+                time.sleep(retry_wait)
 
         except Exception as e:
             delay = extract_retry_delay_seconds(e, attempt)
-            print(f"     [Gemini Director] Rate Limit Event (Attempt {attempt}/{max_retries}): {e}", flush=True)
+            print(f"     [Gemini Director] Request error (Attempt {attempt}/{max_retries}): {e}", flush=True)
             if attempt < max_retries:
                 print(f"     [Dynamic Cooldown] Waiting {delay:.1f}s before retrying...", flush=True)
                 time.sleep(delay)
@@ -382,7 +393,7 @@ ACTIVE STAGED CHARACTERS:
         if part_staged:
             all_staged.extend(part_staged)
         else:
-            print(f"     [Gemini Fallback] Using rule-based staging for Part {p_idx}...", flush=True)
+            print(f"     [Gemini Fallback] All retries exhausted. Using rule-based staging for Part {p_idx}...", flush=True)
             fallback_part = fallback_rule_based_staging(part, staged_chars, max_narr_merge)
             all_staged.extend(fallback_part)
 
