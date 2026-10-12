@@ -139,6 +139,10 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     print(f"[Scraper] Connecting to Ch.{ch_num:03d}: {url}", flush=True)
     resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
     resp.raise_for_status()
+
+    if f"chapter-{ch_num}" not in resp.url.lower():
+        print(f"     [Scraper Notice] Requested Ch.{ch_num}, landed on: {resp.url}", flush=True)
+
     soup = BeautifulSoup(resp.text, "html.parser")
 
     h1 = soup.find("h1") or soup.find("h2", class_=re.compile(r"(title|chapter-title)", re.I))
@@ -177,15 +181,20 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     if not paragraphs:
         paragraphs = [f"Chapter {ch_num}. Exposition details continue."]
 
+    preview_snippet = " ".join(paragraphs[:2])[:110]
+    print(f"     [Scraper Preview Ch.{ch_num:03d}]: \"{preview_snippet}...\"", flush=True)
+
     full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
     print(f"[Scraper] [✓] Scraped {len(paragraphs)} paragraphs ({len(full_text.split())} words) for Ch.{ch_num:03d}", flush=True)
 
     next_url = None
     next_btn = soup.find("a", id=re.compile(r"next_chap", re.I)) or soup.find("a", class_=re.compile(r"next-chap", re.I))
     if next_btn and next_btn.get("href"):
-        full_next = urllib.parse.urljoin(url, next_btn["href"].strip())
-        if full_next != url:
-            next_url = full_next
+        href = next_btn["href"].strip()
+        if href and href not in ["#", "javascript:void(0);", url]:
+            full_next = urllib.parse.urljoin(url, href)
+            if full_next != url:
+                next_url = full_next
 
     if not next_url:
         for a in soup.find_all("a", href=True):
@@ -213,16 +222,22 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
 
     return clean_title, full_text, next_url
 
-def split_text_into_logical_parts(raw_text: str, target_part_chars: int = 3500) -> list[str]:
+def split_text_into_logical_parts(raw_text: str, max_single_part_chars: int = 5500, target_part_chars: int = 4800, max_parts: int = 5) -> list[str]:
+    """
+    Balanced partitioning:
+    - Leaves short chapters (<= 5,500 chars / ~900 words) as 1 single part.
+    - Divides chapters > 5,500 chars across 2, 3, 4, or up to 5 balanced parts so output JSON
+      always stays below the 8,192 token boundary.
+    """
     paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
     if not paragraphs:
         return [raw_text]
 
     total_chars = sum(len(p) for p in paragraphs)
-    if total_chars <= target_part_chars:
+    if total_chars <= max_single_part_chars:
         return ["\n\n".join(paragraphs)]
 
-    num_parts = max(1, math.ceil(total_chars / target_part_chars))
+    num_parts = min(max_parts, max(2, math.ceil(total_chars / target_part_chars)))
     target_chars_per_part = total_chars / num_parts
 
     parts = []
@@ -246,17 +261,15 @@ def split_text_into_logical_parts(raw_text: str, target_part_chars: int = 3500) 
 def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
     err_str = str(error_obj)
 
-    # 1. Matches "Please retry in 39.339940317s"
     m1 = re.search(r"retry in (\d+(?:\.\d+)?)s", err_str, re.I)
     if m1:
         return math.ceil(float(m1.group(1))) + 2.0
 
-    # 2. Matches "'retryDelay': '39s'"
     m2 = re.search(r"retryDelay['\":\s]+(\d+)s", err_str, re.I)
     if m2:
         return float(m2.group(1)) + 2.0
 
-    # 3. Dynamic stepped backoff: 15s -> 30s -> 45s -> ...
+    # Stepped dynamic backoff: 15s -> 30s -> 45s -> 60s
     return float(attempt * 15.0)
 
 def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 5) -> list:
@@ -269,6 +282,8 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
         types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
     ]
 
+    raw_schema_dict = ChapterNarrationManifest.model_json_schema()
+
     for attempt in range(1, max_retries + 1):
         try:
             response = client.models.generate_content(
@@ -277,11 +292,20 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
-                    response_schema=ChapterNarrationManifest,
+                    response_schema=raw_schema_dict,
                     safety_settings=safety_settings,
                     temperature=0.1
                 )
             )
+
+            # 1. Prompt Firewall Policy Block Detection
+            # If Google blocks the raw prompt with PROHIBITED_CONTENT, immediately bail out to fallback.
+            # Never retry a deterministic policy block to avoid burning cooldown timers.
+            if response and hasattr(response, "prompt_feedback") and response.prompt_feedback:
+                block_reason = getattr(response.prompt_feedback, "block_reason", None)
+                if block_reason:
+                    print(f"     [Gemini Policy Block] Prompt blocked by filter: {block_reason}. Immediate fallback to rule-based staging.", flush=True)
+                    return []
 
             raw_json = None
             if response:
@@ -290,7 +314,12 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                 elif response.candidates:
                     cand = response.candidates[0]
                     finish_reason = getattr(cand, "finish_reason", "UNKNOWN")
-                    # Inspect function_call if candidate formatted as AFC
+
+                    # If candidate was stopped by safety filter, abort immediately to fallback
+                    if "SAFETY" in str(finish_reason):
+                        print(f"     [Gemini Safety Block] Candidate blocked by safety ({finish_reason}). Immediate fallback to rule-based staging.", flush=True)
+                        return []
+
                     if hasattr(cand, "content") and cand.content and cand.content.parts:
                         for part in cand.content.parts:
                             if hasattr(part, "function_call") and part.function_call:
@@ -300,7 +329,7 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                                 raw_json = part.text
                                 break
                     if not raw_json:
-                        print(f"     [Gemini Director] Attempt {attempt}/{max_retries} returned no content. FinishReason: {finish_reason}", flush=True)
+                        print(f"     [Gemini Director] Attempt {attempt}/{max_retries} returned no text. FinishReason: {finish_reason}", flush=True)
 
             if raw_json:
                 data = json.loads(raw_json)
@@ -324,15 +353,20 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                     time.sleep(4.5)  # Enforce pacing under the 15 RPM cap
                     return staged
                 else:
-                    print(f"     [Gemini Director] Attempt {attempt}/{max_retries} produced empty segments list.", flush=True)
+                    print(f"     [Gemini Director] Attempt {attempt}/{max_retries} produced empty segments array.", flush=True)
 
-            # If response yielded no staged segments, explicitly retry after cooldown
             if attempt < max_retries:
-                retry_wait = float(attempt * 10.0)
+                retry_wait = float(attempt * 15.0)
                 print(f"     [Gemini Cooldown] Retrying chunk (Attempt {attempt + 1}/{max_retries}) in {retry_wait:.1f}s...", flush=True)
                 time.sleep(retry_wait)
 
         except Exception as e:
+            err_str = str(e)
+            # If the exception is a hard prohibited content block, bypass retries immediately
+            if "PROHIBITED_CONTENT" in err_str or "BLOCKED" in err_str:
+                print(f"     [Gemini Policy Block] Exception flagged hard policy violation. Immediate fallback to rule-based staging.", flush=True)
+                return []
+
             delay = extract_retry_delay_seconds(e, attempt)
             print(f"     [Gemini Director] Request error (Attempt {attempt}/{max_retries}): {e}", flush=True)
             if attempt < max_retries:
@@ -370,16 +404,17 @@ def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_f
 You are an expert audio drama script director and phonetic supervisor.
 Analyze the chapter text, cleanly separating narration, dialogue, and system prompts.
 
-STRICT CHARACTER CONTINUITY DIRECTIVES:
-1. GENDER LOCK: A female speaker must NEVER become male, and a male speaker must NEVER become female. Gender consistency is absolute.
-2. CAST IDENTIFICATION: Match speakers against the staged character registry below. If an alias or epithet is used, map it to the canonical character.
-3. NEW CHARACTER DISCOVERY: If a new character speaks who is NOT in this registry, clearly identify their exact name or title, determine their correct gender ('Male', 'Female', or 'Neutral'), and select an appropriate Edge-TTS neural voice.
+STRICT CONTINUITY DIRECTIVES:
+1. COMPLETE ADAPTATION: Every line of the text must appear in the final manifest. Do not omit exposition, internal thoughts, or stat lines.
+2. GENDER LOCK: A female speaker must NEVER become male, and a male speaker must NEVER become female.
+3. CAST IDENTIFICATION: Match speakers against the staged character registry below. If an alias or epithet is used, map it to the canonical character.
+4. NEW CHARACTER DISCOVERY: If a new character speaks who is NOT in this registry, identify their name, determine their gender ('Male', 'Female', or 'Neutral'), and assign an appropriate Edge-TTS neural voice.
 
 ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
 """
 
-    parts = split_text_into_logical_parts(raw_text, target_part_chars=3500)
+    parts = split_text_into_logical_parts(raw_text, max_single_part_chars=5500, target_part_chars=4800, max_parts=5)
     all_staged = []
 
     if len(parts) > 1:
@@ -393,7 +428,7 @@ ACTIVE STAGED CHARACTERS:
         if part_staged:
             all_staged.extend(part_staged)
         else:
-            print(f"     [Gemini Fallback] All retries exhausted. Using rule-based staging for Part {p_idx}...", flush=True)
+            print(f"     [Gemini Fallback] Using rule-based staging for Part {p_idx}...", flush=True)
             fallback_part = fallback_rule_based_staging(part, staged_chars, max_narr_merge)
             all_staged.extend(fallback_part)
 
