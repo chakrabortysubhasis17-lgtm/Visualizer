@@ -4829,5 +4829,844 @@
         "role": "female_companion"
       }
     }
+  },
+  "road-to-mastery-a-litrpg-apocalypse": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "jack": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "jack",
+          "jack rust",
+          "rust",
+          "jack the brawler",
+          "brawler",
+          "biologist",
+          "host"
+        ]
+      },
+      "system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "the system",
+          "system",
+          "alien system",
+          "extraterrestrial ai",
+          "system prompt",
+          "world announcement",
+          "notification",
+          "prompt",
+          "ding"
+        ]
+      },
+      "brock": {
+        "gender": "Synthetic",
+        "role": "beast_companion",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-10Hz",
+        "rate": "+4%",
+        "aliases": [
+          "brock",
+          "brorilla",
+          "gorilla",
+          "bro",
+          "big bro",
+          "partner"
+        ]
+      },
+      "vivi": {
+        "gender": "Female",
+        "role": "female_companion",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "vivi",
+          "miss vivi",
+          "girlfriend"
+        ]
+      },
+      "li_xiang": {
+        "gender": "Male",
+        "role": "martial_master",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "li xiang",
+          "lixiang",
+          "master li",
+          "kung fu master"
+        ]
+      },
+      "dorman": {
+        "gender": "Male",
+        "role": "rogue_ally",
+        "voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "dorman",
+          "rogue dorman"
+        ]
+      },
+      "the_sage": {
+        "gender": "Male",
+        "role": "ancient_gods",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-10Hz",
+        "rate": "-2%",
+        "aliases": [
+          "the sage",
+          "sage",
+          "mysterious sage"
+        ]
+      },
+      "rufus": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "rufus",
+          "scion rufus",
+          "young master rufus"
+        ]
+      },
+      "gan_salin": {
+        "gender": "Male",
+        "role": "psychotic_villain",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+12%",
+        "aliases": [
+          "gan salin",
+          "salin",
+          "insane cultivator"
+        ]
+      },
+      "survivors": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "survivors",
+          "delvers",
+          "humans",
+          "earth survivors",
+          "crowd",
+          "scions"
+        ]
+      },
+      "monsters": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-14Hz",
+        "rate": "+4%",
+        "aliases": [
+          "goblins",
+          "cave beasts",
+          "dungeon monsters",
+          "beasts",
+          "mutant bear"
+        ]
+      },
+      "blacksmith": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "blacksmith"
+        ]
+      },
+      "george": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "george"
+        ]
+      },
+      "professor": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "professor"
+        ]
+      },
+      "hugo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hugo"
+        ]
+      },
+      "djinn": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "djinn"
+        ]
+      },
+      "artazul": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "artazul"
+        ]
+      },
+      "edgar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "edgar"
+        ]
+      },
+      "henry_white": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "henry_white"
+        ]
+      },
+      "henry": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "henry"
+        ]
+      },
+      "emilia rogers": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "emilia rogers"
+        ]
+      },
+      "new character": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+9%",
+        "aliases": [
+          "new character"
+        ]
+      },
+      "galicia lonihor": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "galicia lonihor"
+        ]
+      },
+      "karvahul": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "karvahul"
+        ]
+      },
+      "master_shol": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "master_shol"
+        ]
+      },
+      "vanderdecken": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "vanderdecken"
+        ]
+      },
+      "vocrich": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "vocrich"
+        ]
+      },
+      "elena richter": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "elena richter"
+        ]
+      },
+      "fesh wui": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "fesh wui"
+        ]
+      },
+      "shard presht": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "shard presht"
+        ]
+      },
+      "alexander": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "alexander"
+        ]
+      },
+      "shit": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "shit"
+        ]
+      },
+      "sparman": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "sparman"
+        ]
+      },
+      "vlossana": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "vlossana"
+        ]
+      },
+      "dordok": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "dordok"
+        ]
+      },
+      "bomn": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bomn"
+        ]
+      },
+      "vashter": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "vashter"
+        ]
+      },
+      "achilles": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "achilles"
+        ]
+      },
+      "nauja": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nauja"
+        ]
+      },
+      "muka": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "muka"
+        ]
+      }
+    },
+    "vocatives": {
+      "bro": {
+        "speaker_gender": "Synthetic",
+        "role": "beast_companion"
+      },
+      "jack": {
+        "speaker_gender": "Female",
+        "role": "female_companion"
+      },
+      "master": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      }
+    }
+  },
+  "the-gourmet-innkeeper-cooking-monsters-in-a-fantasy-world": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "finn": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "finn",
+          "finnick",
+          "finnick altheus solthar",
+          "chef finn",
+          "masterchef",
+          "innkeeper",
+          "solthar",
+          "host"
+        ]
+      },
+      "inn_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "inn system",
+          "system",
+          "innkeeper system",
+          "system prompt",
+          "inn functions",
+          "rules",
+          "rule prompt",
+          "barrier notification",
+          "ding",
+          "prompt"
+        ]
+      },
+      "pang": {
+        "gender": "Synthetic",
+        "role": "mascot_spirit",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+6Hz",
+        "rate": "+4%",
+        "aliases": [
+          "pang",
+          "panda",
+          "little panda",
+          "inn spirit",
+          "mascot",
+          "taste tester"
+        ]
+      },
+      "sylwen": {
+        "gender": "Female",
+        "role": "elf_mage",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "sylwen",
+          "sylwen thariel",
+          "elf",
+          "elf maiden",
+          "miss sylwen",
+          "cloaked figure"
+        ]
+      },
+      "marcus": {
+        "gender": "Male",
+        "role": "adventurer_captain",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+3%",
+        "aliases": [
+          "marcus",
+          "captain marcus",
+          "hunter marcus"
+        ]
+      },
+      "victor": {
+        "gender": "Male",
+        "role": "veteran_hunter",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-3Hz",
+        "rate": "+4%",
+        "aliases": [
+          "victor",
+          "hunter victor"
+        ]
+      },
+      "remus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "remus"
+        ]
+      },
+      "maria": {
+        "gender": "Female",
+        "role": "female_companion",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "maria",
+          "miss maria"
+        ]
+      },
+      "jeik": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+8%",
+        "aliases": [
+          "jeik",
+          "john",
+          "gangster"
+        ]
+      },
+      "adventurers": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "adventurers",
+          "customers",
+          "guests",
+          "hunters",
+          "travelers",
+          "crowd"
+        ]
+      },
+      "monsters": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-14Hz",
+        "rate": "+4%",
+        "aliases": [
+          "monsters",
+          "beasts",
+          "magical creatures",
+          "forest monsters"
+        ]
+      }
+    },
+    "vocatives": {
+      "innkeeper": {
+        "speaker_gender": "Female",
+        "role": "elf_mage"
+      },
+      "chef": {
+        "speaker_gender": "Male",
+        "role": "adventurer_captain"
+      },
+      "kid": {
+        "speaker_gender": "Male",
+        "role": "veteran_hunter"
+      }
+    }
+  },
+  "reincarnated-in-the-alternate-world-im-a-demonic-lord-as-well-as-a-villager": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "xia_mi": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "xia mi",
+          "shami",
+          "demon king",
+          "demon lord",
+          "successor to the demon king",
+          "new demon king heir",
+          "villager xia mi",
+          "villager a",
+          "farmer",
+          "host"
+        ]
+      },
+      "demon_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "demon king system",
+          "system",
+          "identity panel",
+          "demon king's power",
+          "system prompt",
+          "panel",
+          "prompt",
+          "ding"
+        ]
+      },
+      "luleya": {
+        "gender": "Female",
+        "role": "elf_heroine",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+3Hz",
+        "rate": "+8%",
+        "aliases": [
+          "luleya",
+          "rureia",
+          "rureya",
+          "elf maiden",
+          "elf girl",
+          "blonde elf",
+          "first envoy",
+          "demon envoy"
+        ]
+      },
+      "lina": {
+        "gender": "Female",
+        "role": "hero_girl",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lina",
+          "lena",
+          "hero lina",
+          "white hair",
+          "white-haired girl",
+          "hero maiden",
+          "hero"
+        ]
+      },
+      "theo": {
+        "gender": "Male",
+        "role": "villager_friend",
+        "voice": "en-US-EricNeural",
+        "pitch": "+2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "theo",
+          "villager theo",
+          "king of abstraction"
+        ]
+      },
+      "old_demon_king": {
+        "gender": "Male",
+        "role": "ancient_gods",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-10Hz",
+        "rate": "-2%",
+        "aliases": [
+          "old demon king",
+          "previous demon king",
+          "demon king phantom",
+          "reflection of the old demon king"
+        ]
+      },
+      "minotaur_chief": {
+        "gender": "Male",
+        "role": "demon_envoy",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-12Hz",
+        "rate": "+3%",
+        "aliases": [
+          "minotaur chief",
+          "minotaur",
+          "tauren",
+          "bull chieftain"
+        ]
+      },
+      "villagers": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "villagers",
+          "newbie village villagers",
+          "tavern patrons",
+          "yili village residents",
+          "crowd"
+        ]
+      },
+      "heroes": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-4Hz",
+        "rate": "+4%",
+        "aliases": [
+          "heroes",
+          "great mages",
+          "adventurers",
+          "faata mages",
+          "rebel swordsman"
+        ]
+      },
+      "dill": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "dill"
+        ]
+      },
+      "cash": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "cash"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "protagonist"
+        ]
+      }
+    },
+    "vocatives": {
+      "demon king": {
+        "speaker_gender": "Female",
+        "role": "elf_heroine"
+      },
+      "shami": {
+        "speaker_gender": "Female",
+        "role": "hero_girl"
+      },
+      "gramps": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      }
+    }
   }
 }
