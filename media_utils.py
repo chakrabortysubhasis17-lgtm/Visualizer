@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import shutil
 import random
 import asyncio
 import subprocess
@@ -27,14 +28,15 @@ def format_srt_time(seconds: float) -> str:
     return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
 async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphore, max_retries: int = 5):
-    if os.path.exists(out_file) and os.path.getsize(out_file) > 100:
+    # Only skip if the file is a genuinely valid, audible MP3 (> 3000 bytes)
+    if os.path.exists(out_file) and os.path.getsize(out_file) > 3000:
         return
 
     pause_dur = row.get("pause_duration")
     raw_text = row.get("text", "").strip()
     text = RE_PAUSE_TAGS.sub("", raw_text).strip()
 
-    # Programmatic silence gap for pauses
+    # Programmatic silence gap for explicit pauses or empty markers
     if pause_dur or not text or not RE_ALPHANUM.search(text):
         dur = float(pause_dur) if pause_dur else 0.5
         subprocess.run([
@@ -46,19 +48,20 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
     line_type = row.get("line_type", "Narration")
     is_system = (line_type == "System")
 
-    # Narrator remains completely standard en-US-GuyNeural
     if is_system:
-        # Female mecha voice strictly for System prompts
         voice = "en-US-AriaNeural"
         pitch = "-2Hz"
         rate = "+0%"
     else:
-        # Dialogue and Narrator keep their configured voices
-        voice = row.get("voice", "en-US-GuyNeural")
+        # Sanitize known hallucinated voices to reliable Edge counterparts
+        req_voice = row.get("voice", "en-US-GuyNeural")
+        if req_voice in ["en-US-TonyNeural", "en-US-JasonNeural"]:
+            req_voice = "en-US-ChristopherNeural"
+        voice = req_voice
         pitch = row.get("pitch", "+0Hz")
         rate = row.get("rate", "+5%")
 
-    chunk_timeout = max(35.0, 25.0 + (len(text.split()) * 0.40))
+    chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
     raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
 
     async with sem:
@@ -75,40 +78,50 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                 await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
 
                 # Metallic mecha DSP filter applied EXCLUSIVELY to System lines
-                if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 100:
+                if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 1000:
                     subprocess.run([
                         "ffmpeg", "-y", "-i", raw_tts_file,
                         "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
                         "-q:a", "2", "-acodec", "libmp3lame", out_file
                     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+                    # Fallback to unedited raw audio if filter fails
+                    if not (os.path.exists(out_file) and os.path.getsize(out_file) > 1000):
+                        shutil.copy2(raw_tts_file, out_file)
+
                     try:
                         os.remove(raw_tts_file)
                     except OSError:
                         pass
                     return
 
-                # Normal Narration and Dialogue write straight to out_file with zero filters
-                if os.path.exists(out_file) and os.path.getsize(out_file) > 100:
+                # Normal Narration and Dialogue
+                if os.path.exists(out_file) and os.path.getsize(out_file) > 1000:
                     return
+
             except Exception:
                 pass
 
             if attempt == max_retries:
+                # If network completely fails, insert audible marker gap
                 subprocess.run([
                     "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
                     "-t", "0.5", "-q:a", "9", "-acodec", "libmp3lame", out_file
                 ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 return
+
             await asyncio.sleep((attempt * 1.5) + random.uniform(0.5, 1.5))
 
 async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir: str, global_sem: asyncio.Semaphore):
     chapter_mp3 = os.path.join(build_dir, f"ch_{ch_num:03d}.mp3")
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
-    if os.path.exists(chapter_mp3) and os.path.exists(chapter_meta):
+
+    # If the chapter MP3 already exists and is not a corrupted small stub, verify and return
+    if os.path.exists(chapter_mp3) and os.path.exists(chapter_meta) and os.path.getsize(chapter_mp3) > 10000:
         try:
             with open(chapter_meta, "r", encoding="utf-8") as f:
                 meta = json.load(f)
-            if meta.get("duration", 0) > 5.0 and len(meta.get("relative_subtitles", [])) > 0:
+            if meta.get("duration", 0) > 10.0 and len(meta.get("relative_subtitles", [])) > 0:
                 return ch_num, chapter_mp3, meta["duration"], meta["title"], meta["relative_subtitles"]
         except Exception:
             pass
@@ -116,6 +129,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     temp_dir = os.path.join(build_dir, f"temp_ch_{ch_num:03d}")
     os.makedirs(temp_dir, exist_ok=True)
     chunk_files, tasks = [], []
+
     for row in rows:
         c_path = os.path.join(temp_dir, f"seg_{row['line_id']}.mp3")
         chunk_files.append(c_path)
@@ -126,8 +140,9 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     valid_chunks = []
     rel_subtitles = []
     rel_time = 0.0
+
     for cf, row in zip(chunk_files, rows):
-        if os.path.exists(cf) and os.path.getsize(cf) > 100:
+        if os.path.exists(cf) and os.path.getsize(cf) > 1000:
             valid_chunks.append(cf)
             dur = get_audio_duration(cf)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
@@ -155,13 +170,8 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     with open(chapter_meta, "w", encoding="utf-8") as f:
         json.dump({"title": title, "duration": final_dur, "relative_subtitles": rel_subtitles}, f)
 
-    for cf in chunk_files:
-        try: os.remove(cf)
-        except OSError: pass
-    try: os.remove(os.path.join(temp_dir, "manifest.txt"))
-    except OSError: pass
-    try: os.rmdir(temp_dir)
-    except OSError: pass
+    # Windows-safe directory cleanup: wipes all segments and scratch files at once
+    shutil.rmtree(temp_dir, ignore_errors=True)
 
     print(f"[Synthesized Audio] {title} ({format_timestamp(final_dur)})", flush=True)
     return ch_num, chapter_mp3, final_dur, title, rel_subtitles
