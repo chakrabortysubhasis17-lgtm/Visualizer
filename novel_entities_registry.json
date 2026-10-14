@@ -1,4 +1,462 @@
 {
+  "sss-awakening-i-can-devour-gods-to-evolve-my-goddesses": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "su_chen": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "su chen",
+          "jiang chen",
+          "host",
+          "god devourer",
+          "protagonist",
+          "boss",
+          "young master chen"
+        ]
+      },
+      "devour_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "god devourer system",
+          "goddess evolution system",
+          "system",
+          "system prompt",
+          "ding",
+          "prompt",
+          "awakening panel"
+        ]
+      },
+      "first_goddess": {
+        "gender": "Female",
+        "role": "first_goddess",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "aliases": [
+          "first goddess",
+          "goddess",
+          "ice goddess",
+          "fallen goddess",
+          "valkyrie",
+          "qing'er",
+          "xue'er"
+        ]
+      },
+      "second_goddess": {
+        "gender": "Female",
+        "role": "second_goddess",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+3Hz",
+        "rate": "+7%",
+        "aliases": [
+          "second goddess",
+          "flame goddess",
+          "war goddess",
+          "sister",
+          "little goddess"
+        ]
+      },
+      "academy_instructor": {
+        "gender": "Male",
+        "role": "academy_instructor",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "+2%",
+        "aliases": [
+          "instructor",
+          "teacher",
+          "examiner",
+          "principal",
+          "dean"
+        ]
+      },
+      "arrogant_scion": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "young master",
+          "scion",
+          "arrogant classmate",
+          "rival student"
+        ]
+      },
+      "classmates": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "classmates",
+          "students",
+          "crowd",
+          "citizens",
+          "panicked crowd"
+        ]
+      },
+      "bell_keeper": {
+        "gender": "Neutral",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "bell_keeper"
+        ]
+      },
+      "marek": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "marek"
+        ]
+      },
+      "joren_pike": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "joren_pike"
+        ]
+      },
+      "cassian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "cassian"
+        ]
+      },
+      "iven": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "iven"
+        ]
+      },
+      "bram": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bram"
+        ]
+      },
+      "darius_kelm": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "darius_kelm"
+        ]
+      },
+      "teren": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "teren"
+        ]
+      },
+      "falcon_warden": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "falcon_warden"
+        ]
+      },
+      "caravan_guard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "caravan_guard"
+        ]
+      },
+      "elara_vayne": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "elara_vayne"
+        ]
+      },
+      "hill_king": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "hill_king"
+        ]
+      },
+      "brogan_stonecrown": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "brogan_stonecrown"
+        ]
+      }
+    },
+    "vocatives": {
+      "master": {
+        "speaker_gender": "Female",
+        "role": "first_goddess"
+      },
+      "teacher": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      },
+      "brother": {
+        "speaker_gender": "Female",
+        "role": "second_goddess"
+      }
+    }
+  },
+  "beast-taming-my-beasts-grind-die-and-respawn": {
+    "characters": {
+      "narrator": {
+        "gender": "Male",
+        "role": "narrator",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "lu_yu": {
+        "gender": "Male",
+        "role": "mc",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "lu yu",
+          "lin ze",
+          "beast tamer",
+          "tamer",
+          "host",
+          "protagonist",
+          "boss"
+        ]
+      },
+      "respawn_system": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "infinite respawn system",
+          "grinding system",
+          "beast system",
+          "system prompt",
+          "ding",
+          "prompt",
+          "attribute panel"
+        ]
+      },
+      "first_pet": {
+        "gender": "Synthetic",
+        "role": "pet_familiar",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+6Hz",
+        "rate": "+8%",
+        "aliases": [
+          "first pet",
+          "pet",
+          "familiar",
+          "little bone",
+          "little sparrow",
+          "beetle",
+          "slime",
+          "little guy"
+        ]
+      },
+      "evaluator": {
+        "gender": "Male",
+        "role": "academy_instructor",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-5Hz",
+        "rate": "+2%",
+        "aliases": [
+          "evaluator",
+          "examiner",
+          "teacher",
+          "academy instructor",
+          "association head"
+        ]
+      },
+      "rival_tamer": {
+        "gender": "Male",
+        "role": "arrogant_scion",
+        "voice": "en-US-EricNeural",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "aliases": [
+          "rival tamer",
+          "young master",
+          "elite student",
+          "rich scion"
+        ]
+      },
+      "audience": {
+        "gender": "Male",
+        "role": "panicked_mob",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "audience",
+          "students",
+          "spectators",
+          "crowd",
+          "tamers"
+        ]
+      },
+      "dungeon_boss": {
+        "gender": "Synthetic",
+        "role": "dungeon_boss",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "-15Hz",
+        "rate": "+4%",
+        "aliases": [
+          "calamity beast",
+          "boss monster",
+          "wild beast",
+          "mutant monster"
+        ]
+      },
+      "elsa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "elsa"
+        ]
+      },
+      "arthur": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "arthur"
+        ]
+      },
+      "system_prompt": {
+        "gender": "Female",
+        "role": "system",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "system_prompt"
+        ]
+      },
+      "elena": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "elena"
+        ]
+      },
+      "marek": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "marek"
+        ]
+      },
+      "jin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jin"
+        ]
+      },
+      "kade": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "kade"
+        ]
+      }
+    },
+    "vocatives": {
+      "master": {
+        "speaker_gender": "Synthetic",
+        "role": "first_pet"
+      },
+      "instructor": {
+        "speaker_gender": "Male",
+        "role": "mc"
+      }
+    }
+  },
   "the-end-of-the-world-my-woman-is-a-billion-points-stronger": {
     "characters": {
       "mc": {
