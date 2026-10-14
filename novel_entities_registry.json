@@ -6678,6 +6678,136 @@
         "aliases": [
           "karolina"
         ]
+      },
+      "milos": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "milos"
+        ]
+      },
+      "lucius": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "lucius"
+        ]
+      },
+      "dag": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "dag"
+        ]
+      },
+      "filch": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "filch"
+        ]
+      },
+      "jennifer": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "jennifer"
+        ]
+      },
+      "simon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "simon"
+        ]
+      },
+      "york lewis": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+25%",
+        "aliases": [
+          "york lewis"
+        ]
+      },
+      "sophia rose": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+25%",
+        "aliases": [
+          "sophia rose"
+        ]
+      },
+      "york": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "york"
+        ]
+      },
+      "sophia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "sophia"
+        ]
+      },
+      "professor mcgonagall": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "professor mcgonagall"
+        ]
+      },
+      "madam hooch": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "madam hooch"
+        ]
+      },
+      "knight": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "knight"
+        ]
       }
     },
     "vocatives": {}

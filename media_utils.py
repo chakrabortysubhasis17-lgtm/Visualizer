@@ -1,10 +1,10 @@
 import os
 import re
-import json
 import shutil
 import random
 import asyncio
 import subprocess
+import orjson
 import edge_tts
 
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
@@ -28,7 +28,7 @@ def format_srt_time(seconds: float) -> str:
     return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
 async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphore, max_retries: int = 5):
-    # Only skip if the file is a genuinely valid, audible MP3 (> 3000 bytes)
+    # Enforce non-silent, audible segment validation (> 3000 bytes)
     if os.path.exists(out_file) and os.path.getsize(out_file) > 3000:
         return
 
@@ -53,8 +53,8 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
         pitch = "-2Hz"
         rate = "+0%"
     else:
-        # Sanitize known hallucinated voices to reliable Edge counterparts
         req_voice = row.get("voice", "en-US-GuyNeural")
+        # Sanitize known non-edge voices to guaranteed Edge counterparts
         if req_voice in ["en-US-TonyNeural", "en-US-JasonNeural"]:
             req_voice = "en-US-ChristopherNeural"
         voice = req_voice
@@ -85,7 +85,7 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                         "-q:a", "2", "-acodec", "libmp3lame", out_file
                     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-                    # Fallback to unedited raw audio if filter fails
+                    # Keep clean raw audio if the DSP filter fails
                     if not (os.path.exists(out_file) and os.path.getsize(out_file) > 1000):
                         shutil.copy2(raw_tts_file, out_file)
 
@@ -103,7 +103,6 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                 pass
 
             if attempt == max_retries:
-                # If network completely fails, insert audible marker gap
                 subprocess.run([
                     "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
                     "-t", "0.5", "-q:a", "9", "-acodec", "libmp3lame", out_file
@@ -116,11 +115,11 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     chapter_mp3 = os.path.join(build_dir, f"ch_{ch_num:03d}.mp3")
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
 
-    # If the chapter MP3 already exists and is not a corrupted small stub, verify and return
+    # Fast validation using orjson binary reader
     if os.path.exists(chapter_mp3) and os.path.exists(chapter_meta) and os.path.getsize(chapter_mp3) > 10000:
         try:
-            with open(chapter_meta, "r", encoding="utf-8") as f:
-                meta = json.load(f)
+            with open(chapter_meta, "rb") as f:
+                meta = orjson.loads(f.read())
             if meta.get("duration", 0) > 10.0 and len(meta.get("relative_subtitles", [])) > 0:
                 return ch_num, chapter_mp3, meta["duration"], meta["title"], meta["relative_subtitles"]
         except Exception:
@@ -167,10 +166,11 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", manifest_path, "-c", "copy", chapter_mp3], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     final_dur = get_audio_duration(chapter_mp3)
-    with open(chapter_meta, "w", encoding="utf-8") as f:
-        json.dump({"title": title, "duration": final_dur, "relative_subtitles": rel_subtitles}, f)
+    meta_payload = {"title": title, "duration": final_dur, "relative_subtitles": rel_subtitles}
+    with open(chapter_meta, "wb") as f:
+        f.write(orjson.dumps(meta_payload, option=orjson.OPT_INDENT_2))
 
-    # Windows-safe directory cleanup: wipes all segments and scratch files at once
+    # Robust directory cleanup: removes all chunk and scratch files cleanly on Windows
     shutil.rmtree(temp_dir, ignore_errors=True)
 
     print(f"[Synthesized Audio] {title} ({format_timestamp(final_dur)})", flush=True)

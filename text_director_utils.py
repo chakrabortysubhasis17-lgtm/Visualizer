@@ -1,10 +1,11 @@
 import os
 import re
-import json
 import time
 import math
 import unicodedata
 import urllib.parse
+import orjson
+import httpx
 import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
@@ -135,12 +136,22 @@ def balance_paragraph_quotes(paragraph: str) -> str:
             paragraph = '"' + paragraph
     return paragraph
 
-def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, default_topic: str = "Arc"):
+def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc"):
     print(f"[Scraper] Connecting to Ch.{ch_num:03d}: {url}", flush=True)
-    resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
+
+    # Adaptive client call: handles both httpx.Client and requests.Session seamlessly
+    try:
+        if isinstance(session, httpx.Client):
+            resp = session.get(url, headers=HEADERS, timeout=25.0, follow_redirects=True)
+        else:
+            resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
+    except TypeError:
+        resp = session.get(url, headers=HEADERS, timeout=25)
+
     resp.raise_for_status()
 
-    if f"chapter-{ch_num}" not in resp.url.lower():
+    current_url_str = str(resp.url).lower()
+    if f"chapter-{ch_num}" not in current_url_str:
         print(f"     [Scraper Notice] Requested Ch.{ch_num}, landed on: {resp.url}", flush=True)
 
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -223,12 +234,6 @@ def scrape_chapter_content(session: requests.Session, url: str, ch_num: int, def
     return clean_title, full_text, next_url
 
 def split_text_into_logical_parts(raw_text: str, max_single_part_chars: int = 5500, target_part_chars: int = 4800, max_parts: int = 5) -> list[str]:
-    """
-    Balanced partitioning:
-    - Leaves short chapters (<= 5,500 chars / ~900 words) as 1 single part.
-    - Divides chapters > 5,500 chars across 2, 3, 4, or up to 5 balanced parts so output JSON
-      always stays below the 8,192 token boundary.
-    """
     paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
     if not paragraphs:
         return [raw_text]
@@ -269,7 +274,6 @@ def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
     if m2:
         return float(m2.group(1)) + 2.0
 
-    # Stepped dynamic backoff: 15s -> 30s -> 45s -> 60s
     return float(attempt * 15.0)
 
 def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 5) -> list:
@@ -298,13 +302,10 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                 )
             )
 
-            # 1. Prompt Firewall Policy Block Detection
-            # If Google blocks the raw prompt with PROHIBITED_CONTENT, immediately bail out to fallback.
-            # Never retry a deterministic policy block to avoid burning cooldown timers.
             if response and hasattr(response, "prompt_feedback") and response.prompt_feedback:
                 block_reason = getattr(response.prompt_feedback, "block_reason", None)
                 if block_reason:
-                    print(f"     [Gemini Policy Block] Prompt blocked by filter: {block_reason}. Immediate fallback to rule-based staging.", flush=True)
+                    print(f"     [Gemini Policy Block] Prompt blocked: {block_reason}. Fallback to rule-based staging.", flush=True)
                     return []
 
             raw_json = None
@@ -315,15 +316,14 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                     cand = response.candidates[0]
                     finish_reason = getattr(cand, "finish_reason", "UNKNOWN")
 
-                    # If candidate was stopped by safety filter, abort immediately to fallback
                     if "SAFETY" in str(finish_reason):
-                        print(f"     [Gemini Safety Block] Candidate blocked by safety ({finish_reason}). Immediate fallback to rule-based staging.", flush=True)
+                        print(f"     [Gemini Safety Block] Candidate blocked ({finish_reason}). Fallback to rule-based staging.", flush=True)
                         return []
 
                     if hasattr(cand, "content") and cand.content and cand.content.parts:
                         for part in cand.content.parts:
                             if hasattr(part, "function_call") and part.function_call:
-                                raw_json = json.dumps(part.function_call.args)
+                                raw_json = orjson.dumps(part.function_call.args).decode("utf-8")
                                 break
                             elif hasattr(part, "text") and part.text:
                                 raw_json = part.text
@@ -332,7 +332,7 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                         print(f"     [Gemini Director] Attempt {attempt}/{max_retries} returned no text. FinishReason: {finish_reason}", flush=True)
 
             if raw_json:
-                data = json.loads(raw_json)
+                data = orjson.loads(raw_json)
                 staged = []
                 for s in data.get("segments", []):
                     pitch, rate = calculate_prosody_adjustments(s)
@@ -350,7 +350,7 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                     })
 
                 if staged:
-                    time.sleep(4.5)  # Enforce pacing under the 15 RPM cap
+                    time.sleep(4.5)
                     return staged
                 else:
                     print(f"     [Gemini Director] Attempt {attempt}/{max_retries} produced empty segments array.", flush=True)
@@ -362,9 +362,8 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
 
         except Exception as e:
             err_str = str(e)
-            # If the exception is a hard prohibited content block, bypass retries immediately
             if "PROHIBITED_CONTENT" in err_str or "BLOCKED" in err_str:
-                print(f"     [Gemini Policy Block] Exception flagged hard policy violation. Immediate fallback to rule-based staging.", flush=True)
+                print(f"     [Gemini Policy Block] Exception flagged hard policy violation. Fallback to rule-based staging.", flush=True)
                 return []
 
             delay = extract_retry_delay_seconds(e, attempt)
@@ -379,8 +378,8 @@ def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_f
     staged_chars = {}
     if os.path.exists(stage_file):
         try:
-            with open(stage_file, "r", encoding="utf-8") as f:
-                staged_chars = json.load(f).get("characters", {})
+            with open(stage_file, "rb") as f:
+                staged_chars = orjson.loads(f.read()).get("characters", {})
         except Exception:
             pass
 
