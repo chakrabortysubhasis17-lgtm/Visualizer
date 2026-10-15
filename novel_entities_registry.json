@@ -5521,6 +5521,306 @@
         "aliases": [
           "guard"
         ]
+      },
+      "ela": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "ela"
+        ]
+      },
+      "mira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "mira"
+        ]
+      },
+      "elowen": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "elowen"
+        ]
+      },
+      "eliylra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+5Hz",
+        "rate": "+27%",
+        "aliases": [
+          "eliylra"
+        ]
+      },
+      "liana": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "liana"
+        ]
+      },
+      "flora": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "flora"
+        ]
+      },
+      "ava": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ava"
+        ]
+      },
+      "mee": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "mee"
+        ]
+      },
+      "ethan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ethan"
+        ]
+      },
+      "mariana": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mariana"
+        ]
+      },
+      "nina ignis": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "nina ignis"
+        ]
+      },
+      "nina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "nina"
+        ]
+      },
+      "calantha cutlass": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "calantha cutlass"
+        ]
+      },
+      "líng": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+6Hz",
+        "rate": "+23%",
+        "aliases": [
+          "líng"
+        ]
+      },
+      "elara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+25%",
+        "aliases": [
+          "elara"
+        ]
+      },
+      "elarion": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+25%",
+        "aliases": [
+          "elarion"
+        ]
+      },
+      "kee": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "kee"
+        ]
+      },
+      "valerica": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "valerica"
+        ]
+      },
+      "luminara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "luminara"
+        ]
+      },
+      "nythera": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "nythera"
+        ]
+      },
+      "mirielle": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "mirielle"
+        ]
+      },
+      "eryndra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "eryndra"
+        ]
+      },
+      "aurelion": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "aurelion"
+        ]
+      },
+      "erina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "erina"
+        ]
+      },
+      "ebba": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ebba"
+        ]
+      },
+      "lusha": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lusha"
+        ]
+      },
+      "xylandra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "xylandra"
+        ]
+      },
+      "valerina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "valerina"
+        ]
+      },
+      "valentina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "valentina"
+        ]
+      },
+      "eliza": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "eliza"
+        ]
       }
     },
     "vocatives": {
@@ -6807,6 +7107,371 @@
         "rate": "+7%",
         "aliases": [
           "knight"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "harem-training-system-every-girl-i-train-makes-me-stronger": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Male",
+        "line_type": "Narration",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "instructor gareth": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "instructor gareth"
+        ]
+      },
+      "lia valestria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+5Hz",
+        "rate": "+27%",
+        "aliases": [
+          "lia valestria"
+        ]
+      },
+      "ellie von synthia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "ellie von synthia"
+        ]
+      },
+      "princess kaela aurelius": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "princess kaela aurelius"
+        ]
+      },
+      "headmaster albert": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "headmaster albert"
+        ]
+      },
+      "clara crestfall": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "clara crestfall"
+        ]
+      },
+      "catherine blackwood": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "catherine blackwood"
+        ]
+      },
+      "catherine": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "catherine"
+        ]
+      },
+      "jewelry woman": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "jewelry woman"
+        ]
+      },
+      "older noble parent": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "older noble parent"
+        ]
+      },
+      "mustachioed man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "mustachioed man"
+        ]
+      },
+      "olivia gracewell": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "olivia gracewell"
+        ]
+      },
+      "olivia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "olivia"
+        ]
+      },
+      "grock": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "grock"
+        ]
+      },
+      "lia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lia"
+        ]
+      },
+      "kaela": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kaela"
+        ]
+      },
+      "clara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "clara"
+        ]
+      },
+      "ellie": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "ellie"
+        ]
+      },
+      "archive keeper": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "archive keeper"
+        ]
+      },
+      "albert": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "albert"
+        ]
+      },
+      "selena ashbourne": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "selena ashbourne"
+        ]
+      },
+      "selena": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "selena"
+        ]
+      },
+      "masked man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "masked man"
+        ]
+      },
+      "rowan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "rowan"
+        ]
+      },
+      "wren": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "wren"
+        ]
+      },
+      "mira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mira"
+        ]
+      },
+      "aldric": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "aldric"
+        ]
+      },
+      "corwin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "corwin"
+        ]
+      },
+      "william": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "william"
+        ]
+      },
+      "merchant": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "merchant"
         ]
       }
     },
