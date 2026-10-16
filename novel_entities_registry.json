@@ -8581,5 +8581,84 @@
       }
     },
     "vocatives": {}
+  },
+  "when-durga-puja-brought-you-to-me": {
+    "title": "When Durga Puja Brought You To Me",
+    "author": "Michi_0204",
+    "genre": "Slice of Life / Festive Romance",
+    "characters": {
+      "Narrator": {
+        "voice": "en-US-ChristopherNeural",
+        "rate": "-9%",
+        "pitch": "+0Hz",
+        "role": "Narrator"
+      },
+      "Arijit": {
+        "voice": "en-US-RyanNeural",
+        "rate": "-2%",
+        "pitch": "+0Hz",
+        "role": "Character"
+      },
+      "Tara": {
+        "voice": "en-IN-NeerjaNeural",
+        "rate": "-1%",
+        "pitch": "+2Hz",
+        "role": "Character"
+      },
+      "Ananya": {
+        "voice": "en-IN-NeerjaNeural",
+        "rate": "-1%",
+        "pitch": "-1Hz",
+        "role": "Character"
+      },
+      "Rahul": {
+        "voice": "en-GB-RyanNeural",
+        "rate": "-3%",
+        "pitch": "-2Hz",
+        "role": "Character"
+      },
+      "Mother": {
+        "voice": "en-IN-NeerjaNeural",
+        "rate": "-10%",
+        "pitch": "-5Hz",
+        "role": "Character"
+      },
+      "Rohan": {
+        "voice": "en-US-RyanNeural",
+        "rate": "+2%",
+        "pitch": "+3Hz",
+        "role": "Character"
+      },
+      "Kabir": {
+        "voice": "en-GB-RyanNeural",
+        "rate": "-3%",
+        "pitch": "-3Hz",
+        "role": "Character"
+      },
+      "Sneha": {
+        "voice": "en-IN-NeerjaNeural",
+        "rate": "+1%",
+        "pitch": "+1Hz",
+        "role": "Character"
+      },
+      "Priya": {
+        "voice": "en-IN-NeerjaNeural",
+        "rate": "+1%",
+        "pitch": "+2Hz",
+        "role": "Character"
+      },
+      "Manoj": {
+        "voice": "en-GB-RyanNeural",
+        "rate": "-4%",
+        "pitch": "-4Hz",
+        "role": "Character"
+      },
+      "Priest": {
+        "voice": "en-IN-NeerjaNeural",
+        "rate": "-12%",
+        "pitch": "-6Hz",
+        "role": "Character"
+      }
+    }
   }
 }

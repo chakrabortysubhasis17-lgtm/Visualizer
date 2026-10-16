@@ -8,6 +8,8 @@ import subprocess
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
+import edge_tts
+
 # High-speed I/O with standard fallbacks
 try:
     import orjson as json_mod
@@ -34,7 +36,7 @@ except ImportError:
 # PATHS & FOLDER RESOLUTION
 # ---------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = SCRIPT_DIR.parent  # Points to D:\Projects\visualer
+PROJECT_ROOT = SCRIPT_DIR.parent
 
 EXTRACTED_CHAPTERS_DIR = SCRIPT_DIR / "extracted_chapters"
 BUILD_DIR = SCRIPT_DIR / "build_durga_puja_01_11"
@@ -62,41 +64,35 @@ CREDS = load_credentials()
 GEMINI_API_KEY = CREDS.get("gemini_api_key") or os.environ.get("GEMINI_API_KEY", "")
 
 # ---------------------------------------------------------------------------
-# NOVEL METADATA & ROMANTIC VOICE CASTING
+# NOVEL METADATA & ROMANTIC VOICE CASTING (NEERJA RESTORED / NO PRABHAT)
 # ---------------------------------------------------------------------------
 NOVEL_KEY = "when-durga-puja-brought-you-to-me"
 NOVEL_TITLE = "When Durga Puja Brought You To Me"
 ORIGINAL_AUTHOR = "Michi_0204"
 
-# 1. Narrator: en-US-ChristopherNeural (-9% slower for bedtime, warm romantic cadence)
-# 2. Hero (Arijit, 17yo): en-US-RyanNeural (-2% rate, earnest, gentle, adolescent cadence)
-# 3. Heroine (Tara, 16yo): en-US-AvaNeural (-2% rate, sweet, melodic, natural young woman)
-# 4. Brother (Rahul, 30s Doctor): en-GB-RyanNeural (-3% rate, mature Commonwealth cadence)
-# 5. Sister (Dr. Ananya, 30s): en-GB-SoniaNeural (-1% rate, expressive, playful, teasing)
-# 6. Mother (60s Matriarch): en-IN-NeerjaNeural (-10% rate, -5Hz pitch, authentic Indian maternal warmth)
 CHARACTER_VOICES = {
-    "Narrator": {"voice": "en-US-ChristopherNeural", "rate": "-9%", "pitch": "+0Hz"},
-    "Arijit":   {"voice": "en-US-RyanNeural",        "rate": "-2%", "pitch": "+0Hz"},  # Earnest 17yo boy
-    "Tara":     {"voice": "en-US-AvaNeural",         "rate": "-2%", "pitch": "+1Hz"},  # Sweet, melodic 16yo girl
-    "Ananya":   {"voice": "en-GB-SoniaNeural",       "rate": "-1%", "pitch": "+0Hz"},  # Lively teasing elder sister
-    "Rahul":    {"voice": "en-GB-RyanNeural",        "rate": "-3%", "pitch": "-2Hz"},  # Caring, mature elder brother
-    "Mother":   {"voice": "en-IN-NeerjaNeural",      "rate": "-10%", "pitch": "-5Hz"}, # Warm Indian mother
-    "Rohan":    {"voice": "en-US-RyanNeural",        "rate": "+2%", "pitch": "+3Hz"},  # Energetic friend
-    "Kabir":    {"voice": "en-GB-RyanNeural",        "rate": "-3%", "pitch": "-3Hz"},  # Grounded friend
-    "Sneha":    {"voice": "en-US-AvaNeural",         "rate": "+0%", "pitch": "+2Hz"},  # Playful classmate
-    "Priya":    {"voice": "en-US-AvaNeural",         "rate": "+1%", "pitch": "+2Hz"},  # Classmate
-    "Manoj":    {"voice": "en-GB-RyanNeural",        "rate": "-4%", "pitch": "-4Hz"},  # Adult family driver
-    "Priest":   {"voice": "en-IN-NeerjaNeural",      "rate": "-12%", "pitch": "-6Hz"}, # Solemn elder priest
+    "Narrator": {"voice": "en-US-ChristopherNeural", "rate": "-9%",  "pitch": "+0Hz"},
+    "Arijit":   {"voice": "en-US-RyanNeural",        "rate": "-2%",  "pitch": "+0Hz"},
+    "Tara":     {"voice": "en-IN-NeerjaNeural",      "rate": "-1%",  "pitch": "+2Hz"},
+    "Ananya":   {"voice": "en-IN-NeerjaNeural",      "rate": "-1%",  "pitch": "-1Hz"},
+    "Rahul":    {"voice": "en-GB-RyanNeural",        "rate": "-3%",  "pitch": "-2Hz"},
+    "Mother":   {"voice": "en-IN-NeerjaNeural",      "rate": "-10%", "pitch": "-5Hz"},
+    "Rohan":    {"voice": "en-US-RyanNeural",        "rate": "+2%",  "pitch": "+3Hz"},
+    "Kabir":    {"voice": "en-GB-RyanNeural",        "rate": "-3%",  "pitch": "-3Hz"},
+    "Sneha":    {"voice": "en-IN-NeerjaNeural",      "rate": "+1%",  "pitch": "+1Hz"},
+    "Priya":    {"voice": "en-IN-NeerjaNeural",      "rate": "+1%",  "pitch": "+2Hz"},
+    "Manoj":    {"voice": "en-GB-RyanNeural",        "rate": "-4%",  "pitch": "-4Hz"},
+    "Priest":   {"voice": "en-IN-NeerjaNeural",      "rate": "-12%", "pitch": "-6Hz"},
 }
 
 EMOTION_DELTAS = {
     "neutral":     {"rate_delta": 0, "pitch_delta": 0},
     "cheerful":    {"rate_delta": 2, "pitch_delta": 2},
     "teasing":     {"rate_delta": 2, "pitch_delta": 2},
-    "tender":      {"rate_delta": -4, "pitch_delta": -1},  # Soft romantic delivery
+    "tender":      {"rate_delta": -4, "pitch_delta": -1},
     "surprised":   {"rate_delta": 3, "pitch_delta": 3},
     "excited":     {"rate_delta": 4, "pitch_delta": 3},
-    "shy":         {"rate_delta": -4, "pitch_delta": -1},  # Blushing, soft cadence
+    "shy":         {"rate_delta": -4, "pitch_delta": -1},
     "solemn":      {"rate_delta": -5, "pitch_delta": -2},
     "warm":        {"rate_delta": -2, "pitch_delta": -1},
     "embarrassed": {"rate_delta": 1, "pitch_delta": 2},
@@ -104,10 +100,9 @@ EMOTION_DELTAS = {
 }
 
 # ---------------------------------------------------------------------------
-# PHONETICS ENGINE & EMOJI SANITIZER
+# PHONETICS & PACING ENGINE
 # ---------------------------------------------------------------------------
 def strip_emojis_and_symbols(text: str) -> str:
-    """Removes all emojis and symbols so TTS never reads out 'cherry blossom', 'flower', etc."""
     emoji_pattern = re.compile(
         r'[\U00010000-\U0010ffff]'
         r'|[\u2600-\u27bf]'
@@ -143,7 +138,6 @@ NARRATOR_PHONETICS = [
 ]
 
 DIALOGUE_PHONETICS = [
-    # Character names & honorifics
     (r"\bBhaiya\b", "Bhai-yaa"),
     (r"\bbhaiya\b", "bhai-yaa"),
     (r"\bBhai\s*sahab\b", "Bhai-saahab"),
@@ -169,20 +163,24 @@ DIALOGUE_PHONETICS = [
     (r"\bMount\s+Fuji\b", "Mount Foo-jee"),
 ]
 
-def apply_phonetic_fixes(text: str, speaker: str) -> str:
+def apply_phonetic_fixes(text: str, speaker: str, emotion: str = "neutral") -> str:
     cleaned = strip_emojis_and_symbols(text)
     for pattern, replacement in DIALOGUE_PHONETICS:
         cleaned = re.sub(pattern, replacement, cleaned)
     if speaker == "Narrator":
         for pattern, replacement in NARRATOR_PHONETICS:
             cleaned = re.sub(pattern, replacement, cleaned, flags=re.IGNORECASE)
+            
+    # Expressive pacing: soften abrupt dialogue starts with micro-breaths
+    if emotion in ["tender", "shy"] and not cleaned.startswith("..."):
+        cleaned = f"... {cleaned}"
     return cleaned
 
 # ---------------------------------------------------------------------------
 # 1. NON-DESTRUCTIVE REGISTRY MERGE
 # ---------------------------------------------------------------------------
 def merge_novel_entities_registry():
-    log("[1/5] Synchronizing novel_entities_registry.json with romantic casting...")
+    log("[1/5] Synchronizing novel_entities_registry.json with high-performance voice mapping...")
     registry_data = {}
     if REGISTRY_FILE.exists():
         try:
@@ -215,7 +213,7 @@ def merge_novel_entities_registry():
         log(f"[Warning] Failed to update registry file: {e}")
 
 # ---------------------------------------------------------------------------
-# 2. GEMINI AI NARRATIVE DIRECTOR & STAGING (ROMANTIC BLOSSOMING EMPHASIS)
+# 2. GEMINI AI NARRATIVE DIRECTOR & STAGING
 # ---------------------------------------------------------------------------
 async def stage_chapter_with_gemini(ch_num: int, raw_text: str) -> list:
     staged_cache = BUILD_DIR / f"ch_{ch_num:02d}_staged.json"
@@ -241,16 +239,14 @@ This is a tender story of blossoming young love between 17-year-old Arijit and 1
 Analyze the chapter text and split it into sequential performance lines.
 Rules:
 1. "speaker": Choose strictly from ["Narrator", "Arijit", "Tara", "Ananya", "Rahul", "Mother", "Rohan", "Kabir", "Sneha", "Priya", "Priest", "Manoj"].
-   - Arijit: 17yo earnest high school student, polite, quiet, romantic, secretly captivated by Tara.
-   - Tara: 16yo expressive young girl, sweet, thoughtful, warm, playful, blushing.
-   - Rahul: 30s caring older brother and working doctor.
-   - Ananya: 30s lively, teasing older sister and doctor.
-   - Mother: 60s affectionate, welcoming traditional Indian mother.
+   - Arijit: 17yo earnest student, quiet, romantic, polite.
+   - Tara: 16yo expressive Bengali girl, sweet, playful, thoughtful, blushing.
+   - Rahul: 30s caring doctor brother.
+   - Ananya: 30s lively, teasing doctor sister.
+   - Mother: 60s warm, affectionate Indian mother.
 2. "text": Spoken prose. Remove emojis or flower symbols. Keep narrative descriptions and dialogues authentic.
-3. "emotion": Choose the most fitting emotional state from:
+3. "emotion": Choose strictly from:
    ["neutral", "cheerful", "teasing", "tender", "surprised", "excited", "shy", "solemn", "warm", "embarrassed", "annoyed"].
-   - Use "tender" and "shy" for quiet romantic glances, shared promises, and intimate moments between Arijit and Tara.
-   - Use "teasing" for sibling banter between Rahul, Tara, and Ananya.
 
 Return STRICT JSON ARRAY OF OBJECTS ONLY.
 
@@ -333,7 +329,7 @@ def fallback_dialogue_parser(text: str) -> list:
     return lines
 
 # ---------------------------------------------------------------------------
-# 3. VOICE SYNTHESIS (EMOTION & RATE BALANCING)
+# 3. DIRECT ASYNC IN-PROCESS SYNTHESIS ENGINE (HIGH PERFORMANCE)
 # ---------------------------------------------------------------------------
 def compute_voice_parameters(speaker: str, emotion: str) -> tuple:
     base = CHARACTER_VOICES.get(speaker, CHARACTER_VOICES["Narrator"])
@@ -347,32 +343,20 @@ def compute_voice_parameters(speaker: str, emotion: str) -> tuple:
     final_pitch = f"{base_pitch + delta['pitch_delta']:+d}Hz"
     return voice, final_rate, final_pitch
 
-async def synthesize_line(text: str, voice: str, rate: str, pitch: str, out_path: Path) -> bool:
-    if out_path.exists() and out_path.stat().st_size > 3000:
+async def synthesize_line_direct(text: str, voice: str, rate: str, pitch: str, out_path: Path, sem: asyncio.Semaphore) -> bool:
+    if out_path.exists() and out_path.stat().st_size > 2500:
         return True
 
-    cmd = [
-        sys.executable, "-m", "edge_tts",
-        "--voice", voice,
-        f"--rate={rate}",
-        f"--pitch={pitch}",
-        "--text", text,
-        "--write-media", str(out_path)
-    ]
-
-    for attempt in range(4):
-        try:
-            proc = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
-            )
-            await proc.communicate()
-            if out_path.exists() and out_path.stat().st_size > 3000:
-                return True
-        except Exception:
-            pass
-        await asyncio.sleep(0.5 * (attempt + 1))
+    async with sem:
+        for attempt in range(1, 5):
+            try:
+                comm = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch)
+                await asyncio.wait_for(comm.save(str(out_path)), timeout=25.0)
+                if out_path.exists() and out_path.stat().st_size > 1000:
+                    return True
+            except Exception:
+                pass
+            await asyncio.sleep(0.3 * attempt)
 
     return False
 
@@ -393,17 +377,12 @@ async def build_chapter_audio(ch_num: int, lines: list, sem: asyncio.Semaphore) 
         emotion = line.get("emotion", "neutral")
         raw_text = line["text"]
         
-        spoken_text = apply_phonetic_fixes(raw_text, speaker)
-
+        spoken_text = apply_phonetic_fixes(raw_text, speaker, emotion)
         v, r, p = compute_voice_parameters(speaker, emotion)
         seg_file = ch_build / f"seg_{i:04d}.mp3"
         line_files.append(seg_file)
 
-        async def _worker(t=spoken_text, voice=v, rate=r, pitch=p, path=seg_file):
-            async with sem:
-                await synthesize_line(t, voice, rate, pitch, path)
-
-        tasks.append(_worker())
+        tasks.append(synthesize_line_direct(spoken_text, v, r, p, seg_file, sem))
 
     await asyncio.gather(*tasks)
 
@@ -441,14 +420,12 @@ async def build_intro_audio(sem: asyncio.Semaphore) -> Path:
     spoken_intro = apply_phonetic_fixes(intro_script, "Narrator")
     base = CHARACTER_VOICES["Narrator"]
 
-    async with sem:
-        await synthesize_line(spoken_intro, base["voice"], base["rate"], base["pitch"], intro_mp3)
-
+    await synthesize_line_direct(spoken_intro, base["voice"], base["rate"], base["pitch"], intro_mp3, sem)
     log("Generated Being A Bong channel intro & author acknowledgment.")
     return intro_mp3
 
 # ---------------------------------------------------------------------------
-# 5. STYLISH RED & GOLD PIL WATERMARK (PLACED AT X=1320, Y=220)
+# 5. DYNAMIC RED & GOLD WATERMARK GENERATOR (X=1320, Y=220)
 # ---------------------------------------------------------------------------
 def generate_watermarked_thumbnail(ch_num: int, raw_chapter_text: str) -> Path:
     dest_thumb = BUILD_DIR / f"thumbnail_chapter_{ch_num:02d}.jpg"
@@ -498,24 +475,19 @@ def generate_watermarked_thumbnail(ch_num: int, raw_chapter_text: str) -> Path:
     img_copy = base_img.copy()
     draw = ImageDraw.Draw(img_copy)
 
-    # Right-side upper area (X=1320, Y=220) keeping faces clear
     x, y = 1320, 220
-
     bbox = draw.textbbox((x, y), caption, font=selected_font)
     padding = 18
     box_rect = [bbox[0] - padding, bbox[1] - (padding - 2), bbox[2] + padding, bbox[3] + (padding - 2)]
     
-    # Crimson Red background with Gold border frame
     draw.rounded_rectangle(box_rect, radius=14, fill=(139, 0, 0, 230), outline=(255, 215, 0, 255), width=3)
 
-    # Thick black text border outline for maximum contrast
     border_width = 3
     for ox in range(-border_width, border_width + 1):
         for oy in range(-border_width, border_width + 1):
             if ox != 0 or oy != 0:
                 draw.text((x + ox, y + oy), caption, font=selected_font, fill=(0, 0, 0, 255))
 
-    # Vibrant Golden-Yellow text fill (#FFD700)
     draw.text((x, y), caption, font=selected_font, fill=(255, 215, 0, 255))
 
     rgb_img = img_copy.convert("RGB")
@@ -523,7 +495,7 @@ def generate_watermarked_thumbnail(ch_num: int, raw_chapter_text: str) -> Path:
     return dest_thumb
 
 # ---------------------------------------------------------------------------
-# 6. VIDEO ASSEMBLY WITH BRANDING OVERLAYS
+# 6. HIGH-SPEED VIDEO ASSEMBLY WITH BRANDING OVERLAYS
 # ---------------------------------------------------------------------------
 def locate_branding_asset(filename: str) -> Path:
     local_p = SCRIPT_DIR / filename
@@ -545,12 +517,12 @@ def get_audio_duration(file_path: Path) -> float:
     return float(res.stdout.strip()) if res.stdout.strip() else 0.0
 
 def build_full_video_marathon(audio_tracks: list, chapter_thumbs: list, chapter_titles: list):
-    log("[4/4] Mastering audio and compiling video marathon with branding overlays...")
+    log("[4/4] Mastering audio and compiling video marathon at accelerated render speeds...")
     master_audio = OUTPUT_DIR / "audio_master_durga_puja_01_11.mp3"
     final_video = OUTPUT_DIR / "final_durga_puja_01_11.mp4"
     timestamps_txt = OUTPUT_DIR / "youtube_timestamps.txt"
 
-    # 1. Master Audio Concatenation
+    # 1. Master Audio Concatenation & Vocal Warmth Polish
     audio_concat = BUILD_DIR / "audio_concat.txt"
     with open(audio_concat, "w", encoding="utf-8") as f:
         for at in audio_tracks:
@@ -559,7 +531,7 @@ def build_full_video_marathon(audio_tracks: list, chapter_thumbs: list, chapter_
     cmd_audio = [
         "ffmpeg", "-y", "-f", "concat", "-safe", "0",
         "-i", str(audio_concat),
-        "-af", "loudnorm=I=-14:LRA=11:TP=-1.5",
+        "-af", "highpass=f=80,loudnorm=I=-14:LRA=10:TP=-1.5",
         "-c:a", "libmp3lame", "-b:a", "192k",
         str(master_audio)
     ]
@@ -627,12 +599,14 @@ def build_full_video_marathon(audio_tracks: list, chapter_thumbs: list, chapter_
     else:
         filter_chains.append(f"{current_layer}null[vout]")
 
+    # Performance-optimized FFmpeg video encoding (-tune stillimage, -preset veryfast, -r 24)
     cmd_video = [
         "ffmpeg", "-y",
         *inputs,
         "-filter_complex", "".join(filter_chains),
         "-map", "[vout]", "-map", "1:a",
-        "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p",
+        "-c:v", "libx264", "-tune", "stillimage", "-preset", "veryfast", "-crf", "20",
+        "-r", "24", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k",
         "-shortest",
         str(final_video)
@@ -666,7 +640,7 @@ def export_youtube_payload():
             "TIMESTAMPS:\n"
             f"{timestamps_content}\n"
             "══════════════════════════════════════════════\n\n"
-            "🎧 BROADCAST MASTER: -14 LUFS vocal clarity with consistent Indian voice casting.\n"
+            "🎧 BROADCAST MASTER: -14 LUFS vocal clarity with authentic Indian voice casting.\n"
             "🎨 VISUALS: Red & Gold Watermarked Chapter Thumbnails (at X=1320, Y=220) + Channel Branding Overlay.\n"
             "Subscribe to Being A Bong for more audiobooks and cultural stories!\n\n"
             "#BeingABong #DurgaPuja #BengaliStory #AudiobookMarathon #IndianRomance #FullAudiobook #fantasyaudiobooks"
@@ -687,13 +661,11 @@ def natural_chapter_sort_key(file_path: str) -> int:
 
 async def main():
     log("==================================================================")
-    log("  DURGA PUJA ROMANCE - BLOSSOMING LOVE AUDIO MARATHON (01 - 11)   ")
+    log("  DURGA PUJA ROMANCE - HIGH PERFORMANCE ENGINE (CH 01 - 11)      ")
     log("==================================================================")
 
-    # 1. Update Registry
     merge_novel_entities_registry()
 
-    # 2. Collect Chapter Files (Naturally sorted 1 through 11)
     chapter_files = sorted(glob.glob(str(EXTRACTED_CHAPTERS_DIR / "Chapter *.txt")), key=natural_chapter_sort_key)
     if not chapter_files:
         log(f"Error: No text files found in '{EXTRACTED_CHAPTERS_DIR}'")
@@ -701,44 +673,36 @@ async def main():
 
     log(f"Found {len(chapter_files)} chapters ready to process.")
 
-    sem = asyncio.Semaphore(3)
+    # High-performance async semaphore (8 parallel non-blocking streams)
+    sem = asyncio.Semaphore(8)
     audio_tracks = []
     chapter_thumbs = []
     chapter_titles = []
 
-    # 3. Channel Intro Audio
     log("\n--- [INTRO] BEING A BONG PRESENTATION ---")
     intro_audio = await build_intro_audio(sem)
     audio_tracks.append(intro_audio)
 
-    # 4. Process Chapters 1 to 11 Dynamically
     for idx, cf in enumerate(chapter_files, 1):
         raw_text = Path(cf).read_text(encoding="utf-8")
-        
         first_line = raw_text.splitlines()[0] if raw_text.splitlines() else f"Chapter {idx:02d}"
         clean_title = re.sub(r"^Chapter\s*\d+\s*-\s*", "", first_line).strip()
         chapter_titles.append(clean_title)
 
         log(f"\n--- [CHAPTER {idx:02d}/{len(chapter_files):02d}] {clean_title} ---")
-        
-        # Step A: Generate dynamic red & gold watermarked thumbnail on the fly at X=1320, Y=220
         ch_thumb = generate_watermarked_thumbnail(idx, raw_text)
         chapter_thumbs.append(ch_thumb)
 
-        # Step B: Direct with Gemini and synthesize audio segment
         lines = await stage_chapter_with_gemini(idx, raw_text)
-        log(f"Synthesizing Chapter {idx:02d} audio ({len(lines)} directed lines)...")
+        log(f"Synthesizing Chapter {idx:02d} audio ({len(lines)} directed lines via high-speed async)...")
         ca = await build_chapter_audio(idx, lines, sem)
         audio_tracks.append(ca)
 
-    # 5. Video Compilation & Overlay
     build_full_video_marathon(audio_tracks, chapter_thumbs, chapter_titles)
-
-    # 6. Metadata Export
     export_youtube_payload()
 
-    log(f"\n[Finished] All {len(chapter_files)} chapters completed! Outputs saved in:")
-    log(f"-> {OUTPUT_DIR.resolve()}")
+    log("\n[Finished] All 11 chapters rendered at high performance!")
+    log(f"Outputs saved to: {OUTPUT_DIR.resolve()}")
 
 if __name__ == "__main__":
     asyncio.run(main())
