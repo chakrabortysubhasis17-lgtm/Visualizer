@@ -8048,6 +8048,536 @@
         "aliases": [
           "gu nanyin"
         ]
+      },
+      "lu chenyuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lu chenyuan"
+        ]
+      },
+      "elder taiqing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "elder taiqing"
+        ]
+      },
+      "xing lan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+5Hz",
+        "rate": "+27%",
+        "aliases": [
+          "xing lan"
+        ]
+      },
+      "xing xuan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "xing xuan"
+        ]
+      },
+      "welcoming monk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "welcoming monk"
+        ]
+      },
+      "yuan kong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "yuan kong"
+        ]
+      },
+      "ku chan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ku chan"
+        ]
+      },
+      "emperor zhu wu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "emperor zhu wu"
+        ]
+      },
+      "li changshan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "li changshan"
+        ]
+      },
+      "zhu xuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhu xuan"
+        ]
+      },
+      "elder yinjue": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "elder yinjue"
+        ]
+      },
+      "demon king tianlie": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "demon king tianlie"
+        ]
+      },
+      "demon venerable soul-devourer": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "demon venerable soul-devourer"
+        ]
+      },
+      "fadu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-9Hz",
+        "rate": "-7%",
+        "aliases": [
+          "fadu"
+        ]
+      },
+      "demon venerable xue hai": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "demon venerable xue hai"
+        ]
+      },
+      "heaven-swallowing demon emperor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "heaven-swallowing demon emperor"
+        ]
+      },
+      "demon lord gu mie": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "demon lord gu mie"
+        ]
+      },
+      "demon lord wuye": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "demon lord wuye"
+        ]
+      },
+      "demon ancestor huanmie": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "demon ancestor huanmie"
+        ]
+      },
+      "old ape king": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "old ape king"
+        ]
+      },
+      "grand supreme laozi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "grand supreme laozi"
+        ]
+      },
+      "elder qing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "elder qing"
+        ]
+      },
+      "qing yangzi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "qing yangzi"
+        ]
+      },
+      "sect leader tongtian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "sect leader tongtian"
+        ]
+      },
+      "rahu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "rahu"
+        ]
+      },
+      "heavenly lord yuanshi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+9%",
+        "aliases": [
+          "heavenly lord yuanshi"
+        ]
+      },
+      "daoist zhunti": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "daoist zhunti"
+        ]
+      },
+      "evil corpse": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-3Hz",
+        "rate": "-1%",
+        "aliases": [
+          "evil corpse"
+        ]
+      },
+      "old man qing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-3Hz",
+        "rate": "+13%",
+        "aliases": [
+          "old man qing"
+        ]
+      },
+      "han li": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "han li"
+        ]
+      },
+      "ancestor qingxuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "ancestor qingxuan"
+        ]
+      },
+      "ao yuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "ao yuan"
+        ]
+      },
+      "ao lie": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ao lie"
+        ]
+      },
+      "ao yan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ao yan"
+        ]
+      },
+      "ao cang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "ao cang"
+        ]
+      },
+      "ao ming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "ao ming"
+        ]
+      },
+      "bao tianhe": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "bao tianhe"
+        ]
+      },
+      "master of luofu island": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+9%",
+        "aliases": [
+          "master of luofu island"
+        ]
+      },
+      "jian wuji": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "jian wuji"
+        ]
+      },
+      "guiding immortal official": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "guiding immortal official"
+        ]
+      },
+      "heavenly court thunder general": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "heavenly court thunder general"
+        ]
+      },
+      "ao guang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ao guang"
+        ]
+      },
+      "zhao wanjin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhao wanjin"
+        ]
+      },
+      "xuan xiao": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "xuan xiao"
+        ]
+      },
+      "hu li": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hu li"
+        ]
+      },
+      "feng jue": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "feng jue"
+        ]
+      },
+      "ji meng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ji meng"
+        ]
+      },
+      "western disciple": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "western disciple"
+        ]
+      },
+      "jieyin daoist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-9Hz",
+        "rate": "-7%",
+        "aliases": [
+          "jieyin daoist"
+        ]
+      },
+      "nuwa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-3Hz",
+        "rate": "-1%",
+        "aliases": [
+          "nuwa"
+        ]
+      },
+      "zhunti": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "zhunti"
+        ]
+      },
+      "fuxi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "fuxi"
+        ]
+      },
+      "emperor di jun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "emperor di jun"
+        ]
       }
     },
     "vocatives": {}

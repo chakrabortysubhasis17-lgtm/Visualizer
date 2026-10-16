@@ -1,5 +1,7 @@
 [Bb]uild_*/
 __pycache__/
+[Cc]opyproj/*.txt
+[Cc]opyproj/*/*.txt
 *.jpg
 *.mp3
 *.mp4
