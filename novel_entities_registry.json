@@ -494,6 +494,296 @@
         "aliases": [
           "elian"
         ]
+      },
+      "wren": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wren"
+        ]
+      },
+      "dolan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "dolan"
+        ]
+      },
+      "ren_colby": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ren_colby"
+        ]
+      },
+      "orsill": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "orsill"
+        ]
+      },
+      "corrin": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "corrin"
+        ]
+      },
+      "merris vann": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "merris vann"
+        ]
+      },
+      "deral kass": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "deral kass"
+        ]
+      },
+      "cassia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "cassia"
+        ]
+      },
+      "brannoch": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "brannoch"
+        ]
+      },
+      "verrick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "verrick"
+        ]
+      },
+      "mira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "mira"
+        ]
+      },
+      "nia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "nia"
+        ]
+      },
+      "bram": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "bram"
+        ]
+      },
+      "kellan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+6Hz",
+        "rate": "+23%",
+        "aliases": [
+          "kellan"
+        ]
+      },
+      "doryn": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "doryn"
+        ]
+      },
+      "marr": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "marr"
+        ]
+      },
+      "sennet": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "sennet"
+        ]
+      },
+      "doyle": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "doyle"
+        ]
+      },
+      "nria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nria"
+        ]
+      },
+      "corin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "corin"
+        ]
+      },
+      "yusa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "yusa"
+        ]
+      },
+      "dolo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "dolo"
+        ]
+      },
+      "neris": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "neris"
+        ]
+      },
+      "lysa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "lysa"
+        ]
+      },
+      "volley_handler": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "volley_handler"
+        ]
+      },
+      "runner": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "runner"
+        ]
+      },
+      "volley": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "volley"
+        ]
+      },
+      "sector_feed": {
+        "gender": "Neutral",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "sector_feed"
+        ]
+      },
+      "kestrel": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "kestrel"
+        ]
       }
     },
     "vocatives": {
@@ -5821,6 +6111,76 @@
         "aliases": [
           "eliza"
         ]
+      },
+      "lilienne": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lilienne"
+        ]
+      },
+      "nyssa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "nyssa"
+        ]
+      },
+      "lunara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lunara"
+        ]
+      },
+      "aeloria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "aeloria"
+        ]
+      },
+      "elysara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "elysara"
+        ]
+      },
+      "sira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "sira"
+        ]
+      },
+      "nadia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nadia"
+        ]
       }
     },
     "vocatives": {
@@ -8577,6 +8937,146 @@
         "rate": "+7%",
         "aliases": [
           "emperor di jun"
+        ]
+      },
+      "hongjun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "hongjun"
+        ]
+      },
+      "li huayuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "li huayuan"
+        ]
+      },
+      "li li": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "li li"
+        ]
+      },
+      "qin yunqi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "qin yunqi"
+        ]
+      },
+      "qi yun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "qi yun"
+        ]
+      },
+      "qi tian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "qi tian"
+        ]
+      },
+      "elder qi cang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-9Hz",
+        "rate": "-7%",
+        "aliases": [
+          "elder qi cang"
+        ]
+      },
+      "great master xuandu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "great master xuandu"
+        ]
+      },
+      "kunpeng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "kunpeng"
+        ]
+      },
+      "eastern emperor taiyi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "eastern emperor taiyi"
+        ]
+      },
+      "suirenshi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "suirenshi"
+        ]
+      },
+      "ying zhao": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "ying zhao"
+        ]
+      },
+      "tai yi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "tai yi"
+        ]
+      },
+      "sect master of the lingtian sword sect": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "sect master of the lingtian sword sect"
         ]
       }
     },

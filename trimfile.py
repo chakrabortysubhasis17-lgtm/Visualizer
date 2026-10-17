@@ -4,7 +4,7 @@ import sys
 
 INPUT_VIDEO = r"D:\Projects\visualer\final_road_to_mastery_001_050.mp4"
 OUTPUT_VIDEO = r"D:\Projects\visualer\final_road_to_mastery_001_050_trimmed.mp4"
-TARGET_DURATION = "11:59:00"  # 11 hours, 59 minutes, 00 seconds
+TARGET_DURATION = "11:59:59"  # 11 hours, 59 minutes, 59 seconds
 
 
 def trim_video(input_path: str, output_path: str, duration_limit: str):
