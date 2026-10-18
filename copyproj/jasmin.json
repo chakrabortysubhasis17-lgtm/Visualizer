@@ -1,0 +1,42 @@
+{
+  "NARRATOR": {
+    "voice": "en-US-ChristopherNeural",
+    "rate": "-11%",
+    "pitch": "-1Hz"
+  },
+  "HIYA": {
+    "voice": "en-IN-NeerjaNeural",
+    "rate": "-3%",
+    "pitch": "+2Hz"
+  },
+  "APARNA": {
+    "voice": "en-GB-SoniaNeural",
+    "rate": "-8%",
+    "pitch": "-3Hz"
+  },
+  "NEEL": {
+    "voice": "en-GB-RyanNeural",
+    "rate": "-4%",
+    "pitch": "-2Hz"
+  },
+  "BUBAI": {
+    "voice": "en-GB-OliverNeural",
+    "rate": "-2%",
+    "pitch": "+0Hz"
+  },
+  "POLTU": {
+    "voice": "en-GB-RyanNeural",
+    "rate": "-2%",
+    "pitch": "+1Hz"
+  },
+  "BRISHTI": {
+    "voice": "en-IN-NeerjaNeural",
+    "rate": "+1%",
+    "pitch": "+3Hz"
+  },
+  "INDRANIL": {
+    "voice": "en-GB-OliverNeural",
+    "rate": "+0%",
+    "pitch": "+0Hz"
+  }
+}

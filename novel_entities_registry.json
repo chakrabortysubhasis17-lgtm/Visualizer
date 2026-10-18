@@ -9078,6 +9078,286 @@
         "aliases": [
           "sect master of the lingtian sword sect"
         ]
+      },
+      "bai ze": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "bai ze"
+        ]
+      },
+      "nüwa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-5Hz",
+        "rate": "+1%",
+        "aliases": [
+          "nüwa"
+        ]
+      },
+      "qingluan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "qingluan"
+        ]
+      },
+      "kuafu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "kuafu"
+        ]
+      },
+      "golden crow": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "golden crow"
+        ]
+      },
+      "first golden crow": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "first golden crow"
+        ]
+      },
+      "hou yi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "hou yi"
+        ]
+      },
+      "little golden crow lu ya": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "little golden crow lu ya"
+        ]
+      },
+      "di jiang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "di jiang"
+        ]
+      },
+      "zhurong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "zhurong"
+        ]
+      },
+      "dijiang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "dijiang"
+        ]
+      },
+      "chang xi": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "chang xi"
+        ]
+      },
+      "xi he": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "xi he"
+        ]
+      },
+      "green bull": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-3Hz",
+        "rate": "+13%",
+        "aliases": [
+          "green bull"
+        ]
+      },
+      "kui bull": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "kui bull"
+        ]
+      },
+      "duobao": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "duobao"
+        ]
+      },
+      "gong gong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "gong gong"
+        ]
+      },
+      "qiang liang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-8Hz",
+        "rate": "+11%",
+        "aliases": [
+          "qiang liang"
+        ]
+      },
+      "pangu phantom": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-9Hz",
+        "rate": "-7%",
+        "aliases": [
+          "pangu phantom"
+        ]
+      },
+      "houtu": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "houtu"
+        ]
+      },
+      "old ancestor minghe": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "old ancestor minghe"
+        ]
+      },
+      "zhenyuanzi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "zhenyuanzi"
+        ]
+      },
+      "old ancestor hongyun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "old ancestor hongyun"
+        ]
+      },
+      "grand master xuandu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "grand master xuandu"
+        ]
+      },
+      "dong wanggong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "dong wanggong"
+        ]
+      },
+      "ghost car": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "ghost car"
+        ]
+      },
+      "qin yuan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+3Hz",
+        "rate": "+19%",
+        "aliases": [
+          "qin yuan"
+        ]
+      },
+      "baize": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-3Hz",
+        "rate": "+13%",
+        "aliases": [
+          "baize"
+        ]
       }
     },
     "vocatives": {}
@@ -9160,5 +9440,310 @@
         "role": "Character"
       }
     }
+  },
+  "transmigrated-to-a-dark-fantasy-world-of-sss-rank-king-of-the-void": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Male",
+        "line_type": "Narration",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "elf": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "elf"
+        ]
+      },
+      "jeanne": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "jeanne"
+        ]
+      },
+      "old aslan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "old aslan"
+        ]
+      },
+      "aslan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-9Hz",
+        "rate": "-7%",
+        "aliases": [
+          "aslan"
+        ]
+      },
+      "maya": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "maya"
+        ]
+      },
+      "lionel": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lionel"
+        ]
+      },
+      "ellegaard": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ellegaard"
+        ]
+      },
+      "lulu": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lulu"
+        ]
+      },
+      "herald leader": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "herald leader"
+        ]
+      },
+      "librarian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "librarian"
+        ]
+      },
+      "female worker one": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "female worker one"
+        ]
+      },
+      "female worker two": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "female worker two"
+        ]
+      },
+      "cinder": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "cinder"
+        ]
+      },
+      "nine": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nine"
+        ]
+      },
+      "seven": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "seven"
+        ]
+      },
+      "blond": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "blond"
+        ]
+      },
+      "mountain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "mountain"
+        ]
+      },
+      "monar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "monar"
+        ]
+      },
+      "azel": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "azel"
+        ]
+      },
+      "marco": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "marco"
+        ]
+      },
+      "dragon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "dragon"
+        ]
+      },
+      "demon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "demon"
+        ]
+      },
+      "lady of cinder": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "lady of cinder"
+        ]
+      },
+      "lord of green": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lord of green"
+        ]
+      }
+    },
+    "vocatives": {}
   }
 }
