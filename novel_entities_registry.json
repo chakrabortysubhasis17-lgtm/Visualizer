@@ -2229,6 +2229,36 @@
         "aliases": [
           "narrator"
         ]
+      },
+      "author_fufu": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "author_fufu"
+        ]
+      },
+      "lei ying": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lei ying"
+        ]
+      },
+      "william": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "william"
+        ]
       }
     },
     "vocatives": {
@@ -10092,6 +10122,66 @@
         "aliases": [
           "lord of green"
         ]
+      },
+      "percival": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "percival"
+        ]
+      },
+      "queen": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "queen"
+        ]
+      },
+      "kalika": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kalika"
+        ]
+      },
+      "rosemarie": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "rosemarie"
+        ]
+      },
+      "mirage": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mirage"
+        ]
+      },
+      "leona": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "leona"
+        ]
       }
     },
     "vocatives": {}
@@ -10566,6 +10656,351 @@
         "rate": "+5%",
         "aliases": [
           "hilda"
+        ]
+      },
+      "reina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "reina"
+        ]
+      },
+      "vala": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "vala"
+        ]
+      },
+      "kaal": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+2Hz",
+        "rate": "+13%",
+        "aliases": [
+          "kaal"
+        ]
+      },
+      "elara": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "elara"
+        ]
+      },
+      "lia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lia"
+        ]
+      },
+      "guard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "guard"
+        ]
+      },
+      "nurse": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "nurse"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "catgirls-and-dungeons-yuri": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Male",
+        "line_type": "Narration",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "mark": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mark"
+        ]
+      },
+      "eris": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "eris"
+        ]
+      },
+      "lilly": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "lilly"
+        ]
+      },
+      "gordon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "gordon"
+        ]
+      },
+      "lenore": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "lenore"
+        ]
+      },
+      "karven": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "karven"
+        ]
+      },
+      "bearded man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+1Hz",
+        "rate": "+21%",
+        "aliases": [
+          "bearded man"
+        ]
+      },
+      "burly man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-4Hz",
+        "rate": "+19%",
+        "aliases": [
+          "burly man"
+        ]
+      },
+      "patrick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "patrick"
+        ]
+      },
+      "emma": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "emma"
+        ]
+      },
+      "lisa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+4Hz",
+        "rate": "+15%",
+        "aliases": [
+          "lisa"
+        ]
+      },
+      "korum": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "korum"
+        ]
+      },
+      "darron": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "darron"
+        ]
+      },
+      "pup": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+10Hz",
+        "rate": "+25%",
+        "aliases": [
+          "pup"
+        ]
+      },
+      "pups": {
+        "gender": "Neutral",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+10Hz",
+        "rate": "+25%",
+        "aliases": [
+          "pups"
+        ]
+      },
+      "wolf wife": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "wolf wife"
+        ]
+      },
+      "pup 1": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+10Hz",
+        "rate": "+25%",
+        "aliases": [
+          "pup 1"
+        ]
+      },
+      "pup 2": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+6Hz",
+        "rate": "+15%",
+        "aliases": [
+          "pup 2"
+        ]
+      },
+      "pup 3": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+6Hz",
+        "rate": "+15%",
+        "aliases": [
+          "pup 3"
+        ]
+      },
+      "pup 4": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+6Hz",
+        "rate": "+15%",
+        "aliases": [
+          "pup 4"
+        ]
+      },
+      "bloby": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+6Hz",
+        "rate": "+15%",
+        "aliases": [
+          "bloby"
         ]
       }
     },
