@@ -10,13 +10,17 @@ import edge_tts
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 RE_PAUSE_TAGS = re.compile(r'\[(?:pause|Pause)\s*[\w\s.]*\]|\((?:pause|Pause)\s*[\w\s.]*\)', re.I)
 
-def get_audio_duration(file_path: str) -> float:
+def _probe_duration_sync(file_path: str) -> float:
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file_path]
-    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         return float(res.stdout.strip())
     except Exception:
         return 0.5
+
+async def get_audio_duration(file_path: str) -> float:
+    """Non-blocking ffprobe duration probe that keeps the asyncio event loop free."""
+    return await asyncio.to_thread(_probe_duration_sync, file_path)
 
 def format_timestamp(seconds: float) -> str:
     h, m, s = int(seconds // 3600), int((seconds % 3600) // 60), int(seconds % 60)
@@ -39,10 +43,15 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
     # Programmatic silence gap for explicit pauses or empty markers
     if pause_dur or not text or not RE_ALPHANUM.search(text):
         dur = float(pause_dur) if pause_dur else 0.5
-        subprocess.run([
-            "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-            "-t", f"{dur:.2f}", "-q:a", "9", "-acodec", "libmp3lame", out_file
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        await asyncio.to_thread(
+            subprocess.run,
+            [
+                "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
+                "-t", f"{dur:.2f}", "-q:a", "9", "-acodec", "libmp3lame", out_file
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
         return
 
     line_type = row.get("line_type", "Narration")
@@ -54,7 +63,6 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
         rate = "+0%"
     else:
         req_voice = row.get("voice", "en-US-GuyNeural")
-        # Sanitize known non-edge voices to guaranteed Edge counterparts
         if req_voice in ["en-US-TonyNeural", "en-US-JasonNeural"]:
             req_voice = "en-US-ChristopherNeural"
         voice = req_voice
@@ -79,13 +87,17 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
 
                 # Metallic mecha DSP filter applied EXCLUSIVELY to System lines
                 if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 1000:
-                    subprocess.run([
-                        "ffmpeg", "-y", "-i", raw_tts_file,
-                        "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
-                        "-q:a", "2", "-acodec", "libmp3lame", out_file
-                    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    await asyncio.to_thread(
+                        subprocess.run,
+                        [
+                            "ffmpeg", "-y", "-i", raw_tts_file,
+                            "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
+                            "-q:a", "2", "-acodec", "libmp3lame", out_file
+                        ],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL
+                    )
 
-                    # Keep clean raw audio if the DSP filter fails
                     if not (os.path.exists(out_file) and os.path.getsize(out_file) > 1000):
                         shutil.copy2(raw_tts_file, out_file)
 
@@ -103,15 +115,20 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                 pass
 
             if attempt == max_retries:
-                subprocess.run([
-                    "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-                    "-t", "0.5", "-q:a", "9", "-acodec", "libmp3lame", out_file
-                ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                await asyncio.to_thread(
+                    subprocess.run,
+                    [
+                        "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
+                        "-t", "0.5", "-q:a", "9", "-acodec", "libmp3lame", out_file
+                    ],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
                 return
 
-            await asyncio.sleep((attempt * 1.5) + random.uniform(0.5, 1.5))
+            await asyncio.sleep((attempt * 1.0) + random.uniform(0.3, 0.8))
 
-async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir: str, global_sem: asyncio.Semaphore):
+async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir: str, chapter_sem: asyncio.Semaphore):
     chapter_mp3 = os.path.join(build_dir, f"ch_{ch_num:03d}.mp3")
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
 
@@ -132,8 +149,9 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     for row in rows:
         c_path = os.path.join(temp_dir, f"seg_{row['line_id']}.mp3")
         chunk_files.append(c_path)
-        tasks.append(synthesize_line_record(row, c_path, global_sem))
+        tasks.append(synthesize_line_record(row, c_path, chapter_sem))
 
+    # All segments for this chapter run bounded by chapter_sem
     await asyncio.gather(*tasks)
 
     valid_chunks = []
@@ -143,7 +161,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     for cf, row in zip(chunk_files, rows):
         if os.path.exists(cf) and os.path.getsize(cf) > 1000:
             valid_chunks.append(cf)
-            dur = get_audio_duration(cf)
+            dur = await get_audio_duration(cf)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
 
             if raw_text and not row.get("pause_duration"):
@@ -153,24 +171,34 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             rel_time += dur
 
     if not valid_chunks:
-        subprocess.run([
-            "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-            "-t", "3.0", "-q:a", "9", "-acodec", "libmp3lame", chapter_mp3
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        await asyncio.to_thread(
+            subprocess.run,
+            [
+                "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
+                "-t", "3.0", "-q:a", "9", "-acodec", "libmp3lame", chapter_mp3
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
     else:
         manifest_path = os.path.join(temp_dir, "manifest.txt")
         with open(manifest_path, "w", encoding="utf-8") as f:
             for cf in valid_chunks:
                 f.write(f"file '{os.path.abspath(cf).replace(os.sep, '/')}'\n")
 
-        subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", manifest_path, "-c", "copy", chapter_mp3], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        await asyncio.to_thread(
+            subprocess.run,
+            ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", manifest_path, "-c", "copy", chapter_mp3],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-    final_dur = get_audio_duration(chapter_mp3)
+    final_dur = await get_audio_duration(chapter_mp3)
     meta_payload = {"title": title, "duration": final_dur, "relative_subtitles": rel_subtitles}
     with open(chapter_meta, "wb") as f:
         f.write(orjson.dumps(meta_payload, option=orjson.OPT_INDENT_2))
 
-    # Robust directory cleanup: removes all chunk and scratch files cleanly on Windows
+    # Directory cleanup
     shutil.rmtree(temp_dir, ignore_errors=True)
 
     print(f"[Synthesized Audio] {title} ({format_timestamp(final_dur)})", flush=True)

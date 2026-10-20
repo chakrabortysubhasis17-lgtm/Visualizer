@@ -6,7 +6,6 @@ import unicodedata
 import urllib.parse
 import orjson
 import httpx
-import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
@@ -17,19 +16,21 @@ try:
     from google.genai import types
     GENAI_AVAILABLE = True
 except ImportError:
+    genai = None
+    types = None
     GENAI_AVAILABLE = False
 
 CONTAINER_SELECTORS = [
-    ("div", {"id": "chr-content"}),                                                           # NovelBin
-    ("div", {"id": "chapter-content"}),                                                       # NovelFull / MTL-Novel
-    ("div", {"class": re.compile(r"(chapter-content|entry-content|epcontent|reading-content)", re.I)}), # MTL & WordPress
-    ("div", {"class": "txt"}),                                                                # FreeWebNovel
-    ("div", {"class": "m-read"}),                                                             # FreeWebNovel Reader
-    ("div", {"id": "arrticle"}),                                                              # Ranobes
+    ("div", {"id": "chr-content"}),
+    ("div", {"id": "chapter-content"}),
+    ("div", {"class": re.compile(r"(chapter-content|entry-content|epcontent|reading-content)", re.I)}),
+    ("div", {"class": "txt"}),
+    ("div", {"class": "m-read"}),
+    ("div", {"id": "arrticle"}),
     ("article", {}),
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〔|『|〖|［|\{)(Ding!|System|Notice|Warning|Announcement|Prompt|Quest|Stat|Skill|Level|Lv\.|Inventory|Reward).*?(?:\]|】|〕|』|〗|］|\})", re.I)
+RE_SYSTEM = re.compile(r"(?:\[|【|〖|『|《|［|\{)(Ding!|System|Notice|Warning|Announcement|Prompt|Quest|Stat|Skill|Level|Lv\.|Inventory|Reward).*?(?:\]|】|〗|』|》|］|\})", re.I)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 
 WATERMARK_PATTERNS = [
@@ -56,9 +57,10 @@ FULLWIDTH_TO_ASCII = str.maketrans({
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://freewebnovel.com/",
 }
 
 class SpeechSegment(BaseModel):
@@ -74,6 +76,50 @@ class SpeechSegment(BaseModel):
 class ChapterNarrationManifest(BaseModel):
     chapter_title: str = Field(description="Clean title of the chapter")
     segments: list[SpeechSegment] = Field(description="Chronologically ordered speech segments")
+
+def split_by_sentence_threshold(text: str, threshold: int = 650) -> list[str]:
+    """
+    Takes ~650 chars. If a sentence has not finished, continues reading
+    until the true end of that sentence (. ! ? plus quotes/brackets).
+    The rest rolls over into subsequent parts following the exact same pattern.
+    """
+    if not text:
+        return []
+
+    cleaned = " ".join(text.strip().split())
+    if len(cleaned) <= threshold:
+        return [cleaned]
+
+    sentence_pattern = re.compile(r'.*?[.!?]["\'”’)]?(?=\s+|$)', re.DOTALL)
+    parts = []
+    remaining = cleaned
+
+    while remaining:
+        if len(remaining) <= threshold:
+            parts.append(remaining)
+            break
+
+        current_chunk = []
+        accumulated_len = 0
+        last_match_end = 0
+
+        for match in sentence_pattern.finditer(remaining):
+            sentence = match.group(0).strip()
+            current_chunk.append(sentence)
+            accumulated_len += len(sentence) + 1
+            last_match_end = match.end()
+
+            if accumulated_len >= threshold:
+                break
+
+        if current_chunk and last_match_end > 0:
+            parts.append(" ".join(current_chunk))
+            remaining = remaining[last_match_end:].strip()
+        else:
+            parts.append(remaining)
+            break
+
+    return parts
 
 def calculate_prosody_adjustments(seg: dict) -> tuple[str, str]:
     age = seg.get("age_category", "young").lower()
@@ -139,7 +185,6 @@ def balance_paragraph_quotes(paragraph: str) -> str:
 def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc"):
     print(f"[Scraper] Connecting to Ch.{ch_num:03d}: {url}", flush=True)
 
-    # Adaptive client call: handles both httpx.Client and requests.Session seamlessly
     try:
         if isinstance(session, httpx.Client):
             resp = session.get(url, headers=HEADERS, timeout=25.0, follow_redirects=True)
@@ -170,7 +215,7 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
         container = soup.find("body")
 
     paragraphs = []
-    p_tags = container.find_all("p")
+    p_tags = container.find_all("p") if container else []
     if len(p_tags) >= 3:
         for p in p_tags:
             ptxt = clean_and_normalize_text(p.get_text(strip=True))
@@ -178,7 +223,7 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
                 if re.search(r"^(?:freewebnovel|novelbin|mtl-novel|read novel)\b", ptxt, re.I):
                     continue
                 paragraphs.append(ptxt)
-    else:
+    elif container:
         raw_html = str(container)
         text_with_newlines = re.sub(r"<br\s*/?>", "\n", raw_html, flags=re.I)
         fallback_soup = BeautifulSoup(text_with_newlines, "html.parser")
@@ -274,9 +319,9 @@ def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
     if m2:
         return float(m2.group(1)) + 2.0
 
-    return float(attempt * 15.0)
+    return float(attempt * 10.0)
 
-def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 5) -> list:
+def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 3) -> list:
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
 
     safety_settings = [
@@ -286,17 +331,15 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
         types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
     ]
 
-    raw_schema_dict = ChapterNarrationManifest.model_json_schema()
-
     for attempt in range(1, max_retries + 1):
         try:
+            # Uses fast flash endpoint with JSON response and strict safety bypass without socket-hanging schemas
             response = client.models.generate_content(
                 model="gemini-flash-lite-latest",
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
-                    response_schema=raw_schema_dict,
                     safety_settings=safety_settings,
                     temperature=0.1
                 )
@@ -322,41 +365,39 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
 
                     if hasattr(cand, "content") and cand.content and cand.content.parts:
                         for part in cand.content.parts:
-                            if hasattr(part, "function_call") and part.function_call:
-                                raw_json = orjson.dumps(part.function_call.args).decode("utf-8")
-                                break
-                            elif hasattr(part, "text") and part.text:
+                            if hasattr(part, "text") and part.text:
                                 raw_json = part.text
                                 break
-                    if not raw_json:
-                        print(f"     [Gemini Director] Attempt {attempt}/{max_retries} returned no text. FinishReason: {finish_reason}", flush=True)
 
             if raw_json:
                 data = orjson.loads(raw_json)
                 staged = []
-                for s in data.get("segments", []):
+                # Accepts either dict {"segments": [...]} or raw array [...]
+                raw_list = data if isinstance(data, list) else data.get("segments", [])
+
+                for s in raw_list:
                     pitch, rate = calculate_prosody_adjustments(s)
                     staged.append({
                         "line_id": s.get("line_id", "0001"),
-                        "speaker": s.get("speaker_role", "Narrator"),
+                        "speaker": s.get("speaker_role") or s.get("speaker") or "Narrator",
                         "gender": s.get("gender", "Male"),
                         "line_type": s.get("line_type", "Narration"),
                         "emotion": s.get("emotion", "neutral"),
                         "age_category": s.get("age_category", "young"),
                         "text": s.get("text", "").strip(),
-                        "voice": s.get("edge_tts_voice", "en-US-GuyNeural"),
+                        "voice": s.get("edge_tts_voice") or s.get("voice") or "en-US-GuyNeural",
                         "pitch": pitch,
                         "rate": rate
                     })
 
                 if staged:
-                    time.sleep(4.5)
+                    time.sleep(2.0)
                     return staged
                 else:
                     print(f"     [Gemini Director] Attempt {attempt}/{max_retries} produced empty segments array.", flush=True)
 
             if attempt < max_retries:
-                retry_wait = float(attempt * 15.0)
+                retry_wait = float(attempt * 8.0)
                 print(f"     [Gemini Cooldown] Retrying chunk (Attempt {attempt + 1}/{max_retries}) in {retry_wait:.1f}s...", flush=True)
                 time.sleep(retry_wait)
 
@@ -374,7 +415,7 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
 
     return []
 
-def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_file: str, max_narr_merge: int = 210) -> list:
+def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_file: str, max_narr_merge: int = 650) -> list:
     staged_chars = {}
     if os.path.exists(stage_file):
         try:
@@ -408,6 +449,7 @@ STRICT CONTINUITY DIRECTIVES:
 2. GENDER LOCK: A female speaker must NEVER become male, and a male speaker must NEVER become female.
 3. CAST IDENTIFICATION: Match speakers against the staged character registry below. If an alias or epithet is used, map it to the canonical character.
 4. NEW CHARACTER DISCOVERY: If a new character speaks who is NOT in this registry, identify their name, determine their gender ('Male', 'Female', or 'Neutral'), and assign an appropriate Edge-TTS neural voice.
+5. FORMAT: Return a JSON object with a single key "segments" containing an array of objects with keys: line_id, speaker_role, gender, age_category, emotion, line_type, edge_tts_voice, text.
 
 ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
@@ -431,16 +473,28 @@ ACTIVE STAGED CHARACTERS:
             fallback_part = fallback_rule_based_staging(part, staged_chars, max_narr_merge)
             all_staged.extend(fallback_part)
 
-    for idx, seg in enumerate(all_staged, 1):
+    # Apply sentence-boundary threshold to all narration blocks
+    refined_staged = []
+    for seg in all_staged:
+        if seg.get("line_type") == "Narration" and len(seg.get("text", "")) > max_narr_merge:
+            narr_splits = split_by_sentence_threshold(seg["text"], threshold=max_narr_merge)
+            for split_txt in narr_splits:
+                sub_seg = dict(seg)
+                sub_seg["text"] = split_txt
+                refined_staged.append(sub_seg)
+        else:
+            refined_staged.append(seg)
+
+    for idx, seg in enumerate(refined_staged, 1):
         seg["line_id"] = f"{idx:04d}"
 
-    if all_staged:
-        sync_new_characters_to_staging(stage_file, all_staged)
-        return all_staged
+    if refined_staged:
+        sync_new_characters_to_staging(stage_file, refined_staged)
+        return refined_staged
 
     return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
 
-def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int = 210) -> list:
+def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int = 650) -> list:
     paragraphs = text.split("\n\n")
     raw_tokens = []
     for p in paragraphs:
@@ -464,12 +518,23 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             staged_segments.append({"role_key": "mc", "line_type": "Dialogue", "text": token["text"]})
 
     consolidated = []
+    current_narr_buffer = []
+
     for seg in staged_segments:
-        if consolidated and consolidated[-1]["role_key"] == "narrator" and seg["role_key"] == "narrator":
-            if len(consolidated[-1]["text"].split()) + len(seg["text"].split()) <= max_narr_merge:
-                consolidated[-1]["text"] += " " + seg["text"]
-                continue
-        consolidated.append(seg)
+        if seg["role_key"] == "narrator":
+            current_narr_buffer.append(seg["text"])
+        else:
+            if current_narr_buffer:
+                full_narr = " ".join(current_narr_buffer)
+                for chunk in split_by_sentence_threshold(full_narr, threshold=max_narr_merge):
+                    consolidated.append({"role_key": "narrator", "line_type": "Narration", "text": chunk})
+                current_narr_buffer = []
+            consolidated.append(seg)
+
+    if current_narr_buffer:
+        full_narr = " ".join(current_narr_buffer)
+        for chunk in split_by_sentence_threshold(full_narr, threshold=max_narr_merge):
+            consolidated.append({"role_key": "narrator", "line_type": "Narration", "text": chunk})
 
     staged_records = []
     for idx, seg in enumerate(consolidated, 1):

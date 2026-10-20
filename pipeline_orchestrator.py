@@ -2,7 +2,7 @@ import os
 import json
 import shutil
 import asyncio
-import requests
+import httpx
 
 from registry_utils import init_session_registry, finalize_and_merge_master_registry
 from text_director_utils import scrape_chapter_content, parse_chapter_via_gemini_director, GENAI_AVAILABLE
@@ -94,13 +94,15 @@ async def run_audiobook_pipeline(config: dict):
             print(f"[Gemini Director Notice] Initialization skipped: {e}", flush=True)
 
     staged_chapters = []
+    narration_threshold = config.get("max_narration_merge", 650)
 
     # Phase 1: Scraping & Director Parsing with Real-time Learning
     print(f"\n[{novel_slug}] [Phase 1/5] Scraping Chapters & Parsing with Dynamic Registry...", flush=True)
-    with requests.Session() as session:
+    with httpx.Client(follow_redirects=True, timeout=30.0) as session:
         curr_url = config["start_url"]
         for ch_num in range(start_ch, end_ch + 1):
             if not curr_url:
+                print(f"     [End of Novel/No Next URL at Ch {ch_num:03d}]", flush=True)
                 break
             ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
 
@@ -114,11 +116,11 @@ async def run_audiobook_pipeline(config: dict):
                     print(f"     [Stage Cached] Ch.{ch_num:03d} verified on disk ({len(rows)} segments)", flush=True)
                 except Exception:
                     title, text, next_url = scrape_chapter_content(session, curr_url, ch_num, config.get("default_topic", "Arc"))
-                    rows = parse_chapter_via_gemini_director(gemini_client, title, text, stage_file, config.get("max_narration_merge", 210))
+                    rows = parse_chapter_via_gemini_director(gemini_client, title, text, stage_file, narration_threshold)
                     curr_url = next_url
             else:
                 title, text, next_url = scrape_chapter_content(session, curr_url, ch_num, config.get("default_topic", "Arc"))
-                rows = parse_chapter_via_gemini_director(gemini_client, title, text, stage_file, config.get("max_narration_merge", 210))
+                rows = parse_chapter_via_gemini_director(gemini_client, title, text, stage_file, narration_threshold)
                 curr_url = next_url
 
             # Prepend the channel intro with 1s and 2s silent pauses to Chapter 1
@@ -146,21 +148,26 @@ async def run_audiobook_pipeline(config: dict):
     if os.path.exists(blocks[0]["cover_file"]) and not os.path.exists(primary_thumb):
         shutil.copy2(blocks[0]["cover_file"], primary_thumb)
 
-    # Phase 3: Audio TTS Synthesis
-    print(f"\n[{novel_slug}] [Phase 3/5] Synthesizing Audio with Edge-TTS...", flush=True)
-    global_sem = asyncio.Semaphore(config.get("global_max_tts", 3))
-    chapter_semaphore = asyncio.Semaphore(config.get("parallel_chapters", 2))
+    # Phase 3: True Concurrent Audio TTS Synthesis
+    print(f"\n[{novel_slug}] [Phase 3/5] Synthesizing Audio with Edge-TTS (True Parallel Chapters)...", flush=True)
+    parallel_chapters = config.get("parallel_chapters", 3)
+    
+    # Calculate dedicated per-chapter TTS worker pool (e.g. 6 global / 3 chapters = 2 workers per chapter)
+    global_max_tts = config.get("global_max_tts", 6)
+    tts_workers_per_chapter = max(1, global_max_tts // parallel_chapters)
+
+    chapter_semaphore = asyncio.Semaphore(parallel_chapters)
+
+    print(f"     [Concurrency Setup] Parallel Chapters Active: {parallel_chapters} | Workers per Chapter: {tts_workers_per_chapter}", flush=True)
 
     async def run_ch_bounded(cn, rw, tt):
         async with chapter_semaphore:
-            return await synthesize_chapter_task(cn, rw, tt, build_dir, global_sem)
+            # Dedicated semaphore for this chapter ensures it cannot be starved by others
+            ch_sem = asyncio.Semaphore(tts_workers_per_chapter)
+            print(f"     [Workers] >>> Spawning Chapter {cn:03d} execution workspace ({len(rw)} segments)...", flush=True)
+            return await synthesize_chapter_task(cn, rw, tt, build_dir, ch_sem)
 
-    all_results = []
-    batch_size = config.get("batch_size", 5)
-    for b_idx in range(0, len(staged_chapters), batch_size):
-        batch = staged_chapters[b_idx:b_idx + batch_size]
-        res = await asyncio.gather(*[run_ch_bounded(cn, rw, tt) for cn, rw, tt in batch])
-        all_results.extend(res)
+    all_results = await asyncio.gather(*[run_ch_bounded(cn, rw, tt) for cn, rw, tt in staged_chapters])
 
     all_results.sort(key=lambda x: x[0])
     chapter_files, chapter_durations, timestamps, all_subtitles = [], {}, [], []
