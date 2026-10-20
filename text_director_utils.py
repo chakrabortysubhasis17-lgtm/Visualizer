@@ -11,6 +11,13 @@ from pydantic import BaseModel, Field
 
 from registry_utils import sync_new_characters_to_staging, FALLBACK_BASE_CHARACTERS
 
+# Optional ftfy integration for deep text/mojibake fixing
+try:
+    import ftfy
+    FTFY_AVAILABLE = True
+except ImportError:
+    FTFY_AVAILABLE = False
+
 try:
     from google import genai
     from google.genai import types
@@ -78,11 +85,6 @@ class ChapterNarrationManifest(BaseModel):
     segments: list[SpeechSegment] = Field(description="Chronologically ordered speech segments")
 
 def split_by_sentence_threshold(text: str, threshold: int = 650) -> list[str]:
-    """
-    Takes ~650 chars. If a sentence has not finished, continues reading
-    until the true end of that sentence (. ! ? plus quotes/brackets).
-    The rest rolls over into subsequent parts following the exact same pattern.
-    """
     if not text:
         return []
 
@@ -162,6 +164,13 @@ def clean_chapter_title_for_seo(raw_title: str, ch_num: int, default_topic: str 
     return f"Ch {ch_num:03d}: {cleaned.title()}"
 
 def clean_and_normalize_text(text: str) -> str:
+    # Use ftfy if present to repair encoding defects prior to regex cleaning
+    if FTFY_AVAILABLE:
+        try:
+            text = ftfy.fix_text(text)
+        except Exception:
+            pass
+
     text = unicodedata.normalize('NFKC', text)
     text = text.translate(FULLWIDTH_TO_ASCII)
     text = RE_SCENE_DIVIDER.sub("", text)
@@ -333,7 +342,6 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
 
     for attempt in range(1, max_retries + 1):
         try:
-            # Uses fast flash endpoint with JSON response and strict safety bypass without socket-hanging schemas
             response = client.models.generate_content(
                 model="gemini-flash-lite-latest",
                 contents=prompt,
@@ -372,7 +380,6 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
             if raw_json:
                 data = orjson.loads(raw_json)
                 staged = []
-                # Accepts either dict {"segments": [...]} or raw array [...]
                 raw_list = data if isinstance(data, list) else data.get("segments", [])
 
                 for s in raw_list:
@@ -473,7 +480,6 @@ ACTIVE STAGED CHARACTERS:
             fallback_part = fallback_rule_based_staging(part, staged_chars, max_narr_merge)
             all_staged.extend(fallback_part)
 
-    # Apply sentence-boundary threshold to all narration blocks
     refined_staged = []
     for seg in all_staged:
         if seg.get("line_type") == "Narration" and len(seg.get("text", "")) > max_narr_merge:

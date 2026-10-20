@@ -7,10 +7,34 @@ import subprocess
 import orjson
 import edge_tts
 
+# Optional mutagen integration for fast in-memory audio duration probing
+try:
+    from mutagen.mp3 import MP3
+    MUTAGEN_AVAILABLE = True
+except ImportError:
+    MUTAGEN_AVAILABLE = False
+
+# Optional aiolimiter integration for Edge-TTS rate burst protection
+try:
+    from aiolimiter import AsyncLimiter
+    TTS_BURST_LIMITER = AsyncLimiter(max_rate=8, time_period=1.0)
+except ImportError:
+    TTS_BURST_LIMITER = None
+
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 RE_PAUSE_TAGS = re.compile(r'\[(?:pause|Pause)\s*[\w\s.]*\]|\((?:pause|Pause)\s*[\w\s.]*\)', re.I)
 
 def _probe_duration_sync(file_path: str) -> float:
+    # Fast path: read duration directly from MP3 frame header in RAM
+    if MUTAGEN_AVAILABLE:
+        try:
+            audio = MP3(file_path)
+            if audio.info and audio.info.length > 0:
+                return float(audio.info.length)
+        except Exception:
+            pass
+
+    # Fallback path: ffprobe subprocess call
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file_path]
     try:
         res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
@@ -19,7 +43,7 @@ def _probe_duration_sync(file_path: str) -> float:
         return 0.5
 
 async def get_audio_duration(file_path: str) -> float:
-    """Non-blocking ffprobe duration probe that keeps the asyncio event loop free."""
+    """Non-blocking duration probe that keeps the asyncio event loop free."""
     return await asyncio.to_thread(_probe_duration_sync, file_path)
 
 def format_timestamp(seconds: float) -> str:
@@ -83,7 +107,13 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                         active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
 
                 comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
-                await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
+
+                # Burst rate-limiting
+                if TTS_BURST_LIMITER:
+                    async with TTS_BURST_LIMITER:
+                        await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
+                else:
+                    await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
 
                 # Metallic mecha DSP filter applied EXCLUSIVELY to System lines
                 if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 1000:
