@@ -15,21 +15,18 @@ import edge_tts
 # OPTIONAL & PERFORMANCE LIBRARIES (Graceful Fallbacks)
 # =====================================================================
 
-# 1. Mutagen (Fast in-memory MP3 header inspection)
 try:
     from mutagen.mp3 import MP3
     MUTAGEN_AVAILABLE = True
 except ImportError:
     MUTAGEN_AVAILABLE = False
 
-# 2. aiolimiter (Edge-TTS burst rate protection)
 try:
     from aiolimiter import AsyncLimiter
     TTS_BURST_LIMITER = AsyncLimiter(max_rate=8, time_period=1.0)
 except ImportError:
     TTS_BURST_LIMITER = None
 
-# 3. orjson (High-speed binary JSON)
 try:
     import orjson
     ORJSON_AVAILABLE = True
@@ -37,21 +34,18 @@ except ImportError:
     import json as orjson
     ORJSON_AVAILABLE = False
 
-# 4. aiofiles (Non-blocking async disk I/O)
 try:
     import aiofiles
     AIOFILES_AVAILABLE = True
 except ImportError:
     AIOFILES_AVAILABLE = False
 
-# 5. PySRT (SubRip subtitle validation & manipulation)
 try:
     import pysrt
     PYSRT_AVAILABLE = True
 except ImportError:
     PYSRT_AVAILABLE = False
 
-# 6. Pedalboard (Spotify's Studio DSP Audio Framework)
 try:
     import pedalboard
     from pedalboard import Pedalboard, Compressor, HighpassFilter, Limiter, Gain
@@ -75,7 +69,7 @@ RE_PAUSE_TAGS = re.compile(r'\[(?:pause|Pause)\s*[\w\s.]*\]|\((?:pause|Pause)\s*
 
 def _probe_duration_sync(file_path: str) -> float:
     """Fast synchronous audio duration inspection via Mutagen or ffprobe."""
-    if not os.path.exists(file_path) or os.path.getsize(file_path) < 1024:
+    if not os.path.exists(file_path) or os.path.getsize(file_path) < 100:
         return 0.0
 
     if MUTAGEN_AVAILABLE:
@@ -103,7 +97,6 @@ async def get_audio_duration(file_path: str) -> float:
 
 
 def format_timestamp(seconds: float) -> str:
-    """Formats seconds into YouTube chapter timestamp (HH:MM:SS or MM:SS)."""
     h = int(seconds // 3600)
     m = int((seconds % 3600) // 60)
     s = int(seconds % 60)
@@ -113,12 +106,10 @@ def format_timestamp(seconds: float) -> str:
 
 
 def format_seconds_to_timestamp(seconds: float) -> str:
-    """Alias for format_timestamp."""
     return format_timestamp(seconds)
 
 
 def format_srt_time(seconds: float) -> str:
-    """Formats seconds into standard SubRip timestamp (HH:MM:SS,mmm)."""
     h = int(seconds // 3600)
     m = int((seconds % 3600) // 60)
     s = int(seconds % 60)
@@ -135,16 +126,15 @@ def format_srt_time(seconds: float) -> str:
 async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphore, max_retries: int = 5):
     """
     Synthesizes an individual dialogue or narrative line record.
-    Supports pause markers, silence generation, and system voice DSP filtering.
+    Releases the semaphore during backoff sleep to avoid worker starvation.
     """
-    if os.path.exists(out_file) and os.path.getsize(out_file) > 1000:
+    if os.path.exists(out_file) and os.path.getsize(out_file) > 300:
         return
 
     pause_dur = row.get("pause_duration")
     raw_text = row.get("text", "").strip()
     text = RE_PAUSE_TAGS.sub("", raw_text).strip()
 
-    # Programmatic silence gap for explicit pauses or empty markers
     if pause_dur or not text or not RE_ALPHANUM.search(text):
         dur = float(pause_dur) if pause_dur else 0.5
         await asyncio.to_thread(
@@ -176,78 +166,73 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
     chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
     raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
 
-    async with sem:
-        for attempt in range(1, max_retries + 1):
-            try:
-                active_voice = voice
-                if attempt >= 4:
-                    if is_system:
-                        active_voice = "en-US-AriaNeural"
-                    else:
-                        active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
+    for attempt in range(1, max_retries + 1):
+        try:
+            active_voice = voice
+            if attempt >= 4:
+                if is_system:
+                    active_voice = "en-US-AriaNeural"
+                else:
+                    active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
 
-                comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
+            comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
 
+            # Semaphore wraps only network call to keep worker slots free during backoff sleep
+            async with sem:
                 if TTS_BURST_LIMITER:
                     async with TTS_BURST_LIMITER:
                         await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
                 else:
                     await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
 
-                # Metallic mecha DSP filter applied EXCLUSIVELY to System lines
-                if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 1000:
-                    await asyncio.to_thread(
-                        subprocess.run,
-                        [
-                            "ffmpeg", "-y", "-i", raw_tts_file,
-                            "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
-                            "-q:a", "2", "-acodec", "libmp3lame", out_file
-                        ],
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL
-                    )
-
-                    if not (os.path.exists(out_file) and os.path.getsize(out_file) > 1000):
-                        shutil.copy2(raw_tts_file, out_file)
-
-                    try:
-                        os.remove(raw_tts_file)
-                    except OSError:
-                        pass
-                    return
-
-                # Normal Narration and Dialogue
-                if os.path.exists(out_file) and os.path.getsize(out_file) > 1000:
-                    return
-
-            except Exception:
-                pass
-
-            if attempt == max_retries:
+            # Metallic mecha DSP filter applied to System lines with strict 24kHz matching
+            if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
                 await asyncio.to_thread(
                     subprocess.run,
                     [
-                        "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-                        "-t", "0.5", "-q:a", "9", "-acodec", "libmp3lame", out_file
+                        "ffmpeg", "-y", "-i", raw_tts_file,
+                        "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
+                        "-ar", "24000", "-ac", "1",
+                        "-q:a", "2", "-acodec", "libmp3lame", out_file
                     ],
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL
                 )
+
+                if not (os.path.exists(out_file) and os.path.getsize(out_file) > 300):
+                    shutil.copy2(raw_tts_file, out_file)
+
+                try:
+                    os.remove(raw_tts_file)
+                except OSError:
+                    pass
                 return
 
-            await asyncio.sleep((attempt * 1.0) + random.uniform(0.3, 0.8))
+            if os.path.exists(out_file) and os.path.getsize(out_file) > 300:
+                return
+
+        except Exception:
+            pass
+
+        if attempt == max_retries:
+            await asyncio.to_thread(
+                subprocess.run,
+                [
+                    "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
+                    "-t", "0.5", "-q:a", "9", "-acodec", "libmp3lame", out_file
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            return
+
+        await asyncio.sleep((attempt * 1.0) + random.uniform(0.3, 0.8))
 
 
 async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir: str, chapter_sem: asyncio.Semaphore):
-    """
-    Synthesizes all segments for a chapter, stitches them together,
-    records subtitle timings, and asynchronously writes metadata.
-    Preserves the exact (ch_num, chapter_mp3, final_dur, title, rel_subtitles) return signature.
-    """
     chapter_mp3 = os.path.join(build_dir, f"ch_{ch_num:03d}.mp3")
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
 
-    # Fast validation using cached files
     if os.path.exists(chapter_mp3) and os.path.exists(chapter_meta) and os.path.getsize(chapter_mp3) > 10000:
         try:
             if AIOFILES_AVAILABLE:
@@ -279,14 +264,13 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     rel_time = 0.0
 
     for cf, row in zip(chunk_files, rows):
-        if os.path.exists(cf) and os.path.getsize(cf) > 1000:
+        if os.path.exists(cf) and os.path.getsize(cf) > 300:
             valid_chunks.append(cf)
             dur = await get_audio_duration(cf)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
 
             if raw_text and not row.get("pause_duration"):
                 sub_text = f"[{row['speaker']}]: {raw_text}" if row.get("line_type") == "Dialogue" else raw_text
-                # Preserves both tuple format and dict compatibility
                 rel_subtitles.append((rel_time, rel_time + dur, sub_text))
 
             rel_time += dur
@@ -317,7 +301,6 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     final_dur = await get_audio_duration(chapter_mp3)
     meta_payload = {"title": title, "duration": final_dur, "relative_subtitles": rel_subtitles}
 
-    # Asynchronous non-blocking write via aiofiles
     if AIOFILES_AVAILABLE:
         raw_meta = orjson.dumps(meta_payload, option=orjson.OPT_INDENT_2) if ORJSON_AVAILABLE else orjson.dumps(meta_payload, indent=2).encode("utf-8")
         async with aiofiles.open(chapter_meta, "wb") as f:
@@ -332,16 +315,15 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     return ch_num, chapter_mp3, final_dur, title, rel_subtitles
 
 
-# Backward-compatible alias
 synthesize_chapter_audio = synthesize_chapter_task
 
 
 # =====================================================================
-# AUDIO MASTERING (Pedalboard DSP + FFmpeg EBU R128)
+# AUDIO MASTERING (Pedalboard Streamed DSP + FFmpeg EBU R128)
 # =====================================================================
 
 def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
-    """Applies clean vocal DSP conditioning via Spotify's Pedalboard if installed."""
+    """Streams audio in 30s blocks through Pedalboard to prevent memory spikes on marathon runs."""
     if not PEDALBOARD_AVAILABLE:
         return False
     try:
@@ -352,12 +334,14 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
             Limiter(threshold_db=-1.0, release_ms=50.0)
         ])
         with AudioFile(input_path) as f:
-            audio = f.read(f.frames)
             sr = f.samplerate
-
-        effected = board(audio, sr)
-        with AudioFile(output_path, "w", sr, effected.shape[0]) as f:
-            f.write(effected)
+            num_channels = f.num_channels
+            with AudioFile(output_path, "w", sr, num_channels) as o:
+                chunk_size = sr * 30
+                while f.tell() < f.frames:
+                    chunk = f.read(chunk_size)
+                    effected = board(chunk, sr, reset=False)
+                    o.write(effected)
 
         return os.path.exists(output_path) and os.path.getsize(output_path) > 10000
     except Exception as e:
@@ -367,8 +351,9 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
 
 def master_final_audio(chapter_files: list, build_dir: str, final_audio_path: str):
     """
-    Concatenates all chapter files, conditions dynamics via Pedalboard (if available),
-    and finishes with strict -14 LUFS broadcast loudness normalization and 15s outro padding.
+    Concatenates chapter files, masters with Pedalboard (if installed),
+    and finishes with -14 LUFS broadcast normalization and 15s outro pad.
+    Avoids double compression if Pedalboard was already applied.
     """
     raw_master_audio = os.path.join(build_dir, "raw_master.mp3")
     pedalboard_staged = os.path.join(build_dir, "pedalboard_master.wav")
@@ -384,14 +369,18 @@ def master_final_audio(chapter_files: list, build_dir: str, final_audio_path: st
             check=True
         )
 
-        source_audio = raw_master_audio
-        if master_audio_with_pedalboard(raw_master_audio, pedalboard_staged):
+        pedalboard_ok = master_audio_with_pedalboard(raw_master_audio, pedalboard_staged)
+        if pedalboard_ok:
             source_audio = pedalboard_staged
+            # Skip duplicate highpass & compression since Pedalboard already applied it
+            audio_filter = "equalizer=f=3200:t=q:w=1.5:g=2.5,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
+        else:
+            source_audio = raw_master_audio
+            audio_filter = "highpass=f=85,equalizer=f=3200:t=q:w=1.5:g=2.5,acompressor=threshold=-16dB:ratio=3:attack=5:release=50,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
 
-        # Broadcast standard: Highpass, vocal EQ boost, compression, -14 LUFS loudnorm, 15s outro pad
         subprocess.run([
             "ffmpeg", "-y", "-i", source_audio,
-            "-af", "highpass=f=85,equalizer=f=3200:t=q:w=1.5:g=2.5,acompressor=threshold=-16dB:ratio=3:attack=5:release=50,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15",
+            "-af", audio_filter,
             "-c:a", "libmp3lame", "-b:a", "192k", final_audio_path
         ], check=True)
 
@@ -404,20 +393,14 @@ def master_final_audio(chapter_files: list, build_dir: str, final_audio_path: st
                     pass
 
 
-# Backward-compatible alias
 concatenate_and_master_audio = master_final_audio
 
 
 # =====================================================================
-# SUBTITLES (PySRT Engine with Tuple/Dict Universal Handling)
+# SUBTITLES (PySRT Engine with Fallback)
 # =====================================================================
 
 def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
-    """
-    Writes formatted SubRip (.srt) subtitles.
-    Handles both tuple (start, end, text) and dict {'start': ..., 'end': ..., 'text': ...} formats cleanly.
-    Validates with PySRT if installed, with native string fallback.
-    """
     if not all_subtitles:
         return False
 
@@ -436,7 +419,6 @@ def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
     if not parsed_subs:
         return False
 
-    # 1. PySRT validation path
     if PYSRT_AVAILABLE:
         try:
             srt_file = pysrt.SubRipFile()
@@ -445,8 +427,8 @@ def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
                 end_ms = max(start_ms + 100, int(round(e_sec * 1000)))
                 sub_item = pysrt.SubRipItem(
                     index=idx,
-                    start=pysrt.SubRipTime.from_ordinal(start_ms),
-                    end=pysrt.SubRipTime.from_ordinal(end_ms),
+                    start=pysrt.SubRipTime(milliseconds=start_ms),
+                    end=pysrt.SubRipTime(milliseconds=end_ms),
                     text=txt
                 )
                 srt_file.append(sub_item)
@@ -456,7 +438,6 @@ def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
         except Exception as e:
             print(f"[PySRT Notice] PySRT writing encountered issue ({e}). Falling back to native formatter.", flush=True)
 
-    # 2. Native SRT formatter fallback
     lines = []
     for idx, (s_sec, e_sec, txt) in enumerate(parsed_subs, 1):
         lines.append(str(idx))
@@ -480,7 +461,6 @@ async def write_youtube_timestamps_file(
     header_text: str = "",
     footer_text: str = ""
 ) -> str:
-    """Asynchronously generates YouTube formatted chapter timestamps via aiofiles."""
     lines = []
     if header_text:
         lines.append(header_text.strip())
@@ -508,21 +488,26 @@ async def write_upload_payload_file(
     output_path: str,
     title: str,
     description: str,
-    tags: List[str]
+    tags: List[str],
+    assets: Optional[Dict[str, str]] = None,
+    privacy_status: str = "unlisted"
 ) -> None:
-    """Asynchronously saves the YouTube upload JSON manifest via aiofiles."""
     payload = {
         "snippet": {
             "title": title[:100],
             "description": description,
             "tags": tags,
-            "categoryId": "24"
+            "categoryId": "24",
+            "defaultLanguage": "en-US"
         },
         "status": {
-            "privacyStatus": "public",
+            "privacyStatus": privacy_status,
             "selfDeclaredMadeForKids": False
         }
     }
+    if assets:
+        payload["assets"] = assets
+
     content = orjson.dumps(payload, option=orjson.OPT_INDENT_2) if ORJSON_AVAILABLE else orjson.dumps(payload, indent=2).encode("utf-8")
     if AIOFILES_AVAILABLE:
         async with aiofiles.open(output_path, "wb") as f:
@@ -545,8 +530,8 @@ def assemble_multi_image_video(
     subtitles_srt_path: Optional[str] = None
 ):
     """
-    Renders video block segments with padding/scaling, appends the 15s outro card,
-    and multiplexes master audio and optional soft subtitles track.
+    Renders video block segments with 1080p geometry lock, appends the 15s outro card,
+    and multiplexes master audio and soft subtitles using explicit stream mapping.
     """
     print("\n[Multiplexer] Assembling Video Frames + Outro Card...", flush=True)
     video_segments = []
@@ -566,9 +551,11 @@ def assemble_multi_image_video(
         segment_video = os.path.join(build_dir, f"v_seg_block_{b_idx}.mp4")
         subprocess.run([
             "ffmpeg", "-y", "-loop", "1", "-framerate", "1", "-t", f"{dur:.3f}",
-            "-i", cover_path, "-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2",
+            "-i", cover_path,
+            "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,format=yuv420p",
+            "-r", "1",
             "-c:v", "libx264", "-tune", "stillimage", "-preset", "ultrafast",
-            "-pix_fmt", "yuv420p", segment_video
+            segment_video
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         video_segments.append(segment_video)
 
@@ -577,9 +564,11 @@ def assemble_multi_image_video(
     if os.path.exists(outro_slate):
         subprocess.run([
             "ffmpeg", "-y", "-loop", "1", "-framerate", "1", "-t", "15.000",
-            "-i", outro_slate, "-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2",
+            "-i", outro_slate,
+            "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,format=yuv420p",
+            "-r", "1",
             "-c:v", "libx264", "-tune", "stillimage", "-preset", "ultrafast",
-            "-pix_fmt", "yuv420p", outro_seg
+            outro_seg
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         video_segments.append(outro_seg)
 
@@ -604,6 +593,9 @@ def assemble_multi_image_video(
     if has_srt:
         mux_cmd.extend([
             "-i", subtitles_srt_path,
+            "-map", "0:v:0",
+            "-map", "1:a:0",
+            "-map", "2:s:0",
             "-c:v", "copy",
             "-c:a", "copy",
             "-c:s", "mov_text",
@@ -614,6 +606,8 @@ def assemble_multi_image_video(
         ])
     else:
         mux_cmd.extend([
+            "-map", "0:v:0",
+            "-map", "1:a:0",
             "-c", "copy",
             "-movflags", "+faststart",
             "-shortest",
@@ -634,5 +628,4 @@ def assemble_multi_image_video(
             pass
 
 
-# Backward-compatible alias
 render_final_audiobook_video = assemble_multi_image_video

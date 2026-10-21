@@ -1,5 +1,6 @@
 [Bb]uild_*/
 __pycache__/
+.pipeline_cache/
 [Cc]opyproj/*.txt
 [Cc]opyproj/*/*.txt
 *.jpg

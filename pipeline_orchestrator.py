@@ -15,7 +15,6 @@ import httpx
 # OPTIONAL PERFORMANCE & UI LIBRARIES (Graceful Fallbacks)
 # =====================================================================
 
-# 1. Rich (Terminal UI, Progress & Formatted Panels)
 try:
     from rich.console import Console
     from rich.table import Table
@@ -35,28 +34,24 @@ except ImportError:
     RICH_AVAILABLE = False
     console = None
 
-# 2. Pillow (Image Inspection & Composition)
 try:
     from PIL import Image
     PILLOW_AVAILABLE = True
 except ImportError:
     PILLOW_AVAILABLE = False
 
-# 3. OpenCV (Image Integrity Validation)
 try:
     import cv2
     CV2_AVAILABLE = True
 except ImportError:
     CV2_AVAILABLE = False
 
-# 4. aiofiles (Non-blocking Asynchronous File I/O)
 try:
     import aiofiles
     AIOFILES_AVAILABLE = True
 except ImportError:
     AIOFILES_AVAILABLE = False
 
-# 5. orjson (High-Speed Binary JSON)
 try:
     import orjson
     ORJSON_AVAILABLE = True
@@ -64,7 +59,6 @@ except ImportError:
     import json as orjson
     ORJSON_AVAILABLE = False
 
-# 6. Google GenAI SDK
 try:
     from google import genai
     GENAI_AVAILABLE = True
@@ -73,7 +67,11 @@ except ImportError:
     GENAI_AVAILABLE = False
 
 # Local Pipeline Modules
-from registry_utils import init_session_registry, finalize_and_merge_master_registry
+from registry_utils import (
+    init_session_registry,
+    finalize_and_merge_master_registry,
+    sync_new_characters_to_staging
+)
 from text_director_utils import (
     scrape_chapter_content,
     parse_chapter_via_gemini_director,
@@ -141,7 +139,6 @@ def log_banner(title: str, subtitle: str = ""):
 # =====================================================================
 
 def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
-    """Creates spoken narrative hook separated by programmatic silent gaps."""
     return [
         {
             "line_id": "intro_01",
@@ -193,7 +190,6 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
 # =====================================================================
 
 def verify_cover_integrity(image_path: str) -> bool:
-    """Verifies that an image file exists, is non-empty, and can be read."""
     if not os.path.exists(image_path) or os.path.getsize(image_path) < 5000:
         return False
 
@@ -233,14 +229,14 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         f"Chapters {start_ch} to {end_ch} | Build Dir: '{build_dir}'"
     )
 
-    # 1. Sync Branding Assets into build directory
+    # 1. Sync Branding Assets
     for _, fname in branding.items():
         if fname and os.path.exists(fname):
             dst = os.path.join(build_dir, fname)
             shutil.copy2(fname, dst)
             log_success(f"Branding Asset Synced: '{fname}' -> '{build_dir}'")
 
-    # 2. Step 1: Session Registry Isolation
+    # 2. Session Registry Isolation
     stage_file = os.path.join(build_dir, "session_entities_staged.json")
     init_session_registry(novel_slug, stage_file)
     log_success(f"Session character registry initialized: '{stage_file}'")
@@ -284,11 +280,18 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                             cached = clean_and_parse_json(f.read())
 
                     rows = cached.get("rows", [])
+                    if len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows):
+                        raise ValueError(f"Corrupt or placeholder manifest in Ch {ch_num}")
+
                     title = cached.get("title", f"Ch {ch_num:03d}")
                     curr_url = cached.get("next_url") or scrape_chapter_content(
                         session, curr_url, ch_num, config.get("default_topic", "Arc")
                     )[2]
-                    log_success(f"Ch {ch_num:03d}: Manifest verified from disk ({len(rows)} segments).")
+
+                    # Sync cached chapter character records into active staging
+                    sync_new_characters_to_staging(stage_file, rows)
+
+                    log_success(f"Ch {ch_num:03d}: Manifest verified and characters synced ({len(rows)} segments).")
                 except Exception:
                     title, text, next_url = scrape_chapter_content(
                         session, curr_url, ch_num, config.get("default_topic", "Arc")
@@ -306,7 +309,6 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 )
                 curr_url = next_url
 
-            # Prepend the channel intro with 1s and 2s silent pauses to the first chapter
             if ch_num == start_ch:
                 intro_segments = get_channel_intro_segments(narrator_voice)
                 if not any(r.get("line_id") == "intro_01" for r in rows):
@@ -321,6 +323,11 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     json.dump(manifest_data, f, indent=2, ensure_ascii=False)
 
             staged_chapters.append((ch_num, rows, title))
+
+    # EARLY PERSISTENCE: Save new characters immediately after Phase 1 staging
+    log_info(f"[{novel_slug}] Persisting staged character discoveries to master registry...")
+    finalize_and_merge_master_registry(novel_slug, stage_file)
+    log_success("Master novel_entities_registry.json updated successfully.")
 
     # ---------------------------------------------------------
     # PHASE 2: Upfront Visual Engine (Covers & Dynamic Outro)
@@ -385,7 +392,6 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 s_rel, e_rel, text = item["start"], item["end"], item["text"]
             else:
                 continue
-            # Pass raw floating seconds so build_srt_subtitles formats them cleanly via pysrt or fallback
             all_subtitles.append((offset + s_rel, offset + e_rel, text))
 
         offset += dur
@@ -464,11 +470,9 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     log_success(f"Upload payload generated: '{payload_file}'")
 
     # ---------------------------------------------------------
-    # STEP 3: Closed-Loop Registry Final Merge
+    # STEP 3: Closed-Loop Registry Final Safety Flush
     # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] Re-merging newly discovered characters into master registry...")
     finalize_and_merge_master_registry(novel_slug, stage_file)
-    log_success("Master registry updated successfully.")
 
     # ---------------------------------------------------------
     # PHASE 6: Rich Completion Dashboard

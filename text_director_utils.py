@@ -10,7 +10,6 @@ import urllib.parse
 from typing import Any, Dict, List, Optional, Tuple
 
 import httpx
-import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
@@ -20,21 +19,18 @@ from registry_utils import sync_new_characters_to_staging, FALLBACK_BASE_CHARACT
 # OPTIONAL & ADVANCED PERFORMANCE LIBRARIES (Graceful Fallbacks)
 # =====================================================================
 
-# 1. ftfy (Deep Text & Mojibake Repair)
 try:
     import ftfy
     FTFY_AVAILABLE = True
 except ImportError:
     FTFY_AVAILABLE = False
 
-# 2. orjson (High-Speed Binary JSON Parsing)
 try:
     import orjson
     ORJSON_AVAILABLE = True
 except ImportError:
     ORJSON_AVAILABLE = False
 
-# 3. Google GenAI SDK
 try:
     from google import genai
     from google.genai import types
@@ -44,7 +40,6 @@ except ImportError:
     types = None
     GENAI_AVAILABLE = False
 
-# 4. DiskCache (Persistent SQLite-backed Disk Cache)
 try:
     import diskcache
     CACHE_DIR = os.path.join(os.getcwd(), ".pipeline_cache")
@@ -52,14 +47,12 @@ try:
 except Exception:
     _disk_cache = None
 
-# 5. RapidFuzz (C++ SIMD Fuzzy String Matching)
 try:
     from rapidfuzz import process, fuzz
     RAPIDFUZZ_AVAILABLE = True
 except ImportError:
     RAPIDFUZZ_AVAILABLE = False
 
-# 6. aiofiles (Non-blocking Asynchronous Disk I/O)
 try:
     import aiofiles
     AIOFILES_AVAILABLE = True
@@ -167,13 +160,7 @@ def cache_set(key: str, value: Any, expire_seconds: Optional[int] = 86400 * 7):
 
 
 def clean_and_parse_json(raw_text: str) -> Any:
-    """
-    Cleans markdown code fences, removes trailing commas before closing
-    brackets/braces, and parses JSON with strict fallbacks.
-    """
     cleaned = raw_text.strip()
-
-    # Extract JSON inside code fences even if surrounded by other text
     fence_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", cleaned, re.IGNORECASE)
     if fence_match:
         cleaned = fence_match.group(1).strip()
@@ -181,7 +168,6 @@ def clean_and_parse_json(raw_text: str) -> Any:
         cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
         cleaned = re.sub(r"\s*```$", "", cleaned).strip()
 
-    # 1. Direct parse attempt
     if ORJSON_AVAILABLE:
         try:
             return orjson.loads(cleaned)
@@ -192,7 +178,6 @@ def clean_and_parse_json(raw_text: str) -> Any:
     except Exception:
         pass
 
-    # 2. Strip trailing commas before closing brackets or braces
     sanitized = re.sub(r',+(\s*[\]}])', r'\1', cleaned)
 
     if ORJSON_AVAILABLE:
@@ -222,12 +207,10 @@ def resolve_character_voice(
 
     clean_sp = speaker.strip()
 
-    # Exact match
     if clean_sp in voice_registry:
         val = voice_registry[clean_sp]
         return val.get("voice", default_voice) if isinstance(val, dict) else val
 
-    # Case-insensitive match
     sp_lower = clean_sp.lower()
     for reg_key, reg_val in voice_registry.items():
         if reg_key.lower() == sp_lower:
@@ -237,7 +220,6 @@ def resolve_character_voice(
             if sp_lower in aliases:
                 return reg_val.get("voice", default_voice)
 
-    # RapidFuzz match
     if RAPIDFUZZ_AVAILABLE and voice_registry:
         choices = list(voice_registry.keys())
         match = process.extractOne(clean_sp, choices, scorer=fuzz.WRatio)
@@ -364,7 +346,7 @@ def balance_paragraph_quotes(paragraph: str) -> str:
 
 
 # =====================================================================
-# SCRAPING ENGINE (With DiskCache Integration)
+# SCRAPING ENGINE (With DiskCache & Retries)
 # =====================================================================
 
 def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc") -> tuple[str, str, Optional[str]]:
@@ -380,15 +362,19 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
 
     print(f"[Scraper] Connecting to Ch.{ch_num:03d}: {url}", flush=True)
 
-    try:
-        if isinstance(session, httpx.Client):
-            resp = session.get(url, headers=HEADERS, timeout=25.0, follow_redirects=True)
-        else:
-            resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
-    except TypeError:
-        resp = session.get(url, headers=HEADERS, timeout=25)
-
-    resp.raise_for_status()
+    resp = None
+    for attempt in range(1, 4):
+        try:
+            if isinstance(session, httpx.Client):
+                resp = session.get(url, headers=HEADERS, timeout=25.0, follow_redirects=True)
+            else:
+                resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
+            resp.raise_for_status()
+            break
+        except Exception as e:
+            if attempt == 3:
+                raise
+            time.sleep(attempt * 1.5)
 
     current_url_str = str(resp.url).lower()
     if f"chapter-{ch_num}" not in current_url_str:
@@ -688,6 +674,11 @@ ACTIVE STAGED CHARACTERS:
 
     refined_staged = []
     for seg in all_staged:
+        # RapidFuzz character voice lock & continuity enforcement
+        if seg.get("line_type") == "Dialogue":
+            sp = seg.get("speaker", "Narrator")
+            seg["voice"] = resolve_character_voice(sp, staged_chars, default_voice=seg.get("voice", "en-US-GuyNeural"))
+
         if seg.get("line_type") == "Narration" and len(seg.get("text", "")) > max_narr_merge:
             narr_splits = split_by_sentence_threshold(seg["text"], threshold=max_narr_merge)
             for split_txt in narr_splits:
@@ -757,6 +748,7 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
     for idx, seg in enumerate(consolidated, 1):
         rk = seg["role_key"]
         role_meta = char_map.get(rk, char_map.get("mc", FALLBACK_BASE_CHARACTERS["mc"]))
+        voice = resolve_character_voice(rk, char_map, default_voice=role_meta.get("voice", "en-US-GuyNeural"))
         tp = seg["text"].strip()
         if not re.search(r'[.!?…]$', tp):
             tp = tp + "."
@@ -766,7 +758,7 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             "gender": role_meta.get("gender", "Male"),
             "line_type": seg["line_type"],
             "text": tp,
-            "voice": role_meta.get("voice", "en-US-GuyNeural"),
+            "voice": voice,
             "pitch": role_meta.get("pitch", "+0Hz"),
             "rate": role_meta.get("rate", "+5%")
         })
@@ -778,7 +770,6 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
 # =====================================================================
 
 async def save_staged_json_async(filepath: str, data: Dict[str, Any]) -> None:
-    """Asynchronously writes staged JSON manifests using aiofiles."""
     if ORJSON_AVAILABLE:
         raw_bytes = orjson.dumps(data, option=orjson.OPT_INDENT_2)
         if AIOFILES_AVAILABLE:
@@ -798,7 +789,6 @@ async def save_staged_json_async(filepath: str, data: Dict[str, Any]) -> None:
 
 
 async def load_staged_json_async(filepath: str) -> Optional[Dict[str, Any]]:
-    """Asynchronously reads and parses staged JSON files from disk."""
     if not os.path.exists(filepath):
         return None
     try:
