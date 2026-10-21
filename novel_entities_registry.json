@@ -4969,6 +4969,146 @@
         "aliases": [
           "lin fang"
         ]
+      },
+      "lin_fang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lin_fang"
+        ]
+      },
+      "feng_minshun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "feng_minshun"
+        ]
+      },
+      "feng_minshun_brother": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "feng_minshun_brother"
+        ]
+      },
+      "meng_ruo": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "meng_ruo"
+        ]
+      },
+      "wang_ruze": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wang_ruze"
+        ]
+      },
+      "tang_fuchen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "tang_fuchen"
+        ]
+      },
+      "kang_yejing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "kang_yejing"
+        ]
+      },
+      "kang_luo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "kang_luo"
+        ]
+      },
+      "blood_sword_head_envoy": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "blood_sword_head_envoy"
+        ]
+      },
+      "head_envoy": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "head_envoy"
+        ]
+      },
+      "ye_wuhun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ye_wuhun"
+        ]
+      },
+      "wang_tengru": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wang_tengru"
+        ]
+      },
+      "blood_sword_spy_2": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "blood_sword_spy_2"
+        ]
+      },
+      "blood_sword_spy_3": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "blood_sword_spy_3"
+        ]
       }
     },
     "vocatives": {

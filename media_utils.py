@@ -48,7 +48,16 @@ except ImportError:
 
 try:
     import pedalboard
-    from pedalboard import Pedalboard, Compressor, HighpassFilter, Limiter, Gain
+    from pedalboard import (
+        Pedalboard,
+        Compressor,
+        HighpassFilter,
+        Limiter,
+        Gain,
+        LowShelfFilter,
+        PeakFilter,
+        HighShelfFilter
+    )
     from pedalboard.io import AudioFile
     PEDALBOARD_AVAILABLE = True
 except Exception:
@@ -177,7 +186,6 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
 
             comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
 
-            # Semaphore wraps only network call to keep worker slots free during backoff sleep
             async with sem:
                 if TTS_BURST_LIMITER:
                     async with TTS_BURST_LIMITER:
@@ -185,7 +193,6 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                 else:
                     await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
 
-            # Metallic mecha DSP filter applied to System lines with strict 24kHz matching
             if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
                 await asyncio.to_thread(
                     subprocess.run,
@@ -319,28 +326,39 @@ synthesize_chapter_audio = synthesize_chapter_task
 
 
 # =====================================================================
-# AUDIO MASTERING (Pedalboard Streamed DSP + FFmpeg EBU R128)
+# AUDIO MASTERING (Pedalboard Studio Vocal Smoothing + EBU R128)
 # =====================================================================
 
 def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
-    """Streams audio in 30s blocks through Pedalboard to prevent memory spikes on marathon runs."""
+    """
+    Streams audio in 30s blocks through a studio vocal-smoothing DSP chain:
+    - 85Hz Highpass: Strips rumble and digital DC offset.
+    - 220Hz Low-Shelf: Adds vocal body and chest resonance (+1.8 dB).
+    - 850Hz Dip: Cleans out nasal/boxiness buildup (-1.5 dB).
+    - 6.5kHz High-Shelf: Tames synthetic Edge-TTS sibilance/fizz (-2.8 dB).
+    - Optical-style compression & transparent peak limiting.
+    """
     if not PEDALBOARD_AVAILABLE:
         return False
     try:
-        board = Pedalboard([
-            HighpassFilter(cutoff_frequency_hz=80.0),
-            Compressor(threshold_db=-18.0, ratio=2.5, attack_ms=15.0, release_ms=100.0),
-            Gain(gain_db=1.5),
-            Limiter(threshold_db=-1.0, release_ms=50.0)
+        smoothing_board = Pedalboard([
+            HighpassFilter(cutoff_frequency_hz=85.0),
+            LowShelfFilter(cutoff_frequency_hz=220.0, gain_db=1.8),
+            PeakFilter(cutoff_frequency_hz=850.0, gain_db=-1.5, q=1.0),
+            HighShelfFilter(cutoff_frequency_hz=6500.0, gain_db=-2.8),
+            Compressor(threshold_db=-19.0, ratio=2.2, attack_ms=25.0, release_ms=140.0),
+            Gain(gain_db=1.2),
+            Limiter(threshold_db=-1.0, release_ms=60.0)
         ])
+
         with AudioFile(input_path) as f:
             sr = f.samplerate
             num_channels = f.num_channels
             with AudioFile(output_path, "w", sr, num_channels) as o:
-                chunk_size = sr * 30
+                chunk_size = sr * 30  # 30-second processing block (~15 MB RAM)
                 while f.tell() < f.frames:
                     chunk = f.read(chunk_size)
-                    effected = board(chunk, sr, reset=False)
+                    effected = smoothing_board(chunk, sr, reset=False)
                     o.write(effected)
 
         return os.path.exists(output_path) and os.path.getsize(output_path) > 10000
@@ -351,7 +369,7 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
 
 def master_final_audio(chapter_files: list, build_dir: str, final_audio_path: str):
     """
-    Concatenates chapter files, masters with Pedalboard (if installed),
+    Concatenates chapter files, masters dynamics via Pedalboard (if installed),
     and finishes with -14 LUFS broadcast normalization and 15s outro pad.
     Avoids double compression if Pedalboard was already applied.
     """
@@ -423,12 +441,20 @@ def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
         try:
             srt_file = pysrt.SubRipFile()
             for idx, (s_sec, e_sec, txt) in enumerate(parsed_subs, 1):
-                start_ms = max(0, int(round(s_sec * 1000)))
-                end_ms = max(start_ms + 100, int(round(e_sec * 1000)))
+                start_h, start_m, start_s = int(s_sec // 3600), int((s_sec % 3600) // 60), int(s_sec % 60)
+                start_ms = int(round((s_sec - int(s_sec)) * 1000))
+                if start_ms >= 1000:
+                    start_ms = 999
+
+                end_h, end_m, end_s = int(e_sec // 3600), int((e_sec % 3600) // 60), int(e_sec % 60)
+                end_ms = int(round((e_sec - int(e_sec)) * 1000))
+                if end_ms >= 1000:
+                    end_ms = 999
+
                 sub_item = pysrt.SubRipItem(
                     index=idx,
-                    start=pysrt.SubRipTime(milliseconds=start_ms),
-                    end=pysrt.SubRipTime(milliseconds=end_ms),
+                    start=pysrt.SubRipTime(hours=start_h, minutes=start_m, seconds=start_s, milliseconds=start_ms),
+                    end=pysrt.SubRipTime(hours=end_h, minutes=end_m, seconds=end_s, milliseconds=end_ms),
                     text=txt
                 )
                 srt_file.append(sub_item)
