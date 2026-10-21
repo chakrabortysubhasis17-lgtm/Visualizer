@@ -2,22 +2,39 @@ import os
 import re
 import time
 import math
+import json
+import hashlib
+import asyncio
 import unicodedata
 import urllib.parse
-import orjson
+from typing import Any, Dict, List, Optional, Tuple
+
 import httpx
+import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
 from registry_utils import sync_new_characters_to_staging, FALLBACK_BASE_CHARACTERS
 
-# Optional ftfy integration for deep text/mojibake fixing
+# =====================================================================
+# OPTIONAL & ADVANCED PERFORMANCE LIBRARIES (Graceful Fallbacks)
+# =====================================================================
+
+# 1. ftfy (Deep Text & Mojibake Repair)
 try:
     import ftfy
     FTFY_AVAILABLE = True
 except ImportError:
     FTFY_AVAILABLE = False
 
+# 2. orjson (High-Speed Binary JSON Parsing)
+try:
+    import orjson
+    ORJSON_AVAILABLE = True
+except ImportError:
+    ORJSON_AVAILABLE = False
+
+# 3. Google GenAI SDK
 try:
     from google import genai
     from google.genai import types
@@ -26,6 +43,33 @@ except ImportError:
     genai = None
     types = None
     GENAI_AVAILABLE = False
+
+# 4. DiskCache (Persistent SQLite-backed Disk Cache)
+try:
+    import diskcache
+    CACHE_DIR = os.path.join(os.getcwd(), ".pipeline_cache")
+    _disk_cache = diskcache.Cache(CACHE_DIR)
+except Exception:
+    _disk_cache = None
+
+# 5. RapidFuzz (C++ SIMD Fuzzy String Matching)
+try:
+    from rapidfuzz import process, fuzz
+    RAPIDFUZZ_AVAILABLE = True
+except ImportError:
+    RAPIDFUZZ_AVAILABLE = False
+
+# 6. aiofiles (Non-blocking Asynchronous Disk I/O)
+try:
+    import aiofiles
+    AIOFILES_AVAILABLE = True
+except ImportError:
+    AIOFILES_AVAILABLE = False
+
+
+# =====================================================================
+# CONSTANTS, PATTERNS & REGEX RULES
+# =====================================================================
 
 CONTAINER_SELECTORS = [
     ("div", {"id": "chr-content"}),
@@ -37,7 +81,11 @@ CONTAINER_SELECTORS = [
     ("article", {}),
 ]
 
-RE_SYSTEM = re.compile(r"(?:\[|【|〖|『|《|［|\{)(Ding!|System|Notice|Warning|Announcement|Prompt|Quest|Stat|Skill|Level|Lv\.|Inventory|Reward).*?(?:\]|】|〗|』|》|］|\})", re.I)
+# Fixed: Clean UTF-8 brackets and standard regex '|' alternates
+RE_SYSTEM = re.compile(
+    r"(?:\[\vert{}【\vert{}〖\vert{}『\vert{}《\vert{}［\vert{}\{)(Ding!\vert{}System\vert{}Notice\vert{}Warning\vert{}Announcement\vert{}Prompt\vert{}Quest\vert{}Stat\vert{}Skill\vert{}Level\vert{}Lv\.\vert{}Inventory\vert{}Reward).*?(?:\]|】|〗|』|》|］|\})",
+    re.I
+)
 RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 
 WATERMARK_PATTERNS = [
@@ -70,6 +118,11 @@ HEADERS = {
     "Referer": "https://freewebnovel.com/",
 }
 
+
+# =====================================================================
+# DATA MODELS
+# =====================================================================
+
 class SpeechSegment(BaseModel):
     line_id: str = Field(description="Sequential identifier, e.g. '0001', '0002'")
     speaker_role: str = Field(description="Speaker name, character alias, or 'Narrator'")
@@ -80,9 +133,124 @@ class SpeechSegment(BaseModel):
     edge_tts_voice: str = Field(description="Edge TTS neural voice")
     text: str = Field(description="Spoken dialogue or narrative string")
 
+
 class ChapterNarrationManifest(BaseModel):
     chapter_title: str = Field(description="Clean title of the chapter")
     segments: list[SpeechSegment] = Field(description="Chronologically ordered speech segments")
+
+
+# =====================================================================
+# DISKCACHE & SANITIZATION HELPERS
+# =====================================================================
+
+def make_cache_key(prefix: str, content: str) -> str:
+    content_hash = hashlib.md5(content.encode("utf-8", errors="ignore")).hexdigest()
+    return f"{prefix}:{content_hash}"
+
+
+def cache_get(key: str) -> Optional[Any]:
+    if _disk_cache is None:
+        return None
+    try:
+        return _disk_cache.get(key)
+    except Exception:
+        return None
+
+
+def cache_set(key: str, value: Any, expire_seconds: Optional[int] = 86400 * 7):
+    if _disk_cache is None:
+        return
+    try:
+        _disk_cache.set(key, value, expire=expire_seconds)
+    except Exception:
+        pass
+
+
+def clean_and_parse_json(raw_text: str) -> Any:
+    """
+    Cleans markdown code fences, removes trailing commas before closing
+    brackets/braces, and parses JSON with strict fallbacks.
+    """
+    cleaned = raw_text.strip()
+
+    # Extract JSON inside code fences even if surrounded by other text
+    fence_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", cleaned, re.IGNORECASE)
+    if fence_match:
+        cleaned = fence_match.group(1).strip()
+    elif cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s*```$", "", cleaned).strip()
+
+    # 1. Direct parse attempt
+    if ORJSON_AVAILABLE:
+        try:
+            return orjson.loads(cleaned)
+        except Exception:
+            pass
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        pass
+
+    # 2. Strip trailing commas before closing brackets or braces
+    sanitized = re.sub(r',+(\s*[\]}])', r'\1', cleaned)
+
+    if ORJSON_AVAILABLE:
+        try:
+            return orjson.loads(sanitized)
+        except Exception:
+            pass
+    return json.loads(sanitized)
+
+
+# =====================================================================
+# RAPIDFUZZ VOICE RESOLUTION HELPER
+# =====================================================================
+
+def resolve_character_voice(
+    speaker: str,
+    voice_registry: Dict[str, Any],
+    default_voice: str = "en-US-GuyNeural",
+    similarity_threshold: float = 82.0
+) -> str:
+    """
+    Resolves character voice using exact lookup, case-insensitive match,
+    and RapidFuzz C++ fuzzy matching against registry keys and aliases.
+    """
+    if not speaker or not voice_registry:
+        return default_voice
+
+    clean_sp = speaker.strip()
+
+    # Exact match
+    if clean_sp in voice_registry:
+        val = voice_registry[clean_sp]
+        return val.get("voice", default_voice) if isinstance(val, dict) else val
+
+    # Case-insensitive match
+    sp_lower = clean_sp.lower()
+    for reg_key, reg_val in voice_registry.items():
+        if reg_key.lower() == sp_lower:
+            return reg_val.get("voice", default_voice) if isinstance(reg_val, dict) else reg_val
+        if isinstance(reg_val, dict):
+            aliases = [a.lower() for a in reg_val.get("aliases", [])]
+            if sp_lower in aliases:
+                return reg_val.get("voice", default_voice)
+
+    # RapidFuzz match
+    if RAPIDFUZZ_AVAILABLE and voice_registry:
+        choices = list(voice_registry.keys())
+        match = process.extractOne(clean_sp, choices, scorer=fuzz.WRatio)
+        if match and match[1] >= similarity_threshold:
+            val = voice_registry[match[0]]
+            return val.get("voice", default_voice) if isinstance(val, dict) else val
+
+    return default_voice
+
+
+# =====================================================================
+# TEXT PROCESSING & SEGMENTATION UTILS
+# =====================================================================
 
 def split_by_sentence_threshold(text: str, threshold: int = 650) -> list[str]:
     if not text:
@@ -123,6 +291,7 @@ def split_by_sentence_threshold(text: str, threshold: int = 650) -> list[str]:
 
     return parts
 
+
 def calculate_prosody_adjustments(seg: dict) -> tuple[str, str]:
     age = seg.get("age_category", "young").lower()
     emotion = seg.get("emotion", "neutral").lower()
@@ -155,6 +324,7 @@ def calculate_prosody_adjustments(seg: dict) -> tuple[str, str]:
 
     return f"{base_pitch:+d}Hz", f"{base_rate:+d}%"
 
+
 def clean_chapter_title_for_seo(raw_title: str, ch_num: int, default_topic: str = "Arc") -> str:
     cleaned = unicodedata.normalize('NFKC', raw_title)
     cleaned = re.sub(r'^(?:chapter|ch\.?)\s*\d+[\s:\-–—]+(?:chapter|ch\.?)\s*\d+[\s:\-–—]*', '', cleaned, flags=re.I)
@@ -163,8 +333,8 @@ def clean_chapter_title_for_seo(raw_title: str, ch_num: int, default_topic: str 
         cleaned = f"{default_topic} Phase {ch_num}"
     return f"Ch {ch_num:03d}: {cleaned.title()}"
 
+
 def clean_and_normalize_text(text: str) -> str:
-    # Use ftfy if present to repair encoding defects prior to regex cleaning
     if FTFY_AVAILABLE:
         try:
             text = ftfy.fix_text(text)
@@ -183,6 +353,7 @@ def clean_and_normalize_text(text: str) -> str:
     text = re.sub(r'\.{4,}', '...', text)
     return re.sub(r"[ \t]+", " ", text).strip()
 
+
 def balance_paragraph_quotes(paragraph: str) -> str:
     if paragraph.count('"') % 2 != 0:
         if re.search(r'\b(said|replied|whispered|murmured|asked|smiled|sneered)\b', paragraph, re.I):
@@ -191,7 +362,22 @@ def balance_paragraph_quotes(paragraph: str) -> str:
             paragraph = '"' + paragraph
     return paragraph
 
-def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc"):
+
+# =====================================================================
+# SCRAPING ENGINE (With DiskCache Integration)
+# =====================================================================
+
+def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc") -> tuple[str, str, Optional[str]]:
+    cache_key = make_cache_key("scrape", url)
+    cached = cache_get(cache_key)
+    if cached and isinstance(cached, dict):
+        clean_title = cached.get("clean_title")
+        full_text = cached.get("full_text")
+        next_url = cached.get("next_url")
+        if clean_title and full_text and len(full_text.split()) > 40:
+            print(f"[Scraper Cache] [✓] Retrieved cached Ch.{ch_num:03d}: {clean_title}", flush=True)
+            return clean_title, full_text, next_url
+
     print(f"[Scraper] Connecting to Ch.{ch_num:03d}: {url}", flush=True)
 
     try:
@@ -265,7 +451,8 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
         for a in soup.find_all("a", href=True):
             href = a["href"].strip()
             rel = a.get("rel", "")
-            if isinstance(rel, list): rel = " ".join(rel)
+            if isinstance(rel, list):
+                rel = " ".join(rel)
             t = a.get_text(strip=True).lower()
             if ("next" in rel.lower() or "next" in t or "»" in t or "next chapter" in t) and href not in ["#", ""]:
                 full_next = urllib.parse.urljoin(url, href)
@@ -285,7 +472,19 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
         if pattern_curr.search(url):
             next_url = pattern_curr.sub(rf"\g<1>{ch_num + 1}\g<2>", url)
 
+    if len(paragraphs) >= 5:
+        cache_set(cache_key, {
+            "clean_title": clean_title,
+            "full_text": full_text,
+            "next_url": next_url
+        }, expire_seconds=86400 * 14)
+
     return clean_title, full_text, next_url
+
+
+# =====================================================================
+# GEMINI DIRECTOR & CHUNK PARSER (With Resilient JSON & DiskCache)
+# =====================================================================
 
 def split_text_into_logical_parts(raw_text: str, max_single_part_chars: int = 5500, target_part_chars: int = 4800, max_parts: int = 5) -> list[str]:
     paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
@@ -317,20 +516,24 @@ def split_text_into_logical_parts(raw_text: str, max_single_part_chars: int = 55
 
     return parts
 
+
 def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
     err_str = str(error_obj)
-
     m1 = re.search(r"retry in (\d+(?:\.\d+)?)s", err_str, re.I)
     if m1:
         return math.ceil(float(m1.group(1))) + 2.0
-
     m2 = re.search(r"retryDelay['\":\s]+(\d+)s", err_str, re.I)
     if m2:
         return float(m2.group(1)) + 2.0
-
     return float(attempt * 10.0)
 
+
 def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 3) -> list:
+    chunk_cache_key = make_cache_key("gemini_chunk", chunk_text)
+    cached_segments = cache_get(chunk_cache_key)
+    if cached_segments and isinstance(cached_segments, list) and len(cached_segments) > 0:
+        return cached_segments
+
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
 
     safety_settings = [
@@ -378,7 +581,7 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                                 break
 
             if raw_json:
-                data = orjson.loads(raw_json)
+                data = clean_and_parse_json(raw_json)
                 staged = []
                 raw_list = data if isinstance(data, list) else data.get("segments", [])
 
@@ -398,6 +601,7 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                     })
 
                 if staged:
+                    cache_set(chunk_cache_key, staged, expire_seconds=86400 * 14)
                     time.sleep(2.0)
                     return staged
                 else:
@@ -422,12 +626,14 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
 
     return []
 
+
 def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_file: str, max_narr_merge: int = 650) -> list:
     staged_chars = {}
     if os.path.exists(stage_file):
         try:
             with open(stage_file, "rb") as f:
-                staged_chars = orjson.loads(f.read()).get("characters", {})
+                parsed_staged = clean_and_parse_json(f.read().decode("utf-8", errors="ignore"))
+                staged_chars = parsed_staged.get("characters", {})
         except Exception:
             pass
 
@@ -500,6 +706,11 @@ ACTIVE STAGED CHARACTERS:
 
     return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
 
+
+# =====================================================================
+# FALLBACK RULE-BASED STAGING
+# =====================================================================
+
 def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int = 650) -> list:
     paragraphs = text.split("\n\n")
     raw_tokens = []
@@ -560,3 +771,43 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             "rate": role_meta.get("rate", "+5%")
         })
     return staged_records
+
+
+# =====================================================================
+# ASYNC I/O WRAPPERS (aiofiles Integration)
+# =====================================================================
+
+async def save_staged_json_async(filepath: str, data: Dict[str, Any]) -> None:
+    """Asynchronously writes staged JSON manifests using aiofiles."""
+    if ORJSON_AVAILABLE:
+        raw_bytes = orjson.dumps(data, option=orjson.OPT_INDENT_2)
+        if AIOFILES_AVAILABLE:
+            async with aiofiles.open(filepath, "wb") as f:
+                await f.write(raw_bytes)
+        else:
+            with open(filepath, "wb") as f:
+                f.write(raw_bytes)
+    else:
+        text_data = json.dumps(data, indent=2, ensure_ascii=False)
+        if AIOFILES_AVAILABLE:
+            async with aiofiles.open(filepath, "w", encoding="utf-8") as f:
+                await f.write(text_data)
+        else:
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(text_data)
+
+
+async def load_staged_json_async(filepath: str) -> Optional[Dict[str, Any]]:
+    """Asynchronously reads and parses staged JSON files from disk."""
+    if not os.path.exists(filepath):
+        return None
+    try:
+        if AIOFILES_AVAILABLE:
+            async with aiofiles.open(filepath, "r", encoding="utf-8") as f:
+                content = await f.read()
+        else:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+        return clean_and_parse_json(content)
+    except Exception:
+        return None
