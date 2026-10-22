@@ -139,13 +139,14 @@ def log_banner(title: str, subtitle: str = ""):
 # =====================================================================
 
 def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
+    """Creates spoken narrative hook separated by programmatic silent gaps."""
     return [
         {
             "line_id": "intro_01",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Welcome to Being a Bong. If you enjoy our adaptations, please subscribe and let us know your thoughts in the comments to support future releases.",
+            "text": "Welcome back to Being a Bong! Grab your headphones and get cozy. You are about to enjoy hours of non-stop story completely free—made with endless coffee and a whole lot of heart.",
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+5%"
@@ -156,7 +157,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 1.0,
+            "pause_duration": 0.8,
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
@@ -166,7 +167,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Let's jump straight into this episode.",
+            "text": "In return, just show me two seconds of love! Hit like, share the vibe, and tap Subscribe. Think of your subscription as the spark that keeps this channel running—without it, the next marathon loses motivation!",
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+5%"
@@ -177,7 +178,28 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 2.0,
+            "pause_duration": 0.8,
+            "voice": narrator_voice,
+            "pitch": "+0Hz",
+            "rate": "+0%"
+        },
+        {
+            "line_id": "intro_03",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "So tap that button, relax, and let the adventure begin.",
+            "voice": narrator_voice,
+            "pitch": "+0Hz",
+            "rate": "+4%"
+        },
+        {
+            "line_id": "intro_lead_in_pause",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 1.8,
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
