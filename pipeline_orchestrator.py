@@ -7,7 +7,7 @@ import time
 import shutil
 import asyncio
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import httpx
 
@@ -84,10 +84,125 @@ from media_utils import (
     synthesize_chapter_task,
     master_final_audio,
     assemble_multi_image_video,
-    build_srt_subtitles,
     format_timestamp,
     format_srt_time
 )
+from subtitle_utils import generate_subtitles_bundle, build_srt_subtitles
+
+
+# =====================================================================
+# AUDIOBOOK TEXT & TTS PHONETIC SANITIZER
+# =====================================================================
+
+def sanitize_chapter_title(title: str) -> str:
+    """
+    Normalizes chapter titles for natural neural narration:
+    - Expands 'CH 201', 'Ch. 201', 'ch201' -> 'Chapter 201'
+    - Normalizes gaming/tier rank indicators in titles.
+    """
+    if not title:
+        return title
+
+    # Expand chapter acronyms to prevent "C-H" letter spelling
+    clean_title = re.sub(r'\b(?:CH|Ch|ch)\.?\s*(\d+)', r'Chapter \1', title)
+    
+    # Expand rank tiers
+    clean_title = re.sub(r'\bSSS-rank\b', 'Triple-S rank', clean_title, flags=re.IGNORECASE)
+    clean_title = re.sub(r'\bSS-rank\b', 'Double-S rank', clean_title, flags=re.IGNORECASE)
+    
+    return clean_title.strip()
+
+
+def is_author_note_or_meta(text: str) -> bool:
+    """
+    Detects author's notes, chapter commentary, and website scraping leaks
+    so they are not read aloud by the audiobook narrator.
+    """
+    if not text:
+        return False
+    clean = text.strip()
+    patterns = [
+        r"^(?:author['’]?s?\s*notes?|a/n)\s*:",
+        r"^(?:author['’]?s?\s*notes?|a/n)\b",
+        r"^note\s*from\s*(?:the\s*)?author",
+        r"^translator['’]?s?\s*notes?",
+        r"^editor['’]?s?\s*notes?"
+    ]
+    for pat in patterns:
+        if re.search(pat, clean, flags=re.IGNORECASE):
+            return True
+    return False
+
+
+def sanitize_audiobook_text(text: str) -> str:
+    """
+    Comprehensive phonetic sanitizer resolving Edge-TTS speech traps:
+    1. Removes trailing author note remnants
+    2. Disarms the 'World Wide Web' stutter trap ('W-W-W' -> 'Wh-what' / 'W... w...')
+    3. Smooths dialogue stutters ('F-fucker' -> 'F... fucker', 'I-I' -> 'I... I')
+    4. Fixes loanwords ('Kitsune' -> 'Kit-soo-nay')
+    5. Converts unpronounceable battle onomatopoeia & consonant clusters into sound cues
+    6. Expands gaming stats/multipliers ('10x' -> '10-times', '1v1' -> 'one-on-one')
+    7. Replaces monotone punctuation on standalone action sound words with punchy punctuation
+    """
+    if not text:
+        return text
+
+    # 1. Strip trailing author notes if joined onto narrative lines
+    text = re.sub(r'(?i)\n*(?:author[\'’]?s?\s*notes?|a/n)\s*:.*$', '', text)
+
+    # 2. LitRPG / Gaming Multipliers & Terms
+    text = re.sub(r'\bSSS-rank\b', 'Triple-S rank', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bSS-rank\b', 'Double-S rank', text, flags=re.IGNORECASE)
+    text = re.sub(r'\b(\d+)x\s+(stat|speed|strength|buff|boost|multiplier)', r'\1-times \2', text, flags=re.IGNORECASE)
+    text = re.sub(r'\b1v1\b', 'one-on-one', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bso much DA\b', 'so much damage', text)
+
+    # 3. Japanese Loanwords that Edge-TTS flattens
+    text = re.sub(r'\bKitsune\b', 'Kit-soo-nay', text)
+    text = re.sub(r'\bkitsune\b', 'kit-soo-nay', text)
+
+    # 4. The "World Wide Web" Stutter Trap
+    text = re.sub(r'(?i)\b[wW]-[wW]-[wW]\s+what\b', 'Wh-what', text)
+    text = re.sub(r'(?i)\b[wW]-[wW]-[wW]\b', 'W... w... w...', text)
+
+    # 5. Targeted Dialogue Stutters (Distinguishes stutters from real hyphens like 'C-rank')
+    def _stutter_sub(match):
+        prefix = match.group(1)
+        word = match.group(2)
+        if prefix.lower() == word[0].lower():
+            return f"{prefix}... {word}"
+        return match.group(0)
+
+    text = re.sub(r'\b([A-Za-z])-([A-Za-z]+)\b', _stutter_sub, text)
+    text = re.sub(r'\bI-I\b', 'I... I', text)
+    text = re.sub(r'\bi-i\b', 'i... i', text)
+
+    # 6. Combat Gasps, Chokes & Novel Sound Effects
+    text = re.sub(r'\bGHK-?\b', '*gasp-*', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bTCH\b', 'Tsk', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bTch\b', 'Tsk', text)
+    text = re.sub(r'\bPFT+T*\b', 'Pff', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bpfft+\b', 'pff', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bFu,\s*(so\s+complicated)', r'Whew, \1', text, flags=re.IGNORECASE)
+    text = re.sub(r'\b(?:THWIP\s*){2,}', 'Thwip! Thwip! ', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bCRK\.?\b', 'Crack!', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bKABAG\b', 'Kabam!', text, flags=re.IGNORECASE)
+
+    # 7. Elongated Screams & Hyphenated Explosions
+    text = re.sub(r'\bBO+BO+BO+M+\b', 'Kaboom!', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bB[oO]{2,}(?:-[oO]+)*-?m+\b', 'Boom!', text, flags=re.IGNORECASE)
+    text = re.sub(r'\b[rR]{2,}-[oO]+-[aA]+-[rR]+\b', 'Roar!', text, flags=re.IGNORECASE)
+    text = re.sub(r'\bDE-BOOM\b', 'Boom!', text, flags=re.IGNORECASE)
+
+    # 8. Punctuation Punch on Standalone Action Words (Avoids drone inflection)
+    text = re.sub(
+        r'\b(Chomp|Glug|Splat|Thud|Bang|Boom|Clang|Swish|Fwoosh|Fwush|Jingle|Whack|Thwack)\.',
+        r'\1!',
+        text
+    )
+
+    return text.strip()
 
 
 # =====================================================================
@@ -103,9 +218,9 @@ def log_info(msg: str):
 
 def log_success(msg: str):
     if RICH_AVAILABLE and console:
-        console.print(f"[success][✓][/success] {msg}")
+        console.print(f"[success][OK][/success] {msg}")
     else:
-        print(f"[✓] {msg}", flush=True)
+        print(f"[OK] {msg}", flush=True)
 
 
 def log_warning(msg: str):
@@ -117,9 +232,9 @@ def log_warning(msg: str):
 
 def log_error(msg: str):
     if RICH_AVAILABLE and console:
-        console.print(f"[error][✗][/error] {msg}")
+        console.print(f"[error][X][/error] {msg}")
     else:
-        print(f"[✗] {msg}", flush=True)
+        print(f"[X] {msg}", flush=True)
 
 
 def log_banner(title: str, subtitle: str = ""):
@@ -139,25 +254,28 @@ def log_banner(title: str, subtitle: str = ""):
 # =====================================================================
 
 def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
-    """Creates spoken narrative hook separated by programmatic silent gaps."""
+    """
+    Creates a cinematic narrative hook with atmospheric pacing,
+    deliberate cadence, and dedicated breathing pauses.
+    """
     return [
         {
             "line_id": "intro_01",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Welcome back to Being a Bong! Grab your headphones and get cozy. You are about to enjoy hours of non-stop story completely free—made with endless coffee and a whole lot of heart.",
+            "text": "Welcome back to Being a Bong.",
             "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "+5%"
+            "pitch": "-2Hz",
+            "rate": "-2%"
         },
         {
-            "line_id": "intro_pause_1s",
+            "line_id": "intro_pause_06s",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 0.8,
+            "pause_duration": 0.6,
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
@@ -167,13 +285,13 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "In return, just show me two seconds of love! Hit like, share the vibe, and tap Subscribe. Think of your subscription as the spark that keeps this channel running—without it, the next marathon loses motivation!",
+            "text": "Whether you're grinding through work, relaxing at home, or getting ready for bed, you are in the right place for another non-stop adventure.",
             "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "+5%"
+            "pitch": "-2Hz",
+            "rate": "-1%"
         },
         {
-            "line_id": "intro_pause_2s",
+            "line_id": "intro_pause_08s",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
@@ -188,10 +306,31 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "So tap that button, relax, and let the adventure begin.",
+            "text": "Before the world unfolds, do me a quick favor: hit that Like button, tap Subscribe, and say hello in the comments. Your support is the engine that keeps these massive releases alive.",
+            "voice": narrator_voice,
+            "pitch": "-1Hz",
+            "rate": "+0%"
+        },
+        {
+            "line_id": "intro_pause_08s_b",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 0.8,
             "voice": narrator_voice,
             "pitch": "+0Hz",
-            "rate": "+4%"
+            "rate": "+0%"
+        },
+        {
+            "line_id": "intro_04",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "Adjust your volume, get comfortable, and let's dive in.",
+            "voice": narrator_voice,
+            "pitch": "-2Hz",
+            "rate": "-2%"
         },
         {
             "line_id": "intro_lead_in_pause",
@@ -199,7 +338,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 1.8,
+            "pause_duration": 1.6,
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
@@ -254,7 +393,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     # 1. Sync Branding Assets
     for _, fname in branding.items():
         if fname and os.path.exists(fname):
-            dst = os.path.join(build_dir, fname)
+            dst = os.path.join(build_dir, os.path.basename(fname))
             shutil.copy2(fname, dst)
             log_success(f"Branding Asset Synced: '{fname}' -> '{build_dir}'")
 
@@ -284,12 +423,8 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     narrator_voice = config.get("narrator_voice", "en-US-GuyNeural")
 
     with httpx.Client(follow_redirects=True, timeout=30.0) as session:
-        curr_url = config["start_url"]
+        curr_url = config.get("start_url")
         for ch_num in range(start_ch, end_ch + 1):
-            if not curr_url:
-                log_warning(f"End of novel or missing next URL at Chapter {ch_num:03d}")
-                break
-
             ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
 
             if os.path.exists(ch_json):
@@ -306,15 +441,21 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                         raise ValueError(f"Corrupt or placeholder manifest in Ch {ch_num}")
 
                     title = cached.get("title", f"Ch {ch_num:03d}")
-                    curr_url = cached.get("next_url") or scrape_chapter_content(
-                        session, curr_url, ch_num, config.get("default_topic", "Arc")
-                    )[2]
+                    cached_next = cached.get("next_url")
+                    if cached_next:
+                        curr_url = cached_next
+                    elif curr_url:
+                        curr_url = scrape_chapter_content(
+                            session, curr_url, ch_num, config.get("default_topic", "Arc")
+                        )[2]
 
                     # Sync cached chapter character records into active staging
                     sync_new_characters_to_staging(stage_file, rows)
-
                     log_success(f"Ch {ch_num:03d}: Manifest verified and characters synced ({len(rows)} segments).")
                 except Exception:
+                    if not curr_url:
+                        log_warning(f"Missing scrape URL at Chapter {ch_num:03d}")
+                        break
                     title, text, next_url = scrape_chapter_content(
                         session, curr_url, ch_num, config.get("default_topic", "Arc")
                     )
@@ -323,6 +464,9 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     )
                     curr_url = next_url
             else:
+                if not curr_url:
+                    log_warning(f"End of novel or missing next URL at Chapter {ch_num:03d}")
+                    break
                 title, text, next_url = scrape_chapter_content(
                     session, curr_url, ch_num, config.get("default_topic", "Arc")
                 )
@@ -330,6 +474,19 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     gemini_client, title, text, stage_file, narration_threshold
                 )
                 curr_url = next_url
+
+            # Normalize title pronunciation (e.g. CH 201 -> Chapter 201)
+            title = sanitize_chapter_title(title)
+
+            # Apply comprehensive audiobook text sanitization & filter out author notes
+            cleaned_rows = []
+            for r in rows:
+                txt = r.get("text", "")
+                if is_author_note_or_meta(txt):
+                    continue
+                r["text"] = sanitize_audiobook_text(txt)
+                cleaned_rows.append(r)
+            rows = cleaned_rows
 
             if ch_num == start_ch:
                 intro_segments = get_channel_intro_segments(narrator_voice)
@@ -355,7 +512,11 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     # PHASE 2: Upfront Visual Engine (Covers & Dynamic Outro)
     # ---------------------------------------------------------
     log_info(f"[{novel_slug}] [Phase 2/5] Generating Visual Covers & Outro Slate UPFRONT...")
-    blocks = config["blocks"]
+    blocks = config.get("blocks", [])
+    if not blocks:
+        single_cover = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
+        blocks = [{"index": 0, "range": (start_ch, end_ch), "cover_file": single_cover}]
+
     for cfg in blocks:
         r_start, r_end = cfg["range"]
         cfg["cover_file"] = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
@@ -374,8 +535,8 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     if verify_cover_integrity(outro_slate):
         log_success("Outro slate card verified.")
 
-    primary_thumb = config["cover_image"]
-    if os.path.exists(blocks[0]["cover_file"]) and not os.path.exists(primary_thumb):
+    primary_thumb = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
+    if blocks and os.path.exists(blocks[0]["cover_file"]) and not os.path.exists(primary_thumb):
         shutil.copy2(blocks[0]["cover_file"], primary_thumb)
         log_success(f"Primary thumbnail created: '{primary_thumb}'")
 
@@ -424,7 +585,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     }
 
     # Save Timestamps
-    timestamps_file = config["timestamps_file"]
+    timestamps_file = config.get("timestamps_file", os.path.join(build_dir, "timestamps.txt"))
     timestamps_content = "\n".join(timestamps)
     if AIOFILES_AVAILABLE:
         async with aiofiles.open(timestamps_file, "w", encoding="utf-8") as f:
@@ -434,24 +595,29 @@ async def run_audiobook_pipeline(config: dict) -> dict:
             f.write(timestamps_content)
     log_success(f"Timestamps file written: '{timestamps_file}'")
 
-    # Save Subtitles
-    subtitles_file = config["subtitles_file"]
+    # English Master Subtitles: Written immediately to root build/ for video multiplexing
+    subtitles_file = config.get("subtitles_file", os.path.join(build_dir, "subtitles.srt"))
     build_srt_subtitles(all_subtitles, subtitles_file)
-    log_success(f"Subtitles file written: '{subtitles_file}'")
+    log_success(f"English Master Subtitles written: '{subtitles_file}'")
 
     # ---------------------------------------------------------
-    # PHASE 4: Audio Normalization (-14 LUFS)
+    # PHASE 4: Audio Normalization (-14 LUFS) & VST3 Mastering
     # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 4/5] Normalizing Audio to -14 LUFS with 15s Outro Pad...")
-    final_audio = config["final_audio"]
-    master_final_audio(chapter_files, build_dir, final_audio)
+    log_info(f"[{novel_slug}] [Phase 4/5] Normalizing Audio to -14 LUFS with Studio Mastering...")
+    final_audio = config.get("final_audio", os.path.join(build_dir, "final_audio.mp3"))
+    master_final_audio(
+        chapter_files=chapter_files,
+        build_dir=build_dir,
+        final_audio_path=final_audio,
+        enable_voicefixer=config.get("enable_voicefixer", False)
+    )
     log_success(f"Master Audio complete: '{final_audio}'")
 
     # ---------------------------------------------------------
-    # PHASE 5: Multiplexing Final Video
+    # PHASE 5: Multiplexing Final Video (Uses English subtitles.srt)
     # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 5/5] Multiplexing Video Frames with Pre-rendered Images...")
-    final_video = config["final_video"]
+    log_info(f"[{novel_slug}] [Phase 5/5] Multiplexing Video Frames with Pre-rendered Images & Subtitles...")
+    final_video = config.get("final_video", os.path.join(build_dir, "final_video.mp4"))
     assemble_multi_image_video(
         blocks=blocks,
         block_durations=block_durations,
@@ -463,23 +629,24 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     log_success(f"Final Video rendered: '{final_video}'")
 
     # Save Complete Upload Payload
-    payload_file = config["payload_file"]
+    payload_file = config.get("payload_file", os.path.join(build_dir, "upload_payload.json"))
     payload = {
         "snippet": {
-            "title": config["video_title"],
+            "title": config.get("video_title", f"{novel_slug.upper()} Ch {start_ch}-{end_ch}"),
             "description": f"{config.get('desc_header', '')}{chr(10).join(timestamps)}{config.get('desc_footer', '')}",
             "tags": config.get("tags", []),
             "categoryId": "24",
             "defaultLanguage": "en-US"
         },
         "status": {
-            "privacyStatus": "unlisted",
+            "privacyStatus": config.get("privacy_status", "unlisted"),
             "selfDeclaredMadeForKids": False
         },
         "assets": {
             "video_file": os.path.abspath(final_video),
             "thumbnail_file": os.path.abspath(primary_thumb),
             "subtitles_file": os.path.abspath(subtitles_file),
+            "subtitles_dir": os.path.abspath(os.path.join(build_dir, "subtitles")),
             "timestamps_file": os.path.abspath(timestamps_file)
         }
     }
@@ -495,9 +662,26 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     # STEP 3: Closed-Loop Registry Final Safety Flush
     # ---------------------------------------------------------
     finalize_and_merge_master_registry(novel_slug, stage_file)
+    log_success("Master novel_entities_registry.json merged and verified.")
 
     # ---------------------------------------------------------
-    # PHASE 6: Rich Completion Dashboard
+    # PHASE 6: POST-RENDER Multilingual Subtitles Engine (build/subtitles/)
+    # ---------------------------------------------------------
+    subtitles_bundle = {}
+    if config.get("enable_subtitles", True):
+        log_info(f"[{novel_slug}] Starting Post-Render Multilingual Subtitle Translations...")
+        target_langs = config.get("subtitle_languages", [
+            "de", "es", "pt", "ru", "hi", "bn", "ms", "tl", "fr", "fi", "ja", "pl", "ur", "ar", "vi"
+        ])
+        subtitles_bundle = generate_subtitles_bundle(
+            base_subtitles=all_subtitles,
+            build_dir=build_dir,
+            target_languages=target_langs
+        )
+        log_success(f"Multilingual subtitles complete: '{os.path.join(build_dir, 'subtitles')}' ({len(subtitles_bundle)} tracks)")
+
+    # ---------------------------------------------------------
+    # PHASE 7: Rich Completion Dashboard
     # ---------------------------------------------------------
     if RICH_AVAILABLE and console:
         summary_table = Table(title="Production Run Summary", border_style="cyan")
@@ -509,7 +693,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         summary_table.add_row("Run Duration", format_timestamp(offset), "Verified")
         summary_table.add_row("Master Audio", final_audio, f"{os.path.getsize(final_audio) // (1024*1024)} MB")
         summary_table.add_row("Final Video", final_video, f"{os.path.getsize(final_video) // (1024*1024)} MB")
-        summary_table.add_row("Subtitles Track", subtitles_file, "Soft CC Embedded")
+        summary_table.add_row("Subtitles Tracks", f"{len(subtitles_bundle)} Languages in build/subtitles/", "Soft CC Ready")
         summary_table.add_row("YouTube Payload", payload_file, "Metadata Ready")
 
         console.print("\n")
@@ -518,16 +702,24 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     else:
         print("\n" + "=" * 78)
         print("PRODUCTION RUN COMPLETED SUCCESSFULLY")
-        print(f"• Audio: {final_audio} ({os.path.getsize(final_audio) // (1024*1024)} MB)")
-        print(f"• Video: {final_video} ({os.path.getsize(final_video) // (1024*1024)} MB)")
-        print(f"• Duration: {format_timestamp(offset)}")
+        print(f"* Audio: {final_audio} ({os.path.getsize(final_audio) // (1024*1024)} MB)")
+        print(f"* Video: {final_video} ({os.path.getsize(final_video) // (1024*1024)} MB)")
+        print(f"* Subtitles: {len(subtitles_bundle)} tracks in build/subtitles/")
+        print(f"* Duration: {format_timestamp(offset)}")
         print("=" * 78 + "\n", flush=True)
 
+    # Return unified dictionary: 100% compatible with both legacy and new callers
     return {
+        "status": "success",
         "audio_path": final_audio,
         "video_path": final_video,
+        "audio_file": final_audio,
+        "video_file": final_video,
         "duration": offset,
         "timestamps_path": timestamps_file,
+        "timestamps_file": timestamps_file,
         "subtitles_path": subtitles_file,
-        "payload_path": payload_file
+        "subtitles": subtitles_bundle,
+        "payload_path": payload_file,
+        "upload_payload": payload_file
     }

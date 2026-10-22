@@ -16,6 +16,17 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="torch.jit")
 import edge_tts
 
 # =====================================================================
+# SUBTITLE ENGINE DELEGATION (Maintains 100% Backwards Compatibility)
+# =====================================================================
+try:
+    from subtitle_utils import build_srt_subtitles, generate_subtitles_bundle
+except ImportError:
+    def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
+        return False
+    def generate_subtitles_bundle(base_subtitles: list, build_dir: str, target_languages: list = None) -> dict:
+        return {}
+
+# =====================================================================
 # OPTIONAL & PERFORMANCE LIBRARIES (Graceful Fallbacks)
 # =====================================================================
 
@@ -43,12 +54,6 @@ try:
     AIOFILES_AVAILABLE = True
 except ImportError:
     AIOFILES_AVAILABLE = False
-
-try:
-    import pysrt
-    PYSRT_AVAILABLE = True
-except ImportError:
-    PYSRT_AVAILABLE = False
 
 try:
     import pedalboard
@@ -85,7 +90,6 @@ except ImportError:
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 RE_PAUSE_TAGS = re.compile(r'\[(?:pause|Pause)\s*[\w\s.]*\]|\((?:pause|Pause)\s*[\w\s.]*\)', re.I)
 
-# Robust path resolution: checks both script location and working directory
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOCAL_PLUGINS = os.path.join(_SCRIPT_DIR, "assets", "plugins")
 _CWD_PLUGINS = os.path.join(os.getcwd(), "assets", "plugins")
@@ -140,9 +144,7 @@ def format_srt_time(seconds: float) -> str:
     h = int(seconds // 3600)
     m = int((seconds % 3600) // 60)
     s = int(seconds % 60)
-    ms = int(round((seconds - int(seconds)) * 1000))
-    if ms >= 1000:
-        ms = 999
+    ms = min(int(round((seconds - int(seconds)) * 1000)), 999)
     return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
 
@@ -344,7 +346,6 @@ synthesize_chapter_audio = synthesize_chapter_task
 # =====================================================================
 
 def enhance_audio_with_voicefixer(input_path: str, output_path: str, use_cuda: bool = False) -> bool:
-    """Restores compressed speech harmonics and strips synthetic phase rasp via VoiceFixer."""
     global _voicefixer_model
     if not VOICEFIXER_AVAILABLE:
         print("[VoiceFixer Notice] Package voicefixer not installed. Skipping.", flush=True)
@@ -367,10 +368,6 @@ def enhance_audio_with_voicefixer(input_path: str, output_path: str, use_cuda: b
 # =====================================================================
 
 def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
-    """
-    Streams audio in 30s blocks through TDR Nova, LALA, and Pedalboard DSP filters.
-    Runs on CPU using fast C++ SIMD routines (~90 seconds for an 8-hour marathon).
-    """
     if not PEDALBOARD_AVAILABLE:
         return False
     try:
@@ -422,7 +419,7 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
             sr = f.samplerate
             num_channels = f.num_channels
             with AudioFile(output_path, "w", sr, num_channels) as o:
-                chunk_size = sr * 30  # 30-second memory-efficient window (~15MB RAM)
+                chunk_size = sr * 30
                 while f.tell() < f.frames:
                     chunk = f.read(chunk_size)
                     effected = smoothing_board(chunk, sr, reset=False)
@@ -440,10 +437,6 @@ def master_final_audio(
     final_audio_path: str,
     enable_voicefixer: bool = False
 ):
-    """
-    Concatenates chapters, routes through VoiceFixer (if enabled), runs VST3/DSP
-    block mastering, and finalizes with EBU R128 (-14 LUFS) broadcast normalization.
-    """
     raw_master_audio = os.path.join(build_dir, "raw_master.mp3")
     voicefixer_staged = os.path.join(build_dir, "voicefixer_master.wav")
     pedalboard_staged = os.path.join(build_dir, "pedalboard_master.wav")
@@ -462,7 +455,6 @@ def master_final_audio(
 
         working_source = raw_master_audio
 
-        # Step 1: Optional Neural Restoration (VoiceFixer)
         if enable_voicefixer:
             print("[Audio Master Engine] VoiceFixer neural restoration enabled.", flush=True)
             if enhance_audio_with_voicefixer(raw_master_audio, voicefixer_staged, use_cuda=False):
@@ -470,7 +462,6 @@ def master_final_audio(
         else:
             print("[Audio Master Engine] VoiceFixer bypassed (CPU-optimized run).", flush=True)
 
-        # Step 2: Streamed VST3 / Studio DSP (Pedalboard)
         pedalboard_ok = master_audio_with_pedalboard(working_source, pedalboard_staged)
         if pedalboard_ok:
             source_audio = pedalboard_staged
@@ -479,7 +470,6 @@ def master_final_audio(
             source_audio = working_source
             audio_filter = "highpass=f=85,equalizer=f=3200:t=q:w=1.5:g=2.5,acompressor=threshold=-16dB:ratio=3:attack=5:release=50,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
 
-        # Step 3: Broadcast Normalization & 15-second Outro Padding
         print("[Audio Master Engine] Applying EBU R128 loudness normalization (-14 LUFS)...", flush=True)
         subprocess.run([
             "ffmpeg", "-y", "-i", source_audio,
@@ -498,69 +488,6 @@ def master_final_audio(
 
 
 concatenate_and_master_audio = master_final_audio
-
-
-# =====================================================================
-# SUBTITLES ENGINE
-# =====================================================================
-
-def build_srt_subtitles(all_subtitles: list, output_srt_path: str) -> bool:
-    if not all_subtitles:
-        return False
-
-    parsed_subs = []
-    for item in all_subtitles:
-        if isinstance(item, (tuple, list)):
-            start_s, end_s, text_s = item[0], item[1], item[2]
-        elif isinstance(item, dict):
-            start_s = item.get("start", 0.0)
-            end_s = item.get("end", start_s + 1.0)
-            text_s = item.get("text", "")
-        else:
-            continue
-        parsed_subs.append((float(start_s), float(end_s), str(text_s).strip()))
-
-    if not parsed_subs:
-        return False
-
-    if PYSRT_AVAILABLE:
-        try:
-            srt_file = pysrt.SubRipFile()
-            for idx, (s_sec, e_sec, txt) in enumerate(parsed_subs, 1):
-                start_h, start_m, start_s = int(s_sec // 3600), int((s_sec % 3600) // 60), int(s_sec % 60)
-                start_ms = int(round((s_sec - int(s_sec)) * 1000))
-                if start_ms >= 1000:
-                    start_ms = 999
-
-                end_h, end_m, end_s = int(e_sec // 3600), int((e_sec % 3600) // 60), int(e_sec % 60)
-                end_ms = int(round((e_sec - int(e_sec)) * 1000))
-                if end_ms >= 1000:
-                    end_ms = 999
-
-                sub_item = pysrt.SubRipItem(
-                    index=idx,
-                    start=pysrt.SubRipTime(hours=start_h, minutes=start_m, seconds=start_s, milliseconds=start_ms),
-                    end=pysrt.SubRipTime(hours=end_h, minutes=end_m, seconds=end_s, milliseconds=end_ms),
-                    text=txt
-                )
-                srt_file.append(sub_item)
-
-            srt_file.save(output_srt_path, encoding="utf-8")
-            return os.path.exists(output_srt_path) and os.path.getsize(output_srt_path) > 50
-        except Exception:
-            pass
-
-    lines = []
-    for idx, (s_sec, e_sec, txt) in enumerate(parsed_subs, 1):
-        lines.append(str(idx))
-        lines.append(f"{format_srt_time(s_sec)} --> {format_srt_time(e_sec)}")
-        lines.append(txt)
-        lines.append("")
-
-    with open(output_srt_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-
-    return os.path.exists(output_srt_path) and os.path.getsize(output_srt_path) > 50
 
 
 # =====================================================================
@@ -630,7 +557,7 @@ async def write_upload_payload_file(
 
 
 # =====================================================================
-# VIDEO MULTIPLEXING
+# VIDEO MULTIPLEXING (Compatible with Single Path or Multilingual Dict)
 # =====================================================================
 
 def assemble_multi_image_video(
@@ -639,8 +566,13 @@ def assemble_multi_image_video(
     build_dir: str,
     final_audio_path: str,
     output_video_path: str,
-    subtitles_srt_path: Optional[str] = None
+    subtitles_srt_path: Optional[Union[str, Dict[str, str]]] = None
 ):
+    """
+    Renders video block segments, appends the 15s outro slate card,
+    and multiplexes master audio and subtitles using ISO 639-2 stream tags.
+    Maintains 100% backward compatibility with single-string SRT paths.
+    """
     print("\n[Multiplexer] Assembling Video Frames + Outro Card...", flush=True)
     video_segments = []
 
@@ -697,30 +629,40 @@ def assemble_multi_image_video(
         "-i", final_audio_path
     ]
 
-    has_srt = subtitles_srt_path and os.path.exists(subtitles_srt_path) and os.path.getsize(subtitles_srt_path) > 50
-    if has_srt:
-        mux_cmd.extend([
-            "-i", subtitles_srt_path,
-            "-map", "0:v:0",
-            "-map", "1:a:0",
-            "-map", "2:s:0",
-            "-c:v", "copy",
-            "-c:a", "copy",
-            "-c:s", "mov_text",
-            "-metadata:s:s:0", "language=eng",
-            "-movflags", "+faststart",
-            "-shortest",
-            output_video_path
-        ])
-    else:
-        mux_cmd.extend([
-            "-map", "0:v:0",
-            "-map", "1:a:0",
-            "-c", "copy",
-            "-movflags", "+faststart",
-            "-shortest",
-            output_video_path
-        ])
+    # Convert single string path to dictionary format if passed by older scripts
+    valid_subs: Dict[str, str] = {}
+    if isinstance(subtitles_srt_path, str) and os.path.exists(subtitles_srt_path) and os.path.getsize(subtitles_srt_path) > 50:
+        valid_subs["eng"] = subtitles_srt_path
+    elif isinstance(subtitles_srt_path, dict):
+        for lang_code, srt_p in subtitles_srt_path.items():
+            if srt_p and os.path.exists(srt_p) and os.path.getsize(srt_p) > 50:
+                valid_subs[lang_code] = srt_p
+
+    # Attach all subtitle files as inputs
+    for srt_path in valid_subs.values():
+        mux_cmd.extend(["-i", srt_path])
+
+    # Map video track 0 and audio track 1
+    mux_cmd.extend(["-map", "0:v:0", "-map", "1:a:0"])
+
+    # Map and tag subtitle streams
+    if valid_subs:
+        for idx, lang_code in enumerate(valid_subs.keys()):
+            input_stream_idx = 2 + idx
+            mux_cmd.extend([
+                "-map", f"{input_stream_idx}:s:0",
+                f"-metadata:s:s:{idx}", f"language={lang_code}",
+                f"-metadata:s:s:{idx}", f"title={lang_code.upper()}"
+            ])
+        mux_cmd.extend(["-c:s", "mov_text"])
+
+    mux_cmd.extend([
+        "-c:v", "copy",
+        "-c:a", "copy",
+        "-movflags", "+faststart",
+        "-shortest",
+        output_video_path
+    ])
 
     subprocess.run(mux_cmd, check=True)
 
