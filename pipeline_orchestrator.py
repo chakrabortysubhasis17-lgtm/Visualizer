@@ -253,7 +253,7 @@ def log_banner(title: str, subtitle: str = ""):
 # CHANNEL INTRO SEGMENTS
 # =====================================================================
 
-def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
+def get_channel_intro_segments(narrator_voice: str = "en-US-ChristopherNeural") -> list:
     """
     Creates a cinematic narrative hook with atmospheric pacing,
     deliberate cadence, and dedicated breathing pauses.
@@ -265,7 +265,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "Welcome back to Being a Bong.",
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "-2Hz",
             "rate": "-2%"
         },
@@ -276,7 +276,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "line_type": "Narration",
             "text": "",
             "pause_duration": 0.6,
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "+0Hz",
             "rate": "+0%"
         },
@@ -286,7 +286,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "Whether you're grinding through work, relaxing at home, or getting ready for bed, you are in the right place for another non-stop adventure.",
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "-2Hz",
             "rate": "-1%"
         },
@@ -297,7 +297,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "line_type": "Narration",
             "text": "",
             "pause_duration": 0.8,
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "+0Hz",
             "rate": "+0%"
         },
@@ -307,7 +307,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "Before the world unfolds, do me a quick favor: hit that Like button, tap Subscribe, and say hello in the comments. Your support is the engine that keeps these massive releases alive.",
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "-1Hz",
             "rate": "+0%"
         },
@@ -318,7 +318,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "line_type": "Narration",
             "text": "",
             "pause_duration": 0.8,
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "+0Hz",
             "rate": "+0%"
         },
@@ -328,7 +328,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "gender": "Male",
             "line_type": "Narration",
             "text": "Adjust your volume, get comfortable, and let's dive in.",
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "-2Hz",
             "rate": "-2%"
         },
@@ -339,7 +339,7 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-GuyNeural") -> list:
             "line_type": "Narration",
             "text": "",
             "pause_duration": 1.6,
-            "voice": narrator_voice,
+            "voice": "en-US-ChristopherNeural",
             "pitch": "+0Hz",
             "rate": "+0%"
         }

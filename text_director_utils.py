@@ -301,8 +301,8 @@ def calculate_prosody_adjustments(seg: dict) -> tuple[str, str]:
         base_pitch -= 3; base_rate -= 6
 
     if line_type == "Narration":
-        base_pitch = 0
-        base_rate = 5
+        base_pitch = -2
+        base_rate = 0
 
     return f"{base_pitch:+d}Hz", f"{base_rate:+d}%"
 

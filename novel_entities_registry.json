@@ -4,7 +4,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -14,7 +14,7 @@
       "su_chen": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -147,7 +147,7 @@
       "cassian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -265,7 +265,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -275,7 +275,7 @@
       "lu_yu": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -388,7 +388,7 @@
       "arthur": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -428,7 +428,7 @@
       "jin": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -468,7 +468,7 @@
       "lucian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -488,7 +488,7 @@
       "elian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+13%",
         "aliases": [
@@ -518,7 +518,7 @@
       "ren_colby": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -748,7 +748,7 @@
       "runner": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -758,7 +758,7 @@
       "volley": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -802,7 +802,7 @@
       "mc": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -859,7 +859,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -869,7 +869,7 @@
       "zhao qiu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -899,7 +899,7 @@
       "subordinate_student": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -909,7 +909,7 @@
       "student_a": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -919,7 +919,7 @@
       "student_b": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -929,7 +929,7 @@
       "king arthur": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -939,7 +939,7 @@
       "yang long": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -969,7 +969,7 @@
       "liu qi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -979,7 +979,7 @@
       "guo zi lian man": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -989,7 +989,7 @@
       "blade": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -999,7 +999,7 @@
       "your majesty": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -1009,7 +1009,7 @@
       "senior brother": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -1029,7 +1029,7 @@
       "gods punishment": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1039,7 +1039,7 @@
       "rain god": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1049,7 +1049,7 @@
       "lu qi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1059,7 +1059,7 @@
       "zhou an": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1089,7 +1089,7 @@
       "li qingyun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1099,7 +1099,7 @@
       "jiang ming": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1119,7 +1119,7 @@
       "he song": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1143,7 +1143,7 @@
       "xiao haoyan": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -1281,7 +1281,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1381,7 +1381,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -1883,7 +1883,7 @@
       "yang fan": {
         "gender": "Male",
         "role": "yang_fan",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -1931,7 +1931,7 @@
       "believer": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1941,7 +1941,7 @@
       "young cultivator": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1951,7 +1951,7 @@
       "little boy": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1971,7 +1971,7 @@
       "yang da": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1981,7 +1981,7 @@
       "lingyuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -1991,7 +1991,7 @@
       "yang four": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2001,7 +2001,7 @@
       "ling xuzi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2011,7 +2011,7 @@
       "gu xuanting": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -2021,7 +2021,7 @@
       "yang er": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2041,7 +2041,7 @@
       "yang san": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2051,7 +2051,7 @@
       "yang yi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2061,7 +2061,7 @@
       "yang eleven": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2071,7 +2071,7 @@
       "nether soldier": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2081,7 +2081,7 @@
       "tier 4 intelligent lifeform": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2111,7 +2111,7 @@
       "ling san": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2131,7 +2131,7 @@
       "lin hui": {
         "gender": "Male",
         "role": "lin_hui",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -2251,7 +2251,7 @@
       "chen xing": {
         "gender": "Male",
         "role": "chen_xing",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -2306,7 +2306,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -2316,7 +2316,7 @@
       "lu zhou": {
         "gender": "Male",
         "role": "lu_zhou",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+6%",
         "aliases": [
@@ -2487,7 +2487,7 @@
       "zhou han": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -2758,7 +2758,7 @@
       "zhao fangnian": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -3053,7 +3053,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -3207,7 +3207,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -3217,7 +3217,7 @@
       "mc": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -3359,7 +3359,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -3369,7 +3369,7 @@
       "mc": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -3841,7 +3841,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -3851,7 +3851,7 @@
       "mc": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -3998,7 +3998,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -4008,7 +4008,7 @@
       "sung jin-woo": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -4538,7 +4538,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -4548,7 +4548,7 @@
       "jay": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -5006,7 +5006,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -5016,7 +5016,7 @@
       "floki": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -5126,7 +5126,7 @@
       "noah": {
         "gender": "Male",
         "role": "earth_friend",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+6%",
         "aliases": [
@@ -5177,7 +5177,7 @@
       "breeze": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -5215,7 +5215,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -5225,7 +5225,7 @@
       "takumi": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -5240,7 +5240,7 @@
       "sylphreel": {
         "gender": "Male",
         "role": "wind_god",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+5%",
         "aliases": [
@@ -5652,7 +5652,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -5662,7 +5662,7 @@
       "lu_chen": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -5753,7 +5753,7 @@
       "blood_sword_spy": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -5983,7 +5983,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -6103,7 +6103,7 @@
       "blood_sword_head_envoy": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -6181,7 +6181,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6191,7 +6191,7 @@
       "gu_chen": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -6397,7 +6397,7 @@
       "gregor": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6407,7 +6407,7 @@
       "dexter": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6447,7 +6447,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -6497,7 +6497,7 @@
       "victor": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+17%",
         "aliases": [
@@ -6527,7 +6527,7 @@
       "kreg": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6555,7 +6555,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6565,7 +6565,7 @@
       "arthur": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -6670,7 +6670,7 @@
       "bob": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -6700,7 +6700,7 @@
       "hiro": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6710,7 +6710,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -6720,7 +6720,7 @@
       "shuvene": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -6740,7 +6740,7 @@
       "shuvichi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -6750,7 +6750,7 @@
       "shuvsan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6760,7 +6760,7 @@
       "vasquen": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6770,7 +6770,7 @@
       "targon": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -6820,7 +6820,7 @@
       "starius": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6868,7 +6868,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -6878,7 +6878,7 @@
       "mc": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -7245,7 +7245,7 @@
       "aiden": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -7715,7 +7715,7 @@
       "ethan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -8123,7 +8123,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -8133,7 +8133,7 @@
       "jack": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -8483,7 +8483,7 @@
       "shit": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -8621,7 +8621,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -8631,7 +8631,7 @@
       "finn": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -8929,7 +8929,7 @@
       "narrator": {
         "gender": "Male",
         "role": "narrator",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -8939,7 +8939,7 @@
       "xia_mi": {
         "gender": "Male",
         "role": "mc",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -9094,7 +9094,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -9153,7 +9153,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -9164,7 +9164,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -9202,7 +9202,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -9242,7 +9242,7 @@
       "remus": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+13%",
         "aliases": [
@@ -9272,7 +9272,7 @@
       "luke": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+13%",
         "aliases": [
@@ -9302,7 +9302,7 @@
       "josh": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+13%",
         "aliases": [
@@ -9322,7 +9322,7 @@
       "severus": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+25%",
         "aliases": [
@@ -9488,7 +9488,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -9499,7 +9499,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -9537,7 +9537,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -9547,7 +9547,7 @@
       "instructor gareth": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -9587,7 +9587,7 @@
       "headmaster albert": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -9827,7 +9827,7 @@
       "william": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -9847,7 +9847,7 @@
       "instructor marcus": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10003,7 +10003,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10014,7 +10014,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -10052,7 +10052,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10062,7 +10062,7 @@
       "su han": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -10082,7 +10082,7 @@
       "murong bai": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -10092,7 +10092,7 @@
       "murong hai": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10102,7 +10102,7 @@
       "gu qingyang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -10112,7 +10112,7 @@
       "yan shouyi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -10122,7 +10122,7 @@
       "mo wentian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10132,7 +10132,7 @@
       "xiao zhan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -10142,7 +10142,7 @@
       "immortal master xuanji": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -10152,7 +10152,7 @@
       "li qing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10162,7 +10162,7 @@
       "lin chen": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -10172,7 +10172,7 @@
       "xue li": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -10192,7 +10192,7 @@
       "elder gu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -10202,7 +10202,7 @@
       "black-robed person": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10212,7 +10212,7 @@
       "li tianheng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+17%",
         "aliases": [
@@ -10232,7 +10232,7 @@
       "elder qingyun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10242,7 +10242,7 @@
       "daoist lei ming": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10252,7 +10252,7 @@
       "daoist ku ye": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-9Hz",
         "rate": "-7%",
         "aliases": [
@@ -10272,7 +10272,7 @@
       "immortal master lingxiao": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10282,7 +10282,7 @@
       "zhao qing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10292,7 +10292,7 @@
       "ancestor taixuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10312,7 +10312,7 @@
       "zhao tiezhu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+17%",
         "aliases": [
@@ -10322,7 +10322,7 @@
       "liu bai": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -10342,7 +10342,7 @@
       "chu tianming": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10352,7 +10352,7 @@
       "sword venerable cangyuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10372,7 +10372,7 @@
       "chu shanren": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10382,7 +10382,7 @@
       "abyssal calamity dragon": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10392,7 +10392,7 @@
       "fu qingming": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10402,7 +10402,7 @@
       "li canghai": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10412,7 +10412,7 @@
       "qian san": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10422,7 +10422,7 @@
       "guard": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10442,7 +10442,7 @@
       "elder kumu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10452,7 +10452,7 @@
       "yin wujiu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10462,7 +10462,7 @@
       "sword master bai lie": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -10472,7 +10472,7 @@
       "ghost-faced scholar": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
         "rate": "+21%",
         "aliases": [
@@ -10492,7 +10492,7 @@
       "qian yichen": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10522,7 +10522,7 @@
       "mo tianchou": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -10532,7 +10532,7 @@
       "lin ye": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10542,7 +10542,7 @@
       "su mochen": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10552,7 +10552,7 @@
       "lei hanshan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -10572,7 +10572,7 @@
       "lu chenyuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10582,7 +10582,7 @@
       "elder taiqing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10612,7 +10612,7 @@
       "welcoming monk": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10622,7 +10622,7 @@
       "yuan kong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10632,7 +10632,7 @@
       "ku chan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10642,7 +10642,7 @@
       "emperor zhu wu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-5Hz",
         "rate": "+1%",
         "aliases": [
@@ -10652,7 +10652,7 @@
       "li changshan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10662,7 +10662,7 @@
       "zhu xuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10672,7 +10672,7 @@
       "elder yinjue": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10682,7 +10682,7 @@
       "demon king tianlie": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10692,7 +10692,7 @@
       "demon venerable soul-devourer": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -10702,7 +10702,7 @@
       "fadu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-9Hz",
         "rate": "-7%",
         "aliases": [
@@ -10712,7 +10712,7 @@
       "demon venerable xue hai": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -10722,7 +10722,7 @@
       "heaven-swallowing demon emperor": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -10732,7 +10732,7 @@
       "demon lord gu mie": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10742,7 +10742,7 @@
       "demon lord wuye": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
         "rate": "+21%",
         "aliases": [
@@ -10752,7 +10752,7 @@
       "demon ancestor huanmie": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -10762,7 +10762,7 @@
       "old ape king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -10772,7 +10772,7 @@
       "grand supreme laozi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10782,7 +10782,7 @@
       "elder qing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10792,7 +10792,7 @@
       "qing yangzi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10802,7 +10802,7 @@
       "sect leader tongtian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10812,7 +10812,7 @@
       "rahu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10822,7 +10822,7 @@
       "heavenly lord yuanshi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10832,7 +10832,7 @@
       "daoist zhunti": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
         "rate": "+21%",
         "aliases": [
@@ -10842,7 +10842,7 @@
       "evil corpse": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "-1%",
         "aliases": [
@@ -10852,7 +10852,7 @@
       "old man qing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "+13%",
         "aliases": [
@@ -10862,7 +10862,7 @@
       "han li": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10872,7 +10872,7 @@
       "ancestor qingxuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10882,7 +10882,7 @@
       "ao yuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10892,7 +10892,7 @@
       "ao lie": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -10902,7 +10902,7 @@
       "ao yan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10912,7 +10912,7 @@
       "ao cang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10922,7 +10922,7 @@
       "ao ming": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -10932,7 +10932,7 @@
       "bao tianhe": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10942,7 +10942,7 @@
       "master of luofu island": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+9%",
         "aliases": [
@@ -10952,7 +10952,7 @@
       "jian wuji": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10962,7 +10962,7 @@
       "guiding immortal official": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10972,7 +10972,7 @@
       "heavenly court thunder general": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -10982,7 +10982,7 @@
       "ao guang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -10992,7 +10992,7 @@
       "zhao wanjin": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11002,7 +11002,7 @@
       "xuan xiao": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -11012,7 +11012,7 @@
       "hu li": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11022,7 +11022,7 @@
       "feng jue": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -11032,7 +11032,7 @@
       "ji meng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11042,7 +11042,7 @@
       "western disciple": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -11052,7 +11052,7 @@
       "jieyin daoist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-9Hz",
         "rate": "-7%",
         "aliases": [
@@ -11072,7 +11072,7 @@
       "zhunti": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11082,7 +11082,7 @@
       "fuxi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11092,7 +11092,7 @@
       "emperor di jun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11102,7 +11102,7 @@
       "hongjun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -11112,7 +11112,7 @@
       "li huayuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -11122,7 +11122,7 @@
       "li li": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11132,7 +11132,7 @@
       "qin yunqi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+13%",
         "aliases": [
@@ -11142,7 +11142,7 @@
       "qi yun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -11152,7 +11152,7 @@
       "qi tian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11162,7 +11162,7 @@
       "elder qi cang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-9Hz",
         "rate": "-7%",
         "aliases": [
@@ -11172,7 +11172,7 @@
       "great master xuandu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11182,7 +11182,7 @@
       "kunpeng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+17%",
         "aliases": [
@@ -11192,7 +11192,7 @@
       "eastern emperor taiyi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11202,7 +11202,7 @@
       "suirenshi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -11212,7 +11212,7 @@
       "ying zhao": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11222,7 +11222,7 @@
       "tai yi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11232,7 +11232,7 @@
       "sect master of the lingtian sword sect": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11242,7 +11242,7 @@
       "bai ze": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+17%",
         "aliases": [
@@ -11272,7 +11272,7 @@
       "kuafu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -11282,7 +11282,7 @@
       "golden crow": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11292,7 +11292,7 @@
       "first golden crow": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11302,7 +11302,7 @@
       "hou yi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11312,7 +11312,7 @@
       "little golden crow lu ya": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -11322,7 +11322,7 @@
       "di jiang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11332,7 +11332,7 @@
       "zhurong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -11342,7 +11342,7 @@
       "dijiang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-4Hz",
         "rate": "+19%",
         "aliases": [
@@ -11372,7 +11372,7 @@
       "green bull": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "+13%",
         "aliases": [
@@ -11382,7 +11382,7 @@
       "kui bull": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -11392,7 +11392,7 @@
       "duobao": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11402,7 +11402,7 @@
       "gong gong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11412,7 +11412,7 @@
       "qiang liang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -11422,7 +11422,7 @@
       "pangu phantom": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-9Hz",
         "rate": "-7%",
         "aliases": [
@@ -11442,7 +11442,7 @@
       "old ancestor minghe": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -11452,7 +11452,7 @@
       "zhenyuanzi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -11462,7 +11462,7 @@
       "old ancestor hongyun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -11472,7 +11472,7 @@
       "grand master xuandu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11482,7 +11482,7 @@
       "dong wanggong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11492,7 +11492,7 @@
       "ghost car": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+1Hz",
         "rate": "+21%",
         "aliases": [
@@ -11512,7 +11512,7 @@
       "baize": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "+13%",
         "aliases": [
@@ -11522,7 +11522,7 @@
       "fei lian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11542,7 +11542,7 @@
       "lieshanshi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11552,7 +11552,7 @@
       "shennongshi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -11562,7 +11562,7 @@
       "shennong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "-1%",
         "aliases": [
@@ -11572,7 +11572,7 @@
       "guangchengzi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11582,7 +11582,7 @@
       "chiyou": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11602,7 +11602,7 @@
       "god haotian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11622,7 +11622,7 @@
       "feng bo": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -11632,7 +11632,7 @@
       "xingtian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11642,7 +11642,7 @@
       "zhuanxu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11652,7 +11652,7 @@
       "ziyang sanren": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11662,7 +11662,7 @@
       "huanglong immortal master": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11672,7 +11672,7 @@
       "master taiyi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11682,7 +11682,7 @@
       "maitreya": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11692,7 +11692,7 @@
       "heavenly remnant demon lord": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11702,7 +11702,7 @@
       "zhao gongming": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11712,7 +11712,7 @@
       "true monarch fuhai": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -11722,7 +11722,7 @@
       "duke of the east": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11742,7 +11742,7 @@
       "kongxuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11752,7 +11752,7 @@
       "ying zheng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11772,7 +11772,7 @@
       "li ran": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11782,7 +11782,7 @@
       "li si": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11792,7 +11792,7 @@
       "kong xuan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "-1%",
         "aliases": [
@@ -11802,7 +11802,7 @@
       "gibbon": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+7%",
         "aliases": [
@@ -11812,7 +11812,7 @@
       "yang jian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11822,7 +11822,7 @@
       "yang jiao": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11832,7 +11832,7 @@
       "sun wukong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11842,7 +11842,7 @@
       "taibai jinxing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -11852,7 +11852,7 @@
       "yuan hong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11862,7 +11862,7 @@
       "chaos demon king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11872,7 +11872,7 @@
       "old monkey": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11882,7 +11882,7 @@
       "monkey": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11892,7 +11892,7 @@
       "king qinguang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -11902,7 +11902,7 @@
       "emperor fengdu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11912,7 +11912,7 @@
       "ghost king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11922,7 +11922,7 @@
       "bull demon king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11932,7 +11932,7 @@
       "wu qu xingjun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11942,7 +11942,7 @@
       "li jing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11952,7 +11952,7 @@
       "nezha": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11962,7 +11962,7 @@
       "tianpeng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11972,7 +11972,7 @@
       "alchemy boy": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11982,7 +11982,7 @@
       "deputy general": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -11992,7 +11992,7 @@
       "gu ling": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12002,7 +12002,7 @@
       "xuanzang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12012,7 +12012,7 @@
       "zhu bajie": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12022,7 +12022,7 @@
       "mingyue": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12032,7 +12032,7 @@
       "qingfeng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12052,7 +12052,7 @@
       "sha wujing": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12062,7 +12062,7 @@
       "kui mulang": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12072,7 +12072,7 @@
       "jiaomujiao": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12082,7 +12082,7 @@
       "king golden horn": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12092,7 +12092,7 @@
       "king silver horn": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12102,7 +12102,7 @@
       "jingxigui": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12112,7 +12112,7 @@
       "linglichong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12122,7 +12122,7 @@
       "golden horn king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12132,7 +12132,7 @@
       "well dragon king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12142,7 +12142,7 @@
       "taishang laojun": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -12152,7 +12152,7 @@
       "red boy": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12172,7 +12172,7 @@
       "tuo dragon": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12182,7 +12182,7 @@
       "blackwater river god": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12192,7 +12192,7 @@
       "chen cheng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12202,7 +12202,7 @@
       "inspiring king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12212,7 +12212,7 @@
       "green ox": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12222,7 +12222,7 @@
       "true immortal ruyi": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12252,7 +12252,7 @@
       "nine-headed insect": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12262,7 +12262,7 @@
       "yellow eyebrow boy": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12272,7 +12272,7 @@
       "king of zhuzi kingdom": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12282,7 +12282,7 @@
       "sai taisui": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12292,7 +12292,7 @@
       "medicine king bodhisattva": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -12302,7 +12302,7 @@
       "yellow-robed daoist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12312,7 +12312,7 @@
       "golden-winged roc": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12322,7 +12322,7 @@
       "demon king white elephant": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12332,7 +12332,7 @@
       "demon king green lion": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12342,7 +12342,7 @@
       "imperial father-in-law": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12352,7 +12352,7 @@
       "king of bishu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -12362,7 +12362,7 @@
       "white-robed person": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12372,7 +12372,7 @@
       "old star of the south pole": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12382,7 +12382,7 @@
       "white deer spirit": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+3Hz",
         "rate": "+19%",
         "aliases": [
@@ -12402,7 +12402,7 @@
       "merchant": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12412,7 +12412,7 @@
       "king": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12422,7 +12422,7 @@
       "city god": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12432,7 +12432,7 @@
       "king nanshan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -12442,7 +12442,7 @@
       "prefect": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12452,7 +12452,7 @@
       "prefect shangguan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12462,7 +12462,7 @@
       "prince": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12472,7 +12472,7 @@
       "yellow lion spirit": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12482,7 +12482,7 @@
       "jiuling yuansheng": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-8Hz",
         "rate": "+11%",
         "aliases": [
@@ -12492,7 +12492,7 @@
       "king pihan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12502,7 +12502,7 @@
       "king pishu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12512,7 +12512,7 @@
       "king pichen": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12532,7 +12532,7 @@
       "burly leader": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12552,7 +12552,7 @@
       "kou hong": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+17%",
         "aliases": [
@@ -12562,7 +12562,7 @@
       "ding hu": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12582,7 +12582,7 @@
       "golden summit immortal": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-9Hz",
         "rate": "-7%",
         "aliases": [
@@ -12592,7 +12592,7 @@
       "anan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12602,7 +12602,7 @@
       "lead vajra": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-3Hz",
         "rate": "-1%",
         "aliases": [
@@ -12612,7 +12612,7 @@
       "old turtle": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -12707,7 +12707,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12718,7 +12718,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -12756,7 +12756,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12786,7 +12786,7 @@
       "old aslan": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-6Hz",
         "rate": "-1%",
         "aliases": [
@@ -12856,7 +12856,7 @@
       "librarian": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -12906,7 +12906,7 @@
       "seven": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -13072,7 +13072,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -13083,7 +13083,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -13121,7 +13121,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -13201,7 +13201,7 @@
       "silas": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+2Hz",
         "rate": "+13%",
         "aliases": [
@@ -14237,7 +14237,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -14248,7 +14248,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -14286,7 +14286,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+4Hz",
         "rate": "+15%",
         "aliases": [
@@ -14692,7 +14692,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -14703,7 +14703,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -14751,7 +14751,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15047,7 +15047,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15058,7 +15058,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -15096,7 +15096,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15126,7 +15126,7 @@
       "sunny": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15172,7 +15172,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15183,7 +15183,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
@@ -15221,7 +15221,7 @@
       "protagonist": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15501,7 +15501,7 @@
       "teacher": {
         "gender": "Male",
         "role": "supporting_character",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "-5Hz",
         "rate": "+1%",
         "aliases": [
@@ -15617,7 +15617,7 @@
         "display_name": "Narrator",
         "gender": "Male",
         "line_type": "Narration",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+5%",
         "aliases": [
@@ -15628,7 +15628,7 @@
         "display_name": "Protagonist",
         "gender": "Male",
         "line_type": "Dialogue",
-        "voice": "en-US-GuyNeural",
+        "voice": "en-US-ChristopherNeural",
         "pitch": "+0Hz",
         "rate": "+6%",
         "aliases": [
