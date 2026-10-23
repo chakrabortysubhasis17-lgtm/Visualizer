@@ -36,8 +36,11 @@ if (not cf_id or not cf_token) and creds.get("cloudflare_accounts"):
 cf_id = cf_id or os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
 cf_token = cf_token or os.environ.get("CLOUDFLARE_API_TOKEN", "")
 
-def purge_corrupt_cache(build_dir: str):
-    """Purges placeholder dummy files from earlier connection dropouts."""
+def purge_corrupt_or_fallback_cache(build_dir: str):
+    """
+    Purges placeholder files, corrupt manifests, and rule-based fallback files
+    staged during earlier runs without Gemini credentials.
+    """
     if not os.path.exists(build_dir):
         return
     removed = 0
@@ -48,7 +51,11 @@ def purge_corrupt_cache(build_dir: str):
                 with open(fpath, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 rows = data.get("rows", [])
-                if len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows):
+                
+                is_dummy = len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows)
+                is_fallback_only = not any(r.get("speaker") not in ["Narrator", "Mc", "System"] for r in rows)
+                
+                if is_dummy or is_fallback_only:
                     os.remove(fpath)
                     removed += 1
             except Exception:
@@ -58,13 +65,13 @@ def purge_corrupt_cache(build_dir: str):
                 except OSError:
                     pass
     if removed > 0:
-        print(f"[Pre-Flight Cleanup] [✓] Purged {removed} placeholder cache files to guarantee clean scraping.", flush=True)
+        print(f"[Pre-Flight Cleanup] [OK] Purged {removed} invalid/fallback staged files. Gemini Director will parse cleanly.", flush=True)
 
-BUILD_DIR = "build_sss_rank_goddess_301_350"
-purge_corrupt_cache(BUILD_DIR)
+BUILD_DIR = "build_sss_goddess_summon_301_350"
+purge_corrupt_or_fallback_cache(BUILD_DIR)
 
 CONFIG = {
-    # Credentials
+    # Credentials resolved from api_credentials.json
     "gemini_api_key": gemini_key,
     "cf_account_id": cf_id,
     "cf_api_token": cf_token,
@@ -74,22 +81,23 @@ CONFIG = {
     "start_url": "https://freewebnovel.com/novel/starting-with-an-sss-rank-goddess-summon/chapter-301",
     "start_chapter": 301,
     "end_chapter": 350,
-    "default_topic": "SSS-Rank Goddess Summon",
+    "default_topic": "Starting with an SSS-rank Goddess Summon / Territory War / Sovereign Realm",
 
-    # Concurrency & Synthesis Parameters
-    "batch_size": 10,
+    # Concurrency Settings
+    "batch_size": 3,
     "parallel_chapters": 3,
     "global_max_tts": 6,
     "max_narration_merge": 650,
+    "narrator_voice": "en-US-GuyNeural",
 
     # Filepaths & Outputs
     "build_dir": BUILD_DIR,
-    "final_audio": "output_sss_rank_goddess_301_350.mp3",
-    "final_video": "final_sss_rank_goddess_301_350.mp4",
-    "cover_image": "cover_sss_rank_goddess_301_350.jpg",
-    "timestamps_file": "youtube_timestamps_sss_rank_goddess_301_350.txt",
-    "subtitles_file": "subtitles_sss_rank_goddess_301_350.srt",
-    "payload_file": "youtube_upload_payload_sss_rank_goddess_301_350.json",
+    "final_audio": "output_sss_goddess_summon_301_350.mp3",
+    "final_video": "final_sss_goddess_summon_301_350.mp4",
+    "cover_image": "cover_sss_goddess_summon_301_350.jpg",
+    "timestamps_file": "youtube_timestamps_sss_goddess_summon_301_350.txt",
+    "subtitles_file": "subtitles_sss_goddess_summon_301_350.srt",
+    "payload_file": "youtube_upload_payload_sss_goddess_summon_301_350.json",
 
     # Branding Overlay Assets
     "branding_assets": {
@@ -99,93 +107,84 @@ CONFIG = {
         "voice": "voice.png"
     },
 
+    # Post-Render Multilingual Subtitle Engine (15 Languages to build/subtitles/)
+    "enable_subtitles": True,
+    "subtitle_languages": [
+        "de", "es", "pt", "ru", "hi", "bn", "ms", "tl", "fr", "fi", "ja", "pl", "ur", "ar", "vi"
+    ],
+
     # YouTube Metadata
-    "video_title": "DIVINE REALM ASCENSION & CELESTIAL PACT! [Ch 301-350] | Starting With An SSS-Rank Goddess Summon",
+    "video_title": "Starting with an SSS-Rank Goddess Summon | Ch 301 - 350 Full Audio Novel Marathon",
+    "privacy_status": "unlisted",
     "tags": [
-        "Starting With An SSS-Rank Goddess Summon", "SSS Rank Goddess Summon", 
-        "LitRPG Audiobook", "Progression Fantasy", "Fantasy Audiobook", 
-        "Goddess Summon", "System Summoning", "Being A Bong"
+        "Starting with an SSS-rank Goddess Summon", "Goddess Summon Audiobook", "Sylas Graves",
+        "Eluned", "Morwenna", "LitRPG Audiobook", "Progression Fantasy", "Audiobook Marathon",
+        "Web Novel Audiobook", "Being A Bong"
     ],
     "desc_header": (
-        "Welcome back to Being a Bong! Grab your headphones and get cozy. You are about to enjoy hours of non-stop story completely free—made with endless coffee and a whole lot of heart.\n\n"
-        "In return, just show me two seconds of love! Hit like, share the vibe, and tap Subscribe. Think of your subscription as the spark that keeps this channel running—without it, the next marathon loses motivation! So tap that button, relax, and let the adventure begin.\n\n"
-        "In Chapters 301 to 350, our summoner ascends past mortal planar barriers into higher divine territories. "
-        "With top-tier SSS-rank contracts evolving into cosmic goddess forms, ancient planar lords and interdimensional conquerors discover "
-        "what happens when an unmatched summoner brings absolute celestial firepower to the battlefield.\n\n"
-        "🎧 AUDIO MASTER: Broadcast Standard (-14 LUFS, Pedalboard vocal smoothing DSP, multi-voice dramatization).\n"
-        "📖 CLOSED CAPTIONS: Soft Subtitles (CC Enabled for dialogue, system alerts, and stats).\n"
-        "🎨 VISUAL ENGINE: 4K 3D Fantasy Visual Artworks + 15s Animated Outro.\n\n"
+        "Welcome back to Being a Bong!\n\n"
+        "Experience the full 50-chapter audio novel marathon of 'Starting with an SSS-Rank Goddess Summon' (Chapters 301 to 350).\n\n"
+        "Witness the climactic battle against the Unmovable Wall, Breeda's unbreakable Titan bastion defense, Tasman's lethal shadow domain, "
+        "the grand feasting of 72 newly recruited female warriors, and Sylas's return to Earth for the lively Shajiatown night market festival.\n\n"
+        "🎧 AUDIO MASTER: Broadcast Standard (-14 LUFS, flat dynamic curve, vocal clarity).\n"
+        "📖 CLOSED CAPTIONS: Multilingual Subtitles (15 languages available in Soft CC).\n"
+        "🎨 VISUAL ENGINE: Dynamic 4K Visual Arc Blocks + 15s Outro Slate.\n\n"
         "══════════════════════════════════════════════\nTIMESTAMPS:\n"
     ),
     "desc_footer": (
         "\n══════════════════════════════════════════════\n\n"
-        "🌟 MARATHON ARC BREAKDOWN:\n"
-        "• Ch 301 - 310: Divine Domain Breach & Primordial Incursion\n"
-        "• Ch 311 - 320: Heavenly Warfront & SSS-Tier Synergy\n"
-        "• Ch 321 - 330: Ancient Abyss Trial & Celestial Artifact Awakening\n"
-        "• Ch 331 - 340: Monarch Realm Showdown & God-Slaying Array\n"
-        "• Ch 341 - 350: Supreme Pantheon Ascension & Sovereign Rule\n\n"
-        "══════════════════════════════════════════════\n"
-        "DISCLAIMER:\nThis audiobook is an edited, dramatized adaptation produced for entertainment and literature commentary. "
-        "All original novel concepts belong to the author. Subscribe for upcoming marathons!\n\n"
-        "#SSSRankGoddessSummon #FantasyAudiobook #ProgressionFantasy #LitRPG #SystemSummoning #AudiobookMarathon #BeingABong"
+        "DISCLAIMER:\n"
+        "This audiobook is an edited, dramatized fan adaptation produced for literature commentary and entertainment purposes.\n\n"
+        "#StartingWithAnSSSRankGoddessSummon #GoddessSummon #LitRPG #ProgressionFantasy #AudiobookMarathon #BeingABong"
     ),
 
-    # Visual Prompts (5 blocks, 10 chapters each)
+    # 5 Thematic Arc Visual Blocks for Chapters 301 to 350 (10 Chapters each)
     "blocks": [
         {
             "index": 1, "range": (301, 310),
-            "title": ["DIVINE DOMAIN", "PRIMORDIAL INCURSION"],
-            "fallback_color": (25, 20, 45),
+            "title": ["UNMOVABLE WALL ASSAULT", "BREEDA'S TITAN DEFENSE"],
+            "fallback_color": (35, 15, 20),
             "prompt": (
-                "Cinematic 3D fantasy portrait of a powerful young male summoner in silver-trimmed dark trenchcoat robes, "
-                "standing shoulder-to-shoulder with a radiant celestial goddess with long platinum hair, luminous white wings, "
-                "and glowing golden eyes. Floating ancient summon grimoire between them, glowing arcane summoning rings on the ground, "
-                "celestial temple ruins background under a violet twilight sky, ultra-fine textures, medium close-up shot."
+                "Cinematic high-impact 3D fantasy scene of a towering, muscular dark-haired female commander in massive adamantine plate armor, "
+                "standing firm behind a colossal steel aegis shield while an enemy shockwave shatters stone around her boots. Swirling smoke, red mana particles, "
+                "intense battlefield crater background, dynamic lighting, 4K rendering."
             )
         },
         {
             "index": 2, "range": (311, 320),
-            "title": ["HEAVENLY WARFRONT", "SSS SYNERGY"],
-            "fallback_color": (35, 25, 15),
+            "title": ["AURA HARVESTING", "MORWENNA'S DREAD VANGUARD"],
+            "fallback_color": (25, 10, 35),
             "prompt": (
-                "Cinematic 3D fantasy portrait of the determined male summoner channeling golden radiant energy from his palms, "
-                "flanked by a majestic battle goddess in sculpted golden plate armor wielding a blazing crystal spear. "
-                "Floating shattered citadel background, dynamic particle embers, lens flares, crisp detailed facial features, "
-                "volumetric lighting, medium close-up shot."
+                "Cinematic fantasy scene of a charismatic pirate queen in a pristine navy greatcoat riding a massive armored golden wolf beast across a battlefield at sunrise, "
+                "drawn cutlass pointing toward distant fortress battlements, dozens of elite shield-maidens and archers in strict formation, majestic atmospheric god rays."
             )
         },
         {
             "index": 3, "range": (321, 330),
-            "title": ["ANCIENT ABYSS", "ARTIFACT AWAKENING"],
-            "fallback_color": (15, 20, 35),
+            "title": ["FORTRESS SURRENDER", "THE SEVENTY-TWO WARRIORS"],
+            "fallback_color": (20, 25, 30),
             "prompt": (
-                "Cinematic 3D fantasy portrait of the summoner holding a hovering obsidian relic pulsing with cosmic nebula light, "
-                "accompanied by a mysterious dark-robed shadow goddess with floating amethyst crystals and ethereal horns. "
-                "Subterranean crystal cavern background with glowing runes, atmospheric mist, high-contrast dramatic rim lighting, "
-                "intricate cloth and armor details, medium close-up shot."
+                "Cinematic wide angle fantasy scene of a battered army of disciplined armored women presenting an honorable surrender in a grand stone castle courtyard, "
+                "a young sovereign with glowing golden eyes standing calmly on paved walkways beneath towering obsidian keep walls, twilight ambiance, ultra-detailed."
             )
         },
         {
             "index": 4, "range": (331, 340),
-            "title": ["MONARCH SHOWDOWN", "GOD-SLAYING ARRAY"],
-            "fallback_color": (40, 15, 20),
+            "title": ["THE BLESSED BANQUET", "DIVINE ARM WRESTLING"],
+            "fallback_color": (40, 25, 15),
             "prompt": (
-                "Cinematic 3D fantasy portrait of the summoner surrounded by five colossal hovering elemental glyphs and runic magic circles, "
-                "gazing fiercely upward toward a cracked cosmic sky while commanding multiple divine spirit apparitions. "
-                "Explosive magical battlefield background with crimson thunder and lightning, cinematic motion blur, sharp facial focus, "
-                "photorealistic skin rendering, medium close-up shot."
+                "Cinematic interior scene of an exuberant rowdy fantasy banquet hall packed with cheering armored warrior women, "
+                "two powerful female figures engaged in a ferocious glowing mana arm-wrestling contest across a splintering oak table, "
+                "overflowing wooden ale tankards, roasted platters, warm roaring fireplace glow."
             )
         },
         {
             "index": 5, "range": (341, 350),
-            "title": ["PANTHEON ASCENT", "SOVEREIGN RULE"],
-            "fallback_color": (30, 15, 50),
+            "title": ["SHAJIATOWN NIGHT MARKET", "UNDERGROUND MASKS"],
+            "fallback_color": (30, 15, 35),
             "prompt": (
-                "Cinematic 3D fantasy portrait of the Supreme Summoner seated upon a floating starlight throne, "
-                "flanked by majestic divine goddesses holding sacred scepters and celestial blades beneath a swirling galaxy halo. "
-                "Luminous translucent system interface screens displaying SSS-rank evolution stats, opulent marble pillars, "
-                "regal ambiance, volumetric god rays, medium close-up shot."
+                "Cinematic cyberpunk-fantasy hybrid street scene of a neon-lit night market festival, red glowing paper lanterns strung above crowded cobblestones, "
+                "a young man and a hooded girl wearing traditional ceramic kitsune and oni masks walking through bustling food stalls and cherry blossom petals, 4K resolution."
             )
         }
     ]
