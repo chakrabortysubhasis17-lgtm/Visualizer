@@ -10,7 +10,7 @@ from typing import List, Literal
 
 import httpx
 import requests
-from PIL import Image, ImageFilter
+from PIL import Image, ImageOps
 from pydantic import BaseModel, Field
 from google import genai
 from google.genai import types
@@ -28,6 +28,15 @@ CREDENTIALS_FILE = "api_credentials.json"
 BUILD_DIR = "build_shadow_slave_dynamic"
 OUTPUT_VIDEO = "Shadow_Slave_Chapter_1_Dynamic_Comic.mp4"
 
+# =====================================================================
+# ASPECT RATIO MODE TOGGLE:
+# Choose "crop_1920" (Approach 1) OR "pillarbox_1024" (Approach 2)
+# =====================================================================
+ASPECT_MODE: Literal["crop_1920", "pillarbox_1024"] = "crop_1920"
+
+TARGET_WIDTH = 1920
+TARGET_HEIGHT = 1080
+
 
 def load_credentials(file_path: str = CREDENTIALS_FILE) -> dict:
     if os.path.exists(file_path):
@@ -40,7 +49,7 @@ def load_credentials(file_path: str = CREDENTIALS_FILE) -> dict:
 
 
 # =====================================================================
-# 1. HARDENED PYDANTIC STORYBOARD SCHEMA & PROMPT GENERATOR
+# 1. HARDENED STORYBOARD SCHEMA & PROMPT GENERATOR
 # =====================================================================
 
 class SceneBeat(BaseModel):
@@ -50,7 +59,7 @@ class SceneBeat(BaseModel):
     scene_title: str
     camera_motion: Literal["zoom_in", "zoom_out", "pan_right", "tilt_down", "slow_push"]
     visual_prompt: str = Field(
-        description="A hyper-detailed, sharp dark gothic fantasy matte painting prompt matching the master style guide."
+        description="A rich, sharp dark gothic fantasy matte painting prompt matching the master style guide."
     )
 
 
@@ -60,7 +69,7 @@ class StoryboardManifest(BaseModel):
 
 def generate_dynamic_storyboard_strict(client, clean_title: str, staged_segments: list, max_retries: int = 4) -> List[dict]:
     total_lines = len(staged_segments)
-    
+
     script_summary = []
     for s in staged_segments:
         line_num = int(s.get("line_id", 1))
@@ -71,19 +80,22 @@ def generate_dynamic_storyboard_strict(client, clean_title: str, staged_segments
     script_text = "\n".join(script_summary)
 
     system_instruction = """
-You are a master concept artist and visual director specializing in hyper-detailed Dark Gothic Fantasy matte paintings.
-Your goal is to divide the novel chapter lines into 4 to 8 sequential visual scenes and write visually stunning, razor-sharp image generation prompts for each scene.
+You are a master digital matte painter and art director for a dark fantasy visual novel.
+Divide the chapter lines into 4 to 8 sequential visual scenes. For every scene, write an ultra-sharp, vivid concept art prompt.
 
-MANDATORY ART STYLE SPECIFICATIONS:
-- Aesthetic: Grimdark gothic fantasy matte painting, intricate architectural density, soaring dark spires, weathered stone masonry.
-- Lighting: Chiaroscuro contrast. Deep charcoal/slate-gray storm clouds and shadows contrasted with warm amber/orange lantern glow from arched windows.
-- Focal Motifs: Include ominous surreal accents when appropriate (such as glowing crimson orbs, blood-red sigils, or floating spell nodes).
-- Crisp Detail Directives: Every prompt MUST end with sharp quality triggers:
-  'masterpiece, dark gothic concept art, hyper-detailed stone textures, sharp focus, intricate architectural drafting, volumetric lighting, 8k resolution, cinematic 16:9 landscape.'
+MANDATORY AESTHETIC STYLE RULES:
+1. Architectural Style: Dark gothic architecture, towering spires, intricate stone carvings, weathered castle masonry, ornate ironwork.
+2. Lighting & Color: High-contrast chiaroscuro. Deep slate-gray storm clouds illuminated by warm amber/orange lantern glow radiating from arched windows.
+3. Focal Accents: Include ominous glowing crimson/blood-red spherical orbs or sigils floating in the scene to anchor the composition.
+4. CRITICAL HUMAN FRAMING RULE:
+   - If a scene is about a CHARACTER (e.g. Sunny or Officer), the prompt MUST specify a 'Cinematic waist-up medium portrait' or 'Dramatic chest-up close shot'. The character's face and upper body MUST fill the majority of the frame so facial features are razor-sharp. NEVER render tiny full-body miniature characters sitting in distant landscapes.
+   - If a scene is about the ENVIRONMENT (e.g. city streets, station exterior, cosmic void), prompt a 'Pure architectural dark gothic matte painting' with ZERO human figures.
+5. Prompt Suffix: Every prompt must end with:
+   'masterpiece, dark gothic concept art, hyper-detailed architectural drafting, glowing amber windows, floating crimson orbs, sharp focus, volumetric lighting, 8k resolution.'
 
 RULES:
-1. Cover ALL lines continuously from line 1 to the final line without gaps.
-2. camera_motion must be strictly one of: zoom_in, zoom_out, pan_right, tilt_down, slow_push.
+- Cover all lines from line 1 to the final line continuously without gaps.
+- camera_motion must strictly be one of: zoom_in, zoom_out, pan_right, tilt_down, slow_push.
 """
 
     prompt = f"CHAPTER TITLE: {clean_title}\nTOTAL LINES: {total_lines}\n\nLINES CHRONOLOGY:\n{script_text}"
@@ -105,11 +117,11 @@ RULES:
             if response and response.text:
                 data = json.loads(response.text)
                 scenes = data.get("scenes", [])
-                
+
                 if len(scenes) >= 3:
                     scenes[0]["start_line"] = 1
                     scenes[-1]["end_line"] = total_lines
-                    
+
                     for i in range(len(scenes) - 1):
                         scenes[i + 1]["start_line"] = scenes[i]["end_line"] + 1
 
@@ -125,33 +137,41 @@ RULES:
 
 
 # =====================================================================
-# 2. POLLINATIONS FLUX ENGINE (NATIVE 1080P + UNSHARP MASK)
+# 2. POLLINATIONS FLUX ENGINE (SUPPORTING BOTH APPROACHES)
 # =====================================================================
 
 def fetch_pollinations_artwork_strict(prompt: str, out_path: str, scene_idx: int) -> str:
     """
-    Fetches full-fidelity artwork from Pollinations Flux with native 1920x1080 resolution
-    and applies an unsharp mask filter to guarantee razor-sharp texture edges.
+    Fetches square artwork from Pollinations Flux and applies either:
+    - Approach 1 ('crop_1920'): Request 1920x1920 and vertical center-crop to 1920x1080.
+    - Approach 2 ('pillarbox_1024'): Request 1024x1024 and pillarbox with equal black bars.
     """
     if os.path.exists(out_path) and os.path.getsize(out_path) > 20000:
         return out_path
 
-    # Clean and encode prompt
     clean_p = " ".join(prompt.split()).strip()
     encoded = urllib.parse.quote(clean_p)
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-    
+
     attempt = 1
     raw_temp = out_path + ".tmp.jpg"
 
     while True:
         seed = random.randint(100000, 9999999)
-        # Request native 1920x1080 to prevent upscaling softness
-        url = f"https://image.pollinations.ai/prompt/{encoded}?width=1920&height=1080&seed={seed}&model=flux&nologo=true"
-        print(f"     [Pollinations Flux] Scene {scene_idx} (Attempt {attempt})...", flush=True)
+
+        if ASPECT_MODE == "crop_1920":
+            req_w, req_h = 1920, 1920
+        else:
+            req_w, req_h = 1024, 1024
+
+        url = (
+            f"https://image.pollinations.ai/prompt/{encoded}"
+            f"?width={req_w}&height={req_h}&seed={seed}&model=flux&nologo=true"
+        )
+        print(f"     [Pollinations Flux] Scene {scene_idx} ({ASPECT_MODE} Mode | Attempt {attempt})...", flush=True)
 
         try:
-            resp = requests.get(url, headers=headers, timeout=50)
+            resp = requests.get(url, headers=headers, timeout=60)
             if resp.status_code == 200 and len(resp.content) > 20000:
                 with open(raw_temp, "wb") as f:
                     f.write(resp.content)
@@ -160,25 +180,38 @@ def fetch_pollinations_artwork_strict(prompt: str, out_path: str, scene_idx: int
                     test_img.verify()
 
                 base = Image.open(raw_temp).convert("RGBA")
-                
-                # Trim Pollinations bottom margin if needed
-                bw, bh = base.size
-                base = base.crop((0, 0, bw, bh - int(bh * 0.04)))
-                base = base.resize((1920, 1080), Image.Resampling.LANCZOS)
 
-                # Apply Unsharp Masking for stone/architectural micro-detail
-                base = base.filter(ImageFilter.UnsharpMask(radius=1.6, percent=140, threshold=2))
-                
+                if ASPECT_MODE == "crop_1920":
+                    # APPROACH 1: Scale to 1920 width, center-crop vertically to 1080 (zero stretching)
+                    base = ImageOps.fit(
+                        base,
+                        (TARGET_WIDTH, TARGET_HEIGHT),
+                        method=Image.Resampling.LANCZOS,
+                        centering=(0.5, 0.45)
+                    )
+                else:
+                    # APPROACH 2: Scale 1024x1024 to height 1080, pillarbox with equal black bars on sides
+                    scale_factor = TARGET_HEIGHT / float(base.size[1])
+                    new_w = int(base.size[0] * scale_factor)
+                    base_resized = base.resize((new_w, TARGET_HEIGHT), Image.Resampling.LANCZOS)
+
+                    canvas = Image.new("RGBA", (TARGET_WIDTH, TARGET_HEIGHT), (0, 0, 0, 255))
+                    offset_x = (TARGET_WIDTH - new_w) // 2
+                    canvas.paste(base_resized, (offset_x, 0))
+                    base = canvas
+
                 # Apply vignette for subtitle legibility
                 base = apply_lower_third_vignette(base)
-                base.convert("RGB").save(out_path, "JPEG", quality=98)
+
+                # Save clean, uncompressed JPEG
+                base.convert("RGB").save(out_path, "JPEG", quality=95, subsampling=0)
 
                 try:
                     os.remove(raw_temp)
                 except OSError:
                     pass
 
-                print(f"     [Pollinations Flux] [✓] Scene {scene_idx} rendered with razor-sharp microtextures!", flush=True)
+                print(f"     [Pollinations Flux] [✓] Scene {scene_idx} delivered with clean proportions!", flush=True)
                 return out_path
             else:
                 print(f"     [Pollinations Flux] Incomplete response (HTTP {resp.status_code}, {len(resp.content)} bytes). Retrying in 7s...", flush=True)
@@ -253,10 +286,10 @@ async def run_strict_dynamic_pipeline():
     ch_num = 1
 
     print("\n=======================================================", flush=True)
-    print("  SHADOW SLAVE: HIGH-DEFINITION GOTHIC MOTION COMIC", flush=True)
+    print(f"  SHADOW SLAVE: GOTHIC MOTION COMIC ({ASPECT_MODE.upper()})", flush=True)
     print("=======================================================\n", flush=True)
 
-    # 1. Scrape
+    # 1. Scrape chapter text
     print("[1/5] Scraping Chapter Content...", flush=True)
     with httpx.Client() as session:
         clean_title, full_text, _ = scrape_chapter_content(session, chapter_url, ch_num, default_topic="Shadow Slave")
@@ -269,8 +302,8 @@ async def run_strict_dynamic_pipeline():
     total_lines = len(staged_segments)
     print(f"      Staged {total_lines} dialogue and narration lines.", flush=True)
 
-    # 3. Dynamic Gothic Storyboard Analysis
-    print("\n[3/5] Constructing High-Definition Gothic Scene Beats...", flush=True)
+    # 3. Dynamic Storyboard Analysis
+    print("\n[3/5] Constructing Content-Driven Gothic Scene Beats...", flush=True)
     storyboard = generate_dynamic_storyboard_strict(client, clean_title, staged_segments)
 
     # 4. Multi-Voice Audio Generation
