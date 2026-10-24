@@ -25,14 +25,10 @@ from subtitle_utils import build_srt_subtitles
 from visual_utils import apply_lower_third_vignette
 
 CREDENTIALS_FILE = "api_credentials.json"
+REGISTRY_FILE = "character_registry.json"
 BUILD_DIR = "build_shadow_slave_dynamic"
 OUTPUT_VIDEO = "Shadow_Slave_Chapter_1_Dynamic_Comic.mp4"
-
-# =====================================================================
-# ASPECT RATIO MODE TOGGLE:
-# Choose "crop_1920" (Approach 1) OR "pillarbox_1024" (Approach 2)
-# =====================================================================
-ASPECT_MODE: Literal["crop_1920", "pillarbox_1024"] = "crop_1920"
+SERIES_ID = "shadow_slave"
 
 TARGET_WIDTH = 1920
 TARGET_HEIGHT = 1080
@@ -44,12 +40,24 @@ def load_credentials(file_path: str = CREDENTIALS_FILE) -> dict:
             with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
-            print(f"[Warning] Failed to parse '{file_path}': {e}", flush=True)
+            print(f"[Warning] Failed to parse credentials: {e}", flush=True)
     return {}
 
 
+def load_registry(file_path: str = REGISTRY_FILE, series_id: str = SERIES_ID) -> dict:
+    """Loads the character and environment registry for the selected series."""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"[Fatal] Missing registry file '{file_path}'.")
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    series_data = data.get("series", {}).get(series_id)
+    if not series_data:
+        raise KeyError(f"[Fatal] Series '{series_id}' not found in registry '{file_path}'.")
+    return series_data
+
+
 # =====================================================================
-# 1. HARDENED STORYBOARD SCHEMA & PROMPT GENERATOR
+# 1. GRANULAR STORYBOARD SCHEMA WITH DIALOGUE ENSEMBLE STAGING
 # =====================================================================
 
 class SceneBeat(BaseModel):
@@ -57,9 +65,10 @@ class SceneBeat(BaseModel):
     start_line: int
     end_line: int
     scene_title: str
-    camera_motion: Literal["zoom_in", "zoom_out", "pan_right", "tilt_down", "slow_push"]
+    staging_type: Literal["solo", "two_shot", "group_shot", "environment_only"]
+    camera_motion: Literal["zoom_slow", "zoom_punch", "pan_slow", "tilt_slumber", "shake_impact"]
     visual_prompt: str = Field(
-        description="A rich, sharp dark gothic fantasy matte painting prompt matching the master style guide."
+        description="A composition prompt embedding the exact character and group visual anchors from the registry."
     )
 
 
@@ -67,41 +76,56 @@ class StoryboardManifest(BaseModel):
     scenes: List[SceneBeat]
 
 
-def generate_dynamic_storyboard_strict(client, clean_title: str, staged_segments: list, max_retries: int = 4) -> List[dict]:
+def generate_dynamic_storyboard_strict(
+    client, clean_title: str, staged_segments: list, registry: dict, max_retries: int = 4
+) -> List[dict]:
     total_lines = len(staged_segments)
 
+    # Format script lines for Gemini context
     script_summary = []
     for s in staged_segments:
         line_num = int(s.get("line_id", 1))
         spk = s.get("speaker", "Narrator")
-        txt = s.get("text", "")[:100]
+        txt = s.get("text", "")[:110]
         script_summary.append(f"Line {line_num:03d} [{spk}]: {txt}")
 
     script_text = "\n".join(script_summary)
 
-    system_instruction = """
-You are a master digital matte painter and art director for a dark fantasy visual novel.
-Divide the chapter lines into 4 to 8 sequential visual scenes. For every scene, write an ultra-sharp, vivid concept art prompt.
+    # Serialize registry for Gemini injection
+    reg_context = json.dumps({
+        "characters": {k: v["visual_core"] for k, v in registry.get("characters", {}).items()},
+        "groups": {k: v["visual_core"] for k, v in registry.get("groups", {}).items()},
+        "environments": registry.get("environments", {}),
+        "style_suffix": registry.get("art_style_suffix", "")
+    }, indent=2)
 
-MANDATORY AESTHETIC STYLE RULES:
-1. Architectural Style: Dark gothic architecture, towering spires, intricate stone carvings, weathered castle masonry, ornate ironwork.
-2. Lighting & Color: High-contrast chiaroscuro. Deep slate-gray storm clouds illuminated by warm amber/orange lantern glow radiating from arched windows.
-3. Focal Accents: Include ominous glowing crimson/blood-red spherical orbs or sigils floating in the scene to anchor the composition.
-4. CRITICAL HUMAN FRAMING RULE:
-   - If a scene is about a CHARACTER (e.g. Sunny or Officer), the prompt MUST specify a 'Cinematic waist-up medium portrait' or 'Dramatic chest-up close shot'. The character's face and upper body MUST fill the majority of the frame so facial features are razor-sharp. NEVER render tiny full-body miniature characters sitting in distant landscapes.
-   - If a scene is about the ENVIRONMENT (e.g. city streets, station exterior, cosmic void), prompt a 'Pure architectural dark gothic matte painting' with ZERO human figures.
-5. Prompt Suffix: Every prompt must end with:
-   'masterpiece, dark gothic concept art, hyper-detailed architectural drafting, glowing amber windows, floating crimson orbs, sharp focus, volumetric lighting, 8k resolution.'
+    system_instruction = f"""
+You are an expert anime storyboard director.
+Divide this novel chapter into 18 to 26 rapid, visually engaging scene beats.
+DO NOT create long, static scenes. Cut frequently (every 10 to 30 seconds of content).
 
-RULES:
-- Cover all lines from line 1 to the final line continuously without gaps.
-- camera_motion must strictly be one of: zoom_in, zoom_out, pan_right, tilt_down, slow_push.
+MANDATORY STAGING RULES:
+1. SOLO SCENES ('solo'): When one character speaks or reflects alone, generate a waist-up medium portrait of that character using their exact visual core.
+2. TWO-PERSON DIALOGUE ('two_shot'): When two characters talk to each other (e.g. Sunny and Desk Officer), YOU MUST SHOW BOTH CHARACTERS IN THE SAME SCENE. Describe both characters' visual cores side-by-side or facing each other.
+3. GROUP SCENES ('group_shot'): When multiple guards, riot police, or crowds are involved, render a wide group shot featuring the main character alongside the group template.
+4. ENVIRONMENT SCENES ('environment_only'): For broad establishing shots or cosmic events with no characters, depict the gothic architecture with zero human figures.
+5. CAMERA MOTIONS:
+   - 'zoom_slow': Gradual dramatic push-in.
+   - 'zoom_punch': Fast intense zoom on key dialogue or sudden shocks.
+   - 'pan_slow': Horizontal pan across establishing environments.
+   - 'tilt_slumber': Downward vertical drift when drowsiness or falling is mentioned.
+   - 'shake_impact': Camera shake on alarms, yells, or sudden panic (e.g., Code Black).
+
+CANONICAL REGISTRY TEMPLATES:
+{reg_context}
+
+For every scene prompt, you MUST combine the staging characters/environments and append the exact style_suffix.
 """
 
-    prompt = f"CHAPTER TITLE: {clean_title}\nTOTAL LINES: {total_lines}\n\nLINES CHRONOLOGY:\n{script_text}"
+    prompt = f"CHAPTER: {clean_title}\nTOTAL LINES: {total_lines}\n\nLINES CHRONOLOGY:\n{script_text}"
 
     for attempt in range(1, max_retries + 1):
-        print(f"[Storyboard Director] Generating gothic scene prompts via Gemini (Attempt {attempt}/{max_retries})...", flush=True)
+        print(f"[Storyboard Director] Generating granular scene beats (Attempt {attempt}/{max_retries})...", flush=True)
         try:
             response = client.models.generate_content(
                 model="gemini-flash-lite-latest",
@@ -118,14 +142,14 @@ RULES:
                 data = json.loads(response.text)
                 scenes = data.get("scenes", [])
 
-                if len(scenes) >= 3:
+                if len(scenes) >= 12:
                     scenes[0]["start_line"] = 1
                     scenes[-1]["end_line"] = total_lines
 
                     for i in range(len(scenes) - 1):
                         scenes[i + 1]["start_line"] = scenes[i]["end_line"] + 1
 
-                    print(f"[Storyboard Director] [✓] Successfully styled {len(scenes)} dynamic gothic scenes.", flush=True)
+                    print(f"[Storyboard Director] [✓] Successfully mapped {len(scenes)} dynamic scene beats.", flush=True)
                     return scenes
 
         except Exception as e:
@@ -133,18 +157,17 @@ RULES:
             if attempt < max_retries:
                 time.sleep(attempt * 3.0)
 
-    raise RuntimeError("[Fatal] Failed to generate storyboard. Stopping to prevent low-quality output.")
+    raise RuntimeError("[Fatal] Failed to generate granular storyboard. Aborting to avoid low-quality output.")
 
 
 # =====================================================================
-# 2. POLLINATIONS FLUX ENGINE (SUPPORTING BOTH APPROACHES)
+# 2. POLLINATIONS 1920x1920 NATIVE + VERTICAL 16:9 CENTER CROP
 # =====================================================================
 
 def fetch_pollinations_artwork_strict(prompt: str, out_path: str, scene_idx: int) -> str:
     """
-    Fetches square artwork from Pollinations Flux and applies either:
-    - Approach 1 ('crop_1920'): Request 1920x1920 and vertical center-crop to 1920x1080.
-    - Approach 2 ('pillarbox_1024'): Request 1024x1024 and pillarbox with equal black bars.
+    Requests a 1920x1920 square canvas from Pollinations Flux to prevent horizontal squishing,
+    then center-crops vertically to 1920x1080 to maintain true anatomical proportions.
     """
     if os.path.exists(out_path) and os.path.getsize(out_path) > 20000:
         return out_path
@@ -158,17 +181,11 @@ def fetch_pollinations_artwork_strict(prompt: str, out_path: str, scene_idx: int
 
     while True:
         seed = random.randint(100000, 9999999)
-
-        if ASPECT_MODE == "crop_1920":
-            req_w, req_h = 1920, 1920
-        else:
-            req_w, req_h = 1024, 1024
-
         url = (
             f"https://image.pollinations.ai/prompt/{encoded}"
-            f"?width={req_w}&height={req_h}&seed={seed}&model=flux&nologo=true"
+            f"?width=1920&height=1920&seed={seed}&model=flux&nologo=true"
         )
-        print(f"     [Pollinations Flux] Scene {scene_idx} ({ASPECT_MODE} Mode | Attempt {attempt})...", flush=True)
+        print(f"     [Pollinations Flux] Scene {scene_idx} (Attempt {attempt})...", flush=True)
 
         try:
             resp = requests.get(url, headers=headers, timeout=60)
@@ -181,29 +198,15 @@ def fetch_pollinations_artwork_strict(prompt: str, out_path: str, scene_idx: int
 
                 base = Image.open(raw_temp).convert("RGBA")
 
-                if ASPECT_MODE == "crop_1920":
-                    # APPROACH 1: Scale to 1920 width, center-crop vertically to 1080 (zero stretching)
-                    base = ImageOps.fit(
-                        base,
-                        (TARGET_WIDTH, TARGET_HEIGHT),
-                        method=Image.Resampling.LANCZOS,
-                        centering=(0.5, 0.45)
-                    )
-                else:
-                    # APPROACH 2: Scale 1024x1024 to height 1080, pillarbox with equal black bars on sides
-                    scale_factor = TARGET_HEIGHT / float(base.size[1])
-                    new_w = int(base.size[0] * scale_factor)
-                    base_resized = base.resize((new_w, TARGET_HEIGHT), Image.Resampling.LANCZOS)
+                # Center-crop 1920x1920 vertically to 1920x1080 (zero horizontal stretch)
+                base = ImageOps.fit(
+                    base,
+                    (TARGET_WIDTH, TARGET_HEIGHT),
+                    method=Image.Resampling.LANCZOS,
+                    centering=(0.5, 0.45)
+                )
 
-                    canvas = Image.new("RGBA", (TARGET_WIDTH, TARGET_HEIGHT), (0, 0, 0, 255))
-                    offset_x = (TARGET_WIDTH - new_w) // 2
-                    canvas.paste(base_resized, (offset_x, 0))
-                    base = canvas
-
-                # Apply vignette for subtitle legibility
                 base = apply_lower_third_vignette(base)
-
-                # Save clean, uncompressed JPEG
                 base.convert("RGB").save(out_path, "JPEG", quality=95, subsampling=0)
 
                 try:
@@ -214,49 +217,56 @@ def fetch_pollinations_artwork_strict(prompt: str, out_path: str, scene_idx: int
                 print(f"     [Pollinations Flux] [✓] Scene {scene_idx} delivered with clean proportions!", flush=True)
                 return out_path
             else:
-                print(f"     [Pollinations Flux] Incomplete response (HTTP {resp.status_code}, {len(resp.content)} bytes). Retrying in 7s...", flush=True)
+                print(f"     [Pollinations Flux] Returned HTTP {resp.status_code}. Retrying in 7s...", flush=True)
 
         except Exception as e:
-            print(f"     [Pollinations Flux] Network warning: {e}. Retrying in 7s...", flush=True)
+            print(f"     [Pollinations Flux] Request failed: {e}. Retrying in 7s...", flush=True)
 
         attempt += 1
         time.sleep(7)
 
 
 # =====================================================================
-# 3. KEN BURNS MOTION COMPOSITOR (FFMPEG)
+# 3. ENHANCED MOTION ENGINE (ZOOM, TILT, PAN, SHAKE)
 # =====================================================================
 
 def render_ken_burns_segment(image_path: str, duration: float, motion_type: str, output_path: str):
     if os.path.exists(output_path) and os.path.getsize(output_path) > 10000:
         return
 
-    duration = max(2.5, duration)
+    duration = max(2.0, duration)
 
-    if motion_type == "zoom_in":
+    if motion_type == "zoom_punch":
+        # Fast punch-in for sudden dramatic beats
         zoom_filter = (
             "scale=2560:1440,"
-            "zoompan=z='min(zoom+0.0003,1.15)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
+            "zoompan=z='min(zoom+0.0012,1.25)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
         )
-    elif motion_type == "pan_right":
+    elif motion_type == "shake_impact":
+        # Rapid micro-shakes on impact/alarms (10% overscan prevents edge tearing)
         zoom_filter = (
             "scale=2560:1440,"
-            "zoompan=z=1.12:x='if(lte(on,1),(iw-iw/zoom)*0.15,min((iw-iw/zoom)*0.85,x+0.35))':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
+            "zoompan=z=1.12:"
+            "x='iw/2-(iw/zoom/2)+sin(on*4)*7':"
+            "y='ih/2-(ih/zoom/2)+cos(on*5)*7':"
+            "d=1:s=1920x1080:fps=24"
         )
-    elif motion_type == "tilt_down":
+    elif motion_type == "tilt_slumber":
+        # Slow downward drift mimicking heavy eyelids / falling asleep
         zoom_filter = (
             "scale=2560:1440,"
-            "zoompan=z=1.10:x='iw/2-(iw/zoom/2)':y='if(lte(on,1),0,min((ih-ih/zoom),y+0.25))':d=1:s=1920x1080:fps=24"
+            "zoompan=z=1.12:x='iw/2-(iw/zoom/2)':y='if(lte(on,1),0,min((ih-ih/zoom),y+0.45))':d=1:s=1920x1080:fps=24"
         )
-    elif motion_type == "zoom_out":
+    elif motion_type == "pan_slow":
+        # Wide horizontal sweep
         zoom_filter = (
             "scale=2560:1440,"
-            "zoompan=z='if(lte(zoom,1.0),1.15,max(1.001,zoom-0.0003))':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
+            "zoompan=z=1.14:x='if(lte(on,1),(iw-iw/zoom)*0.15,min((iw-iw/zoom)*0.85,x+0.45))':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
         )
-    else:  # slow_push
+    else:  # zoom_slow fallback
         zoom_filter = (
             "scale=2560:1440,"
-            "zoompan=z='min(zoom+0.0002,1.12)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
+            "zoompan=z='min(zoom+0.0004,1.15)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=24"
         )
 
     cmd = [
@@ -280,13 +290,14 @@ async def run_strict_dynamic_pipeline():
         raise ValueError("[Fatal] No valid Gemini API key found in api_credentials.json or environment.")
 
     client = genai.Client(api_key=gemini_key)
+    registry = load_registry(REGISTRY_FILE, series_id=SERIES_ID)
 
     os.makedirs(BUILD_DIR, exist_ok=True)
     chapter_url = "https://freewebnovel.com/novel/shadow-slave/chapter-1"
     ch_num = 1
 
     print("\n=======================================================", flush=True)
-    print(f"  SHADOW SLAVE: GOTHIC MOTION COMIC ({ASPECT_MODE.upper()})", flush=True)
+    print(f"  {registry['title'].upper()}: HIGH-TEMPO MOTION COMIC", flush=True)
     print("=======================================================\n", flush=True)
 
     # 1. Scrape chapter text
@@ -302,9 +313,9 @@ async def run_strict_dynamic_pipeline():
     total_lines = len(staged_segments)
     print(f"      Staged {total_lines} dialogue and narration lines.", flush=True)
 
-    # 3. Dynamic Storyboard Analysis
-    print("\n[3/5] Constructing Content-Driven Gothic Scene Beats...", flush=True)
-    storyboard = generate_dynamic_storyboard_strict(client, clean_title, staged_segments)
+    # 3. Dynamic Storyboard with Character Registry Injection
+    print("\n[3/5] Constructing Storyboard with Dialogue Staging (Solo, Two-Shot, Group)...", flush=True)
+    storyboard = generate_dynamic_storyboard_strict(client, clean_title, staged_segments, registry)
 
     # 4. Multi-Voice Audio Generation
     print("\n[4/5] Synthesizing Multi-Voice TTS Audio & Timings...", flush=True)
@@ -321,28 +332,30 @@ async def run_strict_dynamic_pipeline():
     build_srt_subtitles(rel_subtitles, srt_path)
     print(f"      Master Audio Duration: {total_duration:.2f}s across {len(rel_subtitles)} subtitle records.", flush=True)
 
-    # 5. Exact Slicing & Visual Generation
-    print("\n[5/5] Synthesizing Visuals and Camera Motion...", flush=True)
+    # 5. Exact Timestamp Slicing & Visual Generation
+    print(f"\n[5/5] Synthesizing {len(storyboard)} Visual Scenes with Camera Motions...", flush=True)
     rendered_video_segments = []
 
     for scene in storyboard:
         s_id = scene["scene_id"]
         s_title = scene["scene_title"]
-        s_start = max(1, min(scene["start_line"], len(rel_subtitles)))
-        s_end = max(s_start, min(scene["end_line"], len(rel_subtitles)))
+        staging = scene["staging_type"]
         motion = scene["camera_motion"]
         prompt = scene["visual_prompt"]
+
+        s_start = max(1, min(scene["start_line"], len(rel_subtitles)))
+        s_end = max(s_start, min(scene["end_line"], len(rel_subtitles)))
 
         start_timestamp = rel_subtitles[s_start - 1][0]
         end_timestamp = rel_subtitles[s_end - 1][1]
         scene_dur = max(2.5, end_timestamp - start_timestamp)
 
-        print(f"\n   -> Scene {s_id}: '{s_title}'", flush=True)
-        print(f"      Lines: {s_start} to {s_end} | Duration: {scene_dur:.2f}s ({start_timestamp:.1f}s -> {end_timestamp:.1f}s)", flush=True)
-        print(f"      Prompt: {prompt[:120]}...", flush=True)
+        print(f"\n   -> Scene {s_id:02d}: '{s_title}' [{staging.upper()}]", flush=True)
+        print(f"      Lines: {s_start} to {s_end} | Duration: {scene_dur:.2f}s | Motion: {motion}", flush=True)
+        print(f"      Prompt: {prompt[:130]}...", flush=True)
 
-        art_file = os.path.join(BUILD_DIR, f"scene_{s_id}_flux.jpg")
-        video_seg_file = os.path.join(BUILD_DIR, f"v_seg_{s_id}.mp4")
+        art_file = os.path.join(BUILD_DIR, f"scene_{s_id:02d}_flux.jpg")
+        video_seg_file = os.path.join(BUILD_DIR, f"v_seg_{s_id:02d}.mp4")
 
         fetch_pollinations_artwork_strict(prompt, art_file, scene_idx=s_id)
         render_ken_burns_segment(art_file, scene_dur, motion, video_seg_file)
@@ -379,7 +392,7 @@ async def run_strict_dynamic_pipeline():
     subprocess.run(final_cmd, check=True)
 
     print(f"\n=======================================================", flush=True)
-    print(f"  [SUCCESS] High-Definition Gothic Motion Comic Ready: '{OUTPUT_VIDEO}'", flush=True)
+    print(f"  [SUCCESS] High-Tempo Dynamic Motion Comic Ready: '{OUTPUT_VIDEO}'", flush=True)
     print(f"=======================================================\n", flush=True)
 
 

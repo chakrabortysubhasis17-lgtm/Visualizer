@@ -1,0 +1,37 @@
+{
+  "series": {
+    "shadow_slave": {
+      "title": "Shadow Slave",
+      "art_style_suffix": "dark gothic fantasy matte painting, masterpiece, hyper-detailed stone textures, glowing amber windows, floating crimson orbs, sharp focus, volumetric lighting, 8k resolution, cinematic 16:9",
+      "characters": {
+        "sunny": {
+          "canonical_name": "Sunny",
+          "aliases": ["sunny", "sunless", "boy", "kid", "young man"],
+          "visual_core": "young 16-year-old frail teenage boy, messy raven-black disheveled hair, pale sickly complexion, heavy dark exhaustion circles under eyes, worn simple dark scavengers clothes",
+          "negative_prompt": "female, muscular, glowing eyes, beard, happy, colorful robes"
+        },
+        "desk_officer": {
+          "canonical_name": "Desk Officer",
+          "aliases": ["officer", "policeman", "tired looking officer", "old policeman"],
+          "visual_core": "stern grizzled 50-year-old male police officer, short graying crew-cut hair, weathered tired face, square jaw, dark armored tactical police uniform with silver badge",
+          "negative_prompt": "female, young boy, fantasy knight, royal gold armor"
+        }
+      },
+      "groups": {
+        "armed_guards": {
+          "aliases": ["guards", "policemen", "armed officers"],
+          "visual_core": "squad of stern armored riot police officers in heavy dark tactical plate armor holding automatic rifles"
+        },
+        "city_crowd": {
+          "aliases": ["crowd", "citizens", "rich people", "pedestrians"],
+          "visual_core": "crowd of tall well-dressed wealthy city citizens walking briskly through dark misty streets"
+        }
+      },
+      "environments": {
+        "police_bench": "dark gothic dystopian street, rusted iron bench, towering oppressive stone spires, cold mist, warm amber lantern glow from arched windows",
+        "station_lobby": "heavily fortified police station lobby with thick steel blast doors, reinforced armored wall plates, ceiling automated turret nests",
+        "interrogation_vault": "subterranean fortified vault room, reinforced steel blast doors, cold metal restraint chair, dim flickering fluorescent lighting, oppressive shadows"
+      }
+    }
+  }
+}
