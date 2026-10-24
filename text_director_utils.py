@@ -159,33 +159,40 @@ def cache_set(key: str, value: Any, expire_seconds: Optional[int] = 86400 * 7):
         pass
 
 
-def clean_and_parse_json(raw_text: str) -> Any:
-    cleaned = raw_text.strip()
-    fence_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", cleaned, re.IGNORECASE)
-    if fence_match:
-        cleaned = fence_match.group(1).strip()
-    elif cleaned.startswith("```"):
-        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
-        cleaned = re.sub(r"\s*```$", "", cleaned).strip()
+def clean_and_parse_json(raw_text: str):
+    clean = raw_text.strip()
+    
+    # Strip markdown wrappers if present
+    if clean.startswith("```"):
+        clean = re.sub(r"^```[a-zA-Z]*\n", "", clean)
+        clean = re.sub(r"\n```$", "", clean).strip()
 
-    if ORJSON_AVAILABLE:
-        try:
-            return orjson.loads(cleaned)
-        except Exception:
-            pass
     try:
-        return json.loads(cleaned)
-    except Exception:
+        return json.loads(clean)
+    except json.JSONDecodeError:
         pass
 
-    sanitized = re.sub(r',+(\s*[\]}])', r'\1', cleaned)
+    # Recovery: Attempt auto-closing truncated segment arrays
+    if clean.startswith("{") and not clean.endswith("}"):
+        # Find last completed segment object
+        last_brace = clean.rfind("}")
+        if last_brace != -1:
+            repaired = clean[:last_brace + 1] + "]}"
+            try:
+                return json.loads(repaired)
+            except Exception:
+                pass
+                
+    if clean.startswith("[") and not clean.endswith("]"):
+        last_brace = clean.rfind("}")
+        if last_brace != -1:
+            repaired = clean[:last_brace + 1] + "]"
+            try:
+                return json.loads(repaired)
+            except Exception:
+                pass
 
-    if ORJSON_AVAILABLE:
-        try:
-            return orjson.loads(sanitized)
-        except Exception:
-            pass
-    return json.loads(sanitized)
+    raise json.JSONDecodeError("Failed to parse or repair Gemini JSON output", clean, 0)
 
 
 # =====================================================================

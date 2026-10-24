@@ -76,11 +76,15 @@ CONFIG = {
     "end_chapter": 203,
     "default_topic": "Catgirls and Dungeons",
 
-    # Concurrency Settings
+    # Concurrency Settings & Narrator Lock
     "batch_size": 3,
     "parallel_chapters": 3,
     "global_max_tts": 6,
     "max_narration_merge": 650,
+    "narrator_voice": "en-US-ChristopherNeural",
+
+    # 1-Liner Story Intro Hook (Since start_chapter > 1, pipeline prefixes "Today's journey continues from previous episode.")
+    "intro_hook": "We rejoin Felicia and Aris as they settle into their new sanctuary and encounter their surprisingly lifelike homunculi maids.",
 
     # Filepaths & Outputs
     "build_dir": BUILD_DIR,

@@ -250,85 +250,130 @@ def log_banner(title: str, subtitle: str = ""):
 
 
 # =====================================================================
-# CHANNEL INTRO SEGMENTS
+# DYNAMIC CHANNEL INTRO SEGMENTS
 # =====================================================================
 
-def get_channel_intro_segments(narrator_voice: str = "en-US-ChristopherNeural") -> list:
+def get_channel_intro_segments(
+    start_chapter: int = 1,
+    intro_hook: str = "",
+    narrator_voice: str = "en-US-ChristopherNeural"
+) -> list:
     """
-    Creates a cinematic narrative hook with atmospheric pacing,
-    deliberate cadence, and dedicated breathing pauses.
+    Creates dynamic channel intro segments:
+    1. Welcome back to Being a Bong!
+    2. Start chapter check:
+       - Ch 1:  'Today, we begin a new podcast.'
+       - Ch >1: "Today's journey continues from previous episode."
+    3. 1-liner story hook from runner
+    4. '.. but Before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below.'
+    5. "Adjust your volume, settle in, and let's begin today's episode."
     """
-    return [
+    chapter_status_text = (
+        "Today, we begin a new podcast."
+        if start_chapter == 1
+        else "Today's journey continues from previous episode."
+    )
+
+    segments = [
         {
             "line_id": "intro_01",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Welcome back to Being a Bong.",
-            "voice": "en-US-ChristopherNeural",
+            "text": "Welcome back to Being a Bong!",
+            "voice": narrator_voice,
             "pitch": "-2Hz",
             "rate": "-2%"
         },
         {
-            "line_id": "intro_pause_06s",
+            "line_id": "intro_pause_01",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
             "pause_duration": 0.6,
-            "voice": "en-US-ChristopherNeural",
+            "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
         },
         {
-            "line_id": "intro_02",
+            "line_id": "intro_02_status",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Whether you're grinding through work, relaxing at home, or getting ready for bed, you are in the right place for another non-stop adventure.",
-            "voice": "en-US-ChristopherNeural",
+            "text": chapter_status_text,
+            "voice": narrator_voice,
             "pitch": "-2Hz",
             "rate": "-1%"
         },
         {
-            "line_id": "intro_pause_08s",
+            "line_id": "intro_pause_02",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 0.8,
-            "voice": "en-US-ChristopherNeural",
+            "pause_duration": 0.6,
+            "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
-        },
+        }
+    ]
+
+    # Optional 1-liner story hook provided from the runner
+    if intro_hook and intro_hook.strip():
+        segments.extend([
+            {
+                "line_id": "intro_03_hook",
+                "speaker": "Narrator",
+                "gender": "Male",
+                "line_type": "Narration",
+                "text": intro_hook.strip(),
+                "voice": narrator_voice,
+                "pitch": "-2Hz",
+                "rate": "-1%"
+            },
+            {
+                "line_id": "intro_pause_03",
+                "speaker": "Narrator",
+                "gender": "Male",
+                "line_type": "Narration",
+                "text": "",
+                "pause_duration": 0.8,
+                "voice": narrator_voice,
+                "pitch": "+0Hz",
+                "rate": "+0%"
+            }
+        ])
+
+    segments.extend([
         {
-            "line_id": "intro_03",
+            "line_id": "intro_04_cta",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Before the world unfolds, do me a quick favor: hit that Like button, tap Subscribe, and say hello in the comments. Your support is the engine that keeps these massive releases alive.",
-            "voice": "en-US-ChristopherNeural",
+            "text": ".. but Before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below.",
+            "voice": narrator_voice,
             "pitch": "-1Hz",
             "rate": "+0%"
         },
         {
-            "line_id": "intro_pause_08s_b",
+            "line_id": "intro_pause_04",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
             "pause_duration": 0.8,
-            "voice": "en-US-ChristopherNeural",
+            "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
         },
         {
-            "line_id": "intro_04",
+            "line_id": "intro_05_closer",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Adjust your volume, get comfortable, and let's dive in.",
-            "voice": "en-US-ChristopherNeural",
+            "text": "Adjust your volume, settle in, and let's begin today's episode.",
+            "voice": narrator_voice,
             "pitch": "-2Hz",
             "rate": "-2%"
         },
@@ -339,11 +384,13 @@ def get_channel_intro_segments(narrator_voice: str = "en-US-ChristopherNeural") 
             "line_type": "Narration",
             "text": "",
             "pause_duration": 1.6,
-            "voice": "en-US-ChristopherNeural",
+            "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"
         }
-    ]
+    ])
+
+    return segments
 
 
 # =====================================================================
@@ -488,10 +535,16 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 cleaned_rows.append(r)
             rows = cleaned_rows
 
+            # Prepend clean dynamic intro to the first chapter in this run
             if ch_num == start_ch:
-                intro_segments = get_channel_intro_segments(narrator_voice)
-                if not any(r.get("line_id") == "intro_01" for r in rows):
-                    rows = intro_segments + rows
+                intro_hook = config.get("intro_hook", "")
+                intro_segments = get_channel_intro_segments(
+                    start_chapter=start_ch,
+                    intro_hook=intro_hook,
+                    narrator_voice=narrator_voice
+                )
+                non_intro_rows = [r for r in rows if not str(r.get("line_id", "")).startswith("intro_")]
+                rows = intro_segments + non_intro_rows
 
             manifest_data = {"title": title, "rows": rows, "next_url": curr_url}
             if AIOFILES_AVAILABLE:

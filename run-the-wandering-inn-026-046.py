@@ -5,6 +5,7 @@ from pipeline_orchestrator import run_audiobook_pipeline
 
 CREDENTIALS_FILE = "api_credentials.json"
 
+
 def load_credentials(file_path: str = CREDENTIALS_FILE) -> dict:
     if os.path.exists(file_path):
         try:
@@ -13,6 +14,7 @@ def load_credentials(file_path: str = CREDENTIALS_FILE) -> dict:
         except Exception as e:
             print(f"[Warning] Failed to parse '{file_path}': {e}", flush=True)
     return {}
+
 
 creds = load_credentials()
 
@@ -36,6 +38,7 @@ if (not cf_id or not cf_token) and creds.get("cloudflare_accounts"):
 cf_id = cf_id or os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
 cf_token = cf_token or os.environ.get("CLOUDFLARE_API_TOKEN", "")
 
+
 def purge_corrupt_or_fallback_cache(build_dir: str):
     """
     Purges placeholder files, corrupt manifests, and rule-based fallback files
@@ -51,10 +54,10 @@ def purge_corrupt_or_fallback_cache(build_dir: str):
                 with open(fpath, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 rows = data.get("rows", [])
-                
+
                 is_dummy = len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows)
                 is_fallback_only = not any(r.get("speaker") not in ["Narrator", "Mc", "System"] for r in rows)
-                
+
                 if is_dummy or is_fallback_only:
                     os.remove(fpath)
                     removed += 1
@@ -67,7 +70,8 @@ def purge_corrupt_or_fallback_cache(build_dir: str):
     if removed > 0:
         print(f"[Pre-Flight Cleanup] [OK] Purged {removed} invalid/fallback staged files. Gemini Director will parse cleanly.", flush=True)
 
-BUILD_DIR = "build_the_wandering_inn_026_050"
+
+BUILD_DIR = "build_the_wandering_inn_026_046"
 purge_corrupt_or_fallback_cache(BUILD_DIR)
 
 CONFIG = {
@@ -80,24 +84,27 @@ CONFIG = {
     "novel_slug": "the-wandering-inn",
     "start_url": "https://freewebnovel.com/novel/the-wandering-inn/chapter-30",
     "start_chapter": 26,
-    "end_chapter": 50,
-    "default_topic": "The Wandering Inn / LitRPG / Fantasy Innkeeper / Liscor",
+    "end_chapter": 46,
+    "default_topic": "The Wandering Inn / LitRPG / Liscor Floodplains / Ryoka Griffin / Erin Solstice",
 
-    # Concurrency Settings
+    # Concurrency & Locked Narrator Voice Settings
     "batch_size": 3,
     "parallel_chapters": 3,
     "global_max_tts": 6,
     "max_narration_merge": 650,
-    "narrator_voice": "en-US-GuyNeural",
+    "narrator_voice": "en-US-ChristopherNeural",
+
+    # 1-Liner Story Intro Hook (Since start_chapter > 1, pipeline prefixes continuation intro)
+    "intro_hook": "We rejoin Erin Solstice and Ryoka Griffin as the harsh realities of Izril set in, forcing an innkeeper and a bare-footed runner to navigate dangerous alliances and deadly winter beasts.",
 
     # Filepaths & Outputs
     "build_dir": BUILD_DIR,
-    "final_audio": "output_the_wandering_inn_026_050.mp3",
-    "final_video": "final_the_wandering_inn_026_050.mp4",
-    "cover_image": "cover_the_wandering_inn_026_050.jpg",
-    "timestamps_file": "youtube_timestamps_the_wandering_inn_026_050.txt",
-    "subtitles_file": "subtitles_the_wandering_inn_026_050.srt",
-    "payload_file": "youtube_upload_payload_the_wandering_inn_026_050.json",
+    "final_audio": "output_the_wandering_inn_026_046.mp3",
+    "final_video": "final_the_wandering_inn_026_046.mp4",
+    "cover_image": "cover_the_wandering_inn_026_046.jpg",
+    "timestamps_file": "youtube_timestamps_the_wandering_inn_026_046.txt",
+    "subtitles_file": "subtitles_the_wandering_inn_026_046.srt",
+    "payload_file": "youtube_upload_payload_the_wandering_inn_026_046.json",
 
     # Branding Overlay Assets
     "branding_assets": {
@@ -114,19 +121,22 @@ CONFIG = {
     ],
 
     # YouTube Metadata
-    "video_title": "The Wandering Inn | Ch 26 - 50 Full Audio Novel Marathon | Volume 1 Arc",
+    "video_title": "The Wandering Inn | Ch 26 - 46 Full Audio Novel Marathon | Rising Shadows of Izril",
     "privacy_status": "unlisted",
     "tags": [
-        "The Wandering Inn", "Wandering Inn Audiobook", "Erin Solstice", "Relc and Klbkch",
-        "Horns of Hammerhand", "Skinner", "Liscor", "LitRPG Audiobook", "Fantasy Audiobook",
+        "The Wandering Inn", "Wandering Inn Audiobook", "Erin Solstice", "Ryoka Griffin",
+        "Liscor", "Antinium", "Klbkch", "Relc", "LitRPG Audiobook", "Fantasy Audiobook",
         "Progression Fantasy", "Audiobook Marathon", "Web Novel Audiobook", "Being A Bong"
     ],
     "desc_header": (
         "Welcome back to Being a Bong!\n\n"
-        "Experience the uninterrupted 25-chapter audio novel marathon of 'The Wandering Inn' (Chapters 26 to 50) — Volume 1.\n\n"
-        "Follow Erin Solstice as the stakes escalate around the outskirts of Liscor. Witness the Horns of Hammerhand brave the ancient subterranean ruins, "
-        "the growing bonds with Rags and the local Goblins, the terror emerging from the crypts beneath the city, and the desperate stand to protect the inn.\n\n"
+        "Experience the complete 21-chapter audio novel marathon of 'The Wandering Inn' (Chapters 26 to 46).\n\n"
+        "As Erin Solstice continues carving out a sanctuary in her lonely inn on the floodplains outside Liscor, "
+        "the world of Izril refuses to stay simple. Tensions flare between Drakes and Antinium, while city runner "
+        "Ryoka Griffin tests her speed and survival against the treacherous wilderness, winter predators, and the complex web of power. "
+        "Witness shifting bonds, unforgettable chess games, and the darkening horizon before the volume finale.\n\n"
         "🎧 AUDIO MASTER: Broadcast Standard (-14 LUFS, flat dynamic curve, vocal presence).\n"
+        "🎙️ NARRATION: en-US-ChristopherNeural (Deep Cinematic Baritone).\n"
         "📖 CLOSED CAPTIONS: Multilingual Subtitles (15 languages available in Soft CC).\n"
         "🎨 VISUAL ENGINE: Dynamic 4K Visual Arc Blocks + 15s Outro Slate.\n\n"
         "══════════════════════════════════════════════\nTIMESTAMPS:\n"
@@ -135,56 +145,49 @@ CONFIG = {
         "\n══════════════════════════════════════════════\n\n"
         "DISCLAIMER:\n"
         "This audiobook is an edited, dramatized fan adaptation produced for literature commentary and entertainment purposes.\n\n"
-        "#TheWanderingInn #ErinSolstice #LitRPG #FantasyAudiobook #ProgressionFantasy #AudiobookMarathon #BeingABong"
+        "#TheWanderingInn #ErinSolstice #RyokaGriffin #LitRPG #FantasyAudiobook #ProgressionFantasy #AudiobookMarathon #BeingABong"
     ),
 
-    # 5 Thematic Arc Visual Blocks for Chapters 26 to 50 (5 Chapters each)
+    # 4 Thematic Arc Visual Blocks spanning Chapters 26 to 46
     "blocks": [
         {
             "index": 1, "range": (26, 30),
-            "title": ["RUINS EXPLORATION", "HORNS OF HAMMERHAND"],
-            "fallback_color": (25, 20, 30),
+            "title": ["CHESSBOARD DIPLOMACY", "THE ANCHOR OF LISCOR"],
+            "fallback_color": (30, 25, 20),
             "prompt": (
-                "Cinematic 3D fantasy scene of an adventuring bronze-rank party exploring an ancient, moss-covered subterranean stone ruin, "
-                "a young half-elf cryomancer in silver-trimmed robes casting a glowing icy frost barrier, torches casting flickering orange light on damp carved stone pillars, "
-                "atmospheric dust motes, 4K rendering."
+                "Cinematic high-fantasy interior of a rustic stone inn common room lit by glowing hearth fire, "
+                "a young human woman with messy brown hair leaning over a wooden chessboard opposite a tall insectoid Antinium soldier "
+                "with polished black chitin armor, warm amber lighting, detailed wood grain and soft shadows, 4K resolution."
             )
         },
         {
             "index": 2, "range": (31, 35),
-            "title": ["GOBLIN ALLIANCE", "RAGS & THE HEARTH"],
-            "fallback_color": (20, 25, 20),
+            "title": ["THE BAREFOOT RUNNER", "ROADS OF THE FLOODPLAINS"],
+            "fallback_color": (20, 25, 35),
             "prompt": (
-                "Cinematic high-fantasy tavern scene inside a rustic stone inn, a sharp-eyed small female goblin with a scrap-cloth headband seated by the hearth, "
-                "eating fresh bread and sweet juice offered by a gentle young human innkeeper, warm embers glowing, emotional narrative lighting, detailed textures."
+                "Cinematic dramatic wide-angle shot of an athletic young human woman with dark hair sprinting barefoot across craggy, "
+                "windswept grasslands, a heavy leather courier bag strapped to her back, dramatic overcast autumn storm clouds rolling over jagged mountain foothills, "
+                "volumetric mist, sharp detailed textures."
             )
         },
         {
             "index": 3, "range": (36, 40),
-            "title": ["THE CRYPT OF LISCOR", "ANCIENT TERROR"],
-            "fallback_color": (15, 15, 25),
+            "title": ["SHADOWS IN THE CAVES", "DRAKE DEFENDERS"],
+            "fallback_color": (25, 15, 20),
             "prompt": (
-                "Cinematic dark fantasy scene deep beneath Liscor's floodplains in a massive vaulted tomb of cracked white stone, "
-                "a monstrous skeletal abomination with draped flayed skins emerging from shadow, armored Drake guards and adventurers drawing weapons in fear, "
-                "eerie bioluminescent green mist, high tension."
+                "Cinematic action composition outside ancient rocky cave tunnels at dusk, a large scaled green Drake city guard holding a barbed spear "
+                "standing shoulder-to-shoulder with a black-carapace insectoid warrior facing ferocious multi-legged subterranean cave monsters, "
+                "glowing torchlight, dramatic rim lighting, gritty fantasy."
             )
         },
         {
-            "index": 4, "range": (41, 45),
-            "title": ["DEFENSE OF THE INN", "ANTINIUM VALOR"],
-            "fallback_color": (30, 15, 20),
+            "index": 4, "range": (41, 46),
+            "title": ["THE GATHERING COLD", "SANCTUARY UNDER TRIAL"],
+            "fallback_color": (25, 30, 35),
             "prompt": (
-                "Cinematic intense action scene on the grassy plains outside the solitary inn at night, an Antinium warrior with gleaming black carapace "
-                "wielding dual swords locked in desperate combat against swarming crypt ghouls and spiders, protectively holding the entryway, dramatic dynamic battle lighting."
-            )
-        },
-        {
-            "index": 5, "range": (46, 50),
-            "title": ["THE SKINNER SIEGE", "HEARTH OF LISCOR"],
-            "fallback_color": (35, 20, 15),
-            "prompt": (
-                "Cinematic wide angle climax shot of the stone inn under siege at daybreak, magical fiery projectiles and frost bursts lighting the foggy morning sky, "
-                "the resilient young innkeeper holding high a glowing lantern of pure warm light rallying human, drake, and antinium survivors together, heroic 4K composition."
+                "Cinematic twilight landscape of an isolated two-story stone inn sitting alone in the middle of vast darkening floodplains, "
+                "early winter frost dusting the plains grass, warm orange firelight spilling from the downstairs windows into the cold evening blue, "
+                "atmospheric mist, moody high-fantasy masterpiece."
             )
         }
     ]
