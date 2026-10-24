@@ -462,161 +462,196 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         log_info("Gemini API key not supplied or SDK missing. Rule-based staging active.")
 
     # ---------------------------------------------------------
-    # PHASE 1: Scrape & Director Parsing with Real-time Learning
+    # STEP 2 (INDEPENDENT BACKGROUND WORKER): Visual Engine
+    # Runs completely decoupled in threadpool; does not block Step 1 or Step 3.
     # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 1/5] Scraping Chapters & Parsing with Dynamic Registry...")
-    staged_chapters = []
+    blocks = config.get("blocks", [])
+    if not blocks:
+        single_cover = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
+        blocks = [{"index": 0, "range": (start_ch, end_ch), "cover_file": single_cover}]
+
+    primary_thumb = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
+
+    def _execute_visuals_sync():
+        log_info(f"[{novel_slug}] [Step 2: Visual Engine] Spawning background cover and outro slate generation...")
+        for cfg in blocks:
+            r_start, r_end = cfg["range"]
+            cfg["cover_file"] = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
+            ensure_block_cover_jit(
+                cfg,
+                build_dir,
+                branding,
+                config.get("cf_account_id"),
+                config.get("cf_api_token")
+            )
+            if verify_cover_integrity(cfg["cover_file"]):
+                log_success(f"Block {cfg.get('index', 1):02d} Cover verified: '{os.path.basename(cfg['cover_file'])}'")
+
+        outro_slate = os.path.join(build_dir, "outro_slate_card.jpg")
+        create_dynamic_outro_slate(outro_slate, build_dir, branding, next_ch_num=end_ch + 1)
+        if verify_cover_integrity(outro_slate):
+            log_success("Outro slate card verified.")
+
+        if blocks and os.path.exists(blocks[0]["cover_file"]) and not os.path.exists(primary_thumb):
+            shutil.copy2(blocks[0]["cover_file"], primary_thumb)
+            log_success(f"Primary thumbnail created: '{primary_thumb}'")
+
+    visuals_background_task = asyncio.create_task(asyncio.to_thread(_execute_visuals_sync))
+
+    # ---------------------------------------------------------
+    # STEPS 1 & 3: STREAMING PIPELINE (Producer -> Consumer via Queue)
+    # Step 3 starts synthesizing audio as soon as Step 1 finishes each chapter.
+    # ---------------------------------------------------------
+    parallel_chapters = config.get("parallel_chapters", 3)
+    global_max_tts = config.get("global_max_tts", 6)
+    tts_workers_per_chapter = max(1, global_max_tts // parallel_chapters)
     narration_threshold = config.get("max_narration_merge", 650)
     narrator_voice = config.get("narrator_voice", "en-US-GuyNeural")
 
-    with httpx.Client(follow_redirects=True, timeout=30.0) as session:
-        curr_url = config.get("start_url")
-        for ch_num in range(start_ch, end_ch + 1):
-            ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
+    chapter_queue: asyncio.Queue = asyncio.Queue(maxsize=parallel_chapters * 2)
+    synthesized_results: List[Tuple[int, str, float, str, list]] = []
+    results_lock = asyncio.Lock()
 
-            if os.path.exists(ch_json):
-                try:
-                    if AIOFILES_AVAILABLE:
-                        async with aiofiles.open(ch_json, "r", encoding="utf-8") as f:
-                            cached = clean_and_parse_json(await f.read())
-                    else:
-                        with open(ch_json, "r", encoding="utf-8") as f:
-                            cached = clean_and_parse_json(f.read())
+    # Step 3 Consumer Worker
+    async def tts_consumer_worker(worker_id: int):
+        ch_sem = asyncio.Semaphore(tts_workers_per_chapter)
+        while True:
+            item = await chapter_queue.get()
+            if item is None:
+                chapter_queue.task_done()
+                break
+            ch_num, rows, title = item
+            log_info(f"[TTS Worker {worker_id}] Spawning Chapter {ch_num:03d} execution ({len(rows)} segments)...")
+            res = await synthesize_chapter_task(ch_num, rows, title, build_dir, ch_sem)
+            async with results_lock:
+                synthesized_results.append(res)
+            chapter_queue.task_done()
 
-                    rows = cached.get("rows", [])
-                    if len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows):
-                        raise ValueError(f"Corrupt or placeholder manifest in Ch {ch_num}")
+    consumer_tasks = [
+        asyncio.create_task(tts_consumer_worker(i + 1))
+        for i in range(parallel_chapters)
+    ]
 
-                    title = cached.get("title", f"Ch {ch_num:03d}")
-                    cached_next = cached.get("next_url")
-                    if cached_next:
-                        curr_url = cached_next
-                    elif curr_url:
-                        curr_url = scrape_chapter_content(
-                            session, curr_url, ch_num, config.get("default_topic", "Arc")
-                        )[2]
+    # Step 1 Producer
+    def _parse_single_chapter_sync(session, ch_num, curr_url):
+        ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
+        if os.path.exists(ch_json):
+            try:
+                with open(ch_json, "r", encoding="utf-8") as f:
+                    cached = clean_and_parse_json(f.read())
 
-                    # Sync cached chapter character records into active staging
-                    sync_new_characters_to_staging(stage_file, rows)
-                    log_success(f"Ch {ch_num:03d}: Manifest verified and characters synced ({len(rows)} segments).")
-                except Exception:
-                    if not curr_url:
-                        log_warning(f"Missing scrape URL at Chapter {ch_num:03d}")
-                        break
-                    title, text, next_url = scrape_chapter_content(
+                rows = cached.get("rows", [])
+                if len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows):
+                    raise ValueError(f"Corrupt or placeholder manifest in Ch {ch_num}")
+
+                title = cached.get("title", f"Ch {ch_num:03d}")
+                cached_next = cached.get("next_url")
+                if cached_next:
+                    curr_url = cached_next
+                elif curr_url:
+                    curr_url = scrape_chapter_content(
                         session, curr_url, ch_num, config.get("default_topic", "Arc")
-                    )
-                    rows = parse_chapter_via_gemini_director(
-                        gemini_client, title, text, stage_file, narration_threshold
-                    )
-                    curr_url = next_url
-            else:
+                    )[2]
+
+                sync_new_characters_to_staging(stage_file, rows)
+                log_success(f"Ch {ch_num:03d}: Manifest verified and characters synced ({len(rows)} segments).")
+                return title, rows, curr_url
+            except Exception:
                 if not curr_url:
-                    log_warning(f"End of novel or missing next URL at Chapter {ch_num:03d}")
-                    break
+                    log_warning(f"Missing scrape URL at Chapter {ch_num:03d}")
+                    return None, None, None
                 title, text, next_url = scrape_chapter_content(
                     session, curr_url, ch_num, config.get("default_topic", "Arc")
                 )
                 rows = parse_chapter_via_gemini_director(
                     gemini_client, title, text, stage_file, narration_threshold
                 )
+                return title, rows, next_url
+        else:
+            if not curr_url:
+                log_warning(f"End of novel or missing next URL at Chapter {ch_num:03d}")
+                return None, None, None
+            title, text, next_url = scrape_chapter_content(
+                session, curr_url, ch_num, config.get("default_topic", "Arc")
+            )
+            rows = parse_chapter_via_gemini_director(
+                gemini_client, title, text, stage_file, narration_threshold
+            )
+            return title, rows, next_url
+
+    async def step1_producer_scrape_and_parse():
+        log_info(f"[{novel_slug}] [Streaming Pipe] Step 1 (Scraper/Director) & Step 3 (TTS) active concurrently...")
+        with httpx.Client(follow_redirects=True, timeout=30.0) as session:
+            curr_url = config.get("start_url")
+            for ch_num in range(start_ch, end_ch + 1):
+                title, rows, next_url = await asyncio.to_thread(
+                    _parse_single_chapter_sync, session, ch_num, curr_url
+                )
+                if rows is None:
+                    break
                 curr_url = next_url
 
-            # Normalize title pronunciation (e.g. CH 201 -> Chapter 201)
-            title = sanitize_chapter_title(title)
+                # Normalize title pronunciation (e.g. CH 201 -> Chapter 201)
+                title = sanitize_chapter_title(title)
 
-            # Apply comprehensive audiobook text sanitization & filter out author notes
-            cleaned_rows = []
-            for r in rows:
-                txt = r.get("text", "")
-                if is_author_note_or_meta(txt):
-                    continue
-                r["text"] = sanitize_audiobook_text(txt)
-                cleaned_rows.append(r)
-            rows = cleaned_rows
+                # Apply comprehensive audiobook text sanitization & filter out author notes
+                cleaned_rows = []
+                for r in rows:
+                    txt = r.get("text", "")
+                    if is_author_note_or_meta(txt):
+                        continue
+                    r["text"] = sanitize_audiobook_text(txt)
+                    cleaned_rows.append(r)
+                rows = cleaned_rows
 
-            # Prepend clean dynamic intro to the first chapter in this run
-            if ch_num == start_ch:
-                intro_hook = config.get("intro_hook", "")
-                intro_segments = get_channel_intro_segments(
-                    start_chapter=start_ch,
-                    intro_hook=intro_hook,
-                    narrator_voice=narrator_voice
-                )
-                non_intro_rows = [r for r in rows if not str(r.get("line_id", "")).startswith("intro_")]
-                rows = intro_segments + non_intro_rows
+                # Prepend clean dynamic intro to the first chapter in this run
+                if ch_num == start_ch:
+                    intro_hook = config.get("intro_hook", "")
+                    intro_segments = get_channel_intro_segments(
+                        start_chapter=start_ch,
+                        intro_hook=intro_hook,
+                        narrator_voice=narrator_voice
+                    )
+                    non_intro_rows = [r for r in rows if not str(r.get("line_id", "")).startswith("intro_")]
+                    rows = intro_segments + non_intro_rows
 
-            manifest_data = {"title": title, "rows": rows, "next_url": curr_url}
-            if AIOFILES_AVAILABLE:
-                async with aiofiles.open(ch_json, "w", encoding="utf-8") as f:
-                    await f.write(json.dumps(manifest_data, indent=2, ensure_ascii=False))
-            else:
-                with open(ch_json, "w", encoding="utf-8") as f:
-                    json.dump(manifest_data, f, indent=2, ensure_ascii=False)
+                manifest_data = {"title": title, "rows": rows, "next_url": curr_url}
+                ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
+                if AIOFILES_AVAILABLE:
+                    async with aiofiles.open(ch_json, "w", encoding="utf-8") as f:
+                        await f.write(json.dumps(manifest_data, indent=2, ensure_ascii=False))
+                else:
+                    with open(ch_json, "w", encoding="utf-8") as f:
+                        json.dump(manifest_data, f, indent=2, ensure_ascii=False)
 
-            staged_chapters.append((ch_num, rows, title))
+                # Immediately stream into Step 3 queue
+                await chapter_queue.put((ch_num, rows, title))
 
-    # EARLY PERSISTENCE: Save new characters immediately after Phase 1 staging
-    log_info(f"[{novel_slug}] Persisting staged character discoveries to master registry...")
-    finalize_and_merge_master_registry(novel_slug, stage_file)
-    log_success("Master novel_entities_registry.json updated successfully.")
+        # EARLY PERSISTENCE: Save new characters immediately after Phase 1 staging
+        log_info(f"[{novel_slug}] Persisting staged character discoveries to master registry...")
+        finalize_and_merge_master_registry(novel_slug, stage_file)
+        log_success("Master novel_entities_registry.json updated successfully.")
 
-    # ---------------------------------------------------------
-    # PHASE 2: Upfront Visual Engine (Covers & Dynamic Outro)
-    # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 2/5] Generating Visual Covers & Outro Slate UPFRONT...")
-    blocks = config.get("blocks", [])
-    if not blocks:
-        single_cover = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
-        blocks = [{"index": 0, "range": (start_ch, end_ch), "cover_file": single_cover}]
+        # Shut down consumer workers
+        for _ in range(parallel_chapters):
+            await chapter_queue.put(None)
 
-    for cfg in blocks:
-        r_start, r_end = cfg["range"]
-        cfg["cover_file"] = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
-        ensure_block_cover_jit(
-            cfg,
-            build_dir,
-            branding,
-            config.get("cf_account_id"),
-            config.get("cf_api_token")
-        )
-        if verify_cover_integrity(cfg["cover_file"]):
-            log_success(f"Block {cfg.get('index', 1):02d} Cover verified: '{os.path.basename(cfg['cover_file'])}'")
+    # Run Step 1 producer
+    await step1_producer_scrape_and_parse()
 
-    outro_slate = os.path.join(build_dir, "outro_slate_card.jpg")
-    create_dynamic_outro_slate(outro_slate, build_dir, branding, next_ch_num=end_ch + 1)
-    if verify_cover_integrity(outro_slate):
-        log_success("Outro slate card verified.")
+    # Wait for both Step 2 (Visuals) AND Step 3 (TTS) to complete before proceeding to Step 4
+    await asyncio.gather(
+        visuals_background_task,
+        asyncio.gather(*consumer_tasks)
+    )
+    log_success("Steps 1, 2, and 3 complete: Staging, background visuals, and audio synthesis verified.")
 
-    primary_thumb = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
-    if blocks and os.path.exists(blocks[0]["cover_file"]) and not os.path.exists(primary_thumb):
-        shutil.copy2(blocks[0]["cover_file"], primary_thumb)
-        log_success(f"Primary thumbnail created: '{primary_thumb}'")
-
-    # ---------------------------------------------------------
-    # PHASE 3: Concurrent Audio TTS Synthesis (Two-Tier Semaphore)
-    # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 3/5] Synthesizing Audio with Edge-TTS (Parallel Chapters)...")
-    parallel_chapters = config.get("parallel_chapters", 3)
-    global_max_tts = config.get("global_max_tts", 6)
-    tts_workers_per_chapter = max(1, global_max_tts // parallel_chapters)
-
-    chapter_semaphore = asyncio.Semaphore(parallel_chapters)
-    log_info(f"Concurrency Setup: {parallel_chapters} Parallel Chapters | {tts_workers_per_chapter} Workers/Chapter")
-
-    async def run_ch_bounded(cn, rw, tt):
-        async with chapter_semaphore:
-            ch_sem = asyncio.Semaphore(tts_workers_per_chapter)
-            log_info(f"Spawning Chapter {cn:03d} execution ({len(rw)} segments)...")
-            return await synthesize_chapter_task(cn, rw, tt, build_dir, ch_sem)
-
-    all_results = await asyncio.gather(*[run_ch_bounded(cn, rw, tt) for cn, rw, tt in staged_chapters])
-    all_results.sort(key=lambda x: x[0])
+    synthesized_results.sort(key=lambda x: x[0])
 
     chapter_files, chapter_durations, timestamps, all_subtitles = [], {}, [], []
     offset = 0.0
 
-    for ch_num, mp3_path, dur, title, rel_subs in all_results:
+    for ch_num, mp3_path, dur, title, rel_subs in synthesized_results:
         chapter_files.append(mp3_path)
         chapter_durations[ch_num] = dur
         timestamps.append(f"{format_timestamp(offset)} - {title}")
@@ -655,6 +690,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
     # ---------------------------------------------------------
     # PHASE 4: Audio Normalization (-14 LUFS) & VST3 Mastering
+    # Kicks off once Steps 1, 2, and 3 are all finished.
     # ---------------------------------------------------------
     log_info(f"[{novel_slug}] [Phase 4/5] Normalizing Audio to -14 LUFS with Studio Mastering...")
     final_audio = config.get("final_audio", os.path.join(build_dir, "final_audio.mp3"))

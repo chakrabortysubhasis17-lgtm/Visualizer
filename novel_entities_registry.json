@@ -3819,6 +3819,126 @@
         "aliases": [
           "razer"
         ]
+      },
+      "martha": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "martha"
+        ]
+      },
+      "hawk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "hawk"
+        ]
+      },
+      "rolex": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "rolex"
+        ]
+      },
+      "oren": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "oren"
+        ]
+      },
+      "carl": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "carl"
+        ]
+      },
+      "lia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "lia"
+        ]
+      },
+      "olman": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "olman"
+        ]
+      },
+      "allistair": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "allistair"
+        ]
+      },
+      "roen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "roen"
+        ]
+      },
+      "colleague": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "colleague"
+        ]
+      },
+      "ron": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ron"
+        ]
+      },
+      "reno": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "reno"
+        ]
       }
     },
     "vocatives": {
@@ -8599,6 +8719,106 @@
         "aliases": [
           "longsword"
         ]
+      },
+      "priya": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "priya"
+        ]
+      },
+      "chuto": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "chuto"
+        ]
+      },
+      "minerva": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "minerva"
+        ]
+      },
+      "maylind": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "maylind"
+        ]
+      },
+      "guide": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "guide"
+        ]
+      },
+      "stone golem": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "stone golem"
+        ]
+      },
+      "female": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-JennyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "female"
+        ]
+      },
+      "knight": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "knight"
+        ]
+      },
+      "old_man_spirit": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "-6Hz",
+        "rate": "-1%",
+        "aliases": [
+          "old_man_spirit"
+        ]
+      },
+      "male": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "male"
+        ]
       }
     },
     "vocatives": {
@@ -9477,6 +9697,136 @@
         "rate": "+7%",
         "aliases": [
           "knight"
+        ]
+      },
+      "ministry wizard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ministry wizard"
+        ]
+      },
+      "mr. grunt": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mr. grunt"
+        ]
+      },
+      "miss lauren": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "miss lauren"
+        ]
+      },
+      "young lawyer": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+17%",
+        "aliases": [
+          "young lawyer"
+        ]
+      },
+      "abraxas": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "abraxas"
+        ]
+      },
+      "heloise": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+7%",
+        "aliases": [
+          "heloise"
+        ]
+      },
+      "regulus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "regulus"
+        ]
+      },
+      "evan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "evan"
+        ]
+      },
+      "vaughan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "vaughan"
+        ]
+      },
+      "caesar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "caesar"
+        ]
+      },
+      "physician": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "physician"
+        ]
+      },
+      "barty": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "barty"
+        ]
+      },
+      "kevin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "kevin"
         ]
       }
     },
@@ -14682,6 +15032,16 @@
         "aliases": [
           "tangerinya"
         ]
+      },
+      "guildmaster": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "guildmaster"
+        ]
       }
     },
     "vocatives": {}
@@ -16546,6 +16906,121 @@
         "rate": "+5%",
         "aliases": [
           "break"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "the-wizard-of-fairy-tale-world": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Male",
+        "line_type": "Narration",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "queen": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "queen"
+        ]
+      },
+      "king": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "king"
+        ]
+      },
+      "violet fairy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "violet fairy"
+        ]
+      },
+      "prince": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "prince"
+        ]
+      },
+      "aurora": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "aurora"
         ]
       }
     },
