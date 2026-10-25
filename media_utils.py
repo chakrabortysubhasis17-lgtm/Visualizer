@@ -465,10 +465,18 @@ def master_final_audio(
         pedalboard_ok = master_audio_with_pedalboard(working_source, pedalboard_staged)
         if pedalboard_ok:
             source_audio = pedalboard_staged
-            audio_filter = "equalizer=f=3200:t=q:w=1.5:g=2.5,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
+            # Targeted 7/10 volume: -11.5 LUFS, -0.5 dBFS True Peak with +3.0dB pre-gain
+            audio_filter = "volume=3.0dB,equalizer=f=3200:t=q:w=1.5:g=2.5,loudnorm=I=-11.5:TP=-0.5:LRA=7,apad=pad_dur=15"
         else:
             source_audio = working_source
-            audio_filter = "highpass=f=85,equalizer=f=3200:t=q:w=1.5:g=2.5,acompressor=threshold=-16dB:ratio=3:attack=5:release=50,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
+            # Targeted 7/10 volume: +3.0dB makeup gain, -11.5 LUFS target, -0.5 dBFS TP
+            audio_filter = (
+                "highpass=f=85,"
+                "equalizer=f=3200:t=q:w=1.5:g=2.5,"
+                "acompressor=threshold=-18dB:ratio=3:attack=15:release=120:makeup=3.0,"
+                "loudnorm=I=-11.5:TP=-0.5:LRA=7,"
+                "apad=pad_dur=15"
+            )
 
         print("[Audio Master Engine] Applying EBU R128 loudness normalization (-14 LUFS)...", flush=True)
         subprocess.run([

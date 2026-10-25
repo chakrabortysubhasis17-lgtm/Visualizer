@@ -91,20 +91,26 @@ from subtitle_utils import generate_subtitles_bundle, build_srt_subtitles
 
 
 # =====================================================================
-# AUDIOBOOK TEXT & TTS PHONETIC SANITIZER
+# AUDIOBOOK TEXT & TTS PHONETIC SANITIZER (* & # DE-CENSORING)
 # =====================================================================
 
 def sanitize_chapter_title(title: str) -> str:
     """
     Normalizes chapter titles for natural neural narration:
-    - Expands 'CH 201', 'Ch. 201', 'ch201' -> 'Chapter 201'
+    - Expands 'CH 012', 'Ch. 012', 'ch012', 'Chapter 012' -> 'Chapter 12'
     - Normalizes gaming/tier rank indicators in titles.
     """
     if not title:
         return title
 
-    # Expand chapter acronyms to prevent "C-H" letter spelling
-    clean_title = re.sub(r'\b(?:CH|Ch|ch)\.?\s*(\d+)', r'Chapter \1', title)
+    # Convert 'CH 012', 'Ch. 005', 'ch12' -> 'Chapter 12', 'Chapter 5' (strips leading zeroes)
+    def _expand_chapter(match):
+        num_str = match.group(1)
+        clean_num = str(int(num_str)) if num_str.isdigit() else num_str
+        return f"Chapter {clean_num}"
+
+    # Matches "CH 012", "CH.012", "Chapter 012", "Ch 012"
+    clean_title = re.sub(r'\b(?:CH|Ch|ch|Chapter|CHAPTER)\.?\s*0*(\d+)', _expand_chapter, title)
     
     # Expand rank tiers
     clean_title = re.sub(r'\bSSS-rank\b', 'Triple-S rank', clean_title, flags=re.IGNORECASE)
@@ -122,11 +128,11 @@ def is_author_note_or_meta(text: str) -> bool:
         return False
     clean = text.strip()
     patterns = [
-        r"^(?:author['’]?s?\s*notes?|a/n)\s*:",
-        r"^(?:author['’]?s?\s*notes?|a/n)\b",
+        r"^(?:author['’\u2019]?s?\s*notes?|a/n)\s*:",
+        r"^(?:author['’\u2019]?s?\s*notes?|a/n)\b",
         r"^note\s*from\s*(?:the\s*)?author",
-        r"^translator['’]?s?\s*notes?",
-        r"^editor['’]?s?\s*notes?"
+        r"^translator['’\u2019]?s?\s*notes?",
+        r"^editor['’\u2019]?s?\s*notes?"
     ]
     for pat in patterns:
         if re.search(pat, clean, flags=re.IGNORECASE):
@@ -134,39 +140,112 @@ def is_author_note_or_meta(text: str) -> bool:
     return False
 
 
+def _preserve_case_replacement(pattern: re.Pattern, replacement_template: str, text: str) -> str:
+    """
+    Replaces regex matches while preserving original capitalization
+    (ALL CAPS, Title Case, or lower case).
+    """
+    def _cb(match: re.Match) -> str:
+        res = match.expand(replacement_template)
+        orig = match.group(0)
+        if orig.isupper():
+            return res.upper()
+        if orig[0].isupper():
+            return res.capitalize()
+        return res.lower()
+    return pattern.sub(_cb, text)
+
+
 def sanitize_audiobook_text(text: str) -> str:
     """
-    Comprehensive phonetic sanitizer resolving Edge-TTS speech traps:
-    1. Removes trailing author note remnants
-    2. Disarms the 'World Wide Web' stutter trap ('W-W-W' -> 'Wh-what' / 'W... w...')
-    3. Smooths dialogue stutters ('F-fucker' -> 'F... fucker', 'I-I' -> 'I... I')
-    4. Fixes loanwords ('Kitsune' -> 'Kit-soo-nay')
-    5. Converts unpronounceable battle onomatopoeia & consonant clusters into sound cues
-    6. Expands gaming stats/multipliers ('10x' -> '10-times', '1v1' -> 'one-on-one')
-    7. Replaces monotone punctuation on standalone action sound words with punchy punctuation
+    Phonetic text sanitizer targeting aggregator symbols (*, #, @, $, !)
+    and reading artifacts while preserving raw narrative integrity.
     """
     if not text:
         return text
 
     # 1. Strip trailing author notes if joined onto narrative lines
-    text = re.sub(r'(?i)\n*(?:author[\'’]?s?\s*notes?|a/n)\s*:.*$', '', text)
+    text = re.sub(r'(?i)\n*(?:author[\'’\u2019]?s?\s*notes?|a/n)\s*:.*$', '', text)
 
-    # 2. LitRPG / Gaming Multipliers & Terms
+    # 2. Purge aggregator scene divider symbol rows (e.g. "* * *", "###", "---", "***")
+    text = re.sub(r'^\s*[\*#\-_=\s]{3,}\s*$', '', text, flags=re.MULTILINE)
+
+    # 3. De-censor aggregator profanity masks (*, #, @, $, !) into spoken English words
+    censored_patterns = [
+        # Fuck stems (f*ck, f***, f***ing, mothaf**ka)
+        (re.compile(r'\b(mothaf|motherf)[\*#@!$]+ck?(ing|ed|er|s)?(?!\w)', re.I), r'\1uck\2'),
+        (re.compile(r'\bf[\*#@!$]+ck(ing|ed|er|s)?(?!\w)', re.I), r'fuck\1'),
+        (re.compile(r'\bf[\*#]{2,}(ing|ed|er|s)?(?!\w)', re.I), r'fuck\1'),
+        (re.compile(r'\bf\*k(?!\w)', re.I), r'fuck'),
+        (re.compile(r'\bwt[fF]\b'), r'what the fuck'),
+
+        # Shit stems (sh*t, sh*tty, bullsh*t)
+        (re.compile(r'\b(bull|horse|dip)?sh[\*#@!$]+tt?y(?!\w)', re.I), r'\1shitty'),
+        (re.compile(r'\b(bull|horse|dip)?sh[\*#@!$]+t(s)?(?!\w)', re.I), r'\1shit\2'),
+        (re.compile(r'\b(bull|horse|dip)?s[\*#]{2,}t(s)?(?!\w)', re.I), r'\1shit\2'),
+        (re.compile(r'\b(bull|horse|dip)?s[\*#]{3,}y(?!\w)', re.I), r'\1shitty'),
+
+        # Bitch stems (b*tch, b****)
+        (re.compile(r'\bb[\*#@!$]+tch(es|ing)?(?!\w)', re.I), r'bitch\1'),
+        (re.compile(r'\bb[\*#]{3,}(es)?(?!\w)', re.I), r'bitch\1'),
+
+        # Ass / Asshole stems (a*s, a**s, a**hole, @sshole, bad*ss)
+        (re.compile(r'\b(dumb|bad|jack)?[a@][\*#@!$]+s+(es)?(?!\w)', re.I), r'\1ass\2'),
+        (re.compile(r'\b(dumb|bad|jack)?[a@][\*#@!$]{2,}(?!\w)', re.I), r'\1ass'),
+        (re.compile(r'\b(dumb|bad|jack)?@ss(es|hole)?(?!\w)', re.I), r'\1ass\2'),
+        (re.compile(r'\b[a@][\*#@!$]*ss?hole(s)?(?!\w)', re.I), r'asshole\1'),
+        (re.compile(r'\b[a@][\*#@!$]+hole(s)?(?!\w)', re.I), r'asshole\1'),
+
+        # Damn stems (d*mn, d#mn, god-d*mn)
+        (re.compile(r'\b(god-?)?d[\*#@!$]+mn?(ed|ing)?(?!\w)', re.I), r'\1damn\2'),
+        (re.compile(r'\b(god-?)?d[\*#]{2,}n?(?!\w)', re.I), r'\1damn'),
+
+        # Bastard stems
+        (re.compile(r'\bb[\*#@!$]+stard(s)?(?!\w)', re.I), r'bastard\1'),
+        (re.compile(r'\bb[\*#]{4,}d(s)?(?!\w)', re.I), r'bastard\1'),
+
+        # Dick / Cock / Prick
+        (re.compile(r'\bd[\*#@!$]+ck(s|head)?(?!\w)', re.I), r'dick\1'),
+        (re.compile(r'\bc[\*#@!$]+ck(s)?(?!\w)', re.I), r'cock\1'),
+        (re.compile(r'\bpr[\*#@!$]+ck(s)?(?!\w)', re.I), r'prick\1'),
+
+        # Pussy / Cunt
+        (re.compile(r'\bp[\*#@!$]+ssy(ies)?(?!\w)', re.I), r'pussy\1'),
+        (re.compile(r'\bc[\*#@!$]+nt(s)?(?!\w)', re.I), r'cunt\1'),
+
+        # Whore / Slut
+        (re.compile(r'\bwh[\*#@!$]+re(s)?(?!\w)', re.I), r'whore\1'),
+        (re.compile(r'\bsl[\*#@!$]+t(s)?(?!\w)', re.I), r'slut\1'),
+    ]
+
+    for pat, template in censored_patterns:
+        text = _preserve_case_replacement(pat, template, text)
+
+    # 4. Remove standalone and intra-word hashtag leaks (# 1 -> Number 1, stray # stripped)
+    text = re.sub(r'#\s*(\d+)', r'Number \1', text)
+    text = re.sub(r'(?<=\w)[#@$](?=\w)', '', text)
+    text = re.sub(r'\s+#+\s+', ' ', text)
+
+    # 5. Trailing Dash Breath Falloff (Prevents unnatural hanging high pitch)
+    text = re.sub(r'(?<=[a-zA-Z0-9])[\u2014\u2013-]{1,2}(?=\s*["\'\u201d\u2019]|\s*$)', '...', text)
+    text = re.sub(r'\s+[\u2014\u2013]+\s+', ', ', text)
+
+    # 6. LitRPG / Gaming Multipliers & Terms
     text = re.sub(r'\bSSS-rank\b', 'Triple-S rank', text, flags=re.IGNORECASE)
     text = re.sub(r'\bSS-rank\b', 'Double-S rank', text, flags=re.IGNORECASE)
     text = re.sub(r'\b(\d+)x\s+(stat|speed|strength|buff|boost|multiplier)', r'\1-times \2', text, flags=re.IGNORECASE)
     text = re.sub(r'\b1v1\b', 'one-on-one', text, flags=re.IGNORECASE)
     text = re.sub(r'\bso much DA\b', 'so much damage', text)
 
-    # 3. Japanese Loanwords that Edge-TTS flattens
+    # 7. Japanese Loanwords that Edge-TTS flattens
     text = re.sub(r'\bKitsune\b', 'Kit-soo-nay', text)
     text = re.sub(r'\bkitsune\b', 'kit-soo-nay', text)
 
-    # 4. The "World Wide Web" Stutter Trap
+    # 8. The "World Wide Web" Stutter Trap
     text = re.sub(r'(?i)\b[wW]-[wW]-[wW]\s+what\b', 'Wh-what', text)
     text = re.sub(r'(?i)\b[wW]-[wW]-[wW]\b', 'W... w... w...', text)
 
-    # 5. Targeted Dialogue Stutters (Distinguishes stutters from real hyphens like 'C-rank')
+    # 9. Targeted Dialogue Stutters (Preserves compound hyphenated words like 'C-rank')
     def _stutter_sub(match):
         prefix = match.group(1)
         word = match.group(2)
@@ -178,7 +257,7 @@ def sanitize_audiobook_text(text: str) -> str:
     text = re.sub(r'\bI-I\b', 'I... I', text)
     text = re.sub(r'\bi-i\b', 'i... i', text)
 
-    # 6. Combat Gasps, Chokes & Novel Sound Effects
+    # 10. Combat Gasps, Chokes & Novel Sound Effects
     text = re.sub(r'\bGHK-?\b', '*gasp-*', text, flags=re.IGNORECASE)
     text = re.sub(r'\bTCH\b', 'Tsk', text, flags=re.IGNORECASE)
     text = re.sub(r'\bTch\b', 'Tsk', text)
@@ -189,13 +268,13 @@ def sanitize_audiobook_text(text: str) -> str:
     text = re.sub(r'\bCRK\.?\b', 'Crack!', text, flags=re.IGNORECASE)
     text = re.sub(r'\bKABAG\b', 'Kabam!', text, flags=re.IGNORECASE)
 
-    # 7. Elongated Screams & Hyphenated Explosions
+    # 11. Elongated Screams & Hyphenated Explosions
     text = re.sub(r'\bBO+BO+BO+M+\b', 'Kaboom!', text, flags=re.IGNORECASE)
     text = re.sub(r'\bB[oO]{2,}(?:-[oO]+)*-?m+\b', 'Boom!', text, flags=re.IGNORECASE)
     text = re.sub(r'\b[rR]{2,}-[oO]+-[aA]+-[rR]+\b', 'Roar!', text, flags=re.IGNORECASE)
     text = re.sub(r'\bDE-BOOM\b', 'Boom!', text, flags=re.IGNORECASE)
 
-    # 8. Punctuation Punch on Standalone Action Words (Avoids drone inflection)
+    # 12. Punctuation Punch on Standalone Action Words
     text = re.sub(
         r'\b(Chomp|Glug|Splat|Thud|Bang|Boom|Clang|Swish|Fwoosh|Fwush|Jingle|Whack|Thwack)\.',
         r'\1!',
@@ -258,16 +337,6 @@ def get_channel_intro_segments(
     intro_hook: str = "",
     narrator_voice: str = "en-US-ChristopherNeural"
 ) -> list:
-    """
-    Creates dynamic channel intro segments:
-    1. Welcome back to Being a Bong!
-    2. Start chapter check:
-       - Ch 1:  'Today, we begin a new podcast.'
-       - Ch >1: "Today's journey continues from previous episode."
-    3. 1-liner story hook from runner
-    4. '.. but Before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below.'
-    5. "Adjust your volume, settle in, and let's begin today's episode."
-    """
     chapter_status_text = (
         "Today, we begin a new podcast."
         if start_chapter == 1
@@ -282,8 +351,8 @@ def get_channel_intro_segments(
             "line_type": "Narration",
             "text": "Welcome back to Being a Bong!",
             "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "-2%"
+            "pitch": "+0Hz",
+            "rate": "-1%"
         },
         {
             "line_id": "intro_pause_01",
@@ -303,8 +372,8 @@ def get_channel_intro_segments(
             "line_type": "Narration",
             "text": chapter_status_text,
             "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "-1%"
+            "pitch": "+0Hz",
+            "rate": "+0%"
         },
         {
             "line_id": "intro_pause_02",
@@ -319,7 +388,6 @@ def get_channel_intro_segments(
         }
     ]
 
-    # Optional 1-liner story hook provided from the runner
     if intro_hook and intro_hook.strip():
         segments.extend([
             {
@@ -329,7 +397,7 @@ def get_channel_intro_segments(
                 "line_type": "Narration",
                 "text": intro_hook.strip(),
                 "voice": narrator_voice,
-                "pitch": "-2Hz",
+                "pitch": "+0Hz",
                 "rate": "-1%"
             },
             {
@@ -353,7 +421,7 @@ def get_channel_intro_segments(
             "line_type": "Narration",
             "text": ".. but Before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below.",
             "voice": narrator_voice,
-            "pitch": "-1Hz",
+            "pitch": "+0Hz",
             "rate": "+0%"
         },
         {
@@ -374,8 +442,8 @@ def get_channel_intro_segments(
             "line_type": "Narration",
             "text": "Adjust your volume, settle in, and let's begin today's episode.",
             "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "-2%"
+            "pitch": "+0Hz",
+            "rate": "-1%"
         },
         {
             "line_id": "intro_lead_in_pause",
@@ -462,8 +530,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         log_info("Gemini API key not supplied or SDK missing. Rule-based staging active.")
 
     # ---------------------------------------------------------
-    # STEP 2 (INDEPENDENT BACKGROUND WORKER): Visual Engine
-    # Runs completely decoupled in threadpool; does not block Step 1 or Step 3.
+    # STEP 2: Visual Engine (Background Task)
     # ---------------------------------------------------------
     blocks = config.get("blocks", [])
     if not blocks:
@@ -500,13 +567,12 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
     # ---------------------------------------------------------
     # STEPS 1 & 3: STREAMING PIPELINE (Producer -> Consumer via Queue)
-    # Step 3 starts synthesizing audio as soon as Step 1 finishes each chapter.
     # ---------------------------------------------------------
     parallel_chapters = config.get("parallel_chapters", 3)
     global_max_tts = config.get("global_max_tts", 6)
     tts_workers_per_chapter = max(1, global_max_tts // parallel_chapters)
     narration_threshold = config.get("max_narration_merge", 650)
-    narrator_voice = config.get("narrator_voice", "en-US-GuyNeural")
+    narrator_voice = config.get("narrator_voice", "en-US-ChristopherNeural")
 
     chapter_queue: asyncio.Queue = asyncio.Queue(maxsize=parallel_chapters * 2)
     synthesized_results: List[Tuple[int, str, float, str, list]] = []
@@ -514,13 +580,13 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
     # Step 3 Consumer Worker
     async def tts_consumer_worker(worker_id: int):
-        ch_sem = asyncio.Semaphore(tts_workers_per_chapter)
         while True:
             item = await chapter_queue.get()
             if item is None:
                 chapter_queue.task_done()
                 break
             ch_num, rows, title = item
+            ch_sem = asyncio.Semaphore(tts_workers_per_chapter)
             log_info(f"[TTS Worker {worker_id}] Spawning Chapter {ch_num:03d} execution ({len(rows)} segments)...")
             res = await synthesize_chapter_task(ch_num, rows, title, build_dir, ch_sem)
             async with results_lock:
@@ -591,10 +657,10 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     break
                 curr_url = next_url
 
-                # Normalize title pronunciation (e.g. CH 201 -> Chapter 201)
+                # Normalize title pronunciation
                 title = sanitize_chapter_title(title)
 
-                # Apply comprehensive audiobook text sanitization & filter out author notes
+                # Clean text and filter out author notes
                 cleaned_rows = []
                 for r in rows:
                     txt = r.get("text", "")
@@ -604,7 +670,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     cleaned_rows.append(r)
                 rows = cleaned_rows
 
-                # Prepend clean dynamic intro to the first chapter in this run
+                # Prepend dynamic intro to the first chapter in this run
                 if ch_num == start_ch:
                     intro_hook = config.get("intro_hook", "")
                     intro_segments = get_channel_intro_segments(
@@ -624,22 +690,17 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     with open(ch_json, "w", encoding="utf-8") as f:
                         json.dump(manifest_data, f, indent=2, ensure_ascii=False)
 
-                # Immediately stream into Step 3 queue
                 await chapter_queue.put((ch_num, rows, title))
 
-        # EARLY PERSISTENCE: Save new characters immediately after Phase 1 staging
         log_info(f"[{novel_slug}] Persisting staged character discoveries to master registry...")
         finalize_and_merge_master_registry(novel_slug, stage_file)
         log_success("Master novel_entities_registry.json updated successfully.")
 
-        # Shut down consumer workers
         for _ in range(parallel_chapters):
             await chapter_queue.put(None)
 
-    # Run Step 1 producer
     await step1_producer_scrape_and_parse()
 
-    # Wait for both Step 2 (Visuals) AND Step 3 (TTS) to complete before proceeding to Step 4
     await asyncio.gather(
         visuals_background_task,
         asyncio.gather(*consumer_tasks)
@@ -683,14 +744,13 @@ async def run_audiobook_pipeline(config: dict) -> dict:
             f.write(timestamps_content)
     log_success(f"Timestamps file written: '{timestamps_file}'")
 
-    # English Master Subtitles: Written immediately to root build/ for video multiplexing
+    # English Master Subtitles
     subtitles_file = config.get("subtitles_file", os.path.join(build_dir, "subtitles.srt"))
     build_srt_subtitles(all_subtitles, subtitles_file)
     log_success(f"English Master Subtitles written: '{subtitles_file}'")
 
     # ---------------------------------------------------------
     # PHASE 4: Audio Normalization (-14 LUFS) & VST3 Mastering
-    # Kicks off once Steps 1, 2, and 3 are all finished.
     # ---------------------------------------------------------
     log_info(f"[{novel_slug}] [Phase 4/5] Normalizing Audio to -14 LUFS with Studio Mastering...")
     final_audio = config.get("final_audio", os.path.join(build_dir, "final_audio.mp3"))
@@ -703,7 +763,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     log_success(f"Master Audio complete: '{final_audio}'")
 
     # ---------------------------------------------------------
-    # PHASE 5: Multiplexing Final Video (Uses English subtitles.srt)
+    # PHASE 5: Multiplexing Final Video
     # ---------------------------------------------------------
     log_info(f"[{novel_slug}] [Phase 5/5] Multiplexing Video Frames with Pre-rendered Images & Subtitles...")
     final_video = config.get("final_video", os.path.join(build_dir, "final_video.mp4"))
@@ -754,7 +814,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     log_success("Master novel_entities_registry.json merged and verified.")
 
     # ---------------------------------------------------------
-    # PHASE 6: POST-RENDER Multilingual Subtitles Engine (build/subtitles/)
+    # PHASE 6: Multilingual Subtitles Engine
     # ---------------------------------------------------------
     subtitles_bundle = {}
     if config.get("enable_subtitles", True):
@@ -770,7 +830,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         log_success(f"Multilingual subtitles complete: '{os.path.join(build_dir, 'subtitles')}' ({len(subtitles_bundle)} tracks)")
 
     # ---------------------------------------------------------
-    # PHASE 7: Rich Completion Dashboard
+    # PHASE 7: Summary Dashboard
     # ---------------------------------------------------------
     if RICH_AVAILABLE and console:
         summary_table = Table(title="Production Run Summary", border_style="cyan")
@@ -797,7 +857,6 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         print(f"* Duration: {format_timestamp(offset)}")
         print("=" * 78 + "\n", flush=True)
 
-    # Return unified dictionary: 100% compatible with both legacy and new callers
     return {
         "status": "success",
         "audio_path": final_audio,
