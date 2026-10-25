@@ -1,12 +1,13 @@
-import os
-import sys
-import re
-import math
-import shutil
-import random
 import asyncio
-import warnings
+import json
+import math
+import os
+import random
+import re
+import shutil
 import subprocess
+import sys
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -82,6 +83,25 @@ except ImportError:
     VOICEFIXER_AVAILABLE = False
     _voicefixer_model = None
 
+# =====================================================================
+# ACOUSTIC MASTERING CONSTANTS (BROADCAST VOCAL POLISHING)
+# =====================================================================
+
+# Studio vocal mastering filter chain:
+# 1. highpass=f=80: Eliminates artificial digital rumble/plosives below 80 Hz.
+# 2. equalizer (250 Hz, +1.8dB): Restores vocal body and natural chest resonance.
+# 3. equalizer (6500 Hz, -2.5dB): Tames brittle digital sibilance ('s', 'sh', 't' artifacts).
+# 4. acompressor: Tames dynamic spikes between shouts and murmurs with transparent release.
+# 5. aecho: Applies a 5% subtle room dimension to remove dead-air sterility.
+# 6. loudnorm: Conforms to YouTube/broadcast loudness standard (-14 LUFS, flat dynamic curve).
+BROADCAST_VOCAL_FILTER = (
+    "highpass=f=80,"
+    "equalizer=f=250:width_type=h:width=120:g=1.8,"
+    "equalizer=f=6500:width_type=h:width=1400:g=-2.5,"
+    "acompressor=threshold=-18dB:ratio=3:attack=5:release=100:makeup=2dB,"
+    "aecho=0.8:0.88:20|40:0.05|0.02,"
+    "loudnorm=I=-14:LRA=7:TP=-1.5"
+)
 
 # =====================================================================
 # CONSTANTS & DIRECTORIES
@@ -95,6 +115,15 @@ _LOCAL_PLUGINS = os.path.join(_SCRIPT_DIR, "assets", "plugins")
 _CWD_PLUGINS = os.path.join(os.getcwd(), "assets", "plugins")
 PLUGINS_DIR = _LOCAL_PLUGINS if os.path.exists(_LOCAL_PLUGINS) else _CWD_PLUGINS
 
+# =====================================================================
+# SYSTEM TOOL CHECKS
+# =====================================================================
+
+def verify_ffmpeg_installation() -> bool:
+    """Verifies whether ffmpeg and ffprobe are available in the system PATH."""
+    return (
+        shutil.which("ffmpeg") is not None and shutil.which("ffprobe") is not None
+    )
 
 # =====================================================================
 # DURATION PROBING & FORMATTING
@@ -127,6 +156,11 @@ async def get_audio_duration(file_path: str) -> float:
     return await asyncio.to_thread(_probe_duration_sync, file_path)
 
 
+def get_media_duration(file_path: str) -> float:
+    """Synchronous media duration probe using ffprobe with graceful fallback."""
+    return _probe_duration_sync(file_path)
+
+
 def format_timestamp(seconds: float) -> str:
     h = int(seconds // 3600)
     m = int((seconds % 3600) // 60)
@@ -147,6 +181,34 @@ def format_srt_time(seconds: float) -> str:
     ms = min(int(round((seconds - int(seconds)) * 1000)), 999)
     return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
+# =====================================================================
+# SILENCE & MICRO-PAUSE GENERATION
+# =====================================================================
+
+def generate_silence_segment(output_path: str, duration: float = 0.3) -> str:
+    """
+    Generates a clean PCM silence segment formatted as MP3 for inserting
+    context-aware pauses between dialogue or chapter transitions.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    duration = max(0.05, float(duration))
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "lavfi",
+        "-i", "anullsrc=r=44100:cl=mono",
+        "-t", f"{duration:.3f}",
+        "-acodec", "libmp3lame",
+        "-b:a", "192k",
+        output_path,
+    ]
+    subprocess.run(
+        cmd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=True,
+    )
+    return output_path
 
 # =====================================================================
 # TTS SYNTHESIS
@@ -340,6 +402,51 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
 
 synthesize_chapter_audio = synthesize_chapter_task
 
+# =====================================================================
+# AUDIO CONCATENATION & MASTERING
+# =====================================================================
+
+def concat_audio_files(
+    input_list_file: str,
+    output_path: str,
+    apply_mastering: bool = True,
+) -> str:
+    """
+    Concatenates individual segment MP3 files into a single master audio track.
+    Applies the broadcast acoustic mastering chain to smooth voice presence.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "concat",
+        "-safe", "0",
+        "-i", input_list_file,
+    ]
+
+    if apply_mastering:
+        cmd.extend([
+            "-af", BROADCAST_VOCAL_FILTER,
+            "-c:a", "libmp3lame",
+            "-b:a", "192k",
+            "-ar", "44100",
+        ])
+    else:
+        cmd.extend([
+            "-c:a", "libmp3lame",
+            "-b:a", "192k",
+            "-ar", "44100",
+        ])
+
+    cmd.append(output_path)
+
+    subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    return output_path
 
 # =====================================================================
 # NEURAL VOICE RESTORATION (VoiceFixer CPU Handler)
@@ -361,7 +468,6 @@ def enhance_audio_with_voicefixer(input_path: str, output_path: str, use_cuda: b
     except Exception as e:
         print(f"[VoiceFixer Notice] Neural enhancement bypassed ({e}). Proceeding to VST3/DSP chain.", flush=True)
         return False
-
 
 # =====================================================================
 # STUDIO VST3 & PEDALBOARD MASTERING
@@ -465,18 +571,12 @@ def master_final_audio(
         pedalboard_ok = master_audio_with_pedalboard(working_source, pedalboard_staged)
         if pedalboard_ok:
             source_audio = pedalboard_staged
-            # Targeted 7/10 volume: -11.5 LUFS, -0.5 dBFS True Peak with +3.0dB pre-gain
-            audio_filter = "volume=3.0dB,equalizer=f=3200:t=q:w=1.5:g=2.5,loudnorm=I=-11.5:TP=-0.5:LRA=7,apad=pad_dur=15"
+            # Targeted -14 LUFS standard with warm presence and 15s outro padding
+            audio_filter = "volume=1.5dB,equalizer=f=3200:t=q:w=1.5:g=2.0,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
         else:
             source_audio = working_source
-            # Targeted 7/10 volume: +3.0dB makeup gain, -11.5 LUFS target, -0.5 dBFS TP
-            audio_filter = (
-                "highpass=f=85,"
-                "equalizer=f=3200:t=q:w=1.5:g=2.5,"
-                "acompressor=threshold=-18dB:ratio=3:attack=15:release=120:makeup=3.0,"
-                "loudnorm=I=-11.5:TP=-0.5:LRA=7,"
-                "apad=pad_dur=15"
-            )
+            # Native Broadcast Vocal Chain with 15s outro padding
+            audio_filter = f"{BROADCAST_VOCAL_FILTER},apad=pad_dur=15"
 
         print("[Audio Master Engine] Applying EBU R128 loudness normalization (-14 LUFS)...", flush=True)
         subprocess.run([
@@ -496,7 +596,6 @@ def master_final_audio(
 
 
 concatenate_and_master_audio = master_final_audio
-
 
 # =====================================================================
 # YOUTUBE METADATA HELPERS
@@ -563,6 +662,211 @@ async def write_upload_payload_file(
         with open(output_path, "wb") as f:
             f.write(content)
 
+# =====================================================================
+# DYNAMIC ARC IMAGE RENDERING & KEN BURNS ZOOM
+# =====================================================================
+
+def create_thematic_visual_segment(
+    image_path: str,
+    duration: float,
+    output_path: str,
+    resolution: Tuple[int, int] = (1920, 1080),
+    fps: int = 30,
+    enable_slow_zoom: bool = True,
+) -> str:
+    """
+    Generates a high-definition video segment from a thematic arc block image.
+    Applies a slow, cinematic Ken Burns zoom to keep the visuals dynamic.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    width, height = resolution
+    total_frames = int(duration * fps)
+
+    if enable_slow_zoom:
+        # Smooth Ken Burns zoom (1.0x to 1.08x scale over the block duration)
+        vf_filter = (
+            f"scale=8000:-1,"
+            f"zoompan=z='min(zoom+0.00012,1.08)':"
+            f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':"
+            f"d={total_frames}:s={width}x{height}:fps={fps},"
+            f"format=yuv420p"
+        )
+    else:
+        vf_filter = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,format=yuv420p"
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-loop", "1",
+        "-i", image_path,
+        "-vf", vf_filter,
+        "-t", f"{duration:.3f}",
+        "-c:v", "libx264",
+        "-preset", "veryfast",
+        "-tune", "stillimage",
+        "-pix_fmt", "yuv420p",
+        output_path,
+    ]
+
+    subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    return output_path
+
+# =====================================================================
+# OUTRO SLATE & BRANDING OVERLAY
+# =====================================================================
+
+def overlay_channel_branding(
+    video_input: str,
+    output_path: str,
+    logo_path: Optional[str] = None,
+    subscribe_path: Optional[str] = None,
+) -> str:
+    """Applies channel watermarks and subtle overlay logos onto the video stream."""
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+
+    inputs = ["-i", video_input]
+    filter_parts = []
+    current_layer = "[0:v]"
+    layer_idx = 1
+
+    if logo_path and os.path.exists(logo_path):
+        inputs.extend(["-i", logo_path])
+        filter_parts.append(
+            f"{current_layer}[{layer_idx}:v]overlay=W-w-30:30[branded1]"
+        )
+        current_layer = "[branded1]"
+        layer_idx += 1
+
+    if subscribe_path and os.path.exists(subscribe_path):
+        inputs.extend(["-i", subscribe_path])
+        filter_parts.append(
+            f"{current_layer}[{layer_idx}:v]overlay=W-w-30:H-h-30[branded2]"
+        )
+        current_layer = "[branded2]"
+        layer_idx += 1
+
+    if not filter_parts:
+        shutil.copyfile(video_input, output_path)
+        return output_path
+
+    cmd = [
+        "ffmpeg", "-y",
+        *inputs,
+        "-filter_complex", ";".join(filter_parts),
+        "-map", current_layer,
+        "-map", "0:a?",
+        "-c:v", "libx264",
+        "-preset", "veryfast",
+        "-c:a", "copy",
+        output_path,
+    ]
+
+    subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    return output_path
+
+# =====================================================================
+# VIDEO & AUDIO COMBINATION WITH AMBIENT NOISE FLOOR
+# =====================================================================
+
+def merge_audio_video_with_ambience(
+    video_input: str,
+    audio_input: str,
+    output_path: str,
+    ambience_db: float = -50.0,
+) -> str:
+    """
+    Merges audio and video streams while overlaying a continuous, imperceptible
+    pink-noise room floor beneath the speech. Eliminates unnatural 'dead-air'
+    cuts during TTS pauses.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    amp = round(10 ** (ambience_db / 20.0), 5)
+
+    filter_complex = (
+        "[1:a]asplit=2[main_a][ref_a];"
+        f"anoisesrc=d=100000:c=pink:r=44100:a={amp}[ambience];"
+        f"[ambience][ref_a]amix=inputs=2:duration=first:weights=1 0[room_tone];"
+        "[main_a][room_tone]amix=inputs=2:duration=first:dropout_transition=2[final_a]"
+    )
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", video_input,
+        "-i", audio_input,
+        "-filter_complex", filter_complex,
+        "-map", "0:v",
+        "-map", "[final_a]",
+        "-c:v", "copy",
+        "-c:a", "aac",
+        "-b:a", "192k",
+        "-ar", "44100",
+        "-shortest",
+        output_path,
+    ]
+
+    subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    return output_path
+
+# =====================================================================
+# SUBTITLE HARMONIZATION (SRT TO ASS/BURN-IN & SOFT MUXING)
+# =====================================================================
+
+def embed_soft_subtitles(
+    video_input: str,
+    subtitles_dict: Dict[str, str],
+    output_path: str,
+) -> str:
+    """
+    Muxes multilingual subtitle tracks (e.g., German, Spanish, Bengali)
+    directly into the MP4 container as soft closed-caption streams.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+
+    cmd = ["ffmpeg", "-y", "-i", video_input]
+    map_cmds = ["-map", "0:v", "-map", "0:a"]
+    metadata_cmds = []
+
+    sub_idx = 0
+    for lang_code, srt_path in subtitles_dict.items():
+        if os.path.exists(srt_path):
+            cmd.extend(["-i", srt_path])
+            map_cmds.extend(["-map", f"{sub_idx + 1}:s"])
+            metadata_cmds.extend([
+                f"-metadata:s:s:{sub_idx}", f"language={lang_code}",
+                f"-metadata:s:s:{sub_idx}", f"title={lang_code.upper()}",
+            ])
+            sub_idx += 1
+
+    cmd.extend(map_cmds)
+    cmd.extend(metadata_cmds)
+    cmd.extend([
+        "-c:v", "copy",
+        "-c:a", "copy",
+        "-c:s", "mov_text",
+        output_path,
+    ])
+
+    subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    return output_path
 
 # =====================================================================
 # VIDEO MULTIPLEXING (Compatible with Single Path or Multilingual Dict)
