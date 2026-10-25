@@ -404,13 +404,33 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
 
     paragraphs = []
     p_tags = container.find_all("p") if container else []
+    p_tags = sort_paragraphs_by_order_index(p_tags);
+
     if len(p_tags) >= 3:
+        indexed_paragraphs = []
         for p in p_tags:
             ptxt = clean_and_normalize_text(p.get_text(strip=True))
             if ptxt and RE_ALPHANUM.search(ptxt):
                 if re.search(r"^(?:freewebnovel|novelbin|mtl-novel|read novel)\b", ptxt, re.I):
                     continue
-                paragraphs.append(ptxt)
+                
+                # Parse the CSS order index to handle DOM-scrambling anti-scraping
+                order_idx = 0
+                style_attr = p.get("style", "")
+                order_match = re.search(r'order\s*:\s*(\d+)', style_attr, re.I)
+                if order_match:
+                    order_idx = int(order_match.group(1))
+                else:
+                    data_idx = p.get("data-reader-order-index")
+                    if data_idx and str(data_idx).isdigit():
+                        order_idx = int(data_idx)
+                        
+                indexed_paragraphs.append((order_idx, ptxt))
+                
+        # Sort by the extracted order index so paragraphs match the true reading sequence
+        indexed_paragraphs.sort(key=lambda x: x[0])
+        paragraphs = [item[1] for item in indexed_paragraphs]
+
     elif container:
         raw_html = str(container)
         text_with_newlines = re.sub(r"<br\s*/?>", "\n", raw_html, flags=re.I)
@@ -474,6 +494,20 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
 
     return clean_title, full_text, next_url
 
+
+def sort_paragraphs_by_order_index(p_tags):
+    """Sorts BeautifulSoup paragraph tags based on CSS flexbox order or reader-order index."""
+    def _get_order_idx(p):
+        style_attr = p.get("style", "")
+        order_match = re.search(r'order\s*:\s*(\d+)', style_attr, re.I)
+        if order_match:
+            return int(order_match.group(1))
+        data_idx = p.get("data-reader-order-index")
+        if data_idx and str(data_idx).isdigit():
+            return int(data_idx)
+        return 0
+    
+    return sorted(p_tags, key=_get_order_idx)
 
 # =====================================================================
 # GEMINI DIRECTOR & CHUNK PARSER (With Resilient JSON & DiskCache)
@@ -626,16 +660,18 @@ def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_f
         try:
             with open(stage_file, "rb") as f:
                 parsed_staged = clean_and_parse_json(f.read().decode("utf-8", errors="ignore"))
-                staged_chars = parsed_staged.get("characters", {})
-        except Exception:
-            pass
+                if isinstance(parsed_staged, dict):
+                    staged_chars = parsed_staged.get("characters", {})
+        except Exception as e:
+            print(f"     [Gemini Director Warning] Failed reading stage file: {e}", flush=True)
 
     if not staged_chars:
-        staged_chars = FALLBACK_BASE_CHARACTERS
+        staged_chars = dict(FALLBACK_BASE_CHARACTERS)
 
     if not client or not GENAI_AVAILABLE:
         return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
 
+    # Build active cast manifest with aliases, gender locks, and neural voice assignments
     char_manifest = []
     for c_key, c_val in staged_chars.items():
         disp = c_val.get("display_name", c_key.title())
@@ -646,16 +682,52 @@ def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_f
 
     registered_manifest_str = "\n".join(char_manifest)
 
-    system_instruction = f"""
-You are an expert audio drama script director and phonetic supervisor.
-Analyze the chapter text, cleanly separating narration, dialogue, and system prompts.
+    # Tightened director system instruction with phonetic, prosodic, and schema constraints
+    system_instruction = f"""You are an expert Audiobook Screenplay Director, Dramaturg, and Voice Acting Lead specialized in neural Text-to-Speech (Edge TTS) script synthesis.
+Your mandate is to convert web novel chapter text into an execution-grade JSON screenplay array for multi-voice TTS synthesis.
 
-STRICT CONTINUITY DIRECTIVES:
-1. COMPLETE ADAPTATION: Every line of the text must appear in the final manifest. Do not omit exposition, internal thoughts, or stat lines.
-2. GENDER LOCK: A female speaker must NEVER become male, and a male speaker must NEVER become female.
-3. CAST IDENTIFICATION: Match speakers against the staged character registry below. If an alias or epithet is used, map it to the canonical character.
-4. NEW CHARACTER DISCOVERY: If a new character speaks who is NOT in this registry, identify their name, determine their gender ('Male', 'Female', or 'Neutral'), and assign an appropriate Edge-TTS neural voice.
-5. FORMAT: Return a JSON object with a single key "segments" containing an array of objects with keys: line_id, speaker_role, gender, age_category, emotion, line_type, edge_tts_voice, text.
+You must follow every directive below without deviation:
+
+### CORE DIRECTIVE 1: STRICT NARRATIVE INTEGRITY & LOSSLESS TEXT PRESERVATION
+1. Zero Text Elimination: Every single narrative description, dialogue line, interior monologue, interjection, title, and sound effect must appear in the final output array in exact, chronological reading order.
+2. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
+3. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
+
+### CORE DIRECTIVE 2: CHARACTER, ENTITY & DIALOGUE SEGREGATION
+1. Dialogue Tag Separation: Spoken dialogue MUST be isolated from adjacent narrative tags.
+   - Example: '"Shall we?" she whispered, glancing back.' -> Segment 1: Dialogue by speaker; Segment 2: Narration by Narrator.
+2. Speaker Identification & Gender Lock:
+   - Always reference the ACTIVE STAGED CHARACTERS manifest below first. A female character must NEVER become male, and a male character must NEVER become female.
+   - If an alias, title, or epithet is used, map it to the canonical character display name.
+   - For unlisted characters, infer name and gender ('Male', 'Female', or 'Neutral') from surrounding context and assign an appropriate Edge-TTS neural voice.
+   - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
+3. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System".
+
+### CORE DIRECTIVE 3: EDGE TTS PUNCTUATION, CADENCE & PHONETIC STABILITY
+1. Mandatory Terminal Punctuation: Every segment's text field MUST terminate with a valid punctuation mark ('.', '!', '?', '...', or '—'). If missing in the raw text, append the contextually appropriate mark.
+2. Pause & Cadence Upgrades:
+   - Retain all natural internal commas.
+   - Convert trailing hyphens or incomplete thoughts into ellipses ('...') and abrupt speech cut-offs into em-dashes ('—') to prevent Edge TTS from clipping syllables.
+   - Use exclamation marks ('!') for shouted lines or screams to trigger dynamic neural inflections.
+3. Phonetic Normalization for Repetitive Character Patterns:
+   - Leading Repetitions (Stutters): When a word is preceded by detached or hyphenated repeating characters (e.g., 'W W W WHAT' or 'W-w-w-what'), collapse them into a single hyphenated stutter attached directly to the base word (e.g., 'W-what'). Do NOT leave isolated single letters detached so Edge TTS does not spell out alphabet names.
+   - Internal & Trailing Elongations: When words contain excessively multiplied characters to simulate shouting or shock (e.g., 'OH H H H', 'NOOOO!'), normalize the run to a natural 2-to-3 character sequence (e.g., 'Ohhh...', 'Nooo!') with appropriate terminal punctuation.
+   - Semantic Boundary: These phonetic adjustments are strictly restricted to smoothing vocal delivery. Never drop, rewrite, replace, or invent underlying vocabulary words.
+
+### CORE DIRECTIVE 4: JSON SCHEMA & OUTPUT FORMAT
+Return ONLY a valid JSON object with a single key "segments" containing an array of objects. Do NOT output markdown code fences, citations, or conversational text.
+
+Each object in the array must strictly comply with this schema:
+{{
+  "line_id": "0001",
+  "speaker": "Speaker Name",
+  "gender": "Female / Male / Neutral",
+  "line_type": "Narration / Dialogue / System",
+  "style": "omniscient_narrator / kinetic_action / whispered / system_monolith",
+  "pause_duration": 0.3,
+  "text": "Verbatim text segment with normalized Edge TTS punctuation.",
+  "voice": "en-US-GuyNeural"
+}}
 
 ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
@@ -672,7 +744,9 @@ ACTIVE STAGED CHARACTERS:
             print(f"     [Gemini Director] Processing Part {p_idx}/{len(parts)} ({len(part.split())} words)...", flush=True)
 
         part_staged = parse_single_chunk_via_gemini(client, title, part, system_instruction)
-        if part_staged:
+
+        # Directly trust Gemini output if it returned a valid parsed list
+        if part_staged and isinstance(part_staged, list) and len(part_staged) > 0:
             all_staged.extend(part_staged)
         else:
             print(f"     [Gemini Fallback] Using rule-based staging for Part {p_idx}...", flush=True)
@@ -681,25 +755,44 @@ ACTIVE STAGED CHARACTERS:
 
     refined_staged = []
     for seg in all_staged:
-        # RapidFuzz character voice lock & continuity enforcement
-        if seg.get("line_type") == "Dialogue":
-            sp = seg.get("speaker", "Narrator")
-            seg["voice"] = resolve_character_voice(sp, staged_chars, default_voice=seg.get("voice", "en-US-GuyNeural"))
+        # Harmonize legacy schema aliases if Gemini outputs alternate field keys
+        if "speaker_role" in seg and "speaker" not in seg:
+            seg["speaker"] = seg.pop("speaker_role")
+        if "edge_tts_voice" in seg and "voice" not in seg:
+            seg["voice"] = seg.pop("edge_tts_voice")
 
-        if seg.get("line_type") == "Narration" and len(seg.get("text", "")) > max_narr_merge:
-            narr_splits = split_by_sentence_threshold(seg["text"], threshold=max_narr_merge)
+        # Fuzzy character voice lock & continuity enforcement
+        sp = seg.get("speaker", "Narrator")
+        current_voice = seg.get("voice", "en-US-GuyNeural")
+
+        if seg.get("line_type") == "Dialogue":
+            seg["voice"] = resolve_character_voice(sp, staged_chars, default_voice=current_voice)
+        elif seg.get("line_type") == "System":
+            seg["voice"] = "en-US-ChristopherNeural"
+        elif seg.get("line_type") == "Narration" and not seg.get("voice"):
+            seg["voice"] = staged_chars.get("Narrator", {}).get("voice", "en-US-GuyNeural")
+
+        # Sentence-length management for narration blocks exceeding the merge threshold
+        seg_text = seg.get("text", "")
+        if seg.get("line_type") == "Narration" and len(seg_text) > max_narr_merge:
+            narr_splits = split_by_sentence_threshold(seg_text, threshold=max_narr_merge)
             for split_txt in narr_splits:
-                sub_seg = dict(seg)
-                sub_seg["text"] = split_txt
-                refined_staged.append(sub_seg)
+                if clean_and_normalize_text(split_txt):
+                    sub_seg = dict(seg)
+                    sub_seg["text"] = split_txt
+                    refined_staged.append(sub_seg)
         else:
             refined_staged.append(seg)
 
+    # Renumber sequentially
     for idx, seg in enumerate(refined_staged, 1):
         seg["line_id"] = f"{idx:04d}"
 
     if refined_staged:
-        sync_new_characters_to_staging(stage_file, refined_staged)
+        try:
+            sync_new_characters_to_staging(stage_file, refined_staged)
+        except Exception as sync_err:
+            print(f"     [Staging Warning] Character sync encountered an issue: {sync_err}", flush=True)
         return refined_staged
 
     return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
