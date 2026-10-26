@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import json
 import math
 import os
@@ -7,7 +8,9 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import warnings
+import weakref
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -116,6 +119,387 @@ _CWD_PLUGINS = os.path.join(os.getcwd(), "assets", "plugins")
 PLUGINS_DIR = _LOCAL_PLUGINS if os.path.exists(_LOCAL_PLUGINS) else _CWD_PLUGINS
 
 # =====================================================================
+# SFX ADDITIONS (separate from TTS throttling and semaphore)
+# =====================================================================
+
+SFX_PIPELINE_VERSION = 1
+SFX_MAX_CONCURRENT_FFMPEG = 2
+SFX_KEYS = frozenset({
+    "footsteps", "creak", "chime", "hum", "impact", "crackle",
+    "thunder", "drip", "levelup", "interface", "whoosh", "blade",
+    "armor", "swish", "slash", "monster",
+})
+SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
+
+_SFX_COPY_LOCK = threading.Lock()
+_SFX_COPIED_BUILDS = {}
+_SFX_SEMAPHORES = weakref.WeakKeyDictionary()
+
+
+def normalize_sfx_key(value: Any) -> str:
+    """Return an allowed lowercase SFX key, or an empty string."""
+    if not isinstance(value, str):
+        return ""
+    key = value.strip().lower()
+    return key if key in SFX_KEYS else ""
+
+
+def _get_sfx_semaphore() -> asyncio.Semaphore:
+    """Get a dedicated SFX FFmpeg semaphore for the running event loop."""
+    loop = asyncio.get_running_loop()
+    semaphore = _SFX_SEMAPHORES.get(loop)
+    if semaphore is None:
+        semaphore = asyncio.Semaphore(SFX_MAX_CONCURRENT_FFMPEG)
+        _SFX_SEMAPHORES[loop] = semaphore
+    return semaphore
+
+
+def _sfx_asset_snapshot(directory: str) -> tuple:
+    """Describe recognized SFX files in a flat directory, including change markers."""
+    if not os.path.isdir(directory):
+        return ()
+
+    items = []
+    try:
+        filenames = os.listdir(directory)
+    except OSError:
+        return ()
+
+    for filename in filenames:
+        stem, extension = os.path.splitext(filename)
+        if normalize_sfx_key(stem) not in SFX_KEYS or extension.lower() not in SFX_EXTENSIONS:
+            continue
+        path = os.path.join(directory, filename)
+        try:
+            if not os.path.isfile(path):
+                continue
+            stat = os.stat(path)
+            if stat.st_size <= 0:
+                continue
+            items.append((filename, stat.st_size, stat.st_mtime_ns))
+        except OSError:
+            continue
+    return tuple(sorted(items))
+
+
+def prepare_sfx_assets(build_dir: str) -> str:
+    """Synchronize recognized SFX files into build_dir/sfx without stale assets.
+
+    Missing source folders/files are valid: unmatched SFX keys are simply unavailable
+    and their narration segments remain unchanged. The cache is refreshed if files are
+    added, removed, replaced, or deleted from the build directory.
+    """
+    build_root = os.path.abspath(build_dir)
+    source_dir = os.path.join(_SCRIPT_DIR, "assets", "sfx")
+    target_dir = os.path.join(build_root, "sfx")
+
+    with _SFX_COPY_LOCK:
+        os.makedirs(target_dir, exist_ok=True)
+        source_exists = os.path.isdir(source_dir)
+        source_snapshot = _sfx_asset_snapshot(source_dir) if source_exists else ()
+        target_snapshot = _sfx_asset_snapshot(target_dir)
+        target_sizes = tuple((item[0], item[1]) for item in target_snapshot)
+        source_sizes = tuple((item[0], item[1]) for item in source_snapshot)
+
+        # Fast path only when both the source manifest and build copy still match.
+        if (
+            _SFX_COPIED_BUILDS.get(build_root) == source_snapshot
+            and target_sizes == source_sizes
+        ):
+            return target_dir
+
+        source_names = {item[0] for item in source_snapshot}
+        copy_failed = False
+
+        # Remove recognised assets that no longer exist in the source. This prevents
+        # stale build-directory copies from playing when a source asset is missing.
+        for filename, _, _ in target_snapshot:
+            if filename not in source_names:
+                try:
+                    os.remove(os.path.join(target_dir, filename))
+                except OSError as exc:
+                    copy_failed = True
+                    print(f"[SFX Notice] Could not remove stale asset '{filename}': {exc}", flush=True)
+
+        if source_exists:
+            for filename, _, _ in source_snapshot:
+                src = os.path.join(source_dir, filename)
+                dst = os.path.join(target_dir, filename)
+                try:
+                    shutil.copy2(src, dst)
+                except OSError as exc:
+                    copy_failed = True
+                    print(f"[SFX Notice] Could not copy SFX asset '{filename}': {exc}", flush=True)
+        elif not _SFX_COPIED_BUILDS.get(build_root) == ():
+            print(f"[SFX Notice] SFX source folder not found: {source_dir}; SFX will be skipped.", flush=True)
+
+        final_snapshot = _sfx_asset_snapshot(target_dir)
+        final_sizes = tuple((item[0], item[1]) for item in final_snapshot)
+        if not copy_failed and final_sizes == source_sizes:
+            _SFX_COPIED_BUILDS[build_root] = source_snapshot
+        else:
+            # Retry on the next call rather than caching a partial copy.
+            _SFX_COPIED_BUILDS.pop(build_root, None)
+
+    return target_dir
+
+def find_sfx_file(sfx_dir: str, sfx_key: str) -> Optional[str]:
+    """Find an audio file whose filename stem exactly matches an allowed SFX key."""
+    key = normalize_sfx_key(sfx_key)
+    if not key or not os.path.isdir(sfx_dir):
+        return None
+
+    try:
+        filenames = os.listdir(sfx_dir)
+    except OSError:
+        return None
+
+    candidates = []
+    for filename in filenames:
+        stem, extension = os.path.splitext(filename)
+        extension = extension.lower()
+        if stem.lower() != key or extension not in SFX_EXTENSIONS:
+            continue
+        path = os.path.join(sfx_dir, filename)
+        if os.path.isfile(path) and os.path.getsize(path) > 0:
+            candidates.append((SFX_EXTENSIONS.index(extension), path))
+
+    candidates.sort(key=lambda item: item[0])
+    return candidates[0][1] if candidates else None
+
+
+def _sfx_asset_identity(path: Optional[str]) -> Optional[dict]:
+    """Return a stable identity for an SFX file, or None when it is unavailable."""
+    if not path:
+        return None
+    try:
+        stat = os.stat(path)
+        if not os.path.isfile(path) or stat.st_size <= 0:
+            return None
+        return {
+            "filename": os.path.basename(path),
+            "size": stat.st_size,
+            "mtime_ns": stat.st_mtime_ns,
+        }
+    except OSError:
+        return None
+
+
+def _sfx_manifest_signature(rows: list, sfx_dir: str) -> str:
+    """Fingerprint row-to-SFX assignments and the assets available for them."""
+    manifest = []
+    for row in rows:
+        key = normalize_sfx_key(row.get("sfx", ""))
+        if not key:
+            continue
+        path = find_sfx_file(sfx_dir, key)
+        if path:
+            try:
+                stat = os.stat(path)
+                asset = (os.path.basename(path), stat.st_size, stat.st_mtime_ns)
+            except OSError:
+                asset = (os.path.basename(path), None, None)
+        else:
+            asset = (key, None, None)
+        manifest.append((str(row.get("line_id", "")), key, asset))
+
+    raw = json.dumps(manifest, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _sfx_metadata_path(segment_path: str) -> str:
+    return segment_path + ".sfxmeta.json"
+
+
+def _sfx_speech_path(segment_path: str) -> str:
+    return segment_path + ".speech.mp3"
+
+
+def _read_sfx_metadata(segment_path: str) -> Optional[dict]:
+    path = _sfx_metadata_path(segment_path)
+    if not os.path.isfile(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else None
+    except (OSError, ValueError):
+        return None
+
+
+def _write_sfx_metadata(
+    segment_path: str,
+    sfx_key: str,
+    sfx_applied: bool,
+    asset_signature: Optional[dict] = None,
+) -> None:
+    path = _sfx_metadata_path(segment_path)
+    temp_path = path + ".tmp"
+    payload = {
+        "sfx_pipeline_version": SFX_PIPELINE_VERSION,
+        "sfx": normalize_sfx_key(sfx_key),
+        "sfx_applied": bool(sfx_applied),
+        "sfx_asset_signature": asset_signature,
+    }
+    try:
+        with open(temp_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        os.replace(temp_path, path)
+    except OSError as exc:
+        # Metadata is a cache aid; failure to write it must not abort normal narration.
+        print(f"[SFX Notice] Could not write metadata for {os.path.basename(segment_path)}: {exc}", flush=True)
+    finally:
+        if os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+
+def _atomic_copy_audio(source_path: str, target_path: str) -> None:
+    temp_path = target_path + ".copy_tmp.mp3"
+    try:
+        shutil.copyfile(source_path, temp_path)
+        os.replace(temp_path, target_path)
+    finally:
+        if os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+
+
+def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str) -> None:
+    """Create a new segment with the SFX first and the original speech second."""
+    temp_output = output_path + ".sfx_tmp.mp3"
+    filter_complex = (
+        "[0:a:0]aresample=24000,"
+        "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[sfx];"
+        "[1:a:0]aresample=24000,"
+        "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+        "[sfx][speech]concat=n=2:v=0:a=1[out]"
+    )
+    cmd = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+        "-i", sfx_path,
+        "-i", speech_path,
+        "-filter_complex", filter_complex,
+        "-map", "[out]",
+        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "1",
+        temp_output,
+    ]
+    try:
+        subprocess.run(
+            cmd,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+        if not os.path.isfile(temp_output) or os.path.getsize(temp_output) <= 300:
+            raise RuntimeError("FFmpeg did not produce a valid SFX-prefixed segment.")
+        os.replace(temp_output, output_path)
+    finally:
+        if os.path.exists(temp_output):
+            try:
+                os.remove(temp_output)
+            except OSError:
+                pass
+
+
+async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None:
+    """Apply the row's SFX once, rebuilding from the preserved speech copy when needed."""
+    if not os.path.isfile(segment_path) or os.path.getsize(segment_path) <= 300:
+        return
+
+    sfx_key = normalize_sfx_key(row.get("sfx", ""))
+    sfx_path = find_sfx_file(sfx_dir, sfx_key) if sfx_key else None
+    asset_signature = _sfx_asset_identity(sfx_path)
+    speech_path = _sfx_speech_path(segment_path)
+    metadata = _read_sfx_metadata(segment_path)
+    speech_exists = os.path.isfile(speech_path) and os.path.getsize(speech_path) > 300
+
+    if not speech_exists:
+        if metadata and metadata.get("sfx_applied"):
+            print(
+                f"[SFX Warning] Original speech copy missing for {os.path.basename(segment_path)}; "
+                "skipping SFX changes to avoid duplication.",
+                flush=True,
+            )
+            return
+        if not sfx_key:
+            _write_sfx_metadata(segment_path, "", False, None)
+            return
+        try:
+            await asyncio.to_thread(shutil.copy2, segment_path, speech_path)
+            speech_exists = True
+        except OSError as exc:
+            print(f"[SFX Warning] Could not preserve speech segment: {exc}", flush=True)
+            return
+
+    metadata_matches_current_asset = bool(
+        metadata
+        and metadata.get("sfx_pipeline_version") == SFX_PIPELINE_VERSION
+        and metadata.get("sfx") == sfx_key
+        and metadata.get("sfx_asset_signature") == asset_signature
+    )
+    expected_applied = bool(sfx_key and sfx_path)
+
+    # Reuse a segment only when both the requested key and the actual asset identity
+    # match. For a missing asset, a recorded non-applied state is also safely reusable.
+    if (
+        metadata_matches_current_asset
+        and bool(metadata.get("sfx_applied")) == expected_applied
+    ):
+        return
+
+    if not sfx_key:
+        if metadata and metadata.get("sfx_applied") and speech_exists:
+            try:
+                await asyncio.to_thread(_atomic_copy_audio, speech_path, segment_path)
+            except OSError as exc:
+                print(f"[SFX Warning] Could not restore original speech segment: {exc}", flush=True)
+                return
+        _write_sfx_metadata(segment_path, "", False, None)
+        return
+
+    if not sfx_path:
+        # If an asset was removed after a previous run, remove its stale audio by
+        # restoring the preserved speech. If restoration fails, keep old metadata so
+        # a later attempt can try again rather than falsely declaring success.
+        if metadata and metadata.get("sfx_applied") and speech_exists:
+            try:
+                await asyncio.to_thread(_atomic_copy_audio, speech_path, segment_path)
+            except OSError as exc:
+                print(f"[SFX Warning] Could not remove stale SFX from segment: {exc}", flush=True)
+                return
+        _write_sfx_metadata(segment_path, sfx_key, False, None)
+        print(f"[SFX Notice] Asset '{sfx_key}' not found; speech remains unchanged.", flush=True)
+        return
+
+    try:
+        async with _get_sfx_semaphore():
+            await asyncio.to_thread(
+                _prepend_sfx_audio_sync,
+                sfx_path,
+                speech_path,
+                segment_path,
+            )
+        _write_sfx_metadata(segment_path, sfx_key, True, asset_signature)
+    except Exception as exc:
+        try:
+            await asyncio.to_thread(_atomic_copy_audio, speech_path, segment_path)
+        except Exception:
+            pass
+        # Keep the asset identity so a future attempt can retry if FFmpeg failed.
+        _write_sfx_metadata(segment_path, sfx_key, False, asset_signature)
+        print(
+            f"[SFX Warning] Failed to prepend '{sfx_key}' to "
+            f"{os.path.basename(segment_path)}: {exc}",
+            flush=True,
+        )
+
+
+# =====================================================================
 # SYSTEM TOOL CHECKS
 # =====================================================================
 
@@ -214,8 +598,18 @@ def generate_silence_segment(output_path: str, duration: float = 0.3) -> str:
 # TTS SYNTHESIS
 # =====================================================================
 
-async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphore, max_retries: int = 5):
+async def synthesize_line_record(
+    row: dict,
+    out_file: str,
+    sem: asyncio.Semaphore,
+    max_retries: int = 5,
+    sfx_dir: Optional[str] = None,
+):
+    if sfx_dir is None:
+        sfx_dir = os.path.join(_SCRIPT_DIR, "assets", "sfx")
+
     if os.path.exists(out_file) and os.path.getsize(out_file) > 300:
+        await ensure_segment_sfx(row, out_file, sfx_dir)
         return
 
     pause_dur = row.get("pause_duration")
@@ -233,6 +627,7 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
+        await ensure_segment_sfx(row, out_file, sfx_dir)
         return
 
     line_type = row.get("line_type", "Narration")
@@ -291,9 +686,11 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                     os.remove(raw_tts_file)
                 except OSError:
                     pass
+                await ensure_segment_sfx(row, out_file, sfx_dir)
                 return
 
             if os.path.exists(out_file) and os.path.getsize(out_file) > 300:
+                await ensure_segment_sfx(row, out_file, sfx_dir)
                 return
 
         except Exception:
@@ -309,6 +706,7 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
+            await ensure_segment_sfx(row, out_file, sfx_dir)
             return
 
         await asyncio.sleep((attempt * 1.0) + random.uniform(0.3, 0.8))
@@ -317,6 +715,11 @@ async def synthesize_line_record(row: dict, out_file: str, sem: asyncio.Semaphor
 async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir: str, chapter_sem: asyncio.Semaphore):
     chapter_mp3 = os.path.join(build_dir, f"ch_{ch_num:03d}.mp3")
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
+
+    # Copy once before any segment tasks start. This is independent of TTS semaphores.
+    sfx_dir = await asyncio.to_thread(prepare_sfx_assets, build_dir)
+    has_requested_sfx = any(normalize_sfx_key(row.get("sfx", "")) for row in rows)
+    sfx_manifest_signature = _sfx_manifest_signature(rows, sfx_dir)
 
     if os.path.exists(chapter_mp3) and os.path.exists(chapter_meta) and os.path.getsize(chapter_mp3) > 10000:
         try:
@@ -328,7 +731,24 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
                     meta_raw = f.read()
 
             meta = orjson.loads(meta_raw) if ORJSON_AVAILABLE else orjson.loads(meta_raw.decode("utf-8"))
-            if meta.get("duration", 0) > 10.0 and len(meta.get("relative_subtitles", [])) > 0:
+            has_stored_sfx_metadata = (
+                "sfx_pipeline_version" in meta or "sfx_manifest_signature" in meta
+            )
+            if not has_requested_sfx and not has_stored_sfx_metadata:
+                # A pre-SFX chapter cache is safe to reuse only when this staging
+                # run has no SFX assignments. If a previous SFX-enabled cache exists,
+                # require an exact manifest match even when the new manifest is blank.
+                sfx_cache_valid = True
+            else:
+                sfx_cache_valid = (
+                    meta.get("sfx_pipeline_version") == SFX_PIPELINE_VERSION
+                    and meta.get("sfx_manifest_signature") == sfx_manifest_signature
+                )
+            if (
+                sfx_cache_valid
+                and meta.get("duration", 0) > 10.0
+                and len(meta.get("relative_subtitles", [])) > 0
+            ):
                 return ch_num, chapter_mp3, meta["duration"], meta["title"], meta["relative_subtitles"]
         except Exception:
             pass
@@ -340,13 +760,21 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     for row in rows:
         c_path = os.path.join(temp_dir, f"seg_{row['line_id']}.mp3")
         chunk_files.append(c_path)
-        tasks.append(synthesize_line_record(row, c_path, chapter_sem))
+        tasks.append(
+            synthesize_line_record(
+                row,
+                c_path,
+                chapter_sem,
+                sfx_dir=sfx_dir,
+            )
+        )
 
     await asyncio.gather(*tasks)
 
     valid_chunks = []
     rel_subtitles = []
     rel_time = 0.0
+    sfx_duration_cache = {}
 
     for cf, row in zip(chunk_files, rows):
         if os.path.exists(cf) and os.path.getsize(cf) > 300:
@@ -354,9 +782,25 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             dur = await get_audio_duration(cf)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
 
+            # The subtitle for spoken text begins after any prepended SFX.
+            sfx_offset = 0.0
+            segment_meta = _read_sfx_metadata(cf)
+            if segment_meta and segment_meta.get("sfx_applied"):
+                applied_key = normalize_sfx_key(segment_meta.get("sfx", ""))
+                if applied_key:
+                    if applied_key not in sfx_duration_cache:
+                        applied_path = find_sfx_file(sfx_dir, applied_key)
+                        sfx_duration_cache[applied_key] = (
+                            await get_audio_duration(applied_path) if applied_path else 0.0
+                        )
+                    sfx_offset = min(sfx_duration_cache.get(applied_key, 0.0), dur)
+
             if raw_text and not row.get("pause_duration"):
                 sub_text = f"[{row['speaker']}]: {raw_text}" if row.get("line_type") == "Dialogue" else raw_text
-                rel_subtitles.append((rel_time, rel_time + dur, sub_text))
+                subtitle_start = rel_time + sfx_offset
+                subtitle_end = rel_time + dur
+                if subtitle_start < subtitle_end:
+                    rel_subtitles.append((subtitle_start, subtitle_end, sub_text))
 
             rel_time += dur
 
@@ -384,7 +828,13 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         )
 
     final_dur = await get_audio_duration(chapter_mp3)
-    meta_payload = {"title": title, "duration": final_dur, "relative_subtitles": rel_subtitles}
+    meta_payload = {
+        "title": title,
+        "duration": final_dur,
+        "relative_subtitles": rel_subtitles,
+        "sfx_pipeline_version": SFX_PIPELINE_VERSION,
+        "sfx_manifest_signature": sfx_manifest_signature,
+    }
 
     if AIOFILES_AVAILABLE:
         raw_meta = orjson.dumps(meta_payload, option=orjson.OPT_INDENT_2) if ORJSON_AVAILABLE else orjson.dumps(meta_payload, indent=2).encode("utf-8")

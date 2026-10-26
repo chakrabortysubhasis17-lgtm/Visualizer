@@ -104,6 +104,22 @@ FULLWIDTH_TO_ASCII = str.maketrans({
 })
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 
+# SFX additions: only these exact keys may be emitted or staged.
+SFX_KEYS = frozenset({
+    "footsteps", "creak", "chime", "hum", "impact", "crackle",
+    "thunder", "drip", "levelup", "interface", "whoosh", "blade",
+    "armor", "swish", "slash", "monster",
+})
+
+
+def normalize_sfx_key(value: Any) -> str:
+    """Return an allowed lowercase SFX key, or an empty string."""
+    if not isinstance(value, str):
+        return ""
+    key = value.strip().lower()
+    return key if key in SFX_KEYS else ""
+
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -125,6 +141,7 @@ class SpeechSegment(BaseModel):
     line_type: str = Field(description="'Dialogue', 'Narration', or 'System'")
     edge_tts_voice: str = Field(description="Edge TTS neural voice")
     text: str = Field(description="Spoken dialogue or narrative string")
+    sfx: str = Field(default="", description="One permitted SFX key or an empty string")
 
 
 class ChapterNarrationManifest(BaseModel):
@@ -555,11 +572,38 @@ def extract_retry_delay_seconds(error_obj: Exception, attempt: int) -> float:
     return float(attempt * 10.0)
 
 
-def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_instruction: str, max_retries: int = 3) -> list:
-    chunk_cache_key = make_cache_key("gemini_chunk", chunk_text)
-    cached_segments = cache_get(chunk_cache_key)
-    if cached_segments and isinstance(cached_segments, list) and len(cached_segments) > 0:
-        return cached_segments
+def parse_single_chunk_via_gemini(
+    client,
+    title: str,
+    chunk_text: str,
+    system_instruction: str,
+    max_retries: int = 3,
+    refresh_legacy_cache_for_sfx: bool = False,
+) -> list:
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v1", chunk_text)
+
+    # Preserve existing cached narration by default. Legacy cache entries were generated
+    # before SFX tagging existed; migrate their existing rows with an empty SFX field
+    # rather than making a fresh Gemini call that could change narration or segmentation.
+    if not refresh_legacy_cache_for_sfx:
+        cached_segments = cache_get(chunk_cache_key)
+        if cached_segments and isinstance(cached_segments, list) and len(cached_segments) > 0:
+            return cached_segments
+
+        legacy_cache_key = make_cache_key("gemini_chunk", chunk_text)
+        legacy_segments = cache_get(legacy_cache_key)
+        if legacy_segments and isinstance(legacy_segments, list) and len(legacy_segments) > 0:
+            migrated_segments = []
+            for item in legacy_segments:
+                if isinstance(item, dict):
+                    migrated = dict(item)
+                    migrated["sfx"] = normalize_sfx_key(migrated.get("sfx", ""))
+                    migrated_segments.append(migrated)
+            if migrated_segments:
+                cache_set(chunk_cache_key, migrated_segments, expire_seconds=86400 * 14)
+                return migrated_segments
+    # When explicitly requested, bypass both cache namespaces to regenerate SFX-aware
+    # rows. This is opt-in because Gemini may change segmentation or text on a new run.
 
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
 
@@ -624,7 +668,8 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
                         "text": s.get("text", "").strip(),
                         "voice": s.get("edge_tts_voice") or s.get("voice") or "en-US-GuyNeural",
                         "pitch": pitch,
-                        "rate": rate
+                        "rate": rate,
+                        "sfx": normalize_sfx_key(s.get("sfx", ""))
                     })
 
                 if staged:
@@ -654,7 +699,14 @@ def parse_single_chunk_via_gemini(client, title: str, chunk_text: str, system_in
     return []
 
 
-def parse_chapter_via_gemini_director(client, title: str, raw_text: str, stage_file: str, max_narr_merge: int = 650) -> list:
+def parse_chapter_via_gemini_director(
+    client,
+    title: str,
+    raw_text: str,
+    stage_file: str,
+    max_narr_merge: int = 650,
+    refresh_legacy_cache_for_sfx: bool = False,
+) -> list:
     staged_chars = {}
     if os.path.exists(stage_file):
         try:
@@ -726,8 +778,44 @@ Each object in the array must strictly comply with this schema:
   "style": "omniscient_narrator / kinetic_action / whispered / system_monolith",
   "pause_duration": 0.3,
   "text": "Verbatim text segment with normalized Edge TTS punctuation.",
-  "voice": "en-US-GuyNeural"
+  "voice": "en-US-GuyNeural",
+  "sfx": ""
 }}
+
+### CORE DIRECTIVE 5: CONDITIONAL SOUND EFFECT TAGGING (SFX)
+
+The "sfx" field is metadata for audio assembly. It must never be spoken and must never replace or modify the narrative text.
+
+Assign a sound-effect key ONLY when the segment's content or clearly established immediate narrative context satisfies one of these conditions:
+
+1. "footsteps" - A character walking or running.
+2. "creak" - A door opening or closing.
+3. "chime" - A system notification or status screen appearing.
+4. "hum" - Magical energy surges, skills, or ley lines activating.
+5. "impact" - Physical combat, brawler strikes, or heavy impacts.
+6. "crackle" - Cozy tavern environments or indoor fireplaces.
+7. "thunder" - Outdoor storms, wind gusts, or weather changes.
+8. "drip" - Subterranean dungeon or cave exploration.
+9. "levelup" - A player gaining experience, points, or leveling up.
+10. "interface" - Opening or dismissing a holographic status or inventory screen.
+11. "whoosh" - Teleportation, portals, or spatial gates opening.
+12. "blade" - Drawing a weapon, sword, or blade from its sheath.
+13. "armor" - Armor clanking, heavy leather shifting, or equipment changes.
+14. "swish" - Consuming a healing potion or elixir.
+15. "slash" - Critical hits, piercing damage, or lethal strikes.
+16. "monster" - A dungeon monster roaring, growling, or screeching.
+
+STRICT SFX RULES:
+- Every segment MUST contain an "sfx" field.
+- Use exactly one allowed lowercase key from the list above when a condition is satisfied.
+- Otherwise, use the empty string: "". Never use null, "none", "N/A", or whitespace.
+- Do not invent actions, events, environmental conditions, or sounds.
+- Merely mentioning a weapon, potion, monster, system, or location does not qualify by itself.
+- Evaluate each segment independently. Do not carry an SFX into unrelated subsequent segments.
+- If multiple conditions apply to one segment, select only the single most directly relevant key.
+- Never output multiple keys in one field, and never place SFX descriptions inside "text".
+- Preserve all original narrative content and chronological order. Do not force an SFX when no condition applies.
+- Continue following CORE DIRECTIVES 1–4 without deviation.
 
 ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
@@ -743,7 +831,13 @@ ACTIVE STAGED CHARACTERS:
         if len(parts) > 1:
             print(f"     [Gemini Director] Processing Part {p_idx}/{len(parts)} ({len(part.split())} words)...", flush=True)
 
-        part_staged = parse_single_chunk_via_gemini(client, title, part, system_instruction)
+        part_staged = parse_single_chunk_via_gemini(
+            client,
+            title,
+            part,
+            system_instruction,
+            refresh_legacy_cache_for_sfx=refresh_legacy_cache_for_sfx,
+        )
 
         # Directly trust Gemini output if it returned a valid parsed list
         if part_staged and isinstance(part_staged, list) and len(part_staged) > 0:
@@ -755,6 +849,9 @@ ACTIVE STAGED CHARACTERS:
 
     refined_staged = []
     for seg in all_staged:
+        # Additive SFX normalization; invalid or missing keys become empty.
+        seg["sfx"] = normalize_sfx_key(seg.get("sfx", ""))
+
         # Harmonize legacy schema aliases if Gemini outputs alternate field keys
         if "speaker_role" in seg and "speaker" not in seg:
             seg["speaker"] = seg.pop("speaker_role")
@@ -776,10 +873,17 @@ ACTIVE STAGED CHARACTERS:
         seg_text = seg.get("text", "")
         if seg.get("line_type") == "Narration" and len(seg_text) > max_narr_merge:
             narr_splits = split_by_sentence_threshold(seg_text, threshold=max_narr_merge)
+            sfx_assigned_to_split = False
             for split_txt in narr_splits:
                 if clean_and_normalize_text(split_txt):
                     sub_seg = dict(seg)
                     sub_seg["text"] = split_txt
+                    # Keep the event cue on the first valid split, not merely index 0.
+                    # Later valid splits must not replay the same event sound.
+                    if sfx_assigned_to_split:
+                        sub_seg["sfx"] = ""
+                    else:
+                        sfx_assigned_to_split = True
                     refined_staged.append(sub_seg)
         else:
             refined_staged.append(seg)
@@ -860,7 +964,8 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             "text": tp,
             "voice": voice,
             "pitch": role_meta.get("pitch", "+0Hz"),
-            "rate": role_meta.get("rate", "+5%")
+            "rate": role_meta.get("rate", "+5%"),
+            "sfx": ""
         })
     return staged_records
 

@@ -85,7 +85,9 @@ from media_utils import (
     master_final_audio,
     assemble_multi_image_video,
     format_timestamp,
-    format_srt_time
+    format_srt_time,
+    prepare_sfx_assets,
+    normalize_sfx_key,
 )
 from subtitle_utils import generate_subtitles_bundle, build_srt_subtitles
 
@@ -495,6 +497,12 @@ def verify_cover_integrity(image_path: str) -> bool:
 async def run_audiobook_pipeline(config: dict) -> dict:
     build_dir = config["build_dir"]
     os.makedirs(build_dir, exist_ok=True)
+
+    # SFX assets are copied up front so the build directory is self-contained.
+    # synthesize_chapter_task also calls this helper defensively; the helper is idempotent.
+    sfx_dir = prepare_sfx_assets(build_dir)
+    log_info(f"SFX asset directory ready: '{sfx_dir}'")
+
     novel_slug = config.get("novel_slug", "novel")
     start_ch = config["start_chapter"]
     end_ch = config["end_chapter"]
@@ -610,6 +618,32 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 if len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows):
                     raise ValueError(f"Corrupt or placeholder manifest in Ch {ch_num}")
 
+                # Old staged manifests predate SFX. Preserve their existing narration by
+                # default and fill only the additive metadata field. Explicitly enable
+                # refresh_legacy_cache_for_sfx in config to re-scrape/re-parse these rows.
+                # That opt-in may regenerate narration, so it is never done silently.
+                parsed_rows = [
+                    r for r in rows
+                    if not str(r.get("line_id", "")).startswith("intro_")
+                ]
+                if any("sfx" not in r for r in parsed_rows):
+                    refresh_legacy_sfx = bool(config.get("refresh_legacy_cache_for_sfx", False))
+                    if curr_url and refresh_legacy_sfx:
+                        raise ValueError(f"Legacy staged manifest missing SFX field in Ch {ch_num}")
+                    for r in rows:
+                        r.setdefault("sfx", "")
+                    if refresh_legacy_sfx and not curr_url:
+                        log_warning(
+                            f"Ch {ch_num:03d}: legacy staged manifest cannot be refreshed for SFX "
+                            "because no scrape URL is available; preserving narration with blank SFX tags."
+                        )
+                    elif not refresh_legacy_sfx:
+                        log_info(
+                            f"Ch {ch_num:03d}: preserving legacy staged narration unchanged; "
+                            "missing SFX tags default to blank. Set refresh_legacy_cache_for_sfx=true "
+                            "to explicitly regenerate legacy staging."
+                        )
+
                 title = cached.get("title", f"Ch {ch_num:03d}")
                 cached_next = cached.get("next_url")
                 if cached_next:
@@ -630,7 +664,12 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     session, curr_url, ch_num, config.get("default_topic", "Arc")
                 )
                 rows = parse_chapter_via_gemini_director(
-                    gemini_client, title, text, stage_file, narration_threshold
+                    gemini_client,
+                    title,
+                    text,
+                    stage_file,
+                    narration_threshold,
+                    refresh_legacy_cache_for_sfx=bool(config.get("refresh_legacy_cache_for_sfx", False)),
                 )
                 return title, rows, next_url
         else:
@@ -641,7 +680,12 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 session, curr_url, ch_num, config.get("default_topic", "Arc")
             )
             rows = parse_chapter_via_gemini_director(
-                gemini_client, title, text, stage_file, narration_threshold
+                gemini_client,
+                title,
+                text,
+                stage_file,
+                narration_threshold,
+                refresh_legacy_cache_for_sfx=bool(config.get("refresh_legacy_cache_for_sfx", False)),
             )
             return title, rows, next_url
 
@@ -669,6 +713,9 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     if is_author_note_or_meta(txt):
                         continue
                     r["text"] = sanitize_audiobook_text(txt)
+                    # Persist only an allowed lowercase SFX key, or an empty string.
+                    # This also gives generated intro/pause rows an explicit SFX field.
+                    r["sfx"] = normalize_sfx_key(r.get("sfx", ""))
                     cleaned_rows.append(r)
                 rows = cleaned_rows
 
@@ -682,6 +729,11 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     )
                     non_intro_rows = [r for r in rows if not str(r.get("line_id", "")).startswith("intro_")]
                     rows = intro_segments + non_intro_rows
+
+                # Normalize all rows again after intro insertion so every staged row,
+                # including generated intro and pause segments, has a valid SFX field.
+                for r in rows:
+                    r["sfx"] = normalize_sfx_key(r.get("sfx", ""))
 
                 manifest_data = {"title": title, "rows": rows, "next_url": curr_url}
                 ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
