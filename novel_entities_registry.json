@@ -19260,5 +19260,355 @@
       }
     },
     "vocatives": {}
+  },
+  "swallowed-star": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Male",
+        "line_type": "Narration",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "wei wen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wei wen"
+        ]
+      },
+      "jiang nian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jiang nian"
+        ]
+      },
+      "yan luo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "yan luo"
+        ]
+      },
+      "wu tong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wu tong"
+        ]
+      },
+      "yang wu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "yang wu"
+        ]
+      },
+      "bai yang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "bai yang"
+        ]
+      },
+      "jiangnian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "jiangnian"
+        ]
+      },
+      "luo hong guo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "luo hong guo"
+        ]
+      },
+      "zhang hao bai": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhang hao bai"
+        ]
+      },
+      "wang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wang"
+        ]
+      },
+      "zhang ze long": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhang ze long"
+        ]
+      },
+      "zhu ge tao": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhu ge tao"
+        ]
+      },
+      "luo hua": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "luo hua"
+        ]
+      },
+      "gong xin lan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "gong xin lan"
+        ]
+      },
+      "wan dong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "wan dong"
+        ]
+      },
+      "ma xiao": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "ma xiao"
+        ]
+      },
+      "luo feng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "luo feng"
+        ]
+      },
+      "zhang ze hu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhang ze hu"
+        ]
+      },
+      "fire cannon chen gu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "fire cannon chen gu"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "a-record-of-a-mortals-journey-to-immortality-novel": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Male",
+        "line_type": "Narration",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "zhang jun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "zhang jun"
+        ]
+      },
+      "doctor mo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "doctor mo"
+        ]
+      },
+      "senior disciple li": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "senior disciple li"
+        ]
+      }
+    },
+    "vocatives": {}
   }
 }

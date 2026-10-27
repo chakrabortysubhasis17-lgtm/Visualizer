@@ -83,6 +83,8 @@ RE_SCENE_DIVIDER = re.compile(r"^(\s*[*~=_#-]\s*){3,}$", re.MULTILINE)
 
 WATERMARK_PATTERNS = [
     re.compile(r"(?:free\s*web\s*novel|freewebnovel)\s*\.?\s*c[o0]m", re.I),
+    re.compile(r"^(?:translator|editor|proofreader|tl)\s*:\s*.*$", re.I | re.MULTILINE),
+    re.compile(r"Translation\s+Nation", re.I),
     re.compile(r"(?:mtl-?\s*novel|mtlnovel)\s*\.?\s*c[o0]m", re.I),
     re.compile(r"(?:novelbin|novelfull|ranobes)\s*\.?\s*c[o0]m", re.I),
     re.compile(r"\(End of this chapter\)", re.I),
