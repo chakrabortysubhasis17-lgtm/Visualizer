@@ -585,7 +585,7 @@ def parse_single_chunk_via_gemini(
     max_retries: int = 3,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v1", chunk_text)
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v2", chunk_text)
 
     # Preserve existing cached narration by default. Legacy cache entries were generated
     # before SFX tagging existed; migrate their existing rows with an empty SFX field
@@ -594,6 +594,14 @@ def parse_single_chunk_via_gemini(
         cached_segments = cache_get(chunk_cache_key)
         if cached_segments and isinstance(cached_segments, list) and len(cached_segments) > 0:
             return cached_segments
+
+        # If v1 cache had genuine SFX, reuse it; otherwise re-run with new detailed prompt
+        v1_cache_key = make_cache_key("gemini_chunk_sfx_v1", chunk_text)
+        v1_segments = cache_get(v1_cache_key)
+        if v1_segments and isinstance(v1_segments, list) and len(v1_segments) > 0:
+            if any(s.get("sfx") for s in v1_segments if isinstance(s, dict)):
+                cache_set(chunk_cache_key, v1_segments, expire_seconds=86400 * 14)
+                return v1_segments
 
         legacy_cache_key = make_cache_key("gemini_chunk", chunk_text)
         legacy_segments = cache_get(legacy_cache_key)
@@ -757,6 +765,7 @@ You must follow every directive below without deviation:
    - Always reference the ACTIVE STAGED CHARACTERS manifest below first. A female character must NEVER become male, and a male character must NEVER become female.
    - If an alias, title, or epithet is used, map it to the canonical character display name.
    - For unlisted characters, infer name and gender ('Male', 'Female', or 'Neutral') from surrounding context and assign an appropriate Edge-TTS neural voice.
+   - If a character is the first-person narrator ('I', 'me') and has an explicit identity established in context, assign them their true character name and gender instead of a generic "Protagonist" label.
    - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
 3. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System".
 
@@ -784,16 +793,34 @@ Each object in the array must strictly comply with this schema:
   "pause_duration": 0.3,
   "text": "Verbatim text segment with normalized Edge TTS punctuation.",
   "voice": "en-US-GuyNeural",
-  "sfx": ""
+  "sfx": "footsteps"
 }}
 
 ### CORE DIRECTIVE 5: PROACTIVE, CONTEXT-AWARE SOUND EFFECT TAGGING (SFX)
 
 The "sfx" field is metadata for audio assembly. It is NEVER spoken and must never replace, alter, summarize, or add words to the narrative text.
 
+MATCHING TRIGGER DIRECTORY (MANDATORY AUDIT FOR EVERY SEGMENT):
+• "gasp": Explicit character reaction -> 'gasp', 'gasps', 'gasped', 'sharp intake of breath' (e.g., "I gasp", "Eris gasps", "she gasps").
+• "heartbeat": Physical heart sensation -> 'heartbeat starts to pick up', 'heart is thundering', 'badump! badump!', 'pounding heart', 'flutter beneath ribs', 'chest thumping'.
+• "thud": Foot stomps, heavy steps, blunt drops, dull landings -> 'stomp', 'stomps', 'stomping one foot', 'stomp directly on her foot', 'dull thump', 'body lands'.
+• "rustle": Fabric, robes, clothing, dresses, bowing, kneeling, foliage -> 'bows low', 'bow in perfect sync', 'kneel in unison', 'kneels', 'fidgeting with sleeves', 'straightening his coat', 'outfit adjusts', 'leaves rustle'. (CRITICAL: NEVER use "armor" for maid uniforms, dresses, or cloth outfits!).
+• "armor": STRICTLY metallic plate armor clanking, metal gauntlets, or heavy metal combat suits. NOT cloth, dresses, or robes.
+• "creak": Doors or gates opening/closing -> 'doors creak open', 'doors groan softly', 'gate squeals', 'hinges groaning'.
+• "hum": Magic activation, glowing aura, shimmers -> 'shimmer of light', 'brief shimmer of deep blue light', 'body starts to shift' (magical change), 'defensive runes flared'.
+• "chime": Routine system announcement -> 'Ding!', 'System notification', level banner.
+• "footsteps": Movement down a path, approaching, stepping -> 'Step.', 'step forward', 'stepping over', 'turns and makes his way down the garden path'.
+• "impact": High-velocity physical combat strike, heavy blunt collision.
+• "whoosh": Portals, teleportation, spatial gate, spatial tear.
+• "blade": Drawing a metal sword, dagger, or blade from a scabbard/sheath.
+• "slash": Cutting, hacking, slicing, or flesh-piercing strike.
+• "monster": Beast roaring, screeching, snarling, or howling.
+• "alert": System danger warning or alarm (threat detected).
+• "quest" / "levelup": Actual quest or level-up events.
+
 IMPORTANT TAGGING APPROACH — BE PROACTIVE, NOT OVERLY CONSERVATIVE:
 - Inspect every segment for an actual audible event. Do not leave "sfx" blank by habit merely because a segment is narration or describes a small action.
-- Before leaving a segment blank, compare it against EVERY applicable key below. When an action directly matches a key and its sound is reasonably implied, assign the key even if the text does not literally say "sound" or "audible".
+- Before leaving a segment blank, compare it against EVERY applicable key above. When an action directly matches a key and its sound is reasonably implied, assign the key even if the text does not literally say "sound" or "audible".
 - Look carefully for brief physical events that are easy to miss: a character stepping forward or away, walking down a line, a distinct stomp, a gasp, an explicitly racing heartbeat, a garment being adjusted, a door groaning, a system "Ding!", a visible magical shimmer, or an object being summoned by active magic.
 - Do not infer a sound merely from a silent gesture, emotion, facial expression, hypothetical plan, memory, figure of speech, or explanation. Be proactive about described events, not imaginative about events that are absent.
 - Because the audio engine plays an SFX BEFORE its segment's speech, put the key on the segment that first and most directly describes the event. Do not put it on a setup sentence before the event happens.
@@ -802,68 +829,62 @@ IMPORTANT TAGGING APPROACH — BE PROACTIVE, NOT OVERLY CONSERVATIVE:
 - The spoken dialogue itself is not an SFX. Do not add a cue just because a character shouts, laughs, chuckles, says "gulp", or uses sound-like wording unless one of the listed SFX keys genuinely matches a separate audible event.
 
 MANDATORY THREE-PASS SCAN FOR EACH SEGMENT:
-1. PHYSICAL ACTIONS AND ENVIRONMENT: check for footsteps/movement, doors, taps/knocks, stomps/falls, impacts, equipment or clothing rustle, splashes, squeaks, fire, storms, cave drips, and creature vocalizations.
-2. BODILY REACTIONS: check for an explicitly audible gasp and a salient pounding/racing heartbeat. Do not mislabel a calm inhale/exhale, a gulp/swallow, a huff, laughter, blinking, ear/tail movement, or a facial expression as a gasp or heartbeat.
+1. PHYSICAL ACTIONS AND ENVIRONMENT: check for footsteps/movement, doors, taps/knocks, stomps/falls, impacts, equipment or clothing rustle, splashes, squeaks, fire, storms, cave drips, and creature vocalizations. Clothing, dresses, fabric movement, outfits adjusting, or characters bowing/kneeling MUST be tagged as "rustle". NEVER tag ordinary clothing, dresses, or fabric shifts as "armor".
+2. BODILY REACTIONS: check for an explicitly audible gasp ("I gasp", "Eris gasps", "she gasps", "gasp") -> tag as "gasp". Check for salient pounding/racing heartbeat ("heartbeat starts to pick up", "heart is thundering", "badump! badump!", "pounding heart") -> tag as "heartbeat". Check for a foot stomp ("stomping one foot", "stomp on her foot") -> tag as "thud". Do not mislabel a calm inhale/exhale, a gulp/swallow, a huff, laughter, blinking, ear/tail movement, or a facial expression as a gasp or heartbeat.
 3. LITRPG / MAGIC EVENTS: check for actual interface openings, routine system notifications, immediate danger alerts, real quest state changes, level-ups, achievements, rewards, loot pickup/drop, currency collection, equipment changes, active magic, teleportation, summoning, and transformations. A mere discussion or metaphor about these things does not qualify.
 
 ### EXISTING SFX KEYS
 
-1. "footsteps" - A character actually walks, runs, approaches, retreats, steps forward/backward, stumbles with steps, or moves down a line. A clear step forward while reaching for someone can qualify. Repeated bouncing on heels can qualify only when it plausibly creates distinct footfalls. Tag the first segment of a continuous walking/movement sequence; do not repeat it on adjacent segments describing the same uninterrupted movement. A later walk after the first sequence has ended may receive a new cue.
-2. "creak" - A door, gate, or other object audibly creaks, groans, or squeals while opening or closing. For one door-opening event described in several consecutive sentences, tag only the first sentence that directly states it opens/creaks.
-3. "chime" - A routine system notification, status notification, or announcement actually appears. An explicit System segment such as "Ding!" normally uses "chime". Use "alert" instead only for a specific danger warning. Do not use "chime" for ordinary spoken dialogue, a decorative physical banner, or figurative wording such as "he chimes in".
-4. "hum" - Magical energy visibly/audibly surges, a skill or magical mechanism actively activates, ley lines activate, or a visible magical shimmer accompanies an active transformation or summoning. Tag the first segment where the magical event actually begins. Do not use it for a person humming a tune or speaking thoughtfully, and do not repeat it on every sentence describing the same transformation.
+1. "footsteps" - A character actually walks, runs, approaches, retreats, steps forward/backward, stumbles with steps, or moves down a line.
+2. "creak" - A door, gate, or other object audibly creaks, groans, or squeals while opening or closing.
+3. "chime" - A routine system notification, status notification, or announcement actually appears.
+4. "hum" - Magical energy visibly/audibly surges, a skill or magical mechanism actively activates, ley lines activate, or a visible magical shimmer accompanies an active transformation or summoning.
 5. "impact" - A forceful physical-combat strike, brawler hit, or heavy collision. Prefer "thud" for a comparatively ordinary stomp, footfall, fall, body landing, or dull physical bump.
-6. "crackle" - A fire or fireplace is actually crackling. A tavern setting alone is not enough.
-7. "thunder" - Thunder occurs or a storm/weather event is actively happening. Do not use for figurative phrases such as "my heart is thundering"; check "heartbeat" instead when the text means a racing/pounding heart.
-8. "drip" - Audible dripping occurs during cave or subterranean exploration. The setting alone is not enough.
-9. "levelup" - A character actually gains a level. Do not use merely for discussing experience points, ranks, or levels.
-10. "interface" - A holographic status, map, or inventory interface actually opens or closes. Use "chime" for a separate routine notification sound; do not stack both for the same single system event.
-11. "whoosh" - A teleportation, portal, or spatial gate actually activates, opens, or transports someone/something. For an object that simply manifests with a magical shimmer and no portal/gate, prefer "hum" if it is clearly active magic.
-12. "blade" - A blade or sword is actually drawn from its sheath. Do not use just because a weapon is mentioned.
-13. "armor" - Armor audibly clanks, heavy leather/equipment audibly shifts, or equipment is physically put on or removed. Do NOT use merely because a character straightens a normal coat, bows, or places a hand over the chest; use "rustle" only if the fabric movement plausibly makes a noticeable sound.
-14. "swish" - A character actually consumes a healing potion or elixir. This key does NOT mean a tail swishing, clothing swishing, or a weapon moving; do not use it for those actions.
-15. "slash" - A cutting/piercing strike or critical/lethal hit actually occurs. Prefer "impact" for a blunt hit.
-16. "monster" - A monster audibly roars, growls, or screeches. Do not use just because a monster is mentioned or imagined.
-
-### A. CHARACTER REACTIONS AND EVERYDAY ACTIONS
-
-17. "heartbeat" - Use when the text explicitly describes a salient physical heartbeat: the heartbeat speeds up, the heart pounds/races/thunders, or a heartbeat is rendered as "badump"/"thump-thump". "My heart is fluttering" may qualify when it clearly means a physical heartbeat. If adjacent segments describe the SAME reaction, put the cue on the most direct heartbeat segment only. Do not use for figurative phrases such as "my heart melts" or general excitement without a physical heartbeat description.
-18. "gasp" - Use whenever a character explicitly gasps, draws a sharp audible breath, or the narration says "I gasp" / "she gasps". This includes a short reaction described in narration. Do not use only because a character is surprised, freezes, blinks, looks shocked, inhales/exhales calmly, swallows/gulps, huffs, or laughs.
-19. "thud" - A foot distinctly stomps, a body/object falls, or something lands with a dull impact. A character who yells while stomping a foot is a strong match for "thud". Use "impact" for forceful combat and avoid making a light, non-audible gesture sound heavy.
-20. "knock" - Someone actually knocks or taps a door/surface with a discernible tap event. Do not use for merely touching a person gently unless the text makes a distinct audible tap clear; do not invent a knock for a fingertip placed softly on a forehead.
-21. "rustle" - Clothing, sleeves, coats, leaves, foliage, paper, fabric, or similar material noticeably rustles as it moves. This may fit explicit fidgeting with sleeves, straightening a coat, handling belongings, or a group of uniformed characters kneeling/bowing in coordinated motion when fabric movement is plausibly audible. Do not use for every tiny gesture or for movement that would be silent.
-22. "splash" - Someone or something actually splashes into, through, or out of water. Do not use because swimming or water is only discussed.
-23. "squeak" - A clear high-pitched squeak occurs from a hinge, object, or creature. Prefer "creak" for a low, prolonged door creak.
-
-### B. LITRPG SYSTEM AND PROGRESSION EVENTS
-
-24. "quest" - A quest is actively accepted, started, completed, or meaningfully updated as an event. Use this for the actual quest action, not a metaphor such as "a royal quest" or a routine System message announcing it; the notification itself uses "chime" (or "alert" for a specific danger warning).
-25. "alert" - ONLY when a character or system detects, senses, or warns of actual danger, an immediate threat, an ambush, a trap, or a hostile presence. This is not a generic notification sound. When a System message specifically warns of danger, use "alert" instead of "chime" for that same notification.
-26. "achievement" - An achievement is actually accomplished/unlocked as a narrative event OUTSIDE a System notification. NEVER use this key on a segment whose line_type is "System". If a System notification announces an achievement, use "chime" when a notification cue is appropriate.
-27. "reward" - A reward is actually received, handed over, or granted as a narrative event OUTSIDE a System notification. NEVER use this key on a segment whose line_type is "System". If a System notification announces a reward, use "chime" when a notification cue is appropriate.
-28. "loot" - An item is actually dropped, discovered, picked up, or collected as loot. Do not use just because loot or an item is discussed.
-29. "coin" - Coins or currency are physically collected, dropped, or exchanged with a distinct coin sound. Do not use for a number changing in a status window or a currency amount merely being mentioned.
-30. "chest" - A treasure chest is actually opened or its mechanism activates. Do not use for a storage box, chest, or container merely being discussed or seen at a distance unless it is clearly functioning as a treasure chest event.
-31. "equip" - A character actually equips or removes a weapon, armor piece, accessory, or other item. Do not use for a status screen merely displaying equipment/stats or for a transformation that only changes appearance.
+6. "crackle" - A fire or fireplace is actually crackling.
+7. "thunder" - Thunder occurs or a storm/weather event is actively happening.
+8. "drip" - Audible dripping occurs during cave or subterranean exploration.
+9. "levelup" - A character actually gains a level.
+10. "interface" - A holographic status, map, or inventory interface actually opens or closes.
+11. "whoosh" - A teleportation, portal, or spatial gate actually activates, opens, or transports someone/something.
+12. "blade" - A blade or sword is actually drawn from its sheath.
+13. "armor" - Armor audibly clanks, heavy metallic plate shifts, or metal equipment is physically put on or removed. Do NOT use for cloth dresses, maid uniforms, fabric shifts, or clothing adjusting (use "rustle" instead).
+14. "swish" - A character actually consumes a healing potion or elixir.
+15. "slash" - A cutting/piercing strike or critical/lethal hit actually occurs.
+16. "monster" - A monster audibly roars, growls, or screeches.
+17. "heartbeat" - Explicit physical heartbeat: the heartbeat speeds up, the heart pounds/races/thunders, or is rendered as "badump"/"thump-thump".
+18. "gasp" - A character explicitly gasps, draws a sharp audible breath, or the narration says "I gasp" / "she gasps".
+19. "thud" - A foot distinctly stomps, a body/object falls, or something lands with a dull impact.
+20. "knock" - Someone actually knocks or taps a door/surface with a discernible tap event.
+21. "rustle" - Clothing, sleeves, coats, leaves, foliage, paper, fabric, dresses, or maid uniforms noticeably rustle as they move.
+22. "splash" - Someone or something actually splashes into, through, or out of water.
+23. "squeak" - A clear high-pitched squeak occurs from a hinge, object, or creature.
+24. "quest" - A quest is actively accepted, started, completed, or meaningfully updated as an event.
+25. "alert" - ONLY when a character or system detects, senses, or warns of actual danger, an immediate threat, an ambush, a trap, or a hostile presence.
+26. "achievement" - An achievement is actually accomplished/unlocked as a narrative event OUTSIDE a System notification.
+27. "reward" - A reward is actually received, handed over, or granted as a narrative event OUTSIDE a System notification.
+28. "loot" - An item is actually dropped, discovered, picked up, or collected as loot.
+29. "coin" - Coins or currency are physically collected, dropped, or exchanged with a distinct coin sound.
+30. "chest" - A treasure chest is actually opened or its mechanism activates.
+31. "equip" - A character actually equips or removes a weapon, armor piece, accessory, or other item.
 
 ### EXAMPLES FROM THE REQUIRED TAGGING BEHAVIOR
 
 - "Step." followed immediately by "Step step." during the same uninterrupted walk: tag only the first segment "footsteps"; leave the second blank to avoid duplicating the same continuous sequence.
-- "I take a deep breath, then step forward...": use "footsteps" for the step if that is the segment's main sound-worthy action. If the heartbeat description is in a separate natural segment, tag that segment "heartbeat" instead.
-- "The doors creak open." followed by "The door swings open..." describing the same opening: tag only the first sentence "creak".
-- "My heartbeat starts to pick up." or "Badump! badump!": tag the clearest heartbeat segment "heartbeat"; do not tag both adjacent lines for the same single reaction.
+- "I take a deep breath, then step forward...": use "footsteps" for the step if that is the segment's main sound-worthy action.
+- "The doors creak open." or "The giant doors groan softly behind us as we close them": tag "creak".
+- "My heartbeat starts to pick up." or "Badump! badump!" or "My heart is thundering.": tag "heartbeat".
 - "I gasp, nearly bouncing." or "Eris gasps.": tag that segment "gasp".
 - "I let out a dramatic huff" or a dialogue line containing only "Gulp.": do not force "gasp"; there is no dedicated huff/gulp key in this list.
 - "I bounce on my heels": use "footsteps" only when distinct footfalls are reasonably implied; a silent posture shift is not enough.
 - "Like she knows she's won" or "she bestows a royal quest": figurative language only; leave blank.
-- "I whirl and stomp directly on her foot" / "I yell, stomping one foot": use "thud" for the stomp, not a heavy-combat "impact".
-- "He steps forward, lifts a finger, and taps the maid's forehead": "footsteps" may be appropriate for the step forward; do not invent an impact or knock for a gentle touch.
-- "The maid's body starts to shift" with a visible magical shimmer, or "she summons a dimensional storage box in a brief shimmer of blue light": use "hum" on the segment where the active magic begins. Do not repeat it across every sentence describing the same effect.
-- "The maids kneel in unison": consider "rustle" only if the coordinated movement of their uniforms plausibly creates a noticeable fabric sound; do not invent a heavy impact.
-- "Alvero straightens his coat and bows": use "rustle" if a noticeable fabric sound is reasonably implied; never use "armor" unless armor/equipment is actually involved.
+- "I whirl and stomp directly on her foot" / "I yell, stomping one foot": use "thud" for the stomp.
+- "He steps forward, lifts a finger, and taps the maid's forehead": "footsteps" for the step forward; do not invent an impact or knock for a gentle touch.
+- "The maid's body starts to shift" with a visible magical shimmer, or "she summons a dimensional storage box in a brief shimmer of blue light": use "hum" on the segment where the active magic begins.
+- "The maids kneel in unison" or "They bow in perfect sync, dipping waist-deep" or "Now, all five kneel before me, their heads bowed in perfect unison": use "rustle" because synchronized fabric movements create noticeable sound.
+- "Alvero straightens his coat and bows low" or "fidgeting with my sleeves": use "rustle" for the fabric sound; NEVER use "armor" unless metallic plate is actually involved.
+- "Her outfit adjusts to fit the new form": use "rustle" for clothing/dress adjusting; NEVER use "armor".
 - "Alvero chimes in with a nod": the word "chimes" is figurative, not a system sound; leave blank.
 - A new routine System notification appears as "Ding!": normally "chime". A System warning explicitly detects an approaching enemy or trap: "alert". Never use "achievement" or "reward" on a System segment.
-- A character discusses sending homunculi into dungeons, or explains their combat abilities: leave blank because those are hypothetical/explanatory, not present actions.
 
 STRICT SFX RULES:
 - Every segment MUST contain an "sfx" field.
@@ -875,7 +896,7 @@ STRICT SFX RULES:
 - An ordinary System notification uses "chime" when appropriate. A specific danger notification uses "alert" instead. Do not stack two effects for the same single notification. NEVER use "achievement" or "reward" on System segments.
 - Evaluate every segment independently, but use immediate context to determine whether an action is actually happening now. Do not carry a cue into unrelated segments.
 - Do not repeat an SFX across adjacent segments for the same continuous event. Place it on the earliest/most direct event segment; a genuinely new event after a pause may receive a new cue.
-- If one segment contains several distinct events, choose the one most directly audible and important for that segment. When narration contains naturally separate event sentences, keep them in separate segments where appropriate so multiple distinct events can be cued without losing or altering any text.
+- If one segment contains several distinct events, choose the one most directly audible and important for that segment.
 - Never output multiple keys in one field, and never place SFX descriptions inside "text".
 - Preserve all original narrative content and chronological order. Do not force an SFX where no condition applies.
 - Continue following CORE DIRECTIVES 1–4 without deviation.
@@ -933,6 +954,23 @@ ACTIVE STAGED CHARACTERS:
 
         # Sentence-length management for narration blocks exceeding the merge threshold
         seg_text = seg.get("text", "")
+
+        # Target fix: Demote non-metallic outfit shifts tagged as 'armor' to 'rustle'
+        if seg["sfx"] == "armor" and not re.search(r'\b(armor|plate|chainmail|cuirass|greaves?|helm)\b', seg_text, re.I):
+            seg["sfx"] = "rustle"
+
+        # Target fix: Catch deterministic bodily reactions or fabric rustles if model omitted them
+        if not seg["sfx"]:
+            t_low = seg_text.lower()
+            if re.search(r'\b(gasp|gasps|gasped)\b', t_low):
+                seg["sfx"] = "gasp"
+            elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|heart\s+pounding)\b', t_low):
+                seg["sfx"] = "heartbeat"
+            elif re.search(r'\b(stomp|stomps|stomping)\b', t_low):
+                seg["sfx"] = "thud"
+            elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
+                seg["sfx"] = "rustle"
+
         if seg.get("line_type") == "Narration" and len(seg_text) > max_narr_merge:
             narr_splits = split_by_sentence_threshold(seg_text, threshold=max_narr_merge)
             sfx_assigned_to_split = False
@@ -1018,6 +1056,18 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
         tp = seg["text"].strip()
         if not re.search(r'[.!?…]$', tp):
             tp = tp + "."
+
+        sfx_val = ""
+        t_low = tp.lower()
+        if re.search(r'\b(gasp|gasps|gasped)\b', t_low):
+            sfx_val = "gasp"
+        elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|heart\s+pounding)\b', t_low):
+            sfx_val = "heartbeat"
+        elif re.search(r'\b(stomp|stomps|stomping)\b', t_low):
+            sfx_val = "thud"
+        elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
+            sfx_val = "rustle"
+
         staged_records.append({
             "line_id": f"{idx:04d}",
             "speaker": role_meta.get("display_name", rk.title()),
@@ -1027,7 +1077,7 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             "voice": voice,
             "pitch": role_meta.get("pitch", "+0Hz"),
             "rate": role_meta.get("rate", "+5%"),
-            "sfx": ""
+            "sfx": sfx_val
         })
     return staged_records
 

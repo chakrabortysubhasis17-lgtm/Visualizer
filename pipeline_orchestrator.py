@@ -704,7 +704,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 # Normalize title pronunciation
                 title = sanitize_chapter_title(title)
 
-                print("HELLO IAM HERE");
+                #print("HELLO IAM HERE");
 
                 # Clean text and filter out author notes
                 cleaned_rows = []
