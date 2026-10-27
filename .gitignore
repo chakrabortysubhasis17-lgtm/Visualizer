@@ -5,6 +5,7 @@ __pycache__/
 [Cc]opyproj/*/*.txt
 *.jpg
 *.mp3
+!assets/sfx/*.mp3
 *.mp4
 *.srt
 youtube_*

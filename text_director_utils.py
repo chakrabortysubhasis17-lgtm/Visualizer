@@ -74,7 +74,7 @@ CONTAINER_SELECTORS = [
     ("article", {}),
 ]
 
-# Fixed: Clean UTF-8 brackets and standard regex '|' alternates
+# Clean UTF-8 brackets and standard regex '|' alternates
 RE_SYSTEM = re.compile(
     r"(?:\[\vert{}【\vert{}〖\vert{}『\vert{}《\vert{}［\vert{}\{)(Ding!\vert{}System\vert{}Notice\vert{}Warning\vert{}Announcement\vert{}Prompt\vert{}Quest\vert{}Stat\vert{}Skill\vert{}Level\vert{}Lv\.\vert{}Inventory\vert{}Reward).*?(?:\]|】|〗|』|》|］|\})",
     re.I
@@ -93,6 +93,10 @@ WATERMARK_PATTERNS = [
     re.compile(r"https?://\S+", re.I),
     re.compile(r"【?\s*Brain Storage\s*】?", re.I),
     re.compile(r"【?\s*Please come in, dear readers\.?\s*】?", re.I),
+    re.compile(r"Click here:.*?\((?:Visual scene|illustration).*?\)", re.I),
+    re.compile(r"(?:Hey\s+everyone\s+)?don'?t\s+forget\s+to\s+vote\s+and\s+support.*", re.I),
+    re.compile(r"Check\s+out\s+the\s+mass\s+release\s+goals.*", re.I),
+    re.compile(r"Add\s+to\s+library\s+and\s+give\s+your\s+thoughts.*", re.I),
     re.compile(r"[\U0001D400-\U0001D7FF]+", re.UNICODE),
 ]
 
@@ -207,7 +211,6 @@ def clean_and_parse_json(raw_text: str):
 
     # Recovery: Attempt auto-closing truncated segment arrays
     if clean.startswith("{") and not clean.endswith("}"):
-        # Find last completed segment object
         last_brace = clean.rfind("}")
         if last_brace != -1:
             repaired = clean[:last_brace + 1] + "]}"
@@ -596,23 +599,13 @@ def parse_single_chunk_via_gemini(
     max_retries: int = 3,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v3", chunk_text)
+    # Bumped namespace to v4: enforces strict anti-consecutive and anti-metaphor audio cues
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v4", chunk_text)
 
-    # Preserve existing cached narration by default. Legacy cache entries were generated
-    # before SFX tagging existed; migrate their existing rows with an empty SFX field
-    # rather than making a fresh Gemini call that could change narration or segmentation.
     if not refresh_legacy_cache_for_sfx:
         cached_segments = cache_get(chunk_cache_key)
         if cached_segments and isinstance(cached_segments, list) and len(cached_segments) > 0:
             return cached_segments
-
-        # If v2 cache had genuine SFX, reuse it; otherwise re-run with new detailed prompt
-        v2_cache_key = make_cache_key("gemini_chunk_sfx_v2", chunk_text)
-        v2_segments = cache_get(v2_cache_key)
-        if v2_segments and isinstance(v2_segments, list) and len(v2_segments) > 0:
-            if any(s.get("sfx") for s in v2_segments if isinstance(s, dict)):
-                cache_set(chunk_cache_key, v2_segments, expire_seconds=86400 * 14)
-                return v2_segments
 
         legacy_cache_key = make_cache_key("gemini_chunk", chunk_text)
         legacy_segments = cache_get(legacy_cache_key)
@@ -626,8 +619,6 @@ def parse_single_chunk_via_gemini(
             if migrated_segments:
                 cache_set(chunk_cache_key, migrated_segments, expire_seconds=86400 * 14)
                 return migrated_segments
-    # When explicitly requested, bypass both cache namespaces to regenerate SFX-aware
-    # rows. This is opt-in because Gemini may change segmentation or text on a new run.
 
     prompt = f"CHAPTER: {title}\n\nCONTENT:\n{chunk_text}"
 
@@ -758,7 +749,7 @@ def parse_chapter_via_gemini_director(
 
     registered_manifest_str = "\n".join(char_manifest)
 
-    # Tightened director system instruction with complete 53-key taxonomy
+    # Tightened director system instruction with strict negative constraints & deduplication
     system_instruction = f"""You are an expert Audiobook Screenplay Director, Dramaturg, and Voice Acting Lead specialized in neural Text-to-Speech (Edge TTS) script synthesis.
 Your mandate is to convert web novel chapter text into an execution-grade JSON screenplay array for multi-voice TTS synthesis.
 
@@ -774,11 +765,10 @@ You must follow every directive below without deviation:
    - Example: '"Shall we?" she whispered, glancing back.' -> Segment 1: Dialogue by speaker; Segment 2: Narration by Narrator.
 2. Speaker Identification & Gender Lock:
    - Always reference the ACTIVE STAGED CHARACTERS manifest below first. A female character must NEVER become male, and a male character must NEVER become female.
-   - If an alias, title, or epithet is used, map it to the canonical character display name.
-   - For unlisted characters, infer name and gender ('Male', 'Female', or 'Neutral') from surrounding context and assign an appropriate Edge-TTS neural voice.
+   - The "speaker" field must be a CLEAN character name or "Narrator". NEVER put spoken quotes, phrases, or full sentences into the speaker field.
    - If a character is the first-person narrator ('I', 'me') and has an explicit identity established in context, assign them their true character name and gender instead of a generic "Protagonist" label.
    - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
-3. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System".
+3. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System". Character internal thoughts must NEVER be marked as "System".
 
 ### CORE DIRECTIVE 3: EDGE TTS PUNCTUATION, CADENCE & PHONETIC STABILITY
 1. Mandatory Terminal Punctuation: Every segment's text field MUST terminate with a valid punctuation mark ('.', '!', '?', '...', or '—'). If missing in the raw text, append the contextually appropriate mark.
@@ -807,69 +797,75 @@ Each object in the array must strictly comply with this schema:
   "sfx": "footsteps"
 }}
 
-### CORE DIRECTIVE 5: PROACTIVE, CONTEXT-AWARE SOUND EFFECT TAGGING (SFX)
+### CORE DIRECTIVE 5: CONTEXT-AWARE SOUND EFFECT TAGGING (SFX) & STRICT NEGATIVE CONSTRAINTS
 
 The "sfx" field is metadata for audio assembly. It is NEVER spoken and must never replace, alter, summarize, or add words to the narrative text.
 
-MATCHING TRIGGER DIRECTORY (MANDATORY AUDIT FOR EVERY SEGMENT):
-• "gasp": Explicit character reaction -> 'gasp', 'gasps', 'gasped', 'sharp intake of breath' (e.g., "I gasp", "Eris gasps", "she gasps").
-• "heartbeat": Physical heart sensation -> 'heartbeat starts to pick up', 'heart is thundering', 'badump! badump!', 'pounding heart', 'flutter beneath ribs', 'chest thumping'.
-• "thud": Foot stomps, heavy steps, blunt drops, dull landings -> 'stomp', 'stomps', 'stomping one foot', 'stomp directly on her foot', 'dull thump', 'body lands'.
-• "rustle": Fabric, robes, clothing, dresses, bowing, kneeling, foliage -> 'bows low', 'bow in perfect sync', 'kneel in unison', 'kneels', 'fidgeting with sleeves', 'straightening his coat', 'outfit adjusts', 'leaves rustle'. (CRITICAL: NEVER use "armor" for maid uniforms, dresses, or cloth outfits!).
-• "armor": STRICTLY metallic plate armor clanking, metal gauntlets, or heavy metal combat suits. NOT cloth, dresses, or robes.
-• "creak": Doors or gates opening/closing -> 'doors creak open', 'doors groan softly', 'gate squeals', 'hinges groaning'.
-• "hum": Magic activation, glowing aura, shimmers -> 'shimmer of light', 'brief shimmer of deep blue light', 'body starts to shift' (magical change), 'defensive runes flared'.
-• "chime": Routine system announcement -> 'Ding!', 'System notification', level banner.
-• "footsteps": Movement down a path, approaching, stepping -> 'Step.', 'step forward', 'stepping over', 'turns and makes his way down the garden path'.
-• "run": Sprints, rapid charging, fleeing -> 'sprint', 'sprinted', 'dashing', 'running away', 'charged forward', 'sprinting'.
-• "tiptoe": Slow, stealthy, cautious footsteps -> 'tiptoe', 'careful steps', 'light footing', 'sneaking', 'creeping'.
-• "horseandcart": Carriages, carts, wagons rolling, trotting hooves -> 'carriage rolled', 'wheels rattled', 'wagon approached', 'horses trotted'.
-• "market": Dense crowd chatter, bustling trade, bazaars -> 'bustling market', 'vendors shouting', 'crowded streets', 'bazaar'.
-• "cheer": Crowd cheers, stadium applause, victory roars -> 'crowd cheered', 'erupted in cheers', 'applause echoed', 'cheering'.
-• "disappointed": Crowd groans, collective letdown, murmurs of dismay -> 'crowd groaned', 'disappointed murmurs', 'collective sigh of letdown'.
+MANDATORY NEGATIVE CONSTRAINTS:
+1. STRICT ANTI-CONSECUTIVE RULE: NEVER tag the same SFX key in consecutive rows or across continuous neighboring sentences. If a battle or movement spans several sentences, place the cue ONLY on the very first segment where the action begins, and leave subsequent segments as "".
+2. NEVER TAG METAPHORS OR SIMILES: Do NOT tag figurative language, thoughts, memories, plans, or similes.
+   - 'tears running down her cheeks' -> NEVER tag "run"!
+   - 'crack in the egg was like lightning' -> NEVER tag "thunder"!
+   - 'invest every coin earned' (thinking about money) -> NEVER tag "coin"!
+   - 'the entire group stopped' -> NEVER tag "thud"!
+   - 'he clenched his fists' -> NEVER tag "thud"!
+3. LITERAL ACTIVE EVENTS ONLY:
+   - "pain": Acute combat injury impact on living humanoid fighters. NEVER tag illness, disease (Cryosis), emotional grief, or dying monster speech.
+   - "eating": Strictly chewing/eating solid food. NEVER tag drinking liquids, gulping water, or metaphorical consumption.
+   - "dishes": Strictly setting down plates, bowls, or cutlery at a dining table. NEVER tag inspecting gems, handling loot, or tapping shop counters.
+   - "cheer": Strictly stadium/arena mass crowd celebration. NEVER tag children giggling, mocking, or school laughter.
+   - "whisper": Strictly eerie eldritch murmurs, phantom voices, or cursed artifacts in the mind. NEVER tag ordinary human whispers, quiet prayers, or private family comforting.
+   - "blade": Strictly drawing or unsheathing a metal blade from its scabbard. NEVER tag dropping a weapon, holding a blade, or verbal threats.
+   - "armor": Strictly heavy metallic plate armor clanking. NEVER tag cloth robes, dresses, or uniforms.
+
+MATCHING TRIGGER DIRECTORY:
+• "gasp": Explicit character audible gasp -> 'I gasp', 'she gasps', 'gasped in horror'.
+• "heartbeat": Literal physical racing pulse in combat/terror -> 'heart thundered', 'badump! badump!', 'pounding heart'.
+• "thud": Blunt landings, body collapses, heavy foot stomps -> 'stomped her foot', 'body collapsed to the ground'.
+• "rustle": Fabric, robes, clothing adjusting, bowing, kneeling, foliage -> 'bowed low', 'kneels in unison', 'fidgeting with sleeves', 'outfit adjusts'.
+• "armor": STRICTLY metallic plate armor clanking or metal gauntlets shifting.
+• "creak": Doors, gates, or hinges physically creaking open/closed -> 'doors creak open', 'hinges groaned'.
+• "hum": Magic activation, glowing aura, shimmers -> 'shimmer of deep blue light', 'runes flared with light'.
+• "chime": Routine System status notification -> 'Ding!', 'System notification'. (Tag ONLY once per notification block).
+• "footsteps": Movement down a path, approaching, stepping -> 'Step.', 'step forward', 'stepped toward'.
+• "run": Sprints, rapid charging, fleeing -> 'sprinted', 'charged forward', 'fled at top speed'.
+• "tiptoe": Slow, stealthy, cautious footsteps -> 'tiptoe', 'careful steps', 'light footing', 'sneaking'.
+• "horseandcart": Carriages, carts, wagons rolling, trotting hooves -> 'carriage rolled', 'wheels rattled', 'wagon approached'.
+• "market": Dense crowd chatter, bustling trade, bazaars -> 'bustling market', 'vendors shouting', 'bazaar'.
+• "cheer": Crowd cheers, stadium applause, victory roars -> 'crowd cheered', 'stadium erupted in applause'.
+• "disappointed": Crowd groans, collective letdown -> 'crowd groaned', 'collective sigh of letdown'.
 • "wardrum": Heavy rhythmic war drums, army marching cadence -> 'war drums', 'drums beat', 'marching drums'.
-• "gong": Resonant temple bell, cultivation breakthrough chime, bronze gong -> 'spiritual gong', 'bell of enlightenment', 'temple gong', 'gong sounded'.
-• "pain": Sharp groans of pain, injuries, agony, clutching wounds -> 'groaned in agony', 'sharp gasp of pain', 'clutched his wound', 'searing pain'.
-• "cooking": Sizzling skillets, frying, bubbling stew, boiling cauldron -> 'sizzled in the pan', 'pot bubbled', 'seared the meat', 'cooking on the hearth'.
-• "dishes": Setting down plates, clattering bowls, serving food -> 'set down the plates', 'served the bowls', 'dishes clattered'.
-• "eating": Chewing food, taking bites, hungry dining -> 'chewed hungrily', 'took a bite', 'devoured the food'.
-• "heartwarm": Romantic tenderness, gentle hand-holding, blushing -> 'fingers slipped through mine', 'laced our fingers', 'blushed softly', 'tender touch'.
+• "gong": Resonant temple bell, cultivation breakthrough chime, bronze gong -> 'spiritual gong', 'bell of enlightenment', 'temple gong'.
+• "pain": Sharp groans of pain, acute combat wounds -> 'groaned in agony', 'sharp gasp of pain', 'blade pierced his flesh'.
+• "cooking": Sizzling skillets, frying, bubbling stew, boiling cauldron -> 'sizzled in the pan', 'pot bubbled over the hearth'.
+• "dishes": Setting down plates, clattering bowls at a dining table -> 'set down the plates', 'dishes clattered on the table'.
+• "eating": Chewing solid food, taking bites -> 'chewed hungrily', 'took a bite of the meat', 'devoured the meal'.
+• "heartwarm": Romantic tenderness, gentle hand-holding, blushing -> 'fingers slipped through mine', 'laced our fingers', 'blushed softly'.
 • "intimate": Deep romantic tension, sensual moments, close whispers, leans -> 'leaned in close', 'breath brushed her lips', 'quiet intimate embrace'.
 • "sigh": Soft audible release of breath, relief, weary exhale -> 'let out a soft sigh', 'sighed in relief', 'weary exhale'.
-• "whisper": Eerie phantom voices, occult murmurs, telepathic shadows -> 'phantom whispers', 'eerie murmurs', 'voices coiling in his head', 'madness whispering'.
-• "haunt": Sudden supernatural chill, eerie presence, dread -> 'unnatural chill', 'chilling presence', 'temperature dropped suddenly', 'dissonant hum of dread'.
+• "whisper": Eerie phantom voices, occult murmurs, telepathic shadows -> 'phantom whispers', 'eerie murmurs', 'voices coiling in his mind'.
+• "haunt": Sudden supernatural chill, eerie presence, dread -> 'unnatural chill', 'chilling presence', 'temperature dropped suddenly'.
 • "howl": Distant nocturnal calls, wolf howl -> 'distant howl', 'howl tore through the night', 'wolf howling'.
-• "bells": Cathedral bells, clocktower tolls, distant city bells -> 'bell chimed', 'bell tolled', 'clock tower struck', 'bells chimed'.
-• "wind": Desolate drafts, howling gale, mountain breeze -> 'wind howled', 'chilling draft', 'howling gale', 'wind swept across'.
+• "bells": Cathedral bells, clocktower tolls, distant city bells -> 'bell chimed', 'bell tolled', 'clock tower struck'.
+• "wind": Desolate drafts, howling gale, mountain breeze -> 'wind howled', 'chilling draft', 'howling gale'.
 • "forest": Peaceful woodland canopy, rustling trees, chirping -> 'primeval forest', 'rustling canopy', 'woodland sounds'.
 • "ocean": Crashing waves, surf, sea spray -> 'waves crashed', 'lapping waves', 'ocean surf'.
-• "impact": High-velocity physical combat strike, heavy blunt collision.
-• "whoosh": Portals, teleportation, spatial gate, spatial tear.
-• "blade": Drawing a metal sword, dagger, or blade from a scabbard/sheath.
-• "slash": Cutting, hacking, slicing, or flesh-piercing strike.
-• "monster": Beast roaring, screeching, snarling, or howling.
-• "alert": System danger warning or alarm (threat detected).
-• "quest" / "levelup": Actual quest or level-up events.
-
-IMPORTANT TAGGING APPROACH — BE PROACTIVE, NOT OVERLY CONSERVATIVE:
-- Inspect every segment for an actual audible event. Do not leave "sfx" blank by habit merely because a segment is narration or describes a small action.
-- Before leaving a segment blank, compare it against EVERY applicable key above. When an action directly matches a key and its sound is reasonably implied, assign the key even if the text does not literally say "sound" or "audible".
-- Look carefully for physical and environmental events: footsteps, runs, stealth tiptoes, carriages, stomps, gasps, pounding heartbeats, garments adjusting, door groans, cooking, dishes served, eating, sighs, tender touches, church bells, gongs, war drums, winds, or system chimes.
-- Do not infer a sound merely from a silent gesture, facial expression, hypothetical plan, memory, figure of speech, or explanation.
-- Put the key on the segment that first and most directly describes the event.
-- Use one key per segment. If one narration passage contains two separate sound-worthy events at natural boundaries, represent them in separate segments where appropriate.
-- Tag each distinct event once. Avoid adjacent duplicate tags for a single continuous action.
+• "impact": High-velocity physical combat strike, heavy blunt collision -> 'hammer slammed', 'blunt collision'.
+• "whoosh": Portals, teleportation, spatial gate, spatial tear -> 'portal opened', 'stepped through the spatial rift'.
+• "blade": Drawing a metal sword, dagger, or blade from a scabbard/sheath -> 'unsheathed his blade', 'drew his dagger'.
+• "slash": Cutting, hacking, slicing, or flesh-piercing strike -> 'blade sliced cleanly', 'sword severed'.
+• "monster": Beast roaring, screeching, snarling, or howling -> 'beast roared furiously', 'growled savagely'.
+• "alert": System danger warning or alarm -> '[Warning!]', 'threat detected'.
+• "quest" / "levelup" / "achievement" / "reward" / "loot" / "coin" / "chest" / "equip": Specific LitRPG game mechanics occurring in the narrative.
 
 AUTHORIZED SFX KEYS (EXACT LIST):
 [footsteps, run, tiptoe, horseandcart, creak, crackle, thunder, drip, wind, forest, ocean, hum, whoosh, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong]
 
 STRICT SFX RULES:
-- Every segment MUST contain an "sfx" field.
-- Use exactly one allowed lowercase key from the authorized list when its condition is satisfied.
-- Otherwise, use the empty string: "". Never use null, "none", "N/A", or whitespace.
+- Every segment MUST contain an "sfx" field. If no condition applies, use "". Never use null, "none", "N/A", or whitespace.
+- Never repeat the same SFX on consecutive rows or adjacent actions.
 - Never output multiple keys in one field, and never place SFX descriptions inside "text".
-- Preserve all original narrative content and chronological order. Do not force an SFX where no condition applies.
-- Continue following CORE DIRECTIVES 1–4 without deviation.
+- Preserve all original narrative content and chronological order.
 ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
 """
@@ -892,7 +888,6 @@ ACTIVE STAGED CHARACTERS:
             refresh_legacy_cache_for_sfx=refresh_legacy_cache_for_sfx,
         )
 
-        # Directly trust Gemini output if it returned a valid parsed list
         if part_staged and isinstance(part_staged, list) and len(part_staged) > 0:
             all_staged.extend(part_staged)
         else:
@@ -911,10 +906,16 @@ ACTIVE STAGED CHARACTERS:
         if "edge_tts_voice" in seg and "voice" not in seg:
             seg["voice"] = seg.pop("edge_tts_voice")
 
-        # Fuzzy character voice lock & continuity enforcement
-        sp = seg.get("speaker", "Narrator")
-        current_voice = seg.get("voice", "en-US-GuyNeural")
+        # Sanitize corrupted speaker names (strip quotes, reject entire dialogue phrases in speaker)
+        sp = seg.get("speaker", "Narrator").strip()
+        if sp.startswith('"') and sp.endswith('"'):
+            sp = sp.strip('"').strip()
+        if sp == seg.get("text", "").strip().strip('"') or len(sp) > 35 or any(p in sp for p in ['.', '!', '?', '...']):
+            sp = "Narrator" if seg.get("line_type") == "Narration" else "mc"
+        seg["speaker"] = sp
 
+        # Fuzzy character voice lock & continuity enforcement
+        current_voice = seg.get("voice", "en-US-GuyNeural")
         if seg.get("line_type") == "Dialogue":
             seg["voice"] = resolve_character_voice(sp, staged_chars, default_voice=current_voice)
         elif seg.get("line_type") == "System":
@@ -922,67 +923,134 @@ ACTIVE STAGED CHARACTERS:
         elif seg.get("line_type") == "Narration" and not seg.get("voice"):
             seg["voice"] = staged_chars.get("Narrator", {}).get("voice", "en-US-GuyNeural")
 
-        # Sentence-length management for narration blocks exceeding the merge threshold
         seg_text = seg.get("text", "")
+        t_low = seg_text.lower()
+        is_brief_event = len(seg_text.split()) < 22
 
-        # Target fix: Demote non-metallic outfit shifts tagged as 'armor' to 'rustle'
+        # =================================================================
+        # TARGETED SEMANTIC VALIDATION & FALSE POSITIVE SUPPRESSION
+        # =================================================================
+
+        # Demote non-metallic outfit shifts tagged as 'armor' to 'rustle'
         if seg["sfx"] == "armor" and not re.search(r'\b(armor|plate|chainmail|cuirass|greaves?|helm)\b', seg_text, re.I):
             seg["sfx"] = "rustle"
 
-        # Deterministic safety net: Catch obvious bodily, environmental and physical cues if model omitted them
+        # Suppress 'blade' on dialogue threats or dropped weapons
+        if seg["sfx"] == "blade":
+            if seg.get("line_type") == "Dialogue" or not re.search(r'\b(drew|drawn|draw|unsheathed?|sheathed?|pulled\s+out\s+(?:his|her|their)\s+(?:sword|blade|dagger))\b', seg_text, re.I):
+                seg["sfx"] = ""
+
+        # Suppress 'cheer' on children giggling or school mockery
+        if seg["sfx"] == "cheer":
+            if re.search(r'\b(children|kids|giggled|mockery|laughter|laughed|snickered)\b', seg_text, re.I) and not re.search(r'\b(stadium|arena|crowd\s+cheered|erupted\s+in\s+cheers|applause)\b', seg_text, re.I):
+                seg["sfx"] = ""
+
+        # Suppress 'eating' on drinking liquids
+        if seg["sfx"] == "eating" and re.search(r'\b(water|drink|drank|gulped\s+(?:it\s+)?down|bottle|tea|wine|ale|potion|elixir)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # Suppress 'dishes' on non-dining table contexts (inspecting items, tapping counters)
+        if seg["sfx"] == "dishes" and not re.search(r'\b(plates?|dishes|bowls?|cups?|saucers?|tray|table|dinner|meal|feast|breakfast|lunch|supper)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # Suppress 'whisper' on normal human murmurs, prayers, or family comforting
+        if seg["sfx"] == "whisper":
+            if seg.get("line_type") == "Dialogue" or not re.search(r'\b(phantom|eldritch|eerie|shadows?|voices?\s+coiling|madness|curse|creeping\s+into\s+(?:his|her|their)\s+mind)\b', seg_text, re.I):
+                seg["sfx"] = ""
+
+        # Suppress 'pain' on dialogue, dying monster speech, or chronic illness
+        if seg["sfx"] == "pain":
+            if seg.get("line_type") == "Dialogue" or re.search(r'\b(illness|disease|cryosis|sickness|suffering|condition|fever|poisoning)\b', seg_text, re.I):
+                seg["sfx"] = ""
+
+        # Suppress 'run' on tears running or metaphorical sprints
+        if seg["sfx"] == "run":
+            if re.search(r'\b(tears?\s+running|running\s+down\s+(?:her|his|their)\s+cheeks?|wanted\s+to\s+sprint|thought\s+of\s+running)\b', seg_text, re.I):
+                seg["sfx"] = ""
+
+        # Suppress 'thunder' on similes (e.g. "like lightning")
+        if seg["sfx"] == "thunder" and re.search(r'\b(like\s+lightning|as\s+if\s+lightning)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # Suppress 'coin' on financial contemplation without physical handling
+        if seg["sfx"] == "coin" and not re.search(r'\b(coins?\s+(?:clinked|jingled|dropped|fell|poured)|pouch\s+of\s+coins?|gold\s+coins?\s+on\s+the)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # Suppress 'thud' on stopped walking or clenched fists
+        if seg["sfx"] == "thud" and re.search(r'\b(stopped|clenched\s+(?:his|her|their)\s+fists?|fists?\s+tightened)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # Suppress 'splash' on blood/gore explosions
+        if seg["sfx"] == "splash" and not re.search(r'\b(water|pool|river|lake|sea|ocean|puddle)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # Suppress 'gasp' on lines without literal gasp words
+        if seg["sfx"] == "gasp" and not re.search(r'\b(gasp|gasps|gasped|sharp\s+intake\s+of\s+breath)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
+        # =================================================================
+        # HARDENED DETERMINISTIC FALLBACK PATTERNS (Literal Events Only)
+        # =================================================================
         if not seg["sfx"]:
-            t_low = seg_text.lower()
-            if re.search(r'\b(gasp|gasps|gasped)\b', t_low):
+            if re.search(r'\b(gasp|gasps|gasped|sharp\s+intake\s+of\s+breath)\b', t_low) and is_brief_event:
                 seg["sfx"] = "gasp"
-            elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|heart\s+pounding)\b', t_low):
+            elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|pounding\s+heart)\b', t_low) and is_brief_event:
                 seg["sfx"] = "heartbeat"
-            elif re.search(r'\b(stomp|stomps|stomping)\b', t_low):
+            elif re.search(r'\b(stomp|stomps|stomping|body\s+collapsed|collapsed\s+lifelessly|slammed\s+onto\s+the\s+ground)\b', t_low):
                 seg["sfx"] = "thud"
             elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
                 seg["sfx"] = "rustle"
-            elif re.search(r'\b(sprint(?:s|ed|ing)?|running\s+(?:away|down|toward)|dashes|dashed)\b', t_low):
+            elif re.search(r'\b(sprint(?:s|ed|ing)?|dashes\s+forward|dashed\s+forward|fled\s+at\s+top\s+speed|charging\s+forward)\b', t_low):
                 seg["sfx"] = "run"
             elif re.search(r'\b(tiptoe(?:d|ing)?|cautious\s+steps?|creeping|sneaks?|sneaking)\b', t_low):
                 seg["sfx"] = "tiptoe"
             elif re.search(r'\b(carriage\s+rolled|wheels?\s+rattled|wagon\s+approached|horses?\s+trotted)\b', t_low):
                 seg["sfx"] = "horseandcart"
-            elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine|tender\s+touch)\b', t_low):
+            elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine)\b', t_low):
                 seg["sfx"] = "heartwarm"
-            elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low):
+            elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low) and is_brief_event:
                 seg["sfx"] = "sigh"
-            elif re.search(r'\b(phantom\s+murmurs?|whispering\s+voices?|voices?\s+in\s+(?:his|her)\s+head)\b', t_low):
+            elif re.search(r'\b(phantom\s+murmurs?|eldritch\s+whispers?|voices?\s+coiling\s+in\s+(?:his|her)\s+head)\b', t_low):
                 seg["sfx"] = "whisper"
             elif re.search(r'\b(unnatural\s+chill|temperature\s+dropped|chilling\s+presence)\b', t_low):
                 seg["sfx"] = "haunt"
-            elif re.search(r'\b(distant\s+howl|howl\s+tore|wolf\s+howl(?:ed|ing)?)\b', t_low):
+            elif re.search(r'\b(distant\s+howl|howl\s+tore\s+through|wolf\s+howl(?:ed|ing)?)\b', t_low):
                 seg["sfx"] = "howl"
             elif re.search(r'\b(bells?\s+(?:chimed|tolled|rang)|alarm\s+bells?|death\s+knell)\b', t_low):
                 seg["sfx"] = "bells"
-            elif re.search(r'\b(war\s+drums?|marching\s+drums?)\b', t_low):
+            elif re.search(r'\b(war\s+drums?\s+beat|marching\s+drums?\s+echoed)\b', t_low):
                 seg["sfx"] = "wardrum"
             elif re.search(r'\b(spiritual\s+gong|temple\s+gong|gong\s+sounded)\b', t_low):
                 seg["sfx"] = "gong"
-            elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+wound|searing\s+pain)\b', t_low):
+            elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+bleeding\s+wound)\b', t_low) and is_brief_event and seg.get("line_type") != "Dialogue":
                 seg["sfx"] = "pain"
-            elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled|seared\s+the\s+meat)\b', t_low):
+            elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled\s+over|seared\s+the\s+meat)\b', t_low):
                 seg["sfx"] = "cooking"
-            elif re.search(r'\b(set\s+down\s+the\s+plates?|served\s+the\s+bowls?|dishes\s+clattered)\b', t_low):
+            elif re.search(r'\b(set\s+down\s+the\s+plates?|plates?\s+clattered|dishes\s+clattered\s+on\s+the\s+table)\b', t_low):
                 seg["sfx"] = "dishes"
-            elif re.search(r'\b(chewed\s+hungrily|devoured\s+the\s+food)\b', t_low):
+            elif re.search(r'\b(chewed\s+hungrily|chewing\s+the\s+meat|took\s+a\s+bite\s+of\s+(?:the\s+)?food)\b', t_low):
                 seg["sfx"] = "eating"
-            elif re.search(r'\b(bustling\s+market|vendors\s+shouting|bazaar)\b', t_low):
+            elif re.search(r'\b(bustling\s+market|vendors\s+shouting\s+their\s+wares|noisy\s+bazaar)\b', t_low):
                 seg["sfx"] = "market"
-            elif re.search(r'\b(crowd\s+cheered|erupted\s+in\s+cheers|applause\s+echoed)\b', t_low):
+            elif re.search(r'\b(stadium\s+erupted|crowd\s+cheered|applause\s+echoed)\b', t_low):
                 seg["sfx"] = "cheer"
             elif re.search(r'\b(crowd\s+groaned|disappointed\s+murmurs?)\b', t_low):
                 seg["sfx"] = "disappointed"
-            elif re.search(r'\b(wind\s+howled|chilling\s+draft|howling\s+gale)\b', t_low):
+            elif re.search(r'\b(wind\s+howled\s+across|howling\s+gale)\b', t_low):
                 seg["sfx"] = "wind"
             elif re.search(r'\b(primeval\s+forest|rustling\s+canopy)\b', t_low):
                 seg["sfx"] = "forest"
-            elif re.search(r'\b(waves\s+crashed|lapping\s+waves|ocean\s+surf)\b', t_low):
+            elif re.search(r'\b(waves\s+crashed\s+against|ocean\s+surf)\b', t_low):
                 seg["sfx"] = "ocean"
 
+        # =================================================================
+        # SLIDING-WINDOW DEDUPLICATION & COOLDOWN FILTER
+        # =================================================================
+        recent_sfx = [r["sfx"] for r in refined_staged[-3:] if r.get("sfx")]
+        if seg["sfx"] and seg["sfx"] in recent_sfx:
+            seg["sfx"] = ""
+
+        # Narration block splitting threshold
         if seg.get("line_type") == "Narration" and len(seg_text) > max_narr_merge:
             narr_splits = split_by_sentence_threshold(seg_text, threshold=max_narr_merge)
             sfx_assigned_to_split = False
@@ -990,11 +1058,10 @@ ACTIVE STAGED CHARACTERS:
                 if clean_and_normalize_text(split_txt):
                     sub_seg = dict(seg)
                     sub_seg["text"] = split_txt
-                    # Keep the event cue on the first valid split, not merely index 0.
-                    # Later valid splits must not replay the same event sound.
                     if sfx_assigned_to_split:
                         sub_seg["sfx"] = ""
                     else:
+                        sub_seg["sfx"] = seg["sfx"]
                         sfx_assigned_to_split = True
                     refined_staged.append(sub_seg)
         else:
@@ -1071,56 +1138,63 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
 
         sfx_val = ""
         t_low = tp.lower()
-        if re.search(r'\b(gasp|gasps|gasped)\b', t_low):
+        is_brief_event = len(tp.split()) < 22
+
+        if re.search(r'\b(gasp|gasps|gasped|sharp\s+intake\s+of\s+breath)\b', t_low) and is_brief_event:
             sfx_val = "gasp"
-        elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|heart\s+pounding)\b', t_low):
+        elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|pounding\s+heart)\b', t_low) and is_brief_event:
             sfx_val = "heartbeat"
-        elif re.search(r'\b(stomp|stomps|stomping)\b', t_low):
+        elif re.search(r'\b(stomp|stomps|stomping|body\s+collapsed|collapsed\s+lifelessly|slammed\s+onto\s+the\s+ground)\b', t_low):
             sfx_val = "thud"
         elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
             sfx_val = "rustle"
-        elif re.search(r'\b(sprint(?:s|ed|ing)?|running\s+(?:away|down|toward)|dashes|dashed)\b', t_low):
+        elif re.search(r'\b(sprint(?:s|ed|ing)?|dashes\s+forward|dashed\s+forward|fled\s+at\s+top\s+speed)\b', t_low):
             sfx_val = "run"
         elif re.search(r'\b(tiptoe(?:d|ing)?|cautious\s+steps?|creeping|sneaks?|sneaking)\b', t_low):
             sfx_val = "tiptoe"
         elif re.search(r'\b(carriage\s+rolled|wheels?\s+rattled|wagon\s+approached|horses?\s+trotted)\b', t_low):
             sfx_val = "horseandcart"
-        elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine|tender\s+touch)\b', t_low):
+        elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine)\b', t_low):
             sfx_val = "heartwarm"
-        elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low):
+        elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low) and is_brief_event:
             sfx_val = "sigh"
-        elif re.search(r'\b(phantom\s+murmurs?|whispering\s+voices?|voices?\s+in\s+(?:his|her)\s+head)\b', t_low):
+        elif re.search(r'\b(phantom\s+murmurs?|eldritch\s+whispers?|voices?\s+coiling\s+in\s+(?:his|her)\s+head)\b', t_low):
             sfx_val = "whisper"
         elif re.search(r'\b(unnatural\s+chill|temperature\s+dropped|chilling\s+presence)\b', t_low):
             sfx_val = "haunt"
-        elif re.search(r'\b(distant\s+howl|howl\s+tore|wolf\s+howl(?:ed|ing)?)\b', t_low):
+        elif re.search(r'\b(distant\s+howl|howl\s+tore\s+through|wolf\s+howl(?:ed|ing)?)\b', t_low):
             sfx_val = "howl"
         elif re.search(r'\b(bells?\s+(?:chimed|tolled|rang)|alarm\s+bells?|death\s+knell)\b', t_low):
             sfx_val = "bells"
-        elif re.search(r'\b(war\s+drums?|marching\s+drums?)\b', t_low):
+        elif re.search(r'\b(war\s+drums?\s+beat|marching\s+drums?\s+echoed)\b', t_low):
             sfx_val = "wardrum"
         elif re.search(r'\b(spiritual\s+gong|temple\s+gong|gong\s+sounded)\b', t_low):
             sfx_val = "gong"
-        elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+wound|searing\s+pain)\b', t_low):
+        elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+bleeding\s+wound)\b', t_low) and is_brief_event and seg["line_type"] != "Dialogue":
             sfx_val = "pain"
-        elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled|seared\s+the\s+meat)\b', t_low):
+        elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled\s+over|seared\s+the\s+meat)\b', t_low):
             sfx_val = "cooking"
-        elif re.search(r'\b(set\s+down\s+the\s+plates?|served\s+the\s+bowls?|dishes\s+clattered)\b', t_low):
+        elif re.search(r'\b(set\s+down\s+the\s+plates?|plates?\s+clattered|dishes\s+clattered\s+on\s+the\s+table)\b', t_low):
             sfx_val = "dishes"
-        elif re.search(r'\b(chewed\s+hungrily|devoured\s+the\s+food)\b', t_low):
+        elif re.search(r'\b(chewed\s+hungrily|chewing\s+the\s+meat|took\s+a\s+bite\s+of\s+(?:the\s+)?food)\b', t_low):
             sfx_val = "eating"
-        elif re.search(r'\b(bustling\s+market|vendors\s+shouting|bazaar)\b', t_low):
+        elif re.search(r'\b(bustling\s+market|vendors\s+shouting\s+their\s+wares|noisy\s+bazaar)\b', t_low):
             sfx_val = "market"
-        elif re.search(r'\b(crowd\s+cheered|erupted\s+in\s+cheers|applause\s+echoed)\b', t_low):
+        elif re.search(r'\b(stadium\s+erupted|crowd\s+cheered|applause\s+echoed)\b', t_low):
             sfx_val = "cheer"
         elif re.search(r'\b(crowd\s+groaned|disappointed\s+murmurs?)\b', t_low):
             sfx_val = "disappointed"
-        elif re.search(r'\b(wind\s+howled|chilling\s+draft|howling\s+gale)\b', t_low):
+        elif re.search(r'\b(wind\s+howled\s+across|howling\s+gale)\b', t_low):
             sfx_val = "wind"
         elif re.search(r'\b(primeval\s+forest|rustling\s+canopy)\b', t_low):
             sfx_val = "forest"
-        elif re.search(r'\b(waves\s+crashed|lapping\s+waves|ocean\s+surf)\b', t_low):
+        elif re.search(r'\b(waves\s+crashed\s+against|ocean\s+surf)\b', t_low):
             sfx_val = "ocean"
+
+        # Sliding window deduplication
+        recent_sfx = [r["sfx"] for r in staged_records[-3:] if r.get("sfx")]
+        if sfx_val and sfx_val in recent_sfx:
+            sfx_val = ""
 
         staged_records.append({
             "line_id": f"{idx:04d}",

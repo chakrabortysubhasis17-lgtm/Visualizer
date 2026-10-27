@@ -18972,6 +18972,16 @@
         "aliases": [
           "james"
         ]
+      },
+      "red ogres": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "red ogres"
+        ]
       }
     },
     "vocatives": {}

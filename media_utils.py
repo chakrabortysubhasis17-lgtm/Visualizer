@@ -204,9 +204,10 @@ def _sfx_asset_snapshot(directory: str) -> tuple:
 def prepare_sfx_assets(build_dir: str) -> str:
     """Synchronize recognized SFX files into build_dir/sfx without stale assets.
 
-    Missing source folders/files are valid: unmatched SFX keys are simply unavailable
-    and their narration segments remain unchanged. The cache is refreshed if files are
-    added, removed, replaced, or deleted from the build directory.
+    Multi-process safe for concurrent PowerShell runner instances:
+    - Skips overwriting files if the destination already exists with matching size.
+    - Gracefully handles Windows PermissionError [WinError 32] when another thread
+      or runner has an active read lock via FFmpeg.
     """
     build_root = os.path.abspath(build_dir)
     source_dir = os.path.join(_SCRIPT_DIR, "assets", "sfx")
@@ -220,7 +221,15 @@ def prepare_sfx_assets(build_dir: str) -> str:
         target_sizes = tuple((item[0], item[1]) for item in target_snapshot)
         source_sizes = tuple((item[0], item[1]) for item in source_snapshot)
 
-        # Fast path only when both the source manifest and build copy still match.
+        # Fast path across runs or separate process instances when already in sync
+        if (
+            source_exists
+            and target_sizes == source_sizes
+            and len(source_sizes) > 0
+        ):
+            _SFX_COPIED_BUILDS[build_root] = source_snapshot
+            return target_dir
+
         if (
             _SFX_COPIED_BUILDS.get(build_root) == source_snapshot
             and target_sizes == source_sizes
@@ -230,12 +239,13 @@ def prepare_sfx_assets(build_dir: str) -> str:
         source_names = {item[0] for item in source_snapshot}
         copy_failed = False
 
-        # Remove recognised assets that no longer exist in the source. This prevents
-        # stale build-directory copies from playing when a source asset is missing.
+        # Remove recognized assets that no longer exist in the source
         for filename, _, _ in target_snapshot:
             if filename not in source_names:
                 try:
                     os.remove(os.path.join(target_dir, filename))
+                except PermissionError:
+                    pass
                 except OSError as exc:
                     copy_failed = True
                     print(f"[SFX Notice] Could not remove stale asset '{filename}': {exc}", flush=True)
@@ -245,7 +255,20 @@ def prepare_sfx_assets(build_dir: str) -> str:
                 src = os.path.join(source_dir, filename)
                 dst = os.path.join(target_dir, filename)
                 try:
+                    # Skip copying if destination already exists with matching size (multi-process safe)
+                    if os.path.exists(dst):
+                        try:
+                            if os.path.getsize(src) == os.path.getsize(dst):
+                                continue
+                        except OSError:
+                            pass
+
                     shutil.copy2(src, dst)
+                except PermissionError:
+                    # Destination is actively open/locked by FFmpeg in another thread or runner.
+                    # If it already exists and has size > 0, it is valid and ready to use.
+                    if not (os.path.exists(dst) and os.path.getsize(dst) > 0):
+                        copy_failed = True
                 except OSError as exc:
                     copy_failed = True
                     print(f"[SFX Notice] Could not copy SFX asset '{filename}': {exc}", flush=True)
@@ -257,10 +280,10 @@ def prepare_sfx_assets(build_dir: str) -> str:
         if not copy_failed and final_sizes == source_sizes:
             _SFX_COPIED_BUILDS[build_root] = source_snapshot
         else:
-            # Retry on the next call rather than caching a partial copy.
             _SFX_COPIED_BUILDS.pop(build_root, None)
 
     return target_dir
+
 
 def find_sfx_file(sfx_dir: str, sfx_key: str) -> Optional[str]:
     """Find an audio file whose filename stem exactly matches an allowed SFX key."""
@@ -365,7 +388,6 @@ def _write_sfx_metadata(
             json.dump(payload, f, ensure_ascii=False, indent=2)
         os.replace(temp_path, path)
     except OSError as exc:
-        # Metadata is a cache aid; failure to write it must not abort normal narration.
         print(f"[SFX Notice] Could not write metadata for {os.path.basename(segment_path)}: {exc}", flush=True)
     finally:
         if os.path.exists(temp_path):
@@ -373,6 +395,7 @@ def _write_sfx_metadata(
                 os.remove(temp_path)
             except OSError:
                 pass
+
 
 def _atomic_copy_audio(source_path: str, target_path: str) -> None:
     temp_path = target_path + ".copy_tmp.mp3"
@@ -463,8 +486,6 @@ async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None
     )
     expected_applied = bool(sfx_key and sfx_path)
 
-    # Reuse a segment only when both the requested key and the actual asset identity
-    # match. For a missing asset, a recorded non-applied state is also safely reusable.
     if (
         metadata_matches_current_asset
         and bool(metadata.get("sfx_applied")) == expected_applied
@@ -482,9 +503,6 @@ async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None
         return
 
     if not sfx_path:
-        # If an asset was removed after a previous run, remove its stale audio by
-        # restoring the preserved speech. If restoration fails, keep old metadata so
-        # a later attempt can try again rather than falsely declaring success.
         if metadata and metadata.get("sfx_applied") and speech_exists:
             try:
                 await asyncio.to_thread(_atomic_copy_audio, speech_path, segment_path)
@@ -509,7 +527,6 @@ async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None
             await asyncio.to_thread(_atomic_copy_audio, speech_path, segment_path)
         except Exception:
             pass
-        # Keep the asset identity so a future attempt can retry if FFmpeg failed.
         _write_sfx_metadata(segment_path, sfx_key, False, asset_signature)
         print(
             f"[SFX Warning] Failed to prepend '{sfx_key}' to "
@@ -589,10 +606,6 @@ def format_srt_time(seconds: float) -> str:
 # =====================================================================
 
 def generate_silence_segment(output_path: str, duration: float = 0.3) -> str:
-    """
-    Generates a clean PCM silence segment formatted as MP3 for inserting
-    context-aware pauses between dialogue or chapter transitions.
-    """
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     duration = max(0.05, float(duration))
 
@@ -735,7 +748,6 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     chapter_mp3 = os.path.join(build_dir, f"ch_{ch_num:03d}.mp3")
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
 
-    # Copy once before any segment tasks start. This is independent of TTS semaphores.
     sfx_dir = await asyncio.to_thread(prepare_sfx_assets, build_dir)
     has_requested_sfx = any(normalize_sfx_key(row.get("sfx", "")) for row in rows)
     sfx_manifest_signature = _sfx_manifest_signature(rows, sfx_dir)
@@ -754,9 +766,6 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
                 "sfx_pipeline_version" in meta or "sfx_manifest_signature" in meta
             )
             if not has_requested_sfx and not has_stored_sfx_metadata:
-                # A pre-SFX chapter cache is safe to reuse only when this staging
-                # run has no SFX assignments. If a previous SFX-enabled cache exists,
-                # require an exact manifest match even when the new manifest is blank.
                 sfx_cache_valid = True
             else:
                 sfx_cache_valid = (
@@ -801,7 +810,6 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             dur = await get_audio_duration(cf)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
 
-            # The subtitle for spoken text begins after any prepended SFX.
             sfx_offset = 0.0
             segment_meta = _read_sfx_metadata(cf)
             if segment_meta and segment_meta.get("sfx_applied"):
@@ -880,10 +888,6 @@ def concat_audio_files(
     output_path: str,
     apply_mastering: bool = True,
 ) -> str:
-    """
-    Concatenates individual segment MP3 files into a single master audio track.
-    Applies the broadcast acoustic mastering chain to smooth voice presence.
-    """
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
     cmd = [
@@ -1040,11 +1044,9 @@ def master_final_audio(
         pedalboard_ok = master_audio_with_pedalboard(working_source, pedalboard_staged)
         if pedalboard_ok:
             source_audio = pedalboard_staged
-            # Targeted -14 LUFS standard with warm presence and 15s outro padding
             audio_filter = "volume=1.5dB,equalizer=f=3200:t=q:w=1.5:g=2.0,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
         else:
             source_audio = working_source
-            # Native Broadcast Vocal Chain with 15s outro padding
             audio_filter = f"{BROADCAST_VOCAL_FILTER},apad=pad_dur=15"
 
         print("[Audio Master Engine] Applying EBU R128 loudness normalization (-14 LUFS)...", flush=True)
@@ -1143,16 +1145,11 @@ def create_thematic_visual_segment(
     fps: int = 30,
     enable_slow_zoom: bool = True,
 ) -> str:
-    """
-    Generates a high-definition video segment from a thematic arc block image.
-    Applies a slow, cinematic Ken Burns zoom to keep the visuals dynamic.
-    """
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     width, height = resolution
     total_frames = int(duration * fps)
 
     if enable_slow_zoom:
-        # Smooth Ken Burns zoom (1.0x to 1.08x scale over the block duration)
         vf_filter = (
             f"scale=8000:-1,"
             f"zoompan=z='min(zoom+0.00012,1.08)':"
@@ -1194,7 +1191,6 @@ def overlay_channel_branding(
     logo_path: Optional[str] = None,
     subscribe_path: Optional[str] = None,
 ) -> str:
-    """Applies channel watermarks and subtle overlay logos onto the video stream."""
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
     inputs = ["-i", video_input]
@@ -1252,11 +1248,6 @@ def merge_audio_video_with_ambience(
     output_path: str,
     ambience_db: float = -50.0,
 ) -> str:
-    """
-    Merges audio and video streams while overlaying a continuous, imperceptible
-    pink-noise room floor beneath the speech. Eliminates unnatural 'dead-air'
-    cuts during TTS pauses.
-    """
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     amp = round(10 ** (ambience_db / 20.0), 5)
 
@@ -1299,10 +1290,6 @@ def embed_soft_subtitles(
     subtitles_dict: Dict[str, str],
     output_path: str,
 ) -> str:
-    """
-    Muxes multilingual subtitle tracks (e.g., German, Spanish, Bengali)
-    directly into the MP4 container as soft closed-caption streams.
-    """
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
     cmd = ["ffmpeg", "-y", "-i", video_input]
@@ -1349,11 +1336,6 @@ def assemble_multi_image_video(
     output_video_path: str,
     subtitles_srt_path: Optional[Union[str, Dict[str, str]]] = None
 ):
-    """
-    Renders video block segments, appends the 15s outro slate card,
-    and multiplexes master audio and subtitles using ISO 639-2 stream tags.
-    Maintains 100% backward compatibility with single-string SRT paths.
-    """
     print("\n[Multiplexer] Assembling Video Frames + Outro Card...", flush=True)
     video_segments = []
 
@@ -1410,7 +1392,6 @@ def assemble_multi_image_video(
         "-i", final_audio_path
     ]
 
-    # Convert single string path to dictionary format if passed by older scripts
     valid_subs: Dict[str, str] = {}
     if isinstance(subtitles_srt_path, str) and os.path.exists(subtitles_srt_path) and os.path.getsize(subtitles_srt_path) > 50:
         valid_subs["eng"] = subtitles_srt_path
@@ -1419,14 +1400,11 @@ def assemble_multi_image_video(
             if srt_p and os.path.exists(srt_p) and os.path.getsize(srt_p) > 50:
                 valid_subs[lang_code] = srt_p
 
-    # Attach all subtitle files as inputs
     for srt_path in valid_subs.values():
         mux_cmd.extend(["-i", srt_path])
 
-    # Map video track 0 and audio track 1
     mux_cmd.extend(["-map", "0:v:0", "-map", "1:a:0"])
 
-    # Map and tag subtitle streams
     if valid_subs:
         for idx, lang_code in enumerate(valid_subs.keys()):
             input_stream_idx = 2 + idx
