@@ -104,16 +104,27 @@ FULLWIDTH_TO_ASCII = str.maketrans({
 })
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 
-# SFX additions: only these exact keys may be emitted or staged.
+# SFX additions: only these exact 53 keys may be emitted or staged.
 SFX_KEYS = frozenset({
-    # Existing keys
-    "footsteps", "creak", "chime", "hum", "impact", "crackle",
-    "thunder", "drip", "levelup", "interface", "whoosh", "blade",
-    "armor", "swish", "slash", "monster",
-    # A. Character reactions and everyday actions
-    "heartbeat", "gasp", "thud", "knock", "rustle", "splash", "squeak",
-    # B. LitRPG system and progression events
-    "quest", "alert", "achievement", "reward", "loot", "coin", "chest", "equip",
+    # Physical movement & transport
+    "footsteps", "run", "tiptoe", "horseandcart",
+    # Environmental & atmosphere
+    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean",
+    # Magic, portals & energy
+    "hum", "whoosh",
+    # Combat, martial & bodily impact
+    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain",
+    # LitRPG, item & system events
+    "chime", "levelup", "interface", "swish", "quest", "alert",
+    "achievement", "reward", "loot", "coin", "chest", "equip",
+    # Character reactions & everyday actions
+    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh",
+    # Social, culinary & crowd dynamics
+    "market", "cheer", "disappointed", "dishes", "eating", "cooking",
+    # Romance & intimacy
+    "heartwarm", "intimate",
+    # Supernatural, occult & sacred
+    "whisper", "haunt", "howl", "bells", "gong",
 })
 
 
@@ -426,7 +437,7 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
 
     paragraphs = []
     p_tags = container.find_all("p") if container else []
-    p_tags = sort_paragraphs_by_order_index(p_tags);
+    p_tags = sort_paragraphs_by_order_index(p_tags)
 
     if len(p_tags) >= 3:
         indexed_paragraphs = []
@@ -585,7 +596,7 @@ def parse_single_chunk_via_gemini(
     max_retries: int = 3,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v2", chunk_text)
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v3", chunk_text)
 
     # Preserve existing cached narration by default. Legacy cache entries were generated
     # before SFX tagging existed; migrate their existing rows with an empty SFX field
@@ -595,13 +606,13 @@ def parse_single_chunk_via_gemini(
         if cached_segments and isinstance(cached_segments, list) and len(cached_segments) > 0:
             return cached_segments
 
-        # If v1 cache had genuine SFX, reuse it; otherwise re-run with new detailed prompt
-        v1_cache_key = make_cache_key("gemini_chunk_sfx_v1", chunk_text)
-        v1_segments = cache_get(v1_cache_key)
-        if v1_segments and isinstance(v1_segments, list) and len(v1_segments) > 0:
-            if any(s.get("sfx") for s in v1_segments if isinstance(s, dict)):
-                cache_set(chunk_cache_key, v1_segments, expire_seconds=86400 * 14)
-                return v1_segments
+        # If v2 cache had genuine SFX, reuse it; otherwise re-run with new detailed prompt
+        v2_cache_key = make_cache_key("gemini_chunk_sfx_v2", chunk_text)
+        v2_segments = cache_get(v2_cache_key)
+        if v2_segments and isinstance(v2_segments, list) and len(v2_segments) > 0:
+            if any(s.get("sfx") for s in v2_segments if isinstance(s, dict)):
+                cache_set(chunk_cache_key, v2_segments, expire_seconds=86400 * 14)
+                return v2_segments
 
         legacy_cache_key = make_cache_key("gemini_chunk", chunk_text)
         legacy_segments = cache_get(legacy_cache_key)
@@ -747,7 +758,7 @@ def parse_chapter_via_gemini_director(
 
     registered_manifest_str = "\n".join(char_manifest)
 
-    # Tightened director system instruction with phonetic, prosodic, and schema constraints
+    # Tightened director system instruction with complete 53-key taxonomy
     system_instruction = f"""You are an expert Audiobook Screenplay Director, Dramaturg, and Voice Acting Lead specialized in neural Text-to-Speech (Edge TTS) script synthesis.
 Your mandate is to convert web novel chapter text into an execution-grade JSON screenplay array for multi-voice TTS synthesis.
 
@@ -810,6 +821,28 @@ MATCHING TRIGGER DIRECTORY (MANDATORY AUDIT FOR EVERY SEGMENT):
 • "hum": Magic activation, glowing aura, shimmers -> 'shimmer of light', 'brief shimmer of deep blue light', 'body starts to shift' (magical change), 'defensive runes flared'.
 • "chime": Routine system announcement -> 'Ding!', 'System notification', level banner.
 • "footsteps": Movement down a path, approaching, stepping -> 'Step.', 'step forward', 'stepping over', 'turns and makes his way down the garden path'.
+• "run": Sprints, rapid charging, fleeing -> 'sprint', 'sprinted', 'dashing', 'running away', 'charged forward', 'sprinting'.
+• "tiptoe": Slow, stealthy, cautious footsteps -> 'tiptoe', 'careful steps', 'light footing', 'sneaking', 'creeping'.
+• "horseandcart": Carriages, carts, wagons rolling, trotting hooves -> 'carriage rolled', 'wheels rattled', 'wagon approached', 'horses trotted'.
+• "market": Dense crowd chatter, bustling trade, bazaars -> 'bustling market', 'vendors shouting', 'crowded streets', 'bazaar'.
+• "cheer": Crowd cheers, stadium applause, victory roars -> 'crowd cheered', 'erupted in cheers', 'applause echoed', 'cheering'.
+• "disappointed": Crowd groans, collective letdown, murmurs of dismay -> 'crowd groaned', 'disappointed murmurs', 'collective sigh of letdown'.
+• "wardrum": Heavy rhythmic war drums, army marching cadence -> 'war drums', 'drums beat', 'marching drums'.
+• "gong": Resonant temple bell, cultivation breakthrough chime, bronze gong -> 'spiritual gong', 'bell of enlightenment', 'temple gong', 'gong sounded'.
+• "pain": Sharp groans of pain, injuries, agony, clutching wounds -> 'groaned in agony', 'sharp gasp of pain', 'clutched his wound', 'searing pain'.
+• "cooking": Sizzling skillets, frying, bubbling stew, boiling cauldron -> 'sizzled in the pan', 'pot bubbled', 'seared the meat', 'cooking on the hearth'.
+• "dishes": Setting down plates, clattering bowls, serving food -> 'set down the plates', 'served the bowls', 'dishes clattered'.
+• "eating": Chewing food, taking bites, hungry dining -> 'chewed hungrily', 'took a bite', 'devoured the food'.
+• "heartwarm": Romantic tenderness, gentle hand-holding, blushing -> 'fingers slipped through mine', 'laced our fingers', 'blushed softly', 'tender touch'.
+• "intimate": Deep romantic tension, sensual moments, close whispers, leans -> 'leaned in close', 'breath brushed her lips', 'quiet intimate embrace'.
+• "sigh": Soft audible release of breath, relief, weary exhale -> 'let out a soft sigh', 'sighed in relief', 'weary exhale'.
+• "whisper": Eerie phantom voices, occult murmurs, telepathic shadows -> 'phantom whispers', 'eerie murmurs', 'voices coiling in his head', 'madness whispering'.
+• "haunt": Sudden supernatural chill, eerie presence, dread -> 'unnatural chill', 'chilling presence', 'temperature dropped suddenly', 'dissonant hum of dread'.
+• "howl": Distant nocturnal calls, wolf howl -> 'distant howl', 'howl tore through the night', 'wolf howling'.
+• "bells": Cathedral bells, clocktower tolls, distant city bells -> 'bell chimed', 'bell tolled', 'clock tower struck', 'bells chimed'.
+• "wind": Desolate drafts, howling gale, mountain breeze -> 'wind howled', 'chilling draft', 'howling gale', 'wind swept across'.
+• "forest": Peaceful woodland canopy, rustling trees, chirping -> 'primeval forest', 'rustling canopy', 'woodland sounds'.
+• "ocean": Crashing waves, surf, sea spray -> 'waves crashed', 'lapping waves', 'ocean surf'.
 • "impact": High-velocity physical combat strike, heavy blunt collision.
 • "whoosh": Portals, teleportation, spatial gate, spatial tear.
 • "blade": Drawing a metal sword, dagger, or blade from a scabbard/sheath.
@@ -821,82 +854,19 @@ MATCHING TRIGGER DIRECTORY (MANDATORY AUDIT FOR EVERY SEGMENT):
 IMPORTANT TAGGING APPROACH — BE PROACTIVE, NOT OVERLY CONSERVATIVE:
 - Inspect every segment for an actual audible event. Do not leave "sfx" blank by habit merely because a segment is narration or describes a small action.
 - Before leaving a segment blank, compare it against EVERY applicable key above. When an action directly matches a key and its sound is reasonably implied, assign the key even if the text does not literally say "sound" or "audible".
-- Look carefully for brief physical events that are easy to miss: a character stepping forward or away, walking down a line, a distinct stomp, a gasp, an explicitly racing heartbeat, a garment being adjusted, a door groaning, a system "Ding!", a visible magical shimmer, or an object being summoned by active magic.
-- Do not infer a sound merely from a silent gesture, emotion, facial expression, hypothetical plan, memory, figure of speech, or explanation. Be proactive about described events, not imaginative about events that are absent.
-- Because the audio engine plays an SFX BEFORE its segment's speech, put the key on the segment that first and most directly describes the event. Do not put it on a setup sentence before the event happens.
-- Use one key per segment. If one narration passage contains two separate sound-worthy events at natural sentence/clause boundaries, represent them in separate segments where appropriate so each can have its own cue; preserve every word and the original order. Do not split text arbitrarily just to inflate the number of cues.
-- Tag each distinct event once. A continuing action across neighboring sentences normally gets one cue, but a genuinely new action or a separate repeated activation after the previous event has finished can receive another cue.
-- The spoken dialogue itself is not an SFX. Do not add a cue just because a character shouts, laughs, chuckles, says "gulp", or uses sound-like wording unless one of the listed SFX keys genuinely matches a separate audible event.
+- Look carefully for physical and environmental events: footsteps, runs, stealth tiptoes, carriages, stomps, gasps, pounding heartbeats, garments adjusting, door groans, cooking, dishes served, eating, sighs, tender touches, church bells, gongs, war drums, winds, or system chimes.
+- Do not infer a sound merely from a silent gesture, facial expression, hypothetical plan, memory, figure of speech, or explanation.
+- Put the key on the segment that first and most directly describes the event.
+- Use one key per segment. If one narration passage contains two separate sound-worthy events at natural boundaries, represent them in separate segments where appropriate.
+- Tag each distinct event once. Avoid adjacent duplicate tags for a single continuous action.
 
-MANDATORY THREE-PASS SCAN FOR EACH SEGMENT:
-1. PHYSICAL ACTIONS AND ENVIRONMENT: check for footsteps/movement, doors, taps/knocks, stomps/falls, impacts, equipment or clothing rustle, splashes, squeaks, fire, storms, cave drips, and creature vocalizations. Clothing, dresses, fabric movement, outfits adjusting, or characters bowing/kneeling MUST be tagged as "rustle". NEVER tag ordinary clothing, dresses, or fabric shifts as "armor".
-2. BODILY REACTIONS: check for an explicitly audible gasp ("I gasp", "Eris gasps", "she gasps", "gasp") -> tag as "gasp". Check for salient pounding/racing heartbeat ("heartbeat starts to pick up", "heart is thundering", "badump! badump!", "pounding heart") -> tag as "heartbeat". Check for a foot stomp ("stomping one foot", "stomp on her foot") -> tag as "thud". Do not mislabel a calm inhale/exhale, a gulp/swallow, a huff, laughter, blinking, ear/tail movement, or a facial expression as a gasp or heartbeat.
-3. LITRPG / MAGIC EVENTS: check for actual interface openings, routine system notifications, immediate danger alerts, real quest state changes, level-ups, achievements, rewards, loot pickup/drop, currency collection, equipment changes, active magic, teleportation, summoning, and transformations. A mere discussion or metaphor about these things does not qualify.
-
-### EXISTING SFX KEYS
-
-1. "footsteps" - A character actually walks, runs, approaches, retreats, steps forward/backward, stumbles with steps, or moves down a line.
-2. "creak" - A door, gate, or other object audibly creaks, groans, or squeals while opening or closing.
-3. "chime" - A routine system notification, status notification, or announcement actually appears.
-4. "hum" - Magical energy visibly/audibly surges, a skill or magical mechanism actively activates, ley lines activate, or a visible magical shimmer accompanies an active transformation or summoning.
-5. "impact" - A forceful physical-combat strike, brawler hit, or heavy collision. Prefer "thud" for a comparatively ordinary stomp, footfall, fall, body landing, or dull physical bump.
-6. "crackle" - A fire or fireplace is actually crackling.
-7. "thunder" - Thunder occurs or a storm/weather event is actively happening.
-8. "drip" - Audible dripping occurs during cave or subterranean exploration.
-9. "levelup" - A character actually gains a level.
-10. "interface" - A holographic status, map, or inventory interface actually opens or closes.
-11. "whoosh" - A teleportation, portal, or spatial gate actually activates, opens, or transports someone/something.
-12. "blade" - A blade or sword is actually drawn from its sheath.
-13. "armor" - Armor audibly clanks, heavy metallic plate shifts, or metal equipment is physically put on or removed. Do NOT use for cloth dresses, maid uniforms, fabric shifts, or clothing adjusting (use "rustle" instead).
-14. "swish" - A character actually consumes a healing potion or elixir.
-15. "slash" - A cutting/piercing strike or critical/lethal hit actually occurs.
-16. "monster" - A monster audibly roars, growls, or screeches.
-17. "heartbeat" - Explicit physical heartbeat: the heartbeat speeds up, the heart pounds/races/thunders, or is rendered as "badump"/"thump-thump".
-18. "gasp" - A character explicitly gasps, draws a sharp audible breath, or the narration says "I gasp" / "she gasps".
-19. "thud" - A foot distinctly stomps, a body/object falls, or something lands with a dull impact.
-20. "knock" - Someone actually knocks or taps a door/surface with a discernible tap event.
-21. "rustle" - Clothing, sleeves, coats, leaves, foliage, paper, fabric, dresses, or maid uniforms noticeably rustle as they move.
-22. "splash" - Someone or something actually splashes into, through, or out of water.
-23. "squeak" - A clear high-pitched squeak occurs from a hinge, object, or creature.
-24. "quest" - A quest is actively accepted, started, completed, or meaningfully updated as an event.
-25. "alert" - ONLY when a character or system detects, senses, or warns of actual danger, an immediate threat, an ambush, a trap, or a hostile presence.
-26. "achievement" - An achievement is actually accomplished/unlocked as a narrative event OUTSIDE a System notification.
-27. "reward" - A reward is actually received, handed over, or granted as a narrative event OUTSIDE a System notification.
-28. "loot" - An item is actually dropped, discovered, picked up, or collected as loot.
-29. "coin" - Coins or currency are physically collected, dropped, or exchanged with a distinct coin sound.
-30. "chest" - A treasure chest is actually opened or its mechanism activates.
-31. "equip" - A character actually equips or removes a weapon, armor piece, accessory, or other item.
-
-### EXAMPLES FROM THE REQUIRED TAGGING BEHAVIOR
-
-- "Step." followed immediately by "Step step." during the same uninterrupted walk: tag only the first segment "footsteps"; leave the second blank to avoid duplicating the same continuous sequence.
-- "I take a deep breath, then step forward...": use "footsteps" for the step if that is the segment's main sound-worthy action.
-- "The doors creak open." or "The giant doors groan softly behind us as we close them": tag "creak".
-- "My heartbeat starts to pick up." or "Badump! badump!" or "My heart is thundering.": tag "heartbeat".
-- "I gasp, nearly bouncing." or "Eris gasps.": tag that segment "gasp".
-- "I let out a dramatic huff" or a dialogue line containing only "Gulp.": do not force "gasp"; there is no dedicated huff/gulp key in this list.
-- "I bounce on my heels": use "footsteps" only when distinct footfalls are reasonably implied; a silent posture shift is not enough.
-- "Like she knows she's won" or "she bestows a royal quest": figurative language only; leave blank.
-- "I whirl and stomp directly on her foot" / "I yell, stomping one foot": use "thud" for the stomp.
-- "He steps forward, lifts a finger, and taps the maid's forehead": "footsteps" for the step forward; do not invent an impact or knock for a gentle touch.
-- "The maid's body starts to shift" with a visible magical shimmer, or "she summons a dimensional storage box in a brief shimmer of blue light": use "hum" on the segment where the active magic begins.
-- "The maids kneel in unison" or "They bow in perfect sync, dipping waist-deep" or "Now, all five kneel before me, their heads bowed in perfect unison": use "rustle" because synchronized fabric movements create noticeable sound.
-- "Alvero straightens his coat and bows low" or "fidgeting with my sleeves": use "rustle" for the fabric sound; NEVER use "armor" unless metallic plate is actually involved.
-- "Her outfit adjusts to fit the new form": use "rustle" for clothing/dress adjusting; NEVER use "armor".
-- "Alvero chimes in with a nod": the word "chimes" is figurative, not a system sound; leave blank.
-- A new routine System notification appears as "Ding!": normally "chime". A System warning explicitly detects an approaching enemy or trap: "alert". Never use "achievement" or "reward" on a System segment.
+AUTHORIZED SFX KEYS (EXACT LIST):
+[footsteps, run, tiptoe, horseandcart, creak, crackle, thunder, drip, wind, forest, ocean, hum, whoosh, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong]
 
 STRICT SFX RULES:
 - Every segment MUST contain an "sfx" field.
-- Use exactly one allowed lowercase key from the lists above when its condition is satisfied.
+- Use exactly one allowed lowercase key from the authorized list when its condition is satisfied.
 - Otherwise, use the empty string: "". Never use null, "none", "N/A", or whitespace.
-- The "error" key is NOT supported; do not output it. Failed actions or error messages receive no special error SFX.
-- Do not default to an empty string without checking the three-pass scan. On the other hand, never invent actions, sounds, environmental conditions, or system events.
-- Do not tag purely figurative language, hypothetical plans, memories, explanations, dialogue about possible future actions, or static descriptions as if an event is happening now.
-- An ordinary System notification uses "chime" when appropriate. A specific danger notification uses "alert" instead. Do not stack two effects for the same single notification. NEVER use "achievement" or "reward" on System segments.
-- Evaluate every segment independently, but use immediate context to determine whether an action is actually happening now. Do not carry a cue into unrelated segments.
-- Do not repeat an SFX across adjacent segments for the same continuous event. Place it on the earliest/most direct event segment; a genuinely new event after a pause may receive a new cue.
-- If one segment contains several distinct events, choose the one most directly audible and important for that segment.
 - Never output multiple keys in one field, and never place SFX descriptions inside "text".
 - Preserve all original narrative content and chronological order. Do not force an SFX where no condition applies.
 - Continue following CORE DIRECTIVES 1–4 without deviation.
@@ -959,7 +929,7 @@ ACTIVE STAGED CHARACTERS:
         if seg["sfx"] == "armor" and not re.search(r'\b(armor|plate|chainmail|cuirass|greaves?|helm)\b', seg_text, re.I):
             seg["sfx"] = "rustle"
 
-        # Target fix: Catch deterministic bodily reactions or fabric rustles if model omitted them
+        # Deterministic safety net: Catch obvious bodily, environmental and physical cues if model omitted them
         if not seg["sfx"]:
             t_low = seg_text.lower()
             if re.search(r'\b(gasp|gasps|gasped)\b', t_low):
@@ -970,6 +940,48 @@ ACTIVE STAGED CHARACTERS:
                 seg["sfx"] = "thud"
             elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
                 seg["sfx"] = "rustle"
+            elif re.search(r'\b(sprint(?:s|ed|ing)?|running\s+(?:away|down|toward)|dashes|dashed)\b', t_low):
+                seg["sfx"] = "run"
+            elif re.search(r'\b(tiptoe(?:d|ing)?|cautious\s+steps?|creeping|sneaks?|sneaking)\b', t_low):
+                seg["sfx"] = "tiptoe"
+            elif re.search(r'\b(carriage\s+rolled|wheels?\s+rattled|wagon\s+approached|horses?\s+trotted)\b', t_low):
+                seg["sfx"] = "horseandcart"
+            elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine|tender\s+touch)\b', t_low):
+                seg["sfx"] = "heartwarm"
+            elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low):
+                seg["sfx"] = "sigh"
+            elif re.search(r'\b(phantom\s+murmurs?|whispering\s+voices?|voices?\s+in\s+(?:his|her)\s+head)\b', t_low):
+                seg["sfx"] = "whisper"
+            elif re.search(r'\b(unnatural\s+chill|temperature\s+dropped|chilling\s+presence)\b', t_low):
+                seg["sfx"] = "haunt"
+            elif re.search(r'\b(distant\s+howl|howl\s+tore|wolf\s+howl(?:ed|ing)?)\b', t_low):
+                seg["sfx"] = "howl"
+            elif re.search(r'\b(bells?\s+(?:chimed|tolled|rang)|alarm\s+bells?|death\s+knell)\b', t_low):
+                seg["sfx"] = "bells"
+            elif re.search(r'\b(war\s+drums?|marching\s+drums?)\b', t_low):
+                seg["sfx"] = "wardrum"
+            elif re.search(r'\b(spiritual\s+gong|temple\s+gong|gong\s+sounded)\b', t_low):
+                seg["sfx"] = "gong"
+            elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+wound|searing\s+pain)\b', t_low):
+                seg["sfx"] = "pain"
+            elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled|seared\s+the\s+meat)\b', t_low):
+                seg["sfx"] = "cooking"
+            elif re.search(r'\b(set\s+down\s+the\s+plates?|served\s+the\s+bowls?|dishes\s+clattered)\b', t_low):
+                seg["sfx"] = "dishes"
+            elif re.search(r'\b(chewed\s+hungrily|devoured\s+the\s+food)\b', t_low):
+                seg["sfx"] = "eating"
+            elif re.search(r'\b(bustling\s+market|vendors\s+shouting|bazaar)\b', t_low):
+                seg["sfx"] = "market"
+            elif re.search(r'\b(crowd\s+cheered|erupted\s+in\s+cheers|applause\s+echoed)\b', t_low):
+                seg["sfx"] = "cheer"
+            elif re.search(r'\b(crowd\s+groaned|disappointed\s+murmurs?)\b', t_low):
+                seg["sfx"] = "disappointed"
+            elif re.search(r'\b(wind\s+howled|chilling\s+draft|howling\s+gale)\b', t_low):
+                seg["sfx"] = "wind"
+            elif re.search(r'\b(primeval\s+forest|rustling\s+canopy)\b', t_low):
+                seg["sfx"] = "forest"
+            elif re.search(r'\b(waves\s+crashed|lapping\s+waves|ocean\s+surf)\b', t_low):
+                seg["sfx"] = "ocean"
 
         if seg.get("line_type") == "Narration" and len(seg_text) > max_narr_merge:
             narr_splits = split_by_sentence_threshold(seg_text, threshold=max_narr_merge)
@@ -1067,6 +1079,48 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             sfx_val = "thud"
         elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
             sfx_val = "rustle"
+        elif re.search(r'\b(sprint(?:s|ed|ing)?|running\s+(?:away|down|toward)|dashes|dashed)\b', t_low):
+            sfx_val = "run"
+        elif re.search(r'\b(tiptoe(?:d|ing)?|cautious\s+steps?|creeping|sneaks?|sneaking)\b', t_low):
+            sfx_val = "tiptoe"
+        elif re.search(r'\b(carriage\s+rolled|wheels?\s+rattled|wagon\s+approached|horses?\s+trotted)\b', t_low):
+            sfx_val = "horseandcart"
+        elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine|tender\s+touch)\b', t_low):
+            sfx_val = "heartwarm"
+        elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low):
+            sfx_val = "sigh"
+        elif re.search(r'\b(phantom\s+murmurs?|whispering\s+voices?|voices?\s+in\s+(?:his|her)\s+head)\b', t_low):
+            sfx_val = "whisper"
+        elif re.search(r'\b(unnatural\s+chill|temperature\s+dropped|chilling\s+presence)\b', t_low):
+            sfx_val = "haunt"
+        elif re.search(r'\b(distant\s+howl|howl\s+tore|wolf\s+howl(?:ed|ing)?)\b', t_low):
+            sfx_val = "howl"
+        elif re.search(r'\b(bells?\s+(?:chimed|tolled|rang)|alarm\s+bells?|death\s+knell)\b', t_low):
+            sfx_val = "bells"
+        elif re.search(r'\b(war\s+drums?|marching\s+drums?)\b', t_low):
+            sfx_val = "wardrum"
+        elif re.search(r'\b(spiritual\s+gong|temple\s+gong|gong\s+sounded)\b', t_low):
+            sfx_val = "gong"
+        elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+wound|searing\s+pain)\b', t_low):
+            sfx_val = "pain"
+        elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled|seared\s+the\s+meat)\b', t_low):
+            sfx_val = "cooking"
+        elif re.search(r'\b(set\s+down\s+the\s+plates?|served\s+the\s+bowls?|dishes\s+clattered)\b', t_low):
+            sfx_val = "dishes"
+        elif re.search(r'\b(chewed\s+hungrily|devoured\s+the\s+food)\b', t_low):
+            sfx_val = "eating"
+        elif re.search(r'\b(bustling\s+market|vendors\s+shouting|bazaar)\b', t_low):
+            sfx_val = "market"
+        elif re.search(r'\b(crowd\s+cheered|erupted\s+in\s+cheers|applause\s+echoed)\b', t_low):
+            sfx_val = "cheer"
+        elif re.search(r'\b(crowd\s+groaned|disappointed\s+murmurs?)\b', t_low):
+            sfx_val = "disappointed"
+        elif re.search(r'\b(wind\s+howled|chilling\s+draft|howling\s+gale)\b', t_low):
+            sfx_val = "wind"
+        elif re.search(r'\b(primeval\s+forest|rustling\s+canopy)\b', t_low):
+            sfx_val = "forest"
+        elif re.search(r'\b(waves\s+crashed|lapping\s+waves|ocean\s+surf)\b', t_low):
+            sfx_val = "ocean"
 
         staged_records.append({
             "line_id": f"{idx:04d}",

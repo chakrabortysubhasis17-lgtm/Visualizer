@@ -122,13 +122,32 @@ PLUGINS_DIR = _LOCAL_PLUGINS if os.path.exists(_LOCAL_PLUGINS) else _CWD_PLUGINS
 # SFX ADDITIONS (separate from TTS throttling and semaphore)
 # =====================================================================
 
-SFX_PIPELINE_VERSION = 1
+SFX_PIPELINE_VERSION = 2
 SFX_MAX_CONCURRENT_FFMPEG = 2
+
+# Complete 53-Key Master SFX Taxonomy
 SFX_KEYS = frozenset({
-    "footsteps", "creak", "chime", "hum", "impact", "crackle",
-    "thunder", "drip", "levelup", "interface", "whoosh", "blade",
-    "armor", "swish", "slash", "monster",
+    # Physical movement & transport
+    "footsteps", "run", "tiptoe", "horseandcart",
+    # Environmental & atmosphere
+    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean",
+    # Magic, portals & energy
+    "hum", "whoosh",
+    # Combat, martial & bodily impact
+    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain",
+    # LitRPG, item & system events
+    "chime", "levelup", "interface", "swish", "quest", "alert",
+    "achievement", "reward", "loot", "coin", "chest", "equip",
+    # Character reactions & everyday actions
+    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh",
+    # Social, culinary & crowd dynamics
+    "market", "cheer", "disappointed", "dishes", "eating", "cooking",
+    # Romance & intimacy
+    "heartwarm", "intimate",
+    # Supernatural, occult & sacred
+    "whisper", "haunt", "howl", "bells", "gong",
 })
+
 SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
 
 _SFX_COPY_LOCK = threading.Lock()
