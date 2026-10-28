@@ -340,9 +340,9 @@ def get_channel_intro_segments(
     narrator_voice: str = "en-US-ChristopherNeural"
 ) -> list:
     chapter_status_text = (
-        "Today, we begin a new podcast."
+        "Welcome to the opening episode of this series. A brand-new adventure awaits, and we are glad to have you with us."
         if start_chapter == 1
-        else "Today's journey continues from previous episode."
+        else "In this episode, we step right back into the series, continuing exactly where we left off in our previous episode."
     )
 
     segments = [
@@ -351,10 +351,11 @@ def get_channel_intro_segments(
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Welcome back to Being a Bong!",
+            "text": "Welcome back to Being a Bong! We narrate the unreal worlds to life.",
             "voice": narrator_voice,
             "pitch": "+0Hz",
-            "rate": "-1%"
+            "rate": "-1%",
+            "sfx": "intro"
         },
         {
             "line_id": "intro_pause_01",
@@ -421,7 +422,7 @@ def get_channel_intro_segments(
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": ".. but Before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below.",
+            "text": ".. but before the world unfolds, do me a quick favor: hit that like button, and if you're new here, subscribe to the channel and drop a comment below.",
             "voice": narrator_voice,
             "pitch": "+0Hz",
             "rate": "+0%"

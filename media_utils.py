@@ -145,7 +145,7 @@ SFX_KEYS = frozenset({
     # Romance & intimacy
     "heartwarm", "intimate",
     # Supernatural, occult & sacred
-    "whisper", "haunt", "howl", "bells", "gong",
+    "whisper", "haunt", "howl", "bells", "gong", "intro"
 })
 
 SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")

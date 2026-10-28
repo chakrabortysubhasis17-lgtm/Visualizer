@@ -2,7 +2,7 @@ import os
 from pydub import AudioSegment
 
 
-def trim_mp3_files(source_folder, max_duration_sec=5):
+def trim_mp3_files(source_folder, max_duration_sec=10):
     # 1. Setup the output folder path with the same name + '_trimmed' suffix
     # to avoid overwriting the original directory structure
     folder_name = os.path.basename(os.path.normpath(source_folder))
