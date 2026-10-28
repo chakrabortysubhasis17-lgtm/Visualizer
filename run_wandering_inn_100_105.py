@@ -71,7 +71,7 @@ def purge_corrupt_or_fallback_cache(build_dir: str):
         print(f"[Pre-Flight Cleanup] [OK] Purged {removed} invalid/fallback staged files. Gemini Director will parse cleanly.", flush=True)
 
 
-BUILD_DIR = "build_wandering_inn_91_100"
+BUILD_DIR = "build_wandering_inn_100_105"
 purge_corrupt_or_fallback_cache(BUILD_DIR)
 
 CONFIG = {
@@ -82,10 +82,10 @@ CONFIG = {
 
     # Novel & Episode Parameters
     "novel_slug": "the-wandering-inn",
-    "start_url": "https://freewebnovel.com/novel/the-wandering-inn/chapter-95",
-    "start_chapter": 91,
-    "end_chapter": 100,
-    "default_topic": "The Wandering Inn / LitRPG / Fantasy / Slice of Life / Erin Solstice / Innkeeper / Liscor",
+    "start_url": "https://freewebnovel.com/novel/the-wandering-inn/chapter-104",
+    "start_chapter": 100,
+    "end_chapter": 105,
+    "default_topic": "The Wandering Inn / LitRPG / Fantasy / Volume 1 Finale & Volume 2 Dawn / Erin Solstice / Ryoka Griffin / Liscor",
 
     # Concurrency & Locked Narrator Voice Settings
     "batch_size": 2,
@@ -99,12 +99,12 @@ CONFIG = {
 
     # Filepaths & Outputs
     "build_dir": BUILD_DIR,
-    "final_audio": "output_wandering_inn_91_100.mp3",
-    "final_video": "final_wandering_inn_91_100.mp4",
-    "cover_image": "cover_wandering_inn_91_100.jpg",
-    "timestamps_file": "youtube_timestamps_wandering_inn_91_100.txt",
-    "subtitles_file": "subtitles_wandering_inn_91_100.srt",
-    "payload_file": "youtube_upload_payload_wandering_inn_91_100.json",
+    "final_audio": "output_wandering_inn_100_105.mp3",
+    "final_video": "final_wandering_inn_100_105.mp4",
+    "cover_image": "cover_wandering_inn_100_105.jpg",
+    "timestamps_file": "youtube_timestamps_wandering_inn_100_105.txt",
+    "subtitles_file": "subtitles_wandering_inn_100_105.srt",
+    "payload_file": "youtube_upload_payload_wandering_inn_100_105.json",
 
     # Branding Overlay Assets
     "branding_assets": {
@@ -121,7 +121,7 @@ CONFIG = {
     ],
 
     # YouTube Metadata
-    "video_title": "The Wandering Inn | Episodes 91 - 100 Audiobook | Volume 1 Climax & Siege of Liscor",
+    "video_title": "The Wandering Inn | Episodes 100 - 105 Audiobook | Turning of the Tides & A New Dawn",
     "privacy_status": "unlisted",
     "tags": [
         "The Wandering Inn", "Wandering Inn Audiobook", "Erin Solstice", "Ryoka Griffin",
@@ -130,9 +130,9 @@ CONFIG = {
     ],
     "desc_header": (
         "Welcome back to Being a Bong!\n\n"
-        "Experience 'The Wandering Inn' Episodes 91 to 100 — The Convergence at the Floodplains.\n\n"
-        "As tensions reach a boiling point between the Drake watch, the Antinium hives, and relentless monster hordes outside Liscor, "
-        "Erin Solstice's eccentric inn becomes the final bastion where unlikely allies clash and stand together.\n\n"
+        "Experience 'The Wandering Inn' Episodes 100 to 105 — The Turning of the Tides.\n\n"
+        "Standing at the threshold of Volume 1's monumental climax and the dawn of Volume 2, the repercussions of battle echo across the floodplains. "
+        "Erin Solstice, Ryoka Griffin, and the defenders of Liscor confront the scars left behind, finding resolve in unexpected friendships and the warmth of the hearth.\n\n"
         "🎧 AUDIO MASTER: Broadcast Standard (-14 LUFS, flat dynamic curve, vocal presence).\n"
         "🎙️ NARRATION: en-US-ChristopherNeural (Deep Cinematic Baritone).\n"
         "📖 CLOSED CAPTIONS: Multilingual Subtitles (15 languages available in Soft CC).\n"
@@ -143,29 +143,28 @@ CONFIG = {
         "\n══════════════════════════════════════════════\n\n"
         "DISCLAIMER:\n"
         "This audiobook is an edited, dramatized fan adaptation produced for literature commentary and entertainment purposes.\n\n"
-        "#TheWanderingInn #ErinSolstice #LitRPG #FantasyAudiobook #AudiobookMarathon #BeingABong"
+        "#TheWanderingInn #ErinSolstice #RyokaGriffin #LitRPG #FantasyAudiobook #AudiobookMarathon #BeingABong"
     ),
 
-    # 2 Thematic Visual Arc Blocks for Episodes 91 to 100
+    # 2 Thematic Visual Arc Blocks for Episodes 100 to 105
     "blocks": [
         {
-            "index": 1, "range": (91, 95),
-            "title": ["THE INN ON THE HILL", "WARMTH & SHADOWS"],
-            "fallback_color": (30, 20, 15),
+            "index": 1, "range": (100, 102),
+            "title": ["AFTERMATH OF BATTLE", "EMBER & RESOLVE"],
+            "fallback_color": (25, 18, 20),
             "prompt": (
-                "Cinematic fantasy stone inn perched on a windswept grassy hill outside a massive walled city, "
-                "glowing warm amber light spilling from timber-framed windows into the dusk mist, "
-                "drakes and strange armored ant-like humanoids gathering near wooden tables, highly detailed 4K masterpiece."
+                "Cinematic fantasy hillside at sunrise after an intense siege, smoke rising into cool morning air over rolling marshlands, "
+                "a sturdy stone inn with open timber doors revealing warm lantern light, a weary young woman looking out across the landscape with quiet determination, 4K masterpiece."
             )
         },
         {
-            "index": 2, "range": (96, 100),
-            "title": ["FLOODPLAINS BATTLE", "DEFENDERS OF LISCOR"],
-            "fallback_color": (20, 15, 25),
+            "index": 2, "range": (103, 105),
+            "title": ["A NEW CHAPTER", "CROSSROADS OF LISCOR"],
+            "fallback_color": (18, 24, 28),
             "prompt": (
-                "Cinematic high fantasy battlefield across marshy floodplains beneath stormy twilight clouds, "
-                "armored drake warriors with spears and a resolute young human woman wielding an iron ladle surrounded by magical fire sparks, "
-                "swirling mist and dramatic volumetric lighting, 4K digital art."
+                "Cinematic high fantasy scene of an expansive walled drake city bathed in golden morning light, "
+                "winding cobblestone roads leading from the gates toward an eccentric inn on a lush green hill, "
+                "travelers and adventurers gathering with banners fluttering in the wind, highly detailed 4K digital art."
             )
         }
     ]

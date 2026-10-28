@@ -7,13 +7,12 @@ FALLBACK_REGISTRY_FILE = "mtl_regex_bible.json"
 FALLBACK_BASE_CHARACTERS = {
     "narrator": {
         "display_name": "Narrator",
-        "gender": "Male",
-        "line_type": "Narration",
+        "gender": "Neutral",
         "voice": "en-US-ChristopherNeural",
         "pitch": "-2Hz",
         "rate": "+0%",
-        "aliases": ["narrator"]
-    },
+        "aliases": ["narrator", "exposition", "description"]
+    },,
     "mc": {"display_name": "Protagonist", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-GuyNeural", "pitch": "+0Hz", "rate": "+6%", "aliases": ["host", "mc", "boss"]},
     "system": {"display_name": "System", "gender": "Female", "line_type": "System", "voice": "en-US-AriaNeural", "pitch": "-2Hz", "rate": "+0%", "aliases": ["system", "prompt", "ding"]},
     "mob": {"display_name": "Crowd", "gender": "Male", "line_type": "Dialogue", "voice": "en-US-TonyNeural", "pitch": "+2Hz", "rate": "+8%", "aliases": ["crowd", "people", "mob"]}

@@ -664,11 +664,16 @@ async def synthesize_line_record(
 
     line_type = row.get("line_type", "Narration")
     is_system = (line_type == "System")
+    is_narration = (line_type == "Narration" or row.get("speaker", "").lower() == "narrator")
 
     if is_system:
         voice = "en-US-AriaNeural"
         pitch = "-2Hz"
         rate = "+0%"
+    elif is_narration:
+        voice = "en-US-ChristopherNeural"
+        pitch = row.get("pitch", "-2Hz")
+        rate = row.get("rate", "+0%")
     else:
         req_voice = row.get("voice", "en-US-GuyNeural")
         if req_voice in ["en-US-TonyNeural", "en-US-JasonNeural"]:
@@ -686,6 +691,8 @@ async def synthesize_line_record(
             if attempt >= 4:
                 if is_system:
                     active_voice = "en-US-AriaNeural"
+                elif is_narration:
+                    active_voice = "en-US-ChristopherNeural"
                 else:
                     active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
 

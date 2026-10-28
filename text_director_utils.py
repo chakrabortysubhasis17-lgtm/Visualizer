@@ -240,7 +240,7 @@ def clean_and_parse_json(raw_text: str):
 def resolve_character_voice(
     speaker: str,
     voice_registry: Dict[str, Any],
-    default_voice: str = "en-US-GuyNeural",
+    default_voice: str = "en-US-ChristopherNeural",
     similarity_threshold: float = 82.0
 ) -> str:
     """
@@ -917,13 +917,16 @@ ACTIVE STAGED CHARACTERS:
         seg["speaker"] = sp
 
         # Fuzzy character voice lock & continuity enforcement
-        current_voice = seg.get("voice", "en-US-GuyNeural")
-        if seg.get("line_type") == "Dialogue":
+        sp = seg.get("speaker", "Narrator")
+        current_voice = seg.get("voice", "en-US-ChristopherNeural")
+        if seg.get("line_type") == "Narration" or sp.lower() == "narrator":
+            # Hard-lock any narration row or Narrator speaker to Christopher
+            seg["speaker"] = "Narrator"
+            seg["voice"] = "en-US-ChristopherNeural"
+        elif seg.get("line_type") == "Dialogue":
             seg["voice"] = resolve_character_voice(sp, staged_chars, default_voice=current_voice)
         elif seg.get("line_type") == "System":
             seg["voice"] = "en-US-ChristopherNeural"
-        elif seg.get("line_type") == "Narration" and not seg.get("voice"):
-            seg["voice"] = staged_chars.get("Narrator", {}).get("voice", "en-US-GuyNeural")
 
         seg_text = seg.get("text", "")
         t_low = seg_text.lower()
@@ -1133,7 +1136,7 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
     for idx, seg in enumerate(consolidated, 1):
         rk = seg["role_key"]
         role_meta = char_map.get(rk, char_map.get("mc", FALLBACK_BASE_CHARACTERS["mc"]))
-        voice = resolve_character_voice(rk, char_map, default_voice=role_meta.get("voice", "en-US-GuyNeural"))
+        voice = resolve_character_voice(rk, char_map, default_voice=role_meta.get("voice", "en-US-Christopher"))
         tp = seg["text"].strip()
         if not re.search(r'[.!?…]$', tp):
             tp = tp + "."
