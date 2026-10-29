@@ -391,10 +391,117 @@ def balance_paragraph_quotes(paragraph: str) -> str:
 
 
 # =====================================================================
+# PDF PAGE EXTRACTION ENGINE
+# =====================================================================
+
+def is_pdf_source(path_or_url: str) -> bool:
+    """Safely detect if start_url is a local PDF file path (not a web URL)."""
+    if not path_or_url or not isinstance(path_or_url, str):
+        return False
+    clean = path_or_url.strip().strip('"').strip("'")
+    if clean.lower().startswith(("http://", "https://")):
+        return False
+    return clean.lower().endswith(".pdf")
+
+
+def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = "Arc", is_start: bool = True) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """
+    Extracts text from a single page (1-indexed) of a local PDF document.
+    Returns: (clean_title, full_text, next_source_or_page)
+    """
+    pdf_path = pdf_path.strip().strip('"').strip("'")
+    if not os.path.isfile(pdf_path):
+        raise FileNotFoundError(f"Local PDF file not found at: {pdf_path}")
+
+    text = ""
+    total_pages = 0
+
+    # 1. Try PyMuPDF (fitz) with auto-closing context manager
+    try:
+        import fitz  # PyMuPDF
+        with fitz.open(pdf_path) as doc:
+            total_pages = len(doc)
+            if page_num > total_pages or page_num < 1:
+                print(f"[PDF Engine] Page {page_num} is beyond document bounds (Total: {total_pages}). End of PDF reached.", flush=True)
+                return None, None, None
+            text = doc[page_num - 1].get_text("text")
+    except ImportError:
+        # 2. Fallback to pypdf
+        try:
+            import pypdf
+            reader = pypdf.PdfReader(pdf_path)
+            total_pages = len(reader.pages)
+            if page_num > total_pages or page_num < 1:
+                print(f"[PDF Engine] Page {page_num} is beyond document bounds (Total: {total_pages}). End of PDF reached.", flush=True)
+                return None, None, None
+            text = reader.pages[page_num - 1].extract_text() or ""
+        except ImportError:
+            # 3. Fallback to pdfplumber
+            try:
+                import pdfplumber
+                with pdfplumber.open(pdf_path) as pdf:
+                    total_pages = len(pdf.pages)
+                    if page_num > total_pages or page_num < 1:
+                        print(f"[PDF Engine] Page {page_num} is beyond document bounds (Total: {total_pages}). End of PDF reached.", flush=True)
+                        return None, None, None
+                    text = pdf.pages[page_num - 1].extract_text() or ""
+            except ImportError:
+                raise ImportError(
+                    "No PDF library found. Please install PyMuPDF or pypdf: pip install pypdf"
+                )
+
+    clean_title = f"Ch {page_num:03d}: Page {page_num}"
+
+    # Normalize double linebreaks to preserve true paragraphs while unwrapping soft PDF linebreaks
+    normalized_text = text.replace("\r\n", "\n").replace("\r", "\n")
+    if "\n\n" in normalized_text:
+        raw_blocks = re.split(r'\n\s*\n+', normalized_text)
+    else:
+        # Reconstruct paragraphs by checking for terminal punctuation
+        lines = [l.strip() for l in normalized_text.split("\n") if l.strip()]
+        raw_blocks = []
+        curr_p = []
+        for l in lines:
+            curr_p.append(l)
+            if re.search(r'[.!?]["\'”’)]?$', l):
+                raw_blocks.append(" ".join(curr_p))
+                curr_p = []
+        if curr_p:
+            raw_blocks.append(" ".join(curr_p))
+
+    paragraphs = []
+    for block in raw_blocks:
+        unified = " ".join(block.split())
+        cleaned = clean_and_normalize_text(unified)
+        # Skip isolated header/footer running page numbers (e.g. standalone "14")
+        if re.match(r'^\s*\d+\s*$', cleaned):
+            continue
+        if cleaned and RE_ALPHANUM.search(cleaned):
+            paragraphs.append(cleaned)
+
+    if not paragraphs:
+        paragraphs = [f"Page {page_num}. Visual illustration or blank page."]
+
+    # If is_start is False, do not prepend title into spoken narrative
+    if is_start:
+        full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
+    else:
+        full_text = "\n\n".join(paragraphs)
+    
+    print(f"[PDF Engine] [OK] Extracted Page {page_num}/{total_pages} ({len(full_text.split())} words) from '{os.path.basename(pdf_path)}'", flush=True)
+
+    next_source = pdf_path if page_num < total_pages else None
+    return clean_title, full_text, next_source
+
+
+# =====================================================================
 # SCRAPING ENGINE (With DiskCache & Retries)
 # =====================================================================
 
-def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc") -> tuple[str, str, Optional[str]]:
+def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = "Arc", is_start: bool = True) -> tuple[str, str, Optional[str]]:
+    if is_pdf_source(url):
+        return extract_pdf_page_content(url, page_num=ch_num, default_topic=default_topic, is_start=is_start)
+
     cache_key = make_cache_key("scrape", url)
     cached = cache_get(cache_key)
     if cached and isinstance(cached, dict):

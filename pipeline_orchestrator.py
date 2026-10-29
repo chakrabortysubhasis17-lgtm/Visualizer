@@ -77,7 +77,8 @@ from text_director_utils import (
     parse_chapter_via_gemini_director,
     clean_and_parse_json,
     save_staged_json_async,
-    load_staged_json_async
+    load_staged_json_async,
+    is_pdf_source
 )
 from visual_utils import ensure_block_cover_jit, create_dynamic_outro_slate
 from media_utils import (
@@ -337,11 +338,14 @@ def log_banner(title: str, subtitle: str = ""):
 def get_channel_intro_segments(
     start_chapter: int = 1,
     intro_hook: str = "",
-    narrator_voice: str = "en-US-ChristopherNeural"
+    narrator_voice: str = "en-US-ChristopherNeural",
+    is_start: Optional[bool] = None
 ) -> list:
+    series_opening = is_start if is_start is not None else (start_chapter == 1)
+    
     chapter_status_text = (
         "Welcome to the opening episode of this series. A brand-new adventure awaits, and we are glad to have you with us."
-        if start_chapter == 1
+        if series_opening
         else "In this episode, we step right back into the series, continuing exactly where we left off in our previous episode."
     )
 
@@ -609,6 +613,12 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
     # Step 1 Producer
     def _parse_single_chapter_sync(session, ch_num, curr_url):
+        config_is_start = config.get("is_start")
+        if config_is_start is not None:
+            is_start_val = bool(config_is_start) if ch_num == start_ch else False
+        else:
+            is_start_val = (ch_num == start_ch)
+
         ch_json = os.path.join(build_dir, f"ch_{ch_num:03d}_staged.json")
         if os.path.exists(ch_json):
             try:
@@ -647,7 +657,9 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
                 title = cached.get("title", f"Ch {ch_num:03d}")
                 cached_next = cached.get("next_url")
-                if cached_next:
+                if is_pdf_source(curr_url):
+                    pass
+                elif cached_next:
                     curr_url = cached_next
                 elif curr_url:
                     curr_url = scrape_chapter_content(
@@ -662,8 +674,10 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     log_warning(f"Missing scrape URL at Chapter {ch_num:03d}")
                     return None, None, None
                 title, text, next_url = scrape_chapter_content(
-                    session, curr_url, ch_num, config.get("default_topic", "Arc")
+                    session, curr_url, ch_num, config.get("default_topic", "Arc"), is_start=is_start_val
                 )
+                if not text:
+                    return None, None, None
                 rows = parse_chapter_via_gemini_director(
                     gemini_client,
                     title,
@@ -672,14 +686,17 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     narration_threshold,
                     refresh_legacy_cache_for_sfx=bool(config.get("refresh_legacy_cache_for_sfx", False)),
                 )
-                return title, rows, next_url
+                effective_next = curr_url if (is_pdf_source(curr_url) and next_url) else next_url
+                return title, rows, effective_next
         else:
             if not curr_url:
                 log_warning(f"End of novel or missing next URL at Chapter {ch_num:03d}")
                 return None, None, None
             title, text, next_url = scrape_chapter_content(
-                session, curr_url, ch_num, config.get("default_topic", "Arc")
+                session, curr_url, ch_num, config.get("default_topic", "Arc"), is_start=is_start_val
             )
+            if not text:
+                return None, None, None
             rows = parse_chapter_via_gemini_director(
                 gemini_client,
                 title,
@@ -688,7 +705,8 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 narration_threshold,
                 refresh_legacy_cache_for_sfx=bool(config.get("refresh_legacy_cache_for_sfx", False)),
             )
-            return title, rows, next_url
+            effective_next = curr_url if (is_pdf_source(curr_url) and next_url) else next_url
+            return title, rows, effective_next
 
     async def step1_producer_scrape_and_parse():
         log_info(f"[{novel_slug}] [Streaming Pipe] Step 1 (Scraper/Director) & Step 3 (TTS) active concurrently...")
@@ -704,8 +722,6 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
                 # Normalize title pronunciation
                 title = sanitize_chapter_title(title)
-
-                #print("HELLO IAM HERE");
 
                 # Clean text and filter out author notes
                 cleaned_rows = []
@@ -726,7 +742,8 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     intro_segments = get_channel_intro_segments(
                         start_chapter=start_ch,
                         intro_hook=intro_hook,
-                        narrator_voice=narrator_voice
+                        narrator_voice=narrator_voice,
+                        is_start=config.get("is_start")# None for web sources; True/False for PDF
                     )
                     non_intro_rows = [r for r in rows if not str(r.get("line_id", "")).startswith("intro_")]
                     rows = intro_segments + non_intro_rows
