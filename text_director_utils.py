@@ -85,6 +85,7 @@ WATERMARK_PATTERNS = [
     re.compile(r"(?:free\s*web\s*novel|freewebnovel)\s*\.?\s*c[o0]m", re.I),
     re.compile(r"^(?:translator|editor|proofreader|tl)\s*:\s*.*$", re.I | re.MULTILINE),
     re.compile(r"Translation\s+Nation", re.I),
+    re.compile(r"oceanofpdf(?:\.com)?", re.I),
     re.compile(r"(?:mtl-?\s*novel|mtlnovel)\s*\.?\s*c[o0]m", re.I),
     re.compile(r"(?:novelbin|novelfull|ranobes)\s*\.?\s*c[o0]m", re.I),
     re.compile(r"\(End of this chapter\)", re.I),
@@ -474,7 +475,7 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
         unified = " ".join(block.split())
         cleaned = clean_and_normalize_text(unified)
         # Skip isolated header/footer running page numbers (e.g. standalone "14")
-        if re.match(r'^\s*\d+\s*$', cleaned):
+        if re.match(r'^\s*\d+\s*$', cleaned) or re.search(r'oceanofpdf(?:\.com)?', cleaned, re.I):
             continue
         if cleaned and RE_ALPHANUM.search(cleaned):
             paragraphs.append(cleaned)
