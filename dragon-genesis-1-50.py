@@ -71,7 +71,7 @@ def purge_corrupt_or_fallback_cache(build_dir: str):
         print(f"[Pre-Flight Cleanup] [OK] Purged {removed} invalid/fallback staged files. Gemini Director will parse cleanly.", flush=True)
 
 
-BUILD_DIR = "build_dungeon_crawler_carl_9_257"
+BUILD_DIR = "build_dragon_genesis_1_50"
 purge_corrupt_or_fallback_cache(BUILD_DIR)
 
 CONFIG = {
@@ -80,13 +80,12 @@ CONFIG = {
     "cf_account_id": cf_id,
     "cf_api_token": cf_token,
 
-    # Source: Local PDF path and Page range (~8 to 8.5 Hours of Narration)
-    "novel_slug": "dungeon-crawler-carl",
-    "start_url": r"D:\Projects\visualer\ebooks\Dungeon_Crawler_Carl_Complete_Series_1-7_-_Matt_Dinniman.pdf",
-    "start_chapter": 9,
-    "end_chapter": 257,
-    "is_start": True,  # Series opening: Earth's collapse, entering the World Dungeon, Level 1 and Level 2 trials
-    "default_topic": "Dungeon Crawler Carl / Matt Dinniman / LitRPG / Carl and Princess Donut / World Dungeon / AI Dungeon Master / Apocalyptic Survival",
+    # Novel & Episode Parameters
+    "novel_slug": "dragon-genesis-i-can-create-dragons",
+    "start_url": "https://freewebnovel.com/novel/dragon-genesis-i-can-create-dragons/chapter-1",
+    "start_chapter": 1,
+    "end_chapter": 50,
+    "default_topic": "Dragon Genesis: I Can Create Dragons / Dragon Creation / LitRPG / Fantasy / Beast Taming / Dragon Lord Ascension",
 
     # Concurrency & Hard-locked Narrator Voice
     "batch_size": 4,
@@ -96,16 +95,16 @@ CONFIG = {
     "narrator_voice": "en-US-ChristopherNeural",
 
     # 1-Liner Premise Hook
-    "intro_hook": "When Earth is flattened into a televised eighteen-level death dungeon, a former Coast Guard veteran in boxer shorts and an ex-girlfriend's prize-winning cat must survive an insane sadistic AI.",
+    "intro_hook": "Awakening a god-tier dragon genesis talent in a world of fierce beast tamers, an underestimated youth begins breeding primordial dragons that defy the laws of nature.",
 
     # Filepaths & Outputs
     "build_dir": BUILD_DIR,
-    "final_audio": "output_dungeon_crawler_carl_9_257.mp3",
-    "final_video": "final_dungeon_crawler_carl_9_257.mp4",
-    "cover_image": "cover_dungeon_crawler_carl_9_257.jpg",
-    "timestamps_file": "youtube_timestamps_dungeon_crawler_carl_9_257.txt",
-    "subtitles_file": "subtitles_dungeon_crawler_carl_9_257.srt",
-    "payload_file": "youtube_upload_payload_dungeon_crawler_carl_9_257.json",
+    "final_audio": "output_dragon_genesis_1_50.mp3",
+    "final_video": "final_dragon_genesis_1_50.mp4",
+    "cover_image": "cover_dragon_genesis_1_50.jpg",
+    "timestamps_file": "youtube_timestamps_dragon_genesis_1_50.txt",
+    "subtitles_file": "subtitles_dragon_genesis_1_50.srt",
+    "payload_file": "youtube_upload_payload_dragon_genesis_1_50.json",
 
     # Branding Overlay Assets
     "branding_assets": {
@@ -122,19 +121,20 @@ CONFIG = {
     ],
 
     # YouTube Metadata
-    "video_title": "Dungeon Crawler Carl | Matt Dinniman | 8+ Hours Full LitRPG Audiobook Marathon (Pages 9 - 257) | Book 1",
+    "video_title": "Dragon Genesis: I Can Create Dragons | Ch 1 - 50 Full Audiobook | Rise of the Dragon Creator",
     "privacy_status": "unlisted",
     "tags": [
-        "Dungeon Crawler Carl", "Matt Dinniman", "LitRPG Audiobook", "Princess Donut",
-        "Carl and Donut", "World Dungeon", "Fantasy Audiobook", "Audiobook Marathon",
-        "Apocalyptic LitRPG", "Dungeon Crawler Carl Audiobook", "Being A Bong"
+        "Dragon Genesis I Can Create Dragons", "Dragon Genesis", "Create Dragons Audiobook",
+        "Beast Tamer Audiobook", "LitRPG Audiobook", "Fantasy Audiobook", "Dragon Creation",
+        "Overpowered MC", "Audiobook Marathon", "Web Novel Audiobook", "Being A Bong"
     ],
     "desc_header": (
         "Welcome back to Being a Bong!\n\n"
-        "Experience the modern LitRPG phenomenon 'Dungeon Crawler Carl' by Matt Dinniman (Pages 9 to 257) — Book 1 Full Audio Marathon.\n\n"
-        "It's the middle of winter. Carl steps outside in his boxer shorts and a leather jacket to rescue his ex-girlfriend's Persian cat, Princess Donut. "
-        "Seconds later, every roof on Earth collapses, and a galactic reality show forces humanity down the stairwell into the World Dungeon.\n\n"
-        "Together with Donut—who rapidly develops high intelligence and magic—Carl must battle through goblin traps, explosive ordnance, and a deranged AI showrunner.\n\n"
+        "Welcome to the opening episode of this series. A brand-new adventure awaits, and we are glad to have you with us.\n\n"
+        "Experience 'Dragon Genesis: I Can Create Dragons' (Chapters 1 to 50) — The Origin of the Dragon Lord.\n\n"
+        "In a harsh realm where one's bonded familiar defines destiny, our protagonist unlocks the forbidden ability to synthesize, "
+        "mutate, and birth primordial dragon lineages from scratch. From weak humble origins to shocking Academy trials, witness the "
+        "hatching of mythical apex predators that shake the foundations of the beast-taming world.\n\n"
         "🎧 AUDIO MASTER: Broadcast Standard (-14 LUFS, flat dynamic curve, vocal presence).\n"
         "🎙️ NARRATION: en-US-ChristopherNeural (Deep Cinematic Baritone).\n"
         "📖 CLOSED CAPTIONS: Multilingual Subtitles (15 languages available in Soft CC).\n"
@@ -144,47 +144,50 @@ CONFIG = {
     "desc_footer": (
         "\n══════════════════════════════════════════════\n\n"
         "DISCLAIMER:\n"
-        "This audio presentation is an edited fan reading produced for literature appreciation, commentary, and entertainment purposes.\n\n"
-        "#DungeonCrawlerCarl #MattDinniman #LitRPG #AudiobookMarathon #PrincessDonut #BeingABong"
+        "This audio presentation is an edited fan adaptation produced for literature commentary and entertainment purposes.\n\n"
+        "#DragonGenesis #ICanCreateDragons #BeastTaming #LitRPG #FantasyAudiobook #AudiobookMarathon #BeingABong"
     ),
 
-    # 4 Thematic Visual Arc Blocks across Pages 9 to 257 (249 pages partitioned)
+    # 4 Thematic Visual Arc Blocks across Chapters 1 to 50
     "blocks": [
         {
-            "index": 1, "range": (9, 71),
-            "title": ["THE COLLAPSE", "DESCENT INTO LEVEL 1"],
-            "fallback_color": (20, 18, 26),
+            "index": 1, "range": (1, 12),
+            "title": ["AWAKENING TALENT", "THE FORBIDDEN GENESIS MATRIX"],
+            "fallback_color": (20, 16, 26),
             "prompt": (
-                "Cinematic high-contrast underground dungeon stairwell carved from dark glowing rock, "
-                "a rugged man in leather jacket and boxer shorts holding a fluffy tortoiseshell Persian cat, "
-                "neon holographic LitRPG floating status screens flickering with magenta and cyan text, atmospheric fog, 4K digital painting."
+                "Cinematic high-fantasy ritual chamber with glowing arcane floor runes, "
+                "a young determined beast tamer holding a glowing primordial dragon egg pulsing with golden lightning, "
+                "ethereal dragon silhouettes swirling in the misty ambient light, hyper-detailed volumetric lighting, 4K."
             )
         },
         {
-            "index": 2, "range": (72, 133),
-            "title": ["GOBLIN WARRENS", "UNCONVENTIONAL ORDNANCE"],
-            "fallback_color": (28, 16, 12),
+            "index": 2, "range": (13, 25),
+            "title": ["FIRST HATCHLING", "PRIMORDIAL FLAME MUTATION"],
+            "fallback_color": (28, 14, 12),
             "prompt": (
-                "Sprawling subterranean goblin fortress filled with makeshift wooden barricades, rusty scrap metal spikes, and ticking explosive traps, "
-                "fiery explosions illuminating jagged stone caverns, volumetric smoke and dynamic sparks, gritty LitRPG action concept art, 4K."
+                "Dramatic laboratory cavern lit by blazing magma veins, "
+                "a fierce juvenile crimson dragon with jagged obsidian horns roaring atop a stone anvil, "
+                "swirling embers and dynamic fire shockwaves illuminating the cavern walls, gritty fantasy art, 4K digital painting."
             )
         },
         {
-            "index": 3, "range": (134, 195),
-            "title": ["THE SPONSOR BOXES", "LEVEL 2: THE MEADOW"],
-            "fallback_color": (16, 24, 20),
+            "index": 3, "range": (26, 38),
+            "title": ["ACADEMY ASSESSMENT", "SHATTERING CONVENTIONS"],
+            "fallback_color": (16, 22, 28),
             "prompt": (
-                "Surreal underground biome mimicking an eerie artificial twilight meadow surrounded by dark metallic containment walls, "
-                "glowing celestial loot boxes descending on mechanical cables, a sassy regal cat wearing a crown and magic sunglasses, 4K digital art."
+                "Massive ancient stone arena surrounded by tiered spectator seats beneath a bright sky, "
+                "the young dragon creator standing calmly in the arena center as an awe-inspiring serpentine frost dragon uncoils around him, "
+                "shattered ice crystals glittering in the air, cinematic framing, 4K masterpiece."
             )
         },
         {
-            "index": 4, "range": (196, 257),
-            "title": ["BOSS ENCOUNTER", "YOU WILL NOT BREAK ME"],
-            "fallback_color": (24, 12, 16),
+            "index": 4, "range": (39, 50),
+            "title": ["WILDLAND EXPEDITION", "LORD OF THE DRAGON FLOCK"],
+            "fallback_color": (22, 18, 14),
             "prompt": (
-                "Colossal underground arena bathed in dramatic crimson warning lights, massive armored alien boss monster roaring amidst debris, "
-                "a determined warrior stepping forward with smoking spiked combat boots and explosive charges ready, cinematic framing, 4K masterpiece."
+                "Panoramic vista of a sprawling untamed canyon wilderness at sunset, "
+                "the confident dragonmaster standing on a high cliff edge with multiple distinct mythical dragons—flame, thunder, and shadow—perched alongside him, "
+                "crimson and golden clouds catching twilight rays, epic concept art, 4K."
             )
         }
     ]

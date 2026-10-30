@@ -2,9 +2,9 @@ import os
 import subprocess
 import sys
 
-INPUT_VIDEO = r"D:\Projects\visualer\final_wandering_inn_91_100.mp4"
-OUTPUT_VIDEO = r"D:\Projects\visualer\final_wandering_inn_91_99.mp4"
-TARGET_DURATION = "10:46:12"  # 11 hours, 42 minutes, 09 seconds
+INPUT_VIDEO = r"D:\Projects\visualer\final_sss_goddess_summon_351_400.mp4"
+OUTPUT_VIDEO = r"D:\Projects\visualer\final_sss_goddess_summon_351_394.mp4"
+TARGET_DURATION = "11:59:59"  # 11 hours, 42 minutes, 09 seconds
 
 
 def trim_video(input_path: str, output_path: str, duration_limit: str):
