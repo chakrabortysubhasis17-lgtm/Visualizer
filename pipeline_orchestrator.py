@@ -349,16 +349,18 @@ def get_channel_intro_segments(
         else "In this episode, we step right back into the series, continuing exactly where we left off in our previous episode."
     )
 
+    hook_text = f"{intro_hook.strip()} " if intro_hook and intro_hook.strip() else ""
+
     segments = [
         {
             "line_id": "intro_01",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": "Welcome back to Being a Bong! We narrate the unreal worlds to life.",
+            "text": "Welcome back to Being a Bong. We narrate the unreal worlds to life.",
             "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "-1%",
+            "pitch": "-2Hz",
+            "rate": "+0%",
             "sfx": "intro"
         },
         {
@@ -367,90 +369,20 @@ def get_channel_intro_segments(
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 0.6,
+            "pause_duration": 0.4,
             "voice": narrator_voice,
-            "pitch": "+0Hz",
+            "pitch": "-2Hz",
             "rate": "+0%"
         },
         {
-            "line_id": "intro_02_status",
+            "line_id": "intro_02_body",
             "speaker": "Narrator",
             "gender": "Male",
             "line_type": "Narration",
-            "text": chapter_status_text,
+            "text": f"{chapter_status_text} {hook_text}But before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below. Your support is the engine that keeps this massive releases alive. Adjust your volume, settle in, and let's begin today's episode.",
             "voice": narrator_voice,
-            "pitch": "+0Hz",
+            "pitch": "-2Hz",
             "rate": "+0%"
-        },
-        {
-            "line_id": "intro_pause_02",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": "",
-            "pause_duration": 0.6,
-            "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "+0%"
-        }
-    ]
-
-    if intro_hook and intro_hook.strip():
-        segments.extend([
-            {
-                "line_id": "intro_03_hook",
-                "speaker": "Narrator",
-                "gender": "Male",
-                "line_type": "Narration",
-                "text": intro_hook.strip(),
-                "voice": narrator_voice,
-                "pitch": "+0Hz",
-                "rate": "-1%"
-            },
-            {
-                "line_id": "intro_pause_03",
-                "speaker": "Narrator",
-                "gender": "Male",
-                "line_type": "Narration",
-                "text": "",
-                "pause_duration": 0.8,
-                "voice": narrator_voice,
-                "pitch": "+0Hz",
-                "rate": "+0%"
-            }
-        ])
-
-    segments.extend([
-        {
-            "line_id": "intro_04_cta",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": ".. but before the world unfolds, do me a quick favor: hit that like button, and if you're new here, subscribe to the channel and drop a comment below.",
-            "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "+0%"
-        },
-        {
-            "line_id": "intro_pause_04",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": "",
-            "pause_duration": 0.8,
-            "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "+0%"
-        },
-        {
-            "line_id": "intro_05_closer",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": "Adjust your volume, settle in, and let's begin today's episode.",
-            "voice": narrator_voice,
-            "pitch": "+0Hz",
-            "rate": "-1%"
         },
         {
             "line_id": "intro_lead_in_pause",
@@ -458,12 +390,12 @@ def get_channel_intro_segments(
             "gender": "Male",
             "line_type": "Narration",
             "text": "",
-            "pause_duration": 1.6,
+            "pause_duration": 1.0,
             "voice": narrator_voice,
-            "pitch": "+0Hz",
+            "pitch": "-2Hz",
             "rate": "+0%"
         }
-    ])
+    ]
 
     return segments
 

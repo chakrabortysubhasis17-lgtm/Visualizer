@@ -111,27 +111,27 @@ FULLWIDTH_TO_ASCII = str.maketrans({
 })
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 
-# SFX additions: only these exact 53 keys may be emitted or staged.
+# SFX additions: only these exact keys may be emitted or staged.
 SFX_KEYS = frozenset({
     # Physical movement & transport
-    "footsteps", "run", "tiptoe", "horseandcart",
+    "footsteps", "run", "tiptoe", "horseandcart", "steps_indoor", "patter", "heavy_steps", "car", "screech",
     # Environmental & atmosphere
-    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean",
+    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean", "crickets", "rain",
     # Magic, portals & energy
-    "hum", "whoosh",
-    # Combat, martial & bodily impact
-    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain",
+    "hum", "whoosh", "teleport",
+    # Combat, martial, firearm & bodily impact
+    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain", "gunshot", "explosion", "snarl",
     # LitRPG, item & system events
     "chime", "levelup", "interface", "swish", "quest", "alert",
     "achievement", "reward", "loot", "coin", "chest", "equip",
     # Character reactions & everyday actions
-    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh",
+    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh", "slam", "clock", "glass_break", "paper",
     # Social, culinary & crowd dynamics
     "market", "cheer", "disappointed", "dishes", "eating", "cooking",
     # Romance & intimacy
     "heartwarm", "intimate",
     # Supernatural, occult & sacred
-    "whisper", "haunt", "howl", "bells", "gong",
+    "whisper", "haunt", "howl", "bells", "gong", "crow",
 })
 
 
@@ -484,10 +484,8 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
         paragraphs = [f"Page {page_num}. Visual illustration or blank page."]
 
     # If is_start is False, do not prepend title into spoken narrative
-    if is_start:
-        full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
-    else:
-        full_text = "\n\n".join(paragraphs)
+
+    full_text = "\n\n".join(paragraphs)
     
     print(f"[PDF Engine] [OK] Extracted Page {page_num}/{total_pages} ({len(full_text.split())} words) from '{os.path.basename(pdf_path)}'", flush=True)
 
@@ -594,7 +592,8 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
     preview_snippet = " ".join(paragraphs[:2])[:110]
     print(f"     [Scraper Preview Ch.{ch_num:03d}]: \"{preview_snippet}...\"", flush=True)
 
-    full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
+    #full_text = f"{clean_title}.\n\n" + "\n\n".join(paragraphs)
+    full_text = "\n\n".join(paragraphs)
     print(f"[Scraper] [✓] Scraped {len(paragraphs)} paragraphs ({len(full_text.split())} words) for Ch.{ch_num:03d}", flush=True)
 
     next_url = None
@@ -709,8 +708,8 @@ def parse_single_chunk_via_gemini(
     max_retries: int = 3,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
-    # Bumped namespace to v4: enforces strict anti-consecutive and anti-metaphor audio cues
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v4", chunk_text)
+    # Enforces strict anti-consecutive, anti-metaphor, and specialized indoor/outdoor audio cues
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v5", chunk_text)
 
     if not refresh_legacy_cache_for_sfx:
         cached_segments = cache_get(chunk_cache_key)
@@ -919,7 +918,26 @@ MANDATORY NEGATIVE CONSTRAINTS:
    - 'invest every coin earned' (thinking about money) -> NEVER tag "coin"!
    - 'the entire group stopped' -> NEVER tag "thud"!
    - 'he clenched his fists' -> NEVER tag "thud"!
+   - 'he exploded with rage' -> NEVER tag "explosion"!
 3. LITERAL ACTIVE EVENTS ONLY:
+   - "footsteps": STRICTLY human walking outdoors or travelling. NEVER use for indoor pacing, small animals, or titan stomps.
+   - "run": STRICTLY human running or sprinting outdoors across open ground. NEVER tag tears running, indoor rushing, or horses galloping.
+   - "steps_indoor": STRICTLY human walking inside rooms, pacing indoors, rushing in, or rushing out of rooms.
+   - "patter": Scuttling or light footsteps of small creatures, cats, dogs, or small monsters.
+   - "heavy_steps": Massive stomps of giant beasts, golems, or titans marching.
+   - "gunshot": Firing a handgun, rifle, shotgun, or revolver.
+   - "car": Motor vehicle moving, engine starting, idling, or driving.
+   - "screech": Tires screeching or vehicle hard braking.
+   - "explosion": Grenade, bomb, artillery, or concussive magic explosion.
+   - "slam": Heavy door, gate, or trunk violently slammed shut.
+   - "clock": Grandfather clock ticking slowly, tension in a quiet room.
+   - "glass_break": Glass window shattering, mirror breaking, or potion bottle smashing.
+   - "paper": Turning pages, unfolding letters, rustling parchment, or reading maps.
+   - "rain": Steady downpour or rain tapping against windows.
+   - "crow": Distant eerie crows or ravens cawing in bleak settings.
+   - "teleport": Instant spatial phase shift, teleportation flash, or dimensional warp.
+   - "snarl": Menacing low predator growl or hiss right before attack.
+   - "crickets": Nocturnal insects chirping in quiet nighttime scenes.
    - "pain": Acute combat injury impact on living humanoid fighters. NEVER tag illness, disease (Cryosis), emotional grief, or dying monster speech.
    - "eating": Strictly chewing/eating solid food. NEVER tag drinking liquids, gulping water, or metaphorical consumption.
    - "dishes": Strictly setting down plates, bowls, or cutlery at a dining table. NEVER tag inspecting gems, handling loot, or tapping shop counters.
@@ -937,10 +955,26 @@ MATCHING TRIGGER DIRECTORY:
 • "creak": Doors, gates, or hinges physically creaking open/closed -> 'doors creak open', 'hinges groaned'.
 • "hum": Magic activation, glowing aura, shimmers -> 'shimmer of deep blue light', 'runes flared with light'.
 • "chime": Routine System status notification -> 'Ding!', 'System notification'. (Tag ONLY once per notification block).
-• "footsteps": Movement down a path, approaching, stepping -> 'Step.', 'step forward', 'stepped toward'.
-• "run": Sprints, rapid charging, fleeing -> 'sprinted', 'charged forward', 'fled at top speed'.
+• "footsteps": Movement outdoors, travelling down trails, dirt paths -> 'walked down the street', 'stepped across the courtyard'.
+• "steps_indoor": Walking inside rooms, pacing corridors, rushing in/out -> 'paced across the room', 'rushed into the study', 'walked into the hall'.
+• "run": Sprints, rapid charging, fleeing outdoors -> 'sprinted across the field', 'fled down the alley', 'charged forward'.
 • "tiptoe": Slow, stealthy, cautious footsteps -> 'tiptoe', 'careful steps', 'light footing', 'sneaking'.
+• "patter": Small animals, cats, lizards, scurrying -> 'paws patted across the floor', 'claws scuttled', 'cat padded silently'.
+• "heavy_steps": Colossal stomps, behemoth or giant walking -> 'ground shook with each step', 'colossus marched', 'heavy footsteps shook the cavern'.
 • "horseandcart": Carriages, carts, wagons rolling, trotting hooves -> 'carriage rolled', 'wheels rattled', 'wagon approached'.
+• "car": Automobile engine running, car driving -> 'engine roared to life', 'car sped away', 'vehicle rolled forward'.
+• "screech": Tires screeching, brakes locking -> 'tires screeched', 'braked violently', 'skidded to a halt'.
+• "gunshot": Firing firearms -> 'gunshot rang out', 'fired his revolver', 'shotgun blast echoed'.
+• "explosion": Bombs, grenades, concussive spell blasts -> 'grenade detonated', 'exploded with a deafening blast', 'shattered by an explosion'.
+• "slam": Violent door/gate slamming -> 'slammed the door shut', 'door slammed violently', 'iron grate slammed'.
+• "clock": Ticking clock in quiet rooms -> 'clock ticked steadily', 'ticking of the grandfather clock', 'pendulum swung'.
+• "glass_break": Glass shattering -> 'window shattered', 'glass broke into shards', 'vial smashed on the stone'.
+• "paper": Turning pages, unfolding letters, maps -> 'turned the page', 'unfolded the letter', 'rustled the parchment map'.
+• "rain": Downpour, rain tapping -> 'rain poured down', 'raindrops tapped against the glass', 'torrential rain'.
+• "crickets": Night ambient insects -> 'crickets chirped in the dark', 'crickets sang in the quiet night', 'night fell and crickets began'.
+• "crow": Distant crows, ravens cawing -> 'crows cawed overhead', 'raven croaked from the dead branch'.
+• "teleport": Instant spatial jump, phase shift -> 'teleported in a flash', 'vanished into thin air', 'spatial warp flashed'.
+• "snarl": Low predator growl -> 'low snarl rumbled in its throat', 'growled menacingly', 'snarled with bared fangs'.
 • "market": Dense crowd chatter, bustling trade, bazaars -> 'bustling market', 'vendors shouting', 'bazaar'.
 • "cheer": Crowd cheers, stadium applause, victory roars -> 'crowd cheered', 'stadium erupted in applause'.
 • "disappointed": Crowd groans, collective letdown -> 'crowd groaned', 'collective sigh of letdown'.
@@ -961,15 +995,15 @@ MATCHING TRIGGER DIRECTORY:
 • "forest": Peaceful woodland canopy, rustling trees, chirping -> 'primeval forest', 'rustling canopy', 'woodland sounds'.
 • "ocean": Crashing waves, surf, sea spray -> 'waves crashed', 'lapping waves', 'ocean surf'.
 • "impact": High-velocity physical combat strike, heavy blunt collision -> 'hammer slammed', 'blunt collision'.
-• "whoosh": Portals, teleportation, spatial gate, spatial tear -> 'portal opened', 'stepped through the spatial rift'.
+• "whoosh": Atmospheric air gusts, portals, spatial tears -> 'spatial rift parted', 'burst of air whooshed'.
 • "blade": Drawing a metal sword, dagger, or blade from a scabbard/sheath -> 'unsheathed his blade', 'drew his dagger'.
 • "slash": Cutting, hacking, slicing, or flesh-piercing strike -> 'blade sliced cleanly', 'sword severed'.
-• "monster": Beast roaring, screeching, snarling, or howling -> 'beast roared furiously', 'growled savagely'.
+• "monster": Beast roaring, screeching, or howling -> 'beast roared furiously', 'screeched violently'.
 • "alert": System danger warning or alarm -> '[Warning!]', 'threat detected'.
 • "quest" / "levelup" / "achievement" / "reward" / "loot" / "coin" / "chest" / "equip": Specific LitRPG game mechanics occurring in the narrative.
 
 AUTHORIZED SFX KEYS (EXACT LIST):
-[footsteps, run, tiptoe, horseandcart, creak, crackle, thunder, drip, wind, forest, ocean, hum, whoosh, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong]
+[footsteps, run, tiptoe, horseandcart, steps_indoor, patter, heavy_steps, car, screech, creak, crackle, thunder, drip, wind, forest, ocean, crickets, rain, hum, whoosh, teleport, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, gunshot, explosion, snarl, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, slam, clock, glass_break, paper, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong, crow]
 
 STRICT SFX RULES:
 - Every segment MUST contain an "sfx" field. If no condition applies, use "". Never use null, "none", "N/A", or whitespace.
@@ -1081,6 +1115,10 @@ ACTIVE STAGED CHARACTERS:
             if re.search(r'\b(tears?\s+running|running\s+down\s+(?:her|his|their)\s+cheeks?|wanted\s+to\s+sprint|thought\s+of\s+running)\b', seg_text, re.I):
                 seg["sfx"] = ""
 
+        # Suppress 'explosion' on emotional outbursts
+        if seg["sfx"] == "explosion" and re.search(r'\b(temper|rage|anger|fury|laughter|burst\s+out)\b', seg_text, re.I):
+            seg["sfx"] = ""
+
         # Suppress 'thunder' on similes (e.g. "like lightning")
         if seg["sfx"] == "thunder" and re.search(r'\b(like\s+lightning|as\s+if\s+lightning)\b', seg_text, re.I):
             seg["sfx"] = ""
@@ -1109,8 +1147,40 @@ ACTIVE STAGED CHARACTERS:
                 seg["sfx"] = "gasp"
             elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|pounding\s+heart)\b', t_low) and is_brief_event:
                 seg["sfx"] = "heartbeat"
+            elif re.search(r'\b(gunshot|shot\s+rang|fired\s+(?:his|her|a)\s+(?:gun|revolver|pistol|rifle|shotgun))\b', t_low):
+                seg["sfx"] = "gunshot"
+            elif re.search(r'\b(grenade\s+exploded|bomb\s+went\s+off|detonated|violent\s+explosion|exploded\s+into\s+shards)\b', t_low):
+                seg["sfx"] = "explosion"
+            elif re.search(r'\b(slammed\s+(?:the\s+)?door|slammed\s+shut|iron\s+grate\s+slammed)\b', t_low):
+                seg["sfx"] = "slam"
+            elif re.search(r'\b(window\s+shattered|glass\s+shattered|vial\s+smashed|potion\s+bottle\s+shattered)\b', t_low):
+                seg["sfx"] = "glass_break"
+            elif re.search(r'\b(turned\s+the\s+page|unfolded\s+(?:the\s+)?(?:letter|map)|parchment\s+rustled)\b', t_low):
+                seg["sfx"] = "paper"
+            elif re.search(r'\b(ticking\s+of\s+(?:the\s+)?clock|grandfather\s+clock\s+ticked|pendulum\s+swung)\b', t_low):
+                seg["sfx"] = "clock"
+            elif re.search(r'\b(car\s+(?:engine|sped|drove|accelerated)|engine\s+roared\s+to\s+life|vehicle\s+rolled)\b', t_low):
+                seg["sfx"] = "car"
+            elif re.search(r'\b(tires?\s+screeched|screeching\s+tires?|braked\s+violently|skidded\s+to\s+a\s+halt)\b', t_low):
+                seg["sfx"] = "screech"
+            elif re.search(r'\b(crickets?\s+chirped|crickets?\s+sang\s+in\s+the\s+night)\b', t_low):
+                seg["sfx"] = "crickets"
+            elif re.search(r'\b(rain\s+(?:poured|drummed|lashed)|raindrops?\s+tapped\s+against\s+(?:the\s+)?(?:window|glass))\b', t_low):
+                seg["sfx"] = "rain"
+            elif re.search(r'\b(crows?\s+cawed|ravens?\s+cawed|croak\s+of\s+a\s+raven)\b', t_low):
+                seg["sfx"] = "crow"
+            elif re.search(r'\b(teleported|teleportation|spatial\s+flash|vanished\s+in\s+a\s+flash\s+of\s+light)\b', t_low):
+                seg["sfx"] = "teleport"
+            elif re.search(r'\b(low\s+snarl|snarled\s+menacingly|growled\s+with\s+bared\s+fangs)\b', t_low):
+                seg["sfx"] = "snarl"
             elif re.search(r'\b(stomp|stomps|stomping|body\s+collapsed|collapsed\s+lifelessly|slammed\s+onto\s+the\s+ground)\b', t_low):
                 seg["sfx"] = "thud"
+            elif re.search(r'\b(rushed\s+(?:in|into|out\s+of)\s+the\s+room|paced\s+(?:across|around)\s+the\s+room|walked\s+into\s+the\s+(?:room|hall|study|chamber|kitchen|office))\b', t_low):
+                seg["sfx"] = "steps_indoor"
+            elif re.search(r'\b(tiny\s+paws|cat\s+padded|paws\s+pattered|claws\s+scuttled|scurrying\s+steps?)\b', t_low):
+                seg["sfx"] = "patter"
+            elif re.search(r'\b(ground\s+shook\s+with\s+(?:each|every)\s+step|colossus\s+marched|giant\s+stomped|behemoth\s+strode)\b', t_low):
+                seg["sfx"] = "heavy_steps"
             elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
                 seg["sfx"] = "rustle"
             elif re.search(r'\b(sprint(?:s|ed|ing)?|dashes\s+forward|dashed\s+forward|fled\s+at\s+top\s+speed|charging\s+forward)\b', t_low):
@@ -1257,8 +1327,40 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             sfx_val = "gasp"
         elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|pounding\s+heart)\b', t_low) and is_brief_event:
             sfx_val = "heartbeat"
+        elif re.search(r'\b(gunshot|shot\s+rang|fired\s+(?:his|her|a)\s+(?:gun|revolver|pistol|rifle|shotgun))\b', t_low):
+            sfx_val = "gunshot"
+        elif re.search(r'\b(grenade\s+exploded|bomb\s+went\s+off|detonated|violent\s+explosion|exploded\s+into\s+shards)\b', t_low):
+            sfx_val = "explosion"
+        elif re.search(r'\b(slammed\s+(?:the\s+)?door|slammed\s+shut|iron\s+grate\s+slammed)\b', t_low):
+            sfx_val = "slam"
+        elif re.search(r'\b(window\s+shattered|glass\s+shattered|vial\s+smashed|potion\s+bottle\s+shattered)\b', t_low):
+            sfx_val = "glass_break"
+        elif re.search(r'\b(turned\s+the\s+page|unfolded\s+(?:the\s+)?(?:letter|map)|parchment\s+rustled)\b', t_low):
+            sfx_val = "paper"
+        elif re.search(r'\b(ticking\s+of\s+(?:the\s+)?clock|grandfather\s+clock\s+ticked|pendulum\s+swung)\b', t_low):
+            sfx_val = "clock"
+        elif re.search(r'\b(car\s+(?:engine|sped|drove|accelerated)|engine\s+roared\s+to\s+life|vehicle\s+rolled)\b', t_low):
+            sfx_val = "car"
+        elif re.search(r'\b(tires?\s+screeched|screeching\s+tires?|braked\s+violently|skidded\s+to\s+a\s+halt)\b', t_low):
+            sfx_val = "screech"
+        elif re.search(r'\b(crickets?\s+chirped|crickets?\s+sang\s+in\s+the\s+night)\b', t_low):
+            sfx_val = "crickets"
+        elif re.search(r'\b(rain\s+(?:poured|drummed|lashed)|raindrops?\s+tapped\s+against\s+(?:the\s+)?(?:window|glass))\b', t_low):
+            sfx_val = "rain"
+        elif re.search(r'\b(crows?\s+cawed|ravens?\s+cawed|croak\s+of\s+a\s+raven)\b', t_low):
+            sfx_val = "crow"
+        elif re.search(r'\b(teleported|teleportation|spatial\s+flash|vanished\s+in\s+a\s+flash\s+of\s+light)\b', t_low):
+            sfx_val = "teleport"
+        elif re.search(r'\b(low\s+snarl|snarled\s+menacingly|growled\s+with\s+bared\s+fangs)\b', t_low):
+            sfx_val = "snarl"
         elif re.search(r'\b(stomp|stomps|stomping|body\s+collapsed|collapsed\s+lifelessly|slammed\s+onto\s+the\s+ground)\b', t_low):
             sfx_val = "thud"
+        elif re.search(r'\b(rushed\s+(?:in|into|out\s+of)\s+the\s+room|paced\s+(?:across|around)\s+the\s+room|walked\s+into\s+the\s+(?:room|hall|study|chamber|kitchen|office))\b', t_low):
+            sfx_val = "steps_indoor"
+        elif re.search(r'\b(tiny\s+paws|cat\s+padded|paws\s+pattered|claws\s+scuttled|scurrying\s+steps?)\b', t_low):
+            sfx_val = "patter"
+        elif re.search(r'\b(ground\s+shook\s+with\s+(?:each|every)\s+step|colossus\s+marched|giant\s+stomped|behemoth\s+strode)\b', t_low):
+            sfx_val = "heavy_steps"
         elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
             sfx_val = "rustle"
         elif re.search(r'\b(sprint(?:s|ed|ing)?|dashes\s+forward|dashed\s+forward|fled\s+at\s+top\s+speed)\b', t_low):

@@ -126,26 +126,27 @@ SFX_PIPELINE_VERSION = 2
 SFX_MAX_CONCURRENT_FFMPEG = 2
 
 # Complete 53-Key Master SFX Taxonomy
+# Master SFX Taxonomy (including new targeted movement, ambient & action keys)
 SFX_KEYS = frozenset({
     # Physical movement & transport
-    "footsteps", "run", "tiptoe", "horseandcart",
+    "footsteps", "run", "tiptoe", "horseandcart", "steps_indoor", "patter", "heavy_steps", "car", "screech",
     # Environmental & atmosphere
-    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean",
+    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean", "crickets", "rain", "clock",
     # Magic, portals & energy
-    "hum", "whoosh",
+    "hum", "whoosh", "teleport",
     # Combat, martial & bodily impact
-    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain",
+    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain", "gunshot", "explosion", "snarl",
     # LitRPG, item & system events
     "chime", "levelup", "interface", "swish", "quest", "alert",
     "achievement", "reward", "loot", "coin", "chest", "equip",
-    # Character reactions & everyday actions
-    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh",
+    # Character reactions, physical interactions & everyday actions
+    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh", "slam", "glass_break", "paper",
     # Social, culinary & crowd dynamics
     "market", "cheer", "disappointed", "dishes", "eating", "cooking",
     # Romance & intimacy
     "heartwarm", "intimate",
     # Supernatural, occult & sacred
-    "whisper", "haunt", "howl", "bells", "gong", "intro"
+    "whisper", "haunt", "howl", "bells", "gong", "intro", "crow"
 })
 
 SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
