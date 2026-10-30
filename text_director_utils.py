@@ -408,6 +408,8 @@ def is_pdf_source(path_or_url: str) -> bool:
 def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = "Arc", is_start: bool = True) -> Tuple[Optional[str], Optional[str], Optional[str]]:
     """
     Extracts text from a single page (1-indexed) of a local PDF document.
+    Autodetects and correctly sequences single-column, multi-column, and hybrid 
+    mixed-layout pages while repairing line-end soft hyphens.
     Returns: (clean_title, full_text, next_source_or_page)
     """
     pdf_path = pdf_path.strip().strip('"').strip("'")
@@ -416,8 +418,9 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
 
     text = ""
     total_pages = 0
+    paragraphs = []
 
-    # 1. Try PyMuPDF (fitz) with auto-closing context manager
+    # 1. Try PyMuPDF (fitz) with auto-closing context manager and hybrid-column layout detection
     try:
         import fitz  # PyMuPDF
         with fitz.open(pdf_path) as doc:
@@ -425,7 +428,90 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
             if page_num > total_pages or page_num < 1:
                 print(f"[PDF Engine] Page {page_num} is beyond document bounds (Total: {total_pages}). End of PDF reached.", flush=True)
                 return None, None, None
-            text = doc[page_num - 1].get_text("text")
+
+            page = doc[page_num - 1]
+            page_rect = page.rect
+            page_width = page_rect.width
+            mid_x = page_width / 2.0
+
+            # PyMuPDF block format: (x0, y0, x1, y1, text, block_no, block_type)
+            # block[6] == 0 denotes text blocks
+            raw_blocks = [b for b in page.get_text("blocks") if b[6] == 0 and b[4].strip()]
+
+            # Discard standalone page numbers and watermark blocks early
+            valid_blocks = []
+            for b in raw_blocks:
+                t_clean = b[4].strip()
+                if re.match(r'^\s*\d+\s*$', t_clean) or re.search(r'oceanofpdf(?:\.com)?', t_clean, re.I):
+                    continue
+                valid_blocks.append(b)
+
+            # Sort blocks initially by vertical reading coordinate (top to bottom)
+            valid_blocks.sort(key=lambda b: b[1])
+
+            # Classify blocks to seamlessly handle mixed layouts:
+            # - SPAN: Full-width elements spanning the center gutter (headers, banners, quotes)
+            # - LEFT: Confined to the left column
+            # - RIGHT: Confined to the right column
+            gutter_margin = 25
+            classified = []
+            for b in valid_blocks:
+                x0, y0, x1, y1 = b[0], b[1], b[2], b[3]
+                if x0 < (mid_x - gutter_margin) and x1 > (mid_x + gutter_margin):
+                    block_type = "SPAN"
+                elif x1 <= (mid_x + gutter_margin):
+                    block_type = "LEFT"
+                elif x0 >= (mid_x - gutter_margin):
+                    block_type = "RIGHT"
+                else:
+                    block_type = "SPAN"
+                classified.append((block_type, b))
+
+            # Group column blocks situated between spanning blocks
+            ordered_blocks = []
+            current_col_group = []
+
+            def flush_column_group(group):
+                if not group:
+                    return []
+                lefts = [b for b_type, b in group if b_type == "LEFT"]
+                rights = [b for b_type, b in group if b_type == "RIGHT"]
+                # When both columns exist in the band, exhaust Left top-to-bottom then Right top-to-bottom
+                if lefts and rights:
+                    return sorted(lefts, key=lambda b: b[1]) + sorted(rights, key=lambda b: b[1])
+                return sorted([b for _, b in group], key=lambda b: b[1])
+
+            for b_type, b in classified:
+                if b_type == "SPAN":
+                    if current_col_group:
+                        ordered_blocks.extend(flush_column_group(current_col_group))
+                        current_col_group = []
+                    ordered_blocks.append(b)
+                else:
+                    current_col_group.append((b_type, b))
+
+            if current_col_group:
+                ordered_blocks.extend(flush_column_group(current_col_group))
+
+            # Process sequenced blocks and repair soft hyphens across linebreaks
+            for b in ordered_blocks:
+                block_txt = b[4].strip()
+                if not block_txt:
+                    continue
+
+                # Stitch line-end soft hyphens: e.g. "sur-\ngeons" -> "surgeons"
+                block_txt = re.sub(r'(\b[a-zA-Z]+)-\n([a-zA-Z]+\b)', r'\1\2', block_txt)
+
+                # Convert single soft newlines to spaces while preserving true double-break paragraphs
+                normalized_block = re.sub(r'(?<!\n)\n(?!\n)', ' ', block_txt)
+
+                for chunk in normalized_block.split('\n\n'):
+                    cleaned_p = clean_and_normalize_text(chunk)
+                    if re.match(r'^\s*\d+\s*$', cleaned_p) or re.search(r'oceanofpdf(?:\.com)?', cleaned_p, re.I):
+                        continue
+                    if cleaned_p and RE_ALPHANUM.search(cleaned_p):
+                        paragraphs.append(cleaned_p)
+
     except ImportError:
         # 2. Fallback to pypdf
         try:
@@ -448,45 +534,44 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
                     text = pdf.pages[page_num - 1].extract_text() or ""
             except ImportError:
                 raise ImportError(
-                    "No PDF library found. Please install PyMuPDF or pypdf: pip install pypdf"
+                    "No PDF library found. Please install PyMuPDF or pypdf: pip install pymupdf pypdf"
                 )
 
-    clean_title = f"Ch {page_num:03d}: Page {page_num}"
+        # Fallback text reconstruction for pypdf / pdfplumber streams
+        normalized_text = text.replace("\r\n", "\n").replace("\r", "\n")
+        # Stitch soft hyphens in fallback stream
+        normalized_text = re.sub(r'(\b[a-zA-Z]+)-\n([a-zA-Z]+\b)', r'\1\2', normalized_text)
 
-    # Normalize double linebreaks to preserve true paragraphs while unwrapping soft PDF linebreaks
-    normalized_text = text.replace("\r\n", "\n").replace("\r", "\n")
-    if "\n\n" in normalized_text:
-        raw_blocks = re.split(r'\n\s*\n+', normalized_text)
-    else:
-        # Reconstruct paragraphs by checking for terminal punctuation
-        lines = [l.strip() for l in normalized_text.split("\n") if l.strip()]
-        raw_blocks = []
-        curr_p = []
-        for l in lines:
-            curr_p.append(l)
-            if re.search(r'[.!?]["\'”’)]?$', l):
+        if "\n\n" in normalized_text:
+            raw_blocks = re.split(r'\n\s*\n+', normalized_text)
+        else:
+            lines = [l.strip() for l in normalized_text.split("\n") if l.strip()]
+            raw_blocks = []
+            curr_p = []
+            for l in lines:
+                curr_p.append(l)
+                if re.search(r'[.!?]["\'”’)]?$', l):
+                    raw_blocks.append(" ".join(curr_p))
+                    curr_p = []
+            if curr_p:
                 raw_blocks.append(" ".join(curr_p))
-                curr_p = []
-        if curr_p:
-            raw_blocks.append(" ".join(curr_p))
 
-    paragraphs = []
-    for block in raw_blocks:
-        unified = " ".join(block.split())
-        cleaned = clean_and_normalize_text(unified)
-        # Skip isolated header/footer running page numbers (e.g. standalone "14")
-        if re.match(r'^\s*\d+\s*$', cleaned) or re.search(r'oceanofpdf(?:\.com)?', cleaned, re.I):
-            continue
-        if cleaned and RE_ALPHANUM.search(cleaned):
-            paragraphs.append(cleaned)
+        for block in raw_blocks:
+            unified = " ".join(block.split())
+            cleaned = clean_and_normalize_text(unified)
+            if re.match(r'^\s*\d+\s*$', cleaned) or re.search(r'oceanofpdf(?:\.com)?', cleaned, re.I):
+                continue
+            if cleaned and RE_ALPHANUM.search(cleaned):
+                paragraphs.append(cleaned)
+
+    clean_title = f"Ch {page_num:03d}: Page {page_num}"
 
     if not paragraphs:
         paragraphs = [f"Page {page_num}. Visual illustration or blank page."]
 
-    # If is_start is False, do not prepend title into spoken narrative
-
+    # Exclude spoken title injection so speech begins cleanly
     full_text = "\n\n".join(paragraphs)
-    
+
     print(f"[PDF Engine] [OK] Extracted Page {page_num}/{total_pages} ({len(full_text.split())} words) from '{os.path.basename(pdf_path)}'", flush=True)
 
     next_source = pdf_path if page_num < total_pages else None
