@@ -60,6 +60,14 @@ except ImportError:
     AIOFILES_AVAILABLE = False
 
 
+# At top of text_director_utils.py alongside your other optional imports:
+try:
+    from curl_cffi import requests as cffi_requests
+    CURL_CFFI_AVAILABLE = True
+except ImportError:
+    cffi_requests = None
+    CURL_CFFI_AVAILABLE = False
+
 # =====================================================================
 # CONSTANTS, PATTERNS & REGEX RULES
 # =====================================================================
@@ -98,6 +106,9 @@ WATERMARK_PATTERNS = [
     re.compile(r"【?\s*Please come in, dear readers\.?\s*】?", re.I),
     re.compile(r"Click here:.*?\((?:Visual scene|illustration).*?\)", re.I),
     re.compile(r"(?:Hey\s+everyone\s+)?don'?t\s+forget\s+to\s+vote\s+and\s+support.*", re.I),
+    re.compile(r"A\s+curious\s+detour\s*:\s*this\s+page\s+has\s+no\s+author\s+approval.*", re.I),
+    re.compile(r"stolen\s+content\s+alert\s*:\s*this\s+content\s+belongs\s+on\s+royal\s*road.*", re.I),
+    re.compile(r"taken\s+without\s+authorization\s*:\s*report\s+this\s+if\s+seen\s+on\s+amazon.*", re.I),
     re.compile(r"Check\s+out\s+the\s+mass\s+release\s+goals.*", re.I),
     re.compile(r"Add\s+to\s+library\s+and\s+give\s+your\s+thoughts.*", re.I),
     re.compile(r"[\U0001D400-\U0001D7FF]+", re.UNICODE),
@@ -599,24 +610,43 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
     print(f"[Scraper] Connecting to Ch.{ch_num:03d}: {url}", flush=True)
 
     resp = None
+
+    resp_text = ""
+    effective_url = url
+    is_royal_road = "royalroad.com" in url.lower()
+
     for attempt in range(1, 4):
         try:
-            if isinstance(session, httpx.Client):
-                resp = session.get(url, headers=HEADERS, timeout=25.0, follow_redirects=True)
+            if is_royal_road and CURL_CFFI_AVAILABLE:
+                cffi_resp = cffi_requests.get(
+                    url,
+                    headers=HEADERS,
+                    impersonate="chrome124",
+                    timeout=25
+                )
+                cffi_resp.raise_for_status()
+                resp_text = cffi_resp.text
+                effective_url = str(cffi_resp.url)
+                break
             else:
-                resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
-            resp.raise_for_status()
-            break
+                if isinstance(session, httpx.Client):
+                    resp = session.get(url, headers=HEADERS, timeout=25.0, follow_redirects=True)
+                else:
+                    resp = session.get(url, headers=HEADERS, timeout=25, allow_redirects=True)
+                resp.raise_for_status()
+                resp_text = resp.text
+                effective_url = str(resp.url)
+                break
         except Exception as e:
             if attempt == 3:
                 raise
             time.sleep(attempt * 1.5)
 
-    current_url_str = str(resp.url).lower()
+    current_url_str = str(effective_url).lower()
     if f"chapter-{ch_num}" not in current_url_str:
-        print(f"     [Scraper Notice] Requested Ch.{ch_num}, landed on: {resp.url}", flush=True)
+        print(f"     [Scraper Notice] Requested Ch.{ch_num}, landed on: {effective_url}", flush=True)
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(resp_text if resp_text else resp.text, "html.parser")
 
     h1 = soup.find("h1") or soup.find("h2", class_=re.compile(r"(title|chapter-title)", re.I))
     raw_title = h1.get_text(strip=True) if h1 else f"Chapter {ch_num}"
@@ -682,13 +712,24 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
     print(f"[Scraper] [✓] Scraped {len(paragraphs)} paragraphs ({len(full_text.split())} words) for Ch.{ch_num:03d}", flush=True)
 
     next_url = None
-    next_btn = soup.find("a", id=re.compile(r"next_chap", re.I)) or soup.find("a", class_=re.compile(r"next-chap", re.I))
-    if next_btn and next_btn.get("href"):
-        href = next_btn["href"].strip()
-        if href and href not in ["#", "javascript:void(0);", url]:
-            full_next = urllib.parse.urljoin(url, href)
-            if full_next != url:
-                next_url = full_next
+
+    if is_royal_road:
+        rr_nav = soup.find("div", class_=re.compile(r"\bnav-buttons\b", re.I))
+        if rr_nav:
+            for a in rr_nav.find_all("a", href=True):
+                a_text = re.sub(r"\s+", " ", a.get_text(strip=True)).lower()
+                if "next" in a_text and a["href"] not in ["#", "", "javascript:void(0);"]:
+                    next_url = urllib.parse.urljoin(url, a["href"].strip())
+                    break
+
+    if not next_url:
+        next_btn = soup.find("a", id=re.compile(r"next_chap", re.I)) or soup.find("a", class_=re.compile(r"next-chap", re.I))
+        if next_btn and next_btn.get("href"):
+            href = next_btn["href"].strip()
+            if href and href not in ["#", "javascript:void(0);", url]:
+                full_next = urllib.parse.urljoin(url, href)
+                if full_next != url:
+                    next_url = full_next
 
     if not next_url:
         for a in soup.find_all("a", href=True):
