@@ -154,6 +154,18 @@ def normalize_sfx_key(value: Any) -> str:
     return key if key in SFX_KEYS else ""
 
 
+# Permitted 5 ambient BGM moods plus strict neutral default
+BGM_MOODS = frozenset({"combat", "tension", "sorrow", "wonder", "warmth", "no_mood"})
+
+
+def normalize_bgm_mood(value: Any) -> str:
+    """Return an allowed lowercase BGM mood key, strictly defaulting to 'no_mood'."""
+    if not isinstance(value, str):
+        return "no_mood"
+    key = value.strip().lower()
+    return key if key in BGM_MOODS else "no_mood"
+
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -176,6 +188,7 @@ class SpeechSegment(BaseModel):
     edge_tts_voice: str = Field(description="Edge TTS neural voice")
     text: str = Field(description="Spoken dialogue or narrative string")
     sfx: str = Field(default="", description="One permitted SFX key or an empty string")
+    bgm_mood: str = Field(default="no_mood", description="Strictly one of: 'combat', 'tension', 'sorrow', 'wonder', 'warmth', 'no_mood'")
 
 
 class ChapterNarrationManifest(BaseModel):
@@ -834,8 +847,8 @@ def parse_single_chunk_via_gemini(
     max_retries: int = 3,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
-    # Enforces strict anti-consecutive, anti-metaphor, and specialized indoor/outdoor audio cues
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_v5", chunk_text)
+    # Versioned cache key to enforce parsing of sustained BGM moods alongside SFX
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v7", chunk_text)
 
     if not refresh_legacy_cache_for_sfx:
         cached_segments = cache_get(chunk_cache_key)
@@ -850,6 +863,7 @@ def parse_single_chunk_via_gemini(
                 if isinstance(item, dict):
                     migrated = dict(item)
                     migrated["sfx"] = normalize_sfx_key(migrated.get("sfx", ""))
+                    migrated["bgm_mood"] = normalize_bgm_mood(migrated.get("bgm_mood", "no_mood"))
                     migrated_segments.append(migrated)
             if migrated_segments:
                 cache_set(chunk_cache_key, migrated_segments, expire_seconds=86400 * 14)
@@ -919,7 +933,8 @@ def parse_single_chunk_via_gemini(
                         "voice": s.get("edge_tts_voice") or s.get("voice") or "en-US-GuyNeural",
                         "pitch": pitch,
                         "rate": rate,
-                        "sfx": normalize_sfx_key(s.get("sfx", ""))
+                        "sfx": normalize_sfx_key(s.get("sfx", "")),
+                        "bgm_mood": normalize_bgm_mood(s.get("bgm_mood", "no_mood"))
                     })
 
                 if staged:
@@ -1029,7 +1044,8 @@ Each object in the array must strictly comply with this schema:
   "pause_duration": 0.3,
   "text": "Verbatim text segment with normalized Edge TTS punctuation.",
   "voice": "en-US-GuyNeural",
-  "sfx": "footsteps"
+  "sfx": "footsteps",
+  "bgm_mood": "no_mood"
 }}
 
 ### CORE DIRECTIVE 5: CONTEXT-AWARE SOUND EFFECT TAGGING (SFX) & STRICT NEGATIVE CONSTRAINTS
@@ -1136,6 +1152,28 @@ STRICT SFX RULES:
 - Never repeat the same SFX on consecutive rows or adjacent actions.
 - Never output multiple keys in one field, and never place SFX descriptions inside "text".
 - Preserve all original narrative content and chronological order.
+
+### CORE DIRECTIVE 6: SUSTAINED SCENE BGM MOOD TAGGING
+
+The "bgm_mood" field dictates continuous ambient background music. 
+Unlike "sfx" (which triggers on single isolated actions), BGM represents an ONGOING DRAMATIC ATMOSPHERE across continuous sentences.
+
+PERMITTED BGM MOOD VALUES:
+1. "combat"   : Active kinetic clashes, martial arts, monster encounters, boss battles.
+2. "tension"  : High suspense, stealth, dangerous investigations, looming threats, cold standoffs.
+3. "sorrow"   : Tragic revelations, grieving, melancholy, deep loss, heartbreak.
+4. "wonder"   : Awe-inspiring arcane breakthroughs, grand vistas, mystical discoveries.
+5. "warmth"   : Heartfelt emotional bonding, shared relief, tears of joy, finding home, romantic tenderness.
+6. "no_mood"  : Standard baseline. Ordinary exposition, room movement, explanations, casual banter.
+
+CRITICAL BGM GOVERNING RULES:
+1. TARGET DISTRIBUTION: Keep roughly 75% to 80% of the chapter as "no_mood" to allow speech to breathe naturally. However, do NOT hesitate to actively tag distinct, emotional, or atmospheric scenes with the appropriate mood.
+2. CONTINUOUS SCENE BLOCKS:
+   - When a scene clearly conveys one of the moods above, tag EVERY line in that continuous scene with that mood.
+   - Minimum block length is 4 consecutive lines (e.g., emotional reflections, prolonged fights, tense discoveries).
+   - Do NOT tag a mood for isolated 1 or 2 sentence flashes; keep those as "no_mood".
+3. SMOOTH SCENE TRANSITIONS: When the dramatic moment resolves back to everyday action or casual dialogue, transition back to "no_mood". Never jump directly between two active music moods without resolving first.
+
 ACTIVE STAGED CHARACTERS:
 {registered_manifest_str}
 """
@@ -1169,6 +1207,9 @@ ACTIVE STAGED CHARACTERS:
     for seg in all_staged:
         # Additive SFX normalization; invalid or missing keys become empty.
         seg["sfx"] = normalize_sfx_key(seg.get("sfx", ""))
+
+        # Normalize and lock BGM mood tag
+        seg["bgm_mood"] = normalize_bgm_mood(seg.get("bgm_mood", "no_mood"))
 
         # Harmonize legacy schema aliases if Gemini outputs alternate field keys
         if "speaker_role" in seg and "speaker" not in seg:
@@ -1376,6 +1417,26 @@ ACTIVE STAGED CHARACTERS:
         else:
             refined_staged.append(seg)
 
+    # =================================================================
+    # BGM POST-PROCESSING: PURGE ISOLATED SHORT RUNS (< 4 LINES)
+    # =================================================================
+    # Enforces that mood beds are sustained scene intervals and purges 1-3 line hallucinations
+    i = 0
+    n = len(refined_staged)
+    while i < n:
+        current_mood = refined_staged[i].get("bgm_mood", "no_mood")
+        if current_mood != "no_mood":
+            j = i
+            while j < n and refined_staged[j].get("bgm_mood", "no_mood") == current_mood:
+                j += 1
+            run_len = j - i
+            if run_len < 4:
+                for k in range(i, j):
+                    refined_staged[k]["bgm_mood"] = "no_mood"
+            i = j
+        else:
+            i += 1
+
     # Renumber sequentially
     for idx, seg in enumerate(refined_staged, 1):
         seg["line_id"] = f"{idx:04d}"
@@ -1546,7 +1607,8 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
             "voice": voice,
             "pitch": role_meta.get("pitch", "+0Hz"),
             "rate": role_meta.get("rate", "+5%"),
-            "sfx": sfx_val
+            "sfx": sfx_val,
+            "bgm_mood": "no_mood"
         })
     return staged_records
 

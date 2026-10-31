@@ -155,6 +155,173 @@ _SFX_COPY_LOCK = threading.Lock()
 _SFX_COPIED_BUILDS = {}
 _SFX_SEMAPHORES = weakref.WeakKeyDictionary()
 
+# =====================================================================
+# BGM ADDITIONS (Low Volume Ambient Scene Mood Beds)
+# =====================================================================
+
+BGM_MOODS = frozenset({"combat", "tension", "sorrow", "wonder", "warmth", "no_mood"})
+BGM_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
+_BGM_COPY_LOCK = threading.Lock()
+_BGM_COPIED_BUILDS = {}
+
+
+def normalize_bgm_mood(value: Any) -> str:
+    """Return an allowed lowercase BGM mood key, strictly defaulting to 'no_mood'."""
+    if not isinstance(value, str):
+        return "no_mood"
+    key = value.strip().lower()
+    return key if key in BGM_MOODS else "no_mood"
+
+
+def prepare_bgm_assets(build_dir: str) -> str:
+    """Synchronize recognized BGM loop tracks from root assets/bgm into build_dir/bgm."""
+    build_root = os.path.abspath(build_dir)
+    source_dir = os.path.join(_SCRIPT_DIR, "assets", "bgm")
+    target_dir = os.path.join(build_root, "bgm")
+
+    with _BGM_COPY_LOCK:
+        os.makedirs(target_dir, exist_ok=True)
+        if not os.path.isdir(source_dir):
+            return target_dir
+
+        try:
+            for filename in os.listdir(source_dir):
+                stem, extension = os.path.splitext(filename)
+                if normalize_bgm_mood(stem) == "no_mood" or extension.lower() not in BGM_EXTENSIONS:
+                    continue
+                src = os.path.join(source_dir, filename)
+                dst = os.path.join(target_dir, filename)
+                if os.path.exists(dst):
+                    try:
+                        if os.path.getsize(src) == os.path.getsize(dst):
+                            continue
+                    except OSError:
+                        pass
+                try:
+                    shutil.copy2(src, dst)
+                except OSError:
+                    pass
+        except OSError:
+            pass
+
+    return target_dir
+
+
+def find_bgm_file(bgm_dir: str, mood_key: str) -> Optional[str]:
+    """Find an audio loop file matching the requested mood in the bgm directory."""
+    mood = normalize_bgm_mood(mood_key)
+    if mood == "no_mood" or not os.path.isdir(bgm_dir):
+        return None
+
+    try:
+        filenames = os.listdir(bgm_dir)
+    except OSError:
+        return None
+
+    for ext in BGM_EXTENSIONS:
+        target = f"{mood}{ext}"
+        candidate = os.path.join(bgm_dir, target)
+        if os.path.isfile(candidate) and os.path.getsize(candidate) > 1000:
+            return candidate
+
+    return None
+
+
+def mix_chapter_bgm_bed(
+    chapter_audio_path: str,
+    rows: list,
+    line_durations: list,
+    bgm_dir: str,
+    output_path: str
+) -> bool:
+    """Mix low-volume ambient BGM beds into the chapter audio based on tagged mood spans."""
+    if not os.path.isfile(chapter_audio_path) or not rows or not line_durations:
+        return False
+
+    intervals = []
+    current_mood = "no_mood"
+    interval_start = 0.0
+    accumulated_time = 0.0
+
+    for row, dur in zip(rows, line_durations):
+        mood = normalize_bgm_mood(row.get("bgm_mood", "no_mood"))
+        if mood != current_mood:
+            if current_mood != "no_mood":
+                intervals.append((current_mood, interval_start, accumulated_time))
+            current_mood = mood
+            interval_start = accumulated_time
+        accumulated_time += dur
+
+    if current_mood != "no_mood":
+        intervals.append((current_mood, interval_start, accumulated_time))
+
+    # Filter for intervals that are long enough (>= 8.0s) and have matching audio files in bgm folder
+    valid_intervals = []
+    for mood, start, end in intervals:
+        dur = end - start
+        if dur >= 8.0:
+            bgm_file = find_bgm_file(bgm_dir, mood)
+            if bgm_file:
+                valid_intervals.append((bgm_file, start, end, dur))
+
+    if not valid_intervals:
+        return False
+
+    # Build FFmpeg filter graph to overlay ambient music beds at an ultra-low volume (-27 dB)
+    inputs = ["-i", chapter_audio_path]
+    filter_complex_parts = []
+    mix_inputs = ["[0:a]"]
+
+    for idx, (bgm_file, start, end, dur) in enumerate(valid_intervals, start=1):
+        inputs.extend(["-i", bgm_file])
+        fade_in = min(2.5, dur * 0.25)
+        fade_out = min(3.0, dur * 0.25)
+        out_start = max(0.0, dur - fade_out)
+
+        # Loop, trim, fade-in/out, clear vocal mids (dip at 2.5kHz), and set volume to -27dB (~0.044 gain)
+        filt = (
+            f"[{idx}:a]aloop=loop=-1:size=2e+09,"
+            f"atrim=0:{dur:.3f},"
+            f"afade=t=in:ss=0:d={fade_in:.2f},"
+            f"afade=t=out:st={out_start:.2f}:d={fade_out:.2f},"
+            f"equalizer=f=2500:t=q:w=1.0:g=-4.0,"
+            f"volume=0.044,"
+            f"adelay={int(start * 1000)}|{int(start * 1000)}[bgm_{idx}]"
+        )
+        filter_complex_parts.append(filt)
+        mix_inputs.append(f"[bgm_{idx}]")
+
+    num_streams = len(mix_inputs)
+    filter_complex_parts.append(
+        f"{''.join(mix_inputs)}amix=inputs={num_streams}:duration=first:dropout_transition=2:weights=1.0 {'1.0 ' * (num_streams - 1)}[outa]"
+    )
+
+    temp_mixed = output_path + ".bgm_tmp.mp3"
+    cmd = [
+        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+        *inputs,
+        "-filter_complex", ";".join(filter_complex_parts),
+        "-map", "[outa]",
+        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "1",
+        temp_mixed
+    ]
+
+    try:
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, check=True)
+        if os.path.isfile(temp_mixed) and os.path.getsize(temp_mixed) > 300:
+            os.replace(temp_mixed, output_path)
+            return True
+    except Exception as exc:
+        print(f"[BGM Notice] BGM mixing bypassed ({exc}). Retaining dry narration.", flush=True)
+    finally:
+        if os.path.exists(temp_mixed):
+            try:
+                os.remove(temp_mixed)
+            except OSError:
+                pass
+
+    return False
+
 
 def normalize_sfx_key(value: Any) -> str:
     """Return an allowed lowercase SFX key, or an empty string."""
@@ -757,6 +924,8 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
     chapter_meta = os.path.join(build_dir, f"ch_{ch_num:03d}_meta.json")
 
     sfx_dir = await asyncio.to_thread(prepare_sfx_assets, build_dir)
+    bgm_dir = await asyncio.to_thread(prepare_bgm_assets, build_dir)
+
     has_requested_sfx = any(normalize_sfx_key(row.get("sfx", "")) for row in rows)
     sfx_manifest_signature = _sfx_manifest_signature(rows, sfx_dir)
 
@@ -809,6 +978,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
 
     valid_chunks = []
     rel_subtitles = []
+    line_durations = []
     rel_time = 0.0
     sfx_duration_cache = {}
 
@@ -816,6 +986,7 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         if os.path.exists(cf) and os.path.getsize(cf) > 300:
             valid_chunks.append(cf)
             dur = await get_audio_duration(cf)
+            line_durations.append(dur)
             raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
 
             sfx_offset = 0.0
@@ -860,6 +1031,16 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", manifest_path, "-c", "copy", chapter_mp3],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
+        )
+
+        # Mix low-volume ambient BGM bed if mood tracks exist in assets/bgm
+        await asyncio.to_thread(
+            mix_chapter_bgm_bed,
+            chapter_mp3,
+            rows,
+            line_durations,
+            bgm_dir,
+            chapter_mp3
         )
 
     final_dur = await get_audio_duration(chapter_mp3)

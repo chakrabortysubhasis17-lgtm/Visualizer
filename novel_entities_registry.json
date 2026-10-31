@@ -16542,6 +16542,46 @@
         "aliases": [
           "guildmaster"
         ]
+      },
+      "meowrelia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "meowrelia"
+        ]
+      },
+      "purrlina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "purrlina"
+        ]
+      },
+      "nyabelle": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "nyabelle"
+        ]
+      },
+      "mintchii": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "+5%",
+        "aliases": [
+          "mintchii"
+        ]
       }
     },
     "vocatives": {}

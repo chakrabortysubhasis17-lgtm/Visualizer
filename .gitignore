@@ -6,6 +6,7 @@ __pycache__/
 *.jpg
 *.mp3
 !assets/sfx/*.mp3
+!assets/bgm/*.mp3
 *.mp4
 *.srt
 youtube_*
