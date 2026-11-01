@@ -13,3 +13,7 @@ youtube_*
 api_credentials.json
 api_credentials*.json
 New Text Document.txt
+token.json
+token*.json
+client_secret.json
+client_secret*.json
