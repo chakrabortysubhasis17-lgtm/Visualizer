@@ -174,7 +174,7 @@ def normalize_bgm_mood(value: Any) -> str:
 
 
 def prepare_bgm_assets(build_dir: str) -> str:
-    """Synchronize recognized BGM loop tracks from root assets/bgm into build_dir/bgm."""
+    """Synchronize all audio files from root assets/bgm into build_dir/bgm."""
     build_root = os.path.abspath(build_dir)
     source_dir = os.path.join(_SCRIPT_DIR, "assets", "bgm")
     target_dir = os.path.join(build_root, "bgm")
@@ -186,8 +186,9 @@ def prepare_bgm_assets(build_dir: str) -> str:
 
         try:
             for filename in os.listdir(source_dir):
-                stem, extension = os.path.splitext(filename)
-                if normalize_bgm_mood(stem) == "no_mood" or extension.lower() not in BGM_EXTENSIONS:
+                _, extension = os.path.splitext(filename)
+                # Copy all valid audio files regardless of fixed mood set
+                if extension.lower() not in BGM_EXTENSIONS:
                     continue
                 src = os.path.join(source_dir, filename)
                 dst = os.path.join(target_dir, filename)
@@ -206,25 +207,41 @@ def prepare_bgm_assets(build_dir: str) -> str:
 
     return target_dir
 
+def get_matching_audio_variants(directory: str, key: str, valid_extensions: tuple) -> list:
+    """Finds all audio files matching <key> or <key><number> (e.g., clock, clock1, clock2)."""
+    if not key or not os.path.isdir(directory):
+        return []
+    clean_key = key.strip().lower()
+    pattern = re.compile(rf"^{re.escape(clean_key)}(?:\d+)?$", re.IGNORECASE)
+
+    try:
+        filenames = os.listdir(directory)
+    except OSError:
+        return []
+
+    candidates = []
+    for filename in filenames:
+        stem, extension = os.path.splitext(filename)
+        if extension.lower() not in valid_extensions:
+            continue
+        if pattern.match(stem):
+            path = os.path.join(directory, filename)
+            try:
+                if os.path.isfile(path) and os.path.getsize(path) > 0:
+                    candidates.append(path)
+            except OSError:
+                continue
+    return sorted(candidates)
+
 
 def find_bgm_file(bgm_dir: str, mood_key: str) -> Optional[str]:
-    """Find an audio loop file matching the requested mood in the bgm directory."""
+    """Find a BGM file matching mood_key or mood_key<number>, picking randomly if multiple exist."""
     mood = normalize_bgm_mood(mood_key)
     if mood == "no_mood" or not os.path.isdir(bgm_dir):
         return None
 
-    try:
-        filenames = os.listdir(bgm_dir)
-    except OSError:
-        return None
-
-    for ext in BGM_EXTENSIONS:
-        target = f"{mood}{ext}"
-        candidate = os.path.join(bgm_dir, target)
-        if os.path.isfile(candidate) and os.path.getsize(candidate) > 1000:
-            return candidate
-
-    return None
+    candidates = get_matching_audio_variants(bgm_dir, mood, BGM_EXTENSIONS)
+    return random.choice(candidates) if candidates else None
 
 
 def mix_chapter_bgm_bed(
@@ -342,7 +359,7 @@ def _get_sfx_semaphore() -> asyncio.Semaphore:
 
 
 def _sfx_asset_snapshot(directory: str) -> tuple:
-    """Describe recognized SFX files in a flat directory, including change markers."""
+    """Describe all recognized audio files in a flat directory, including change markers."""
     if not os.path.isdir(directory):
         return ()
 
@@ -353,8 +370,9 @@ def _sfx_asset_snapshot(directory: str) -> tuple:
         return ()
 
     for filename in filenames:
-        stem, extension = os.path.splitext(filename)
-        if normalize_sfx_key(stem) not in SFX_KEYS or extension.lower() not in SFX_EXTENSIONS:
+        _, extension = os.path.splitext(filename)
+        # Snapshot and copy all audio assets regardless of frozenset membership
+        if extension.lower() not in SFX_EXTENSIONS:
             continue
         path = os.path.join(directory, filename)
         try:
@@ -453,29 +471,22 @@ def prepare_sfx_assets(build_dir: str) -> str:
     return target_dir
 
 
-def find_sfx_file(sfx_dir: str, sfx_key: str) -> Optional[str]:
-    """Find an audio file whose filename stem exactly matches an allowed SFX key."""
+def find_sfx_file(sfx_dir: str, sfx_key: str, seed: Optional[str] = None) -> Optional[str]:
+    """Find an audio file matching sfx_key or sfx_key<number>, supporting randomized variants."""
     key = normalize_sfx_key(sfx_key)
     if not key or not os.path.isdir(sfx_dir):
         return None
 
-    try:
-        filenames = os.listdir(sfx_dir)
-    except OSError:
+    candidates = get_matching_audio_variants(sfx_dir, key, SFX_EXTENSIONS)
+    if not candidates:
         return None
 
-    candidates = []
-    for filename in filenames:
-        stem, extension = os.path.splitext(filename)
-        extension = extension.lower()
-        if stem.lower() != key or extension not in SFX_EXTENSIONS:
-            continue
-        path = os.path.join(sfx_dir, filename)
-        if os.path.isfile(path) and os.path.getsize(path) > 0:
-            candidates.append((SFX_EXTENSIONS.index(extension), path))
+    # Deterministic seed per line_id ensures cache stability while randomizing across different lines
+    if seed:
+        rnd = random.Random(seed)
+        return rnd.choice(candidates)
 
-    candidates.sort(key=lambda item: item[0])
-    return candidates[0][1] if candidates else None
+    return random.choice(candidates)
 
 
 def _sfx_asset_identity(path: Optional[str]) -> Optional[dict]:
@@ -502,7 +513,8 @@ def _sfx_manifest_signature(rows: list, sfx_dir: str) -> str:
         key = normalize_sfx_key(row.get("sfx", ""))
         if not key:
             continue
-        path = find_sfx_file(sfx_dir, key)
+        line_id = str(row.get("line_id", ""))
+        path = find_sfx_file(sfx_dir, key, seed=f"{line_id}_{key}")
         if path:
             try:
                 stat = os.stat(path)
@@ -511,7 +523,7 @@ def _sfx_manifest_signature(rows: list, sfx_dir: str) -> str:
                 asset = (os.path.basename(path), None, None)
         else:
             asset = (key, None, None)
-        manifest.append((str(row.get("line_id", "")), key, asset))
+        manifest.append((line_id, key, asset))
 
     raw = json.dumps(manifest, ensure_ascii=False, sort_keys=True).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()
@@ -622,7 +634,8 @@ async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None
         return
 
     sfx_key = normalize_sfx_key(row.get("sfx", ""))
-    sfx_path = find_sfx_file(sfx_dir, sfx_key) if sfx_key else None
+    line_id = str(row.get("line_id", ""))
+    sfx_path = find_sfx_file(sfx_dir, sfx_key, seed=f"{line_id}_{sfx_key}") if sfx_key else None
     asset_signature = _sfx_asset_identity(sfx_path)
     speech_path = _sfx_speech_path(segment_path)
     metadata = _read_sfx_metadata(segment_path)

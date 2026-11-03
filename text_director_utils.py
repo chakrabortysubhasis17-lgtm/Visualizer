@@ -112,7 +112,39 @@ WATERMARK_PATTERNS = [
     re.compile(r"Check\s+out\s+the\s+mass\s+release\s+goals.*", re.I),
     re.compile(r"Add\s+to\s+library\s+and\s+give\s+your\s+thoughts.*", re.I),
     re.compile(r"[\U0001D400-\U0001D7FF]+", re.UNICODE),
+    re.compile(r"If you(?:'re)? enjoying my story.*?(?:where to find me|support me|Patreon|Abin\s*Kydd).*", re.I | re.DOTALL),
+    re.compile(r"(?:Support me here:\s*)?\(?Patreon\)?\s*,?\s*Abin\s*Kydd.*", re.I),
+    re.compile(r"^-\s*Abin\s*Kydd.*$", re.I | re.MULTILINE),
+    re.compile(r"Every bit of (?:support|encouragement) means (?:the world|a lot).*", re.I),
 ]
+
+# In-line screenplay prefix stripping (e.g. '[Harry]:', '[Protagonist]:', '[Arthur]:')
+RE_INLINE_SPEAKER_PREFIX = re.compile(r'\[[A-Za-z0-9_\s\.\'-]+\]:\s*')
+
+# Stat/Interface unparsed question mark normalization
+RE_QUESTION_MARK_RUNS = re.compile(r'\?{2,}')
+
+# Onomatopoeia to audio SFX mapping dictionary
+ONOMATOPOEIA_MAP = {
+    "boom": "explosion",
+    "fwoom": "whoosh",
+    "bwhoom": "explosion",
+    "bwhooooom": "explosion",
+    "crack": "impact",
+    "craaaack": "impact",
+    "clang": "impact",
+    "shatter": "glass_break",
+    "thunk": "thud",
+    "crunch": "impact",
+    "pierce": "blade",
+    "dong": "bells",
+    "pop": "impact",
+    "thud": "thud",
+}
+RE_STANDALONE_ONOMATOPOEIA = re.compile(
+    r'^(?:(?:boom|fwoom(?:[\s—-]+fwoom)*|bwho+m|cr+ack|cl+ang|shatter|thunk|crunch|pierce|dong|pop|t-t)[!?.—\s]*)+$',
+    re.I
+)
 
 FULLWIDTH_TO_ASCII = str.maketrans({
     '“': '"', '”': '"', '‘': "'", '’': "'",
@@ -397,8 +429,17 @@ def clean_and_normalize_text(text: str) -> str:
     text = text.translate(FULLWIDTH_TO_ASCII)
     text = RE_SCENE_DIVIDER.sub("", text)
 
+    # WI-1.5: Recombine line-end soft hyphens: e.g. "sur-\ngeons" -> "surgeons"
+    text = re.sub(r'(\b[a-zA-Z]+)-\n([a-zA-Z]+\b)', r'\1\2', text)
+
+    # WI-1.9: Strip in-line speaker prefixes: e.g. "[Harry]:", "[Protagonist]:"
+    text = RE_INLINE_SPEAKER_PREFIX.sub("", text)
+
     for pat in WATERMARK_PATTERNS:
         text = pat.sub("", text)
+
+    # Normalize runs of question marks ("???") to "Unknown"
+    text = RE_QUESTION_MARK_RUNS.sub("Unknown", text)
 
     text = re.sub(r'~+', '', text)
     text = re.sub(r'\*{2,}', '', text)
@@ -1218,18 +1259,59 @@ ACTIVE STAGED CHARACTERS:
             seg["voice"] = seg.pop("edge_tts_voice")
 
         # Sanitize corrupted speaker names (strip quotes, reject entire dialogue phrases in speaker)
-        sp = seg.get("speaker", "Narrator").strip()
-        if sp.startswith('"') and sp.endswith('"'):
-            sp = sp.strip('"').strip()
-        if sp == seg.get("text", "").strip().strip('"') or len(sp) > 35 or any(p in sp for p in ['.', '!', '?', '...']):
+        sp = seg.get("speaker", "Narrator").strip().strip('"')
+        sp = RE_INLINE_SPEAKER_PREFIX.sub("", sp).strip()
+        if not sp or sp == seg.get("text", "").strip().strip('"') or len(sp) > 35 or any(p in sp for p in ['.', '!', '?', '...']):
             sp = "Narrator" if seg.get("line_type") == "Narration" else "mc"
         seg["speaker"] = sp
+
+        # Strip any leaking speaker prefixes from the spoken text (e.g. "[Harry]:", "[Protagonist]:")
+        seg_text = RE_INLINE_SPEAKER_PREFIX.sub("", seg.get("text", "")).strip()
+
+        # Decouple third-person speech attributions (Self-Voicing ban in Dialogue)
+        # e.g. '"We have hidden the ship." Joseph said, straightening.'
+        if seg.get("line_type") == "Dialogue":
+            attr_match = re.search(r'["\']\s*([A-Z][a-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued)\b.*)$', seg_text)
+            if attr_match:
+                dialogue_part = seg_text[:attr_match.start()].strip().strip('"').strip("'")
+                narration_part = attr_match.group(1).strip()
+                if dialogue_part:
+                    seg["text"] = dialogue_part
+                    refined_staged.append(seg)
+                    refined_staged.append({
+                        "line_id": seg.get("line_id", "0001") + "_tag",
+                        "speaker": "Narrator",
+                        "gender": "Neutral",
+                        "line_type": "Narration",
+                        "text": narration_part,
+                        "voice": "en-US-ChristopherNeural",
+                        "pitch": "-2Hz",
+                        "rate": "+0%",
+                        "sfx": "",
+                        "bgm_mood": seg.get("bgm_mood", "no_mood")
+                    })
+                    continue
+
+        # WI-2.10: Intercept standalone comic sound words and convert them to SFX cues
+        if RE_STANDALONE_ONOMATOPOEIA.fullmatch(seg_text):
+            detected_sfx = ""
+            for word in re.findall(r'[a-zA-Z]+', seg_text.lower()):
+                if word in ONOMATOPOEIA_MAP:
+                    detected_sfx = ONOMATOPOEIA_MAP[word]
+                    break
+            if detected_sfx and not seg.get("sfx"):
+                seg["sfx"] = detected_sfx
+            seg["text"] = ""
+            seg["pause_duration"] = 0.4
+            refined_staged.append(seg)
+            continue
+
+        seg["text"] = seg_text
 
         # Fuzzy character voice lock & continuity enforcement
         sp = seg.get("speaker", "Narrator")
         current_voice = seg.get("voice", "en-US-ChristopherNeural")
         if seg.get("line_type") == "Narration" or sp.lower() == "narrator":
-            # Hard-lock any narration row or Narrator speaker to Christopher
             seg["speaker"] = "Narrator"
             seg["voice"] = "en-US-ChristopherNeural"
         elif seg.get("line_type") == "Dialogue":
