@@ -337,65 +337,33 @@ def log_banner(title: str, subtitle: str = ""):
 
 def get_channel_intro_segments(
     start_chapter: int = 1,
-    intro_hook: str = "",
+    intro_hook: Any = None,
     narrator_voice: str = "en-US-ChristopherNeural",
-    is_start: Optional[bool] = None
+    is_start: Optional[bool] = None,
 ) -> list:
-    series_opening = is_start if is_start is not None else (start_chapter == 1)
-    
-    chapter_status_text = (
-        "Welcome to the opening episode of this series. A brand-new adventure awaits, and we are glad to have you with us."
-        if series_opening
-        else "In this episode, we step right back into the series, continuing exactly where we left off in our previous episode."
-    )
+    """
+    Returns the channel intro segments passed directly from the runner.
+    Hardcodes narrator voice to 'en-US-ChristopherNeural' across all intro segments.
+    """
+    segments: List[Dict[str, Any]] = []
 
-    hook_text = f"{intro_hook.strip()} " if intro_hook and intro_hook.strip() else ""
+    # 1. Direct pass-through if intro_hook is a list of segment dicts
+    if isinstance(intro_hook, list) and len(intro_hook) > 0 and isinstance(intro_hook[0], dict):
+        segments = intro_hook
 
-    segments = [
-        {
-            "line_id": "intro_01",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": "Welcome back to Being a Bong. We narrate the unreal worlds to life.",
-            "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "+0%",
-            "sfx": "intro"
-        },
-        {
-            "line_id": "intro_pause_01",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": "",
-            "pause_duration": 0.4,
-            "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "+0%"
-        },
-        {
-            "line_id": "intro_02_body",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": f"{chapter_status_text} {hook_text}But before the world unfolds, do me a quick favor: hit that like button, subscribe to the channel, and drop a comment below. Your support is the engine that keeps this massive releases alive. Adjust your volume, settle in, and let's begin today's episode.",
-            "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "+0%"
-        },
-        {
-            "line_id": "intro_lead_in_pause",
-            "speaker": "Narrator",
-            "gender": "Male",
-            "line_type": "Narration",
-            "text": "",
-            "pause_duration": 1.0,
-            "voice": narrator_voice,
-            "pitch": "-2Hz",
-            "rate": "+0%"
-        }
-    ]
+    # 2. Support serialized JSON array string
+    elif isinstance(intro_hook, str) and intro_hook.strip().startswith("[") and intro_hook.strip().endswith("]"):
+        try:
+            parsed = json.loads(intro_hook.strip())
+            if isinstance(parsed, list) and len(parsed) > 0 and isinstance(parsed[0], dict):
+                segments = parsed
+        except Exception:
+            segments = []
+
+    # Hard-lock narrator voice across all intro segments
+    for seg in segments:
+        if seg.get("line_type") == "Narration" or seg.get("speaker", "").lower() == "narrator":
+            seg["voice"] = "en-US-ChristopherNeural"
 
     return segments
 
