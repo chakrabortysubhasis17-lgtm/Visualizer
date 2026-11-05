@@ -197,6 +197,22 @@ def normalize_bgm_mood(value: Any) -> str:
     key = value.strip().lower()
     return key if key in BGM_MOODS else "no_mood"
 
+# Pre-compiled citation and normalization patterns
+RE_CITATION = re.compile(r'\[\s*\d+\s*\]')
+RE_CLEAN_SPACES_PUNCT = re.compile(r'\s+([,.;:!?])')
+RE_MULTI_SPACES = re.compile(r'[ \t]{2,}')
+
+
+def clean_page_citations(text: str) -> str:
+    """Strips footnote brackets like [1], [2] and repairs spacing around punctuation."""
+    # 1. Remove bracketed numeric citations [1], [ 12 ], etc.
+    text = RE_CITATION.sub('', text)
+    # 2. Fix spaces pulled in front of punctuation: "Westchester . The" -> "Westchester. The"
+    text = RE_CLEAN_SPACES_PUNCT.sub(r'\1', text)
+    # 3. Collapse duplicate spaces
+    text = RE_MULTI_SPACES.sub(' ', text)
+    return text.strip()
+
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
@@ -470,11 +486,16 @@ def is_pdf_source(path_or_url: str) -> bool:
     return clean.lower().endswith(".pdf")
 
 
-def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = "Arc", is_start: bool = True) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+def extract_pdf_page_content(
+    pdf_path: str, 
+    page_num: int, 
+    default_topic: str = "Arc", 
+    is_start: bool = True
+) -> Tuple[Optional[str], Optional[str], Optional[str]]:
     """
     Extracts text from a single page (1-indexed) of a local PDF document.
     Autodetects and correctly sequences single-column, multi-column, and hybrid 
-    mixed-layout pages while repairing line-end soft hyphens.
+    mixed-layout pages while repairing line-end soft hyphens and stripping numeric citations.
     Returns: (clean_title, full_text, next_source_or_page)
     """
     pdf_path = pdf_path.strip().strip('"').strip("'")
@@ -514,7 +535,7 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
             # Sort blocks initially by vertical reading coordinate (top to bottom)
             valid_blocks.sort(key=lambda b: b[1])
 
-            # Classify blocks to seamlessly handle mixed layouts:
+            # Classify blocks:
             # - SPAN: Full-width elements spanning the center gutter (headers, banners, quotes)
             # - LEFT: Confined to the left column
             # - RIGHT: Confined to the right column
@@ -541,7 +562,6 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
                     return []
                 lefts = [b for b_type, b in group if b_type == "LEFT"]
                 rights = [b for b_type, b in group if b_type == "RIGHT"]
-                # When both columns exist in the band, exhaust Left top-to-bottom then Right top-to-bottom
                 if lefts and rights:
                     return sorted(lefts, key=lambda b: b[1]) + sorted(rights, key=lambda b: b[1])
                 return sorted([b for _, b in group], key=lambda b: b[1])
@@ -564,14 +584,21 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
                 if not block_txt:
                     continue
 
-                # Stitch line-end soft hyphens: e.g. "sur-\ngeons" -> "surgeons"
-                block_txt = re.sub(r'(\b[a-zA-Z]+)-\n([a-zA-Z]+\b)', r'\1\2', block_txt)
+                # Strip invisible soft hyphens
+                block_txt = block_txt.replace('\xad', '')
+
+                # Stitch line-end soft hyphens (handles optional whitespace before newline):
+                # e.g. "sur-\n   geons" -> "surgeons"
+                block_txt = re.sub(r'(\b[a-zA-Z]+)-\s*\n\s*([a-zA-Z]+\b)', r'\1\2', block_txt)
 
                 # Convert single soft newlines to spaces while preserving true double-break paragraphs
                 normalized_block = re.sub(r'(?<!\n)\n(?!\n)', ' ', block_txt)
 
                 for chunk in normalized_block.split('\n\n'):
                     cleaned_p = clean_and_normalize_text(chunk)
+                    # Strip numeric citation brackets [1], [2] from paragraph
+                    cleaned_p = clean_page_citations(cleaned_p)
+
                     if re.match(r'^\s*\d+\s*$', cleaned_p) or re.search(r'oceanofpdf(?:\.com)?', cleaned_p, re.I):
                         continue
                     if cleaned_p and RE_ALPHANUM.search(cleaned_p):
@@ -603,9 +630,9 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
                 )
 
         # Fallback text reconstruction for pypdf / pdfplumber streams
-        normalized_text = text.replace("\r\n", "\n").replace("\r", "\n")
+        normalized_text = text.replace("\r\n", "\n").replace("\r", "\n").replace('\xad', '')
         # Stitch soft hyphens in fallback stream
-        normalized_text = re.sub(r'(\b[a-zA-Z]+)-\n([a-zA-Z]+\b)', r'\1\2', normalized_text)
+        normalized_text = re.sub(r'(\b[a-zA-Z]+)-\s*\n\s*([a-zA-Z]+\b)', r'\1\2', normalized_text)
 
         if "\n\n" in normalized_text:
             raw_blocks = re.split(r'\n\s*\n+', normalized_text)
@@ -624,6 +651,9 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
         for block in raw_blocks:
             unified = " ".join(block.split())
             cleaned = clean_and_normalize_text(unified)
+            # Strip numeric citation brackets [1], [2] in fallback stream
+            cleaned = clean_page_citations(cleaned)
+
             if re.match(r'^\s*\d+\s*$', cleaned) or re.search(r'oceanofpdf(?:\.com)?', cleaned, re.I):
                 continue
             if cleaned and RE_ALPHANUM.search(cleaned):
@@ -634,7 +664,6 @@ def extract_pdf_page_content(pdf_path: str, page_num: int, default_topic: str = 
     if not paragraphs:
         paragraphs = [f"Page {page_num}. Visual illustration or blank page."]
 
-    # Exclude spoken title injection so speech begins cleanly
     full_text = "\n\n".join(paragraphs)
 
     print(f"[PDF Engine] [OK] Extracted Page {page_num}/{total_pages} ({len(full_text.split())} words) from '{os.path.basename(pdf_path)}'", flush=True)
@@ -669,7 +698,10 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
     effective_url = url
     is_royal_road = "royalroad.com" in url.lower()
 
-    for attempt in range(1, 4):
+    max_attempts = 5
+    base_delay = 5.0
+
+    for attempt in range(1, max_attempts + 1):
         try:
             if is_royal_road and CURL_CFFI_AVAILABLE:
                 cffi_resp = cffi_requests.get(
@@ -692,9 +724,14 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
                 effective_url = str(resp.url)
                 break
         except Exception as e:
-            if attempt == 3:
-                raise
-            time.sleep(attempt * 1.5)
+                err_str = str(e)
+                if attempt == max_attempts:
+                    raise
+                # Exponential backoff with random jitter: 4s, 7s, 13s, 25s...
+                sleep_time = (base_delay * (2 ** (attempt - 1))) + random.uniform(1.0, 3.0)
+                print(f"[Gemini Director] 503 high demand spike. Backing off for {sleep_time:.1f}s (Attempt {attempt}/{max_attempts})...", flush=True)
+                time.sleep(sleep_time)
+
 
     current_url_str = str(effective_url).lower()
     if f"chapter-{ch_num}" not in current_url_str:
@@ -885,7 +922,7 @@ def parse_single_chunk_via_gemini(
     title: str,
     chunk_text: str,
     system_instruction: str,
-    max_retries: int = 3,
+    max_retries: int = 5,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
     # Versioned cache key to enforce parsing of sustained BGM moods alongside SFX
@@ -922,7 +959,7 @@ def parse_single_chunk_via_gemini(
     for attempt in range(1, max_retries + 1):
         try:
             response = client.models.generate_content(
-                model="gemini-flash-lite-latest",
+                model="gemini-3.1-flash-lite",
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
