@@ -1244,19 +1244,19 @@ The "bgm_mood" field dictates continuous ambient background music.
 Unlike "sfx" (which triggers on single isolated actions), BGM represents an ONGOING DRAMATIC ATMOSPHERE across continuous sentences.
 
 PERMITTED BGM MOOD VALUES:
-1. "combat"   : Active kinetic clashes, martial arts, monster encounters, boss battles.
-2. "tension"  : High suspense, stealth, dangerous investigations, looming threats, cold standoffs.
-3. "sorrow"   : Tragic revelations, grieving, melancholy, deep loss, heartbreak.
-4. "wonder"   : Awe-inspiring arcane breakthroughs, grand vistas, mystical discoveries.
-5. "warmth"   : Heartfelt emotional bonding, shared relief, tears of joy, finding home, romantic tenderness.
-6. "intrigue" : Cerebral deductions, mystery solving, espionage scheming, tense negotiations, chess-match dialogue.
-7. "triumph"  : Climax resolutions, tier/tribulation breakthroughs, major victories, public vindication.
-8. "dread"    : Chilling atmospheric horror, macabre crime scenes, paralyzing crypt chills, cosmic or demonic presence.
-9. "playful"  : Comedic relief, witty banter, cub/pet shenanigans, sarcastic verbal sparring.
-10. "no_mood" : Standard baseline. Ordinary exposition, room movement, explanations, casual travel.
+1. "combat"   : Active kinetic clashes, martial arts, monster encounters, boss battles, desperation skirmishes, tactical ambushes, arena duels, war-zone sieges.
+2. "tension"  : High suspense, stealth, dangerous investigations, looming threats, cold standoffs, ticking-clock scenarios, tracking quarry, narrow evasions.
+3. "sorrow"   : Tragic revelations, grieving, melancholy, deep loss, heartbreak, hopeless desolation, nostalgic regret, severe betrayal depression.
+4. "wonder"   : Awe-inspiring arcane breakthroughs, grand vistas, mystical discoveries, cosmic realizations, ancient ruin unearthing, ethereal phenomenon witnessing.
+5. "warmth"   : Heartfelt emotional bonding, shared relief, tears of joy, finding home, romantic tenderness, comforting reassurance, safe-haven reunions.
+6. "intrigue" : Cerebral deductions, mystery solving, espionage scheming, tense negotiations, chess-match dialogue, veiled threats, political posturing, blackmail discoveries.
+7. "triumph"  : Climax resolutions, tier/tribulation breakthroughs, major victories, public vindication, crowd adulation, hard-won breakthroughs, personal breakthroughs.
+8. "dread"    : Chilling atmospheric horror, macabre crime scenes, paralyzing crypt chills, cosmic or demonic presence, uncanny valley unreality, corrupted nature encounters.
+9. "playful"  : Comedic relief, witty banter, cub/pet shenanigans, sarcastic verbal sparring, deadpan mockery, lighthearted celebrations, chaotic situational comedy.
+10. "no_mood" : Standard baseline. Ordinary exposition, room movement, explanations, casual travel, system updates, inventory management, mundane world-building.
 
 CRITICAL BGM GOVERNING RULES:
-1. TARGET DISTRIBUTION: Keep roughly 75% to 80% of the chapter as "no_mood" to allow speech to breathe naturally. However, do NOT hesitate to actively tag distinct, emotional, or atmospheric scenes with the appropriate mood.
+1. TARGET DISTRIBUTION: Keep roughly 60% to 70% of the chapter as "no_mood" to allow speech to breathe naturally. However, do NOT hesitate to actively tag distinct, emotional, or atmospheric scenes with the appropriate mood.
 2. CONTINUOUS SCENE BLOCKS:
    - When a scene clearly conveys one of the moods above, tag EVERY line in that continuous scene with that mood.
    - Minimum block length is 4 consecutive lines (e.g., emotional reflections, prolonged fights, tense discoveries).
