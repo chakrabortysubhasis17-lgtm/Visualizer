@@ -186,8 +186,12 @@ def normalize_sfx_key(value: Any) -> str:
     return key if key in SFX_KEYS else ""
 
 
-# Permitted 5 ambient BGM moods plus strict neutral default
-BGM_MOODS = frozenset({"combat", "tension", "sorrow", "wonder", "warmth", "no_mood"})
+# Permitted 9 ambient BGM moods plus strict neutral default
+BGM_MOODS = frozenset({
+    "combat", "tension", "sorrow", "wonder", "warmth",
+    "intrigue", "triumph", "dread", "playful",
+    "no_mood"
+})
 
 
 def normalize_bgm_mood(value: Any) -> str:
@@ -236,7 +240,10 @@ class SpeechSegment(BaseModel):
     edge_tts_voice: str = Field(description="Edge TTS neural voice")
     text: str = Field(description="Spoken dialogue or narrative string")
     sfx: str = Field(default="", description="One permitted SFX key or an empty string")
-    bgm_mood: str = Field(default="no_mood", description="Strictly one of: 'combat', 'tension', 'sorrow', 'wonder', 'warmth', 'no_mood'")
+    bgm_mood: str = Field(
+        default="no_mood", 
+        description="Strictly one of: 'combat', 'tension', 'sorrow', 'wonder', 'warmth', 'intrigue', 'triumph', 'dread', 'playful', 'no_mood'"
+    )
 
 
 class ChapterNarrationManifest(BaseModel):
@@ -926,7 +933,7 @@ def parse_single_chunk_via_gemini(
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
     # Versioned cache key to enforce parsing of sustained BGM moods alongside SFX
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v7", chunk_text)
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v8", chunk_text)
 
     if not refresh_legacy_cache_for_sfx:
         cached_segments = cache_get(chunk_cache_key)
@@ -1242,7 +1249,11 @@ PERMITTED BGM MOOD VALUES:
 3. "sorrow"   : Tragic revelations, grieving, melancholy, deep loss, heartbreak.
 4. "wonder"   : Awe-inspiring arcane breakthroughs, grand vistas, mystical discoveries.
 5. "warmth"   : Heartfelt emotional bonding, shared relief, tears of joy, finding home, romantic tenderness.
-6. "no_mood"  : Standard baseline. Ordinary exposition, room movement, explanations, casual banter.
+6. "intrigue" : Cerebral deductions, mystery solving, espionage scheming, tense negotiations, chess-match dialogue.
+7. "triumph"  : Climax resolutions, tier/tribulation breakthroughs, major victories, public vindication.
+8. "dread"    : Chilling atmospheric horror, macabre crime scenes, paralyzing crypt chills, cosmic or demonic presence.
+9. "playful"  : Comedic relief, witty banter, cub/pet shenanigans, sarcastic verbal sparring.
+10. "no_mood" : Standard baseline. Ordinary exposition, room movement, explanations, casual travel.
 
 CRITICAL BGM GOVERNING RULES:
 1. TARGET DISTRIBUTION: Keep roughly 75% to 80% of the chapter as "no_mood" to allow speech to breathe naturally. However, do NOT hesitate to actively tag distinct, emotional, or atmospheric scenes with the appropriate mood.

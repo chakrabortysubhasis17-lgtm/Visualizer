@@ -159,7 +159,11 @@ _SFX_SEMAPHORES = weakref.WeakKeyDictionary()
 # BGM ADDITIONS (Low Volume Ambient Scene Mood Beds)
 # =====================================================================
 
-BGM_MOODS = frozenset({"combat", "tension", "sorrow", "wonder", "warmth", "no_mood"})
+BGM_MOODS = frozenset({
+    "combat", "tension", "sorrow", "wonder", "warmth",
+    "intrigue", "triumph", "dread", "playful",
+    "no_mood"
+})
 BGM_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
 _BGM_COPY_LOCK = threading.Lock()
 _BGM_COPIED_BUILDS = {}
@@ -172,6 +176,107 @@ def normalize_bgm_mood(value: Any) -> str:
     key = value.strip().lower()
     return key if key in BGM_MOODS else "no_mood"
 
+
+# =====================================================================
+# VOICE-AWARE BGM MOOD PACING DELTAS
+# =====================================================================
+
+BGM_MOOD_RATE_DELTAS_BY_VOICE = {
+    # Christopher: Narrator & Dominant MCs (authoritative, controlled top speed, deep slow drag)
+    "en-US-ChristopherNeural": {
+        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -5, "sorrow": -7, "dread": -10,
+    },
+    # Guy: Agile young male leads & versatile dialogue
+    "en-US-GuyNeural": {
+        "combat": 12, "playful": 7, "triumph": 4, "tension": 3, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+    },
+    # Eric: Arrogant scions, villains & aggressive rivals (sharp, fast verbal velocity)
+    "en-US-EricNeural": {
+        "combat": 14, "playful": 8, "triumph": 5, "tension": 4, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -6,
+    },
+    # Tony: Panicked mobs, crowd shouts & civilian background chatter
+    "en-US-TonyNeural": {
+        "combat": 14, "playful": 8, "triumph": 5, "tension": 4, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -6,
+    },
+    # Roger: Grand elders, academy deans & veteran martial masters (measured, heavier enunciation)
+    "en-US-RogerNeural": {
+        "combat": 6, "playful": 3, "triumph": 2, "tension": 2, "no_mood": 0,
+        "intrigue": -3, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+    },
+    # Jenny: Primary heroines, gentle wives & healers
+    "en-US-JennyNeural": {
+        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
+    },
+    # Emma: Spirited younger sisters, lively second heroines & consorts
+    "en-US-EmmaNeural": {
+        "combat": 11, "playful": 7, "triumph": 4, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -7,
+    },
+    # Ana: Mascot familiars, beast pets, cute slimes & young children
+    "en-US-AnaNeural": {
+        "combat": 12, "playful": 9, "triumph": 4, "tension": 3, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -5,
+    },
+    # Steffan: Boss monsters, deep abyssal titans & demonic beasts (retains low heavy register)
+    "en-US-SteffanNeural": {
+        "combat": 6, "playful": 2, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -5, "dread": -10,
+    },
+    # Aria: Systems & Divine Empresses (System lines ignore this, used only if Aria speaks Dialogue)
+    "en-US-AriaNeural": {
+        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -8,
+    },
+    # Ryan (US / GB): Young modern leads, bards & peers
+    "en-US-RyanNeural": {
+        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+    },
+    "en-GB-RyanNeural": {
+        "combat": 10, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+    },
+    # Neerja: South-Asian regional heroines & matriarchs
+    "en-IN-NeerjaNeural": {
+        "combat": 9, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -7, "dread": -9,
+    },
+    # Fallback for any unlisted side voice
+    "default": {
+        "combat": 10, "playful": 6, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -8,
+    }
+}
+
+
+def calculate_dynamic_rate(base_rate_str: str, bgm_mood_str: str, voice_name: str) -> str:
+    """Calculates vocal rate using speaker-specific mood deltas, strictly preserving no_mood."""
+    mood = normalize_bgm_mood(bgm_mood_str)
+    if mood == "no_mood":
+        return base_rate_str
+
+    voice_key = voice_name.strip()
+    profile = BGM_MOOD_RATE_DELTAS_BY_VOICE.get(
+        voice_key,
+        BGM_MOOD_RATE_DELTAS_BY_VOICE["default"]
+    )
+    delta = profile.get(mood, 0)
+    if delta == 0:
+        return base_rate_str
+
+    # Extract base numeric percentage (e.g. "+5%", "-2%", "0%")
+    match = re.search(r'([+-]?\d+)', str(base_rate_str))
+    base_val = int(match.group(1)) if match else 0
+
+    combined = base_val + delta
+    # Clamp bounds to avoid Edge-TTS distortion or intelligibility loss
+    clamped = max(-25, min(40, combined))
+    return f"{clamped:+d}%"
 
 def prepare_bgm_assets(build_dir: str) -> str:
     """Synchronize all audio files from root assets/bgm into build_dir/bgm."""
@@ -847,21 +952,29 @@ async def synthesize_line_record(
     is_system = (line_type == "System")
     is_narration = (line_type == "Narration" or row.get("speaker", "").lower() == "narrator")
 
+    # Read ambient mood generated upstream by Gemini
+    bgm_mood = normalize_bgm_mood(row.get("bgm_mood", "no_mood"))
+
     if is_system:
+        # System status banners remain at a flat, stable pace
         voice = "en-US-AriaNeural"
         pitch = "-2Hz"
         rate = "+0%"
     elif is_narration:
         voice = "en-US-ChristopherNeural"
         pitch = row.get("pitch", "-2Hz")
-        rate = row.get("rate", "+0%")
+        base_rate = row.get("rate", "+0%")
+        # Dynamic pacing calibrated for Christopher
+        rate = calculate_dynamic_rate(base_rate, bgm_mood, voice)
     else:
         req_voice = row.get("voice", "en-US-GuyNeural")
         if req_voice in ["en-US-TonyNeural", "en-US-JasonNeural"]:
             req_voice = "en-US-ChristopherNeural"
         voice = req_voice
         pitch = row.get("pitch", "+0Hz")
-        rate = row.get("rate", "+5%")
+        base_rate = row.get("rate", "+5%")
+        # Dynamic pacing calibrated for character voice (Eric, Jenny, Tony, Roger, etc.)
+        rate = calculate_dynamic_rate(base_rate, bgm_mood, voice)
 
     chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
     raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
