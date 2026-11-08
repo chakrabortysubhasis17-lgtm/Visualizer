@@ -174,7 +174,7 @@ SFX_KEYS = frozenset({
     # Romance & intimacy
     "heartwarm", "intimate",
     # Supernatural, occult & sacred
-    "whisper", "haunt", "howl", "bells", "gong", "crow",
+    "whisper", "haunt", "howl", "bells", "gong", "crow", "bark", "steam_engine",
 })
 
 
@@ -1172,6 +1172,8 @@ MANDATORY NEGATIVE CONSTRAINTS:
    - "whisper": Strictly eerie eldritch murmurs, phantom voices, or cursed artifacts in the mind. NEVER tag ordinary human whispers, quiet prayers, or private family comforting.
    - "blade": Strictly drawing or unsheathing a metal blade from its scabbard. NEVER tag dropping a weapon, holding a blade, or verbal threats.
    - "armor": Strictly heavy metallic plate armor clanking. NEVER tag cloth robes, dresses, or uniforms.
+   - "bark": Use for dog barks, canine yelps, or excited dog alerts (e.g., Owney barking at trains or greeting clerks).
+   - "steam_engine": Use for roaring steam locomotive engines, train chugging, chuffs, or departure whistles.
 
 MATCHING TRIGGER DIRECTORY:
 • "gasp": Explicit character audible gasp -> 'I gasp', 'she gasps', 'gasped in horror'.
@@ -1228,9 +1230,11 @@ MATCHING TRIGGER DIRECTORY:
 • "monster": Beast roaring, screeching, or howling -> 'beast roared furiously', 'screeched violently'.
 • "alert": System danger warning or alarm -> '[Warning!]', 'threat detected'.
 • "quest" / "levelup" / "achievement" / "reward" / "loot" / "coin" / "chest" / "equip": Specific LitRPG game mechanics occurring in the narrative.
+• "bark": Use for dog barks, canine yelps, or excited dog alerts (e.g., Owney barking at trains or greeting clerks).
+• "steam_engine": Use for roaring steam locomotive engines, train chugging, chuffs, or departure whistles.
 
 AUTHORIZED SFX KEYS (EXACT LIST):
-[footsteps, run, tiptoe, horseandcart, steps_indoor, patter, heavy_steps, car, screech, creak, crackle, thunder, drip, wind, forest, ocean, crickets, rain, hum, whoosh, teleport, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, gunshot, explosion, snarl, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, slam, clock, glass_break, paper, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong, crow]
+[footsteps, run, tiptoe, horseandcart, steps_indoor, patter, heavy_steps, car, screech, creak, crackle, thunder, drip, wind, forest, ocean, crickets, rain, hum, whoosh, teleport, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, gunshot, explosion, snarl, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, slam, clock, glass_break, paper, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong, crow, bark, steam_engine]
 
 STRICT SFX RULES:
 - Every segment MUST contain an "sfx" field. If no condition applies, use "". Never use null, "none", "N/A", or whitespace.

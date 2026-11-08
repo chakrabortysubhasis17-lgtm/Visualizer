@@ -146,7 +146,8 @@ SFX_KEYS = frozenset({
     # Romance & intimacy
     "heartwarm", "intimate",
     # Supernatural, occult & sacred
-    "whisper", "haunt", "howl", "bells", "gong", "intro", "crow"
+    "whisper", "haunt", "howl", "bells", "gong", "intro", "crow",
+    "bark", "dog_bark",
 })
 
 SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
@@ -445,12 +446,114 @@ def mix_chapter_bgm_bed(
     return False
 
 
+# Comprehensive synonym mapping resolving gerunds, compound words, and director aliases
+SFX_SYNONYMS = {
+    # Movement & Transport
+    "footstep": "footsteps", "walking": "footsteps", "steps": "footsteps", "walk": "footsteps",
+    "step_indoor": "steps_indoor", "indoor_steps": "steps_indoor", "indoor_footsteps": "steps_indoor",
+    "pacing": "steps_indoor", "corridor_steps": "steps_indoor",
+    "running": "run", "sprint": "run", "sprinting": "run", "charge": "run", "charging": "run", "flee": "run",
+    "stealth": "tiptoe", "sneaking": "tiptoe", "sneak": "tiptoe", "careful_steps": "tiptoe",
+    "scurry": "patter", "scuttling": "patter", "pattering": "patter", "claws": "patter", "paw_steps": "patter",
+    "stomp": "heavy_steps", "stomps": "heavy_steps", "heavysteps": "heavy_steps", "colossus_steps": "heavy_steps",
+    "giant_steps": "heavy_steps", "earthquake_steps": "heavy_steps",
+    "carriage": "horseandcart", "cart": "horseandcart", "wagon": "horseandcart", "horse_cart": "horseandcart",
+    "horse_and_cart": "horseandcart", "hooves": "horseandcart",
+    "automobile": "car", "vehicle": "car", "driving": "car", "motor": "car",
+    "skid": "screech", "skidding": "screech", "braking": "screech", "tire_screech": "screech",
+    "locomotive": "steam_engine", "train": "steam_engine", "train_engine": "steam_engine",
+    "train_whistle": "steam_engine", "steam_train": "steam_engine", "railway": "steam_engine",
+
+    # Canine & Fauna
+    "barking": "bark", "dog_bark": "bark", "dog_barking": "bark", "yelp": "bark", "canine_bark": "bark",
+    "caw": "crow", "cawing": "crow", "raven": "crow", "raven_caw": "crow",
+    "wolf_howl": "howl", "howling": "howl",
+
+    # Environment & Ambience
+    "creaking": "creak", "door_creak": "creak", "hinge": "creak", "gate_creak": "creak",
+    "fire": "crackle", "crackling": "crackle", "campfire": "crackle", "bonfire": "crackle", "flames": "crackle",
+    "lightning": "thunder", "thunderclap": "thunder", "thunderstorm": "thunder",
+    "dripping": "drip", "water_drop": "drip", "droplet": "drip",
+    "gale": "wind", "breeze": "wind", "draft": "wind", "howling_wind": "wind",
+    "woods": "forest", "woodland": "forest", "jungle": "forest", "canopy": "forest",
+    "sea": "ocean", "waves": "ocean", "surf": "ocean", "ocean_waves": "ocean", "tide": "ocean",
+    "cricket": "crickets", "cicadas": "crickets", "night_insects": "crickets",
+    "rainfall": "rain", "downpour": "rain", "drizzle": "rain", "storm_rain": "rain",
+    "ticking": "clock", "clock_tick": "clock", "pendulum": "clock",
+
+    # Magic & Energy
+    "magic": "hum", "aura": "hum", "shimmer": "hum", "mana_hum": "hum", "glow": "hum",
+    "air_whoosh": "whoosh", "gust": "whoosh", "swish_air": "whoosh",
+    "teleportation": "teleport", "blink": "teleport", "phase_shift": "teleport", "spatial_jump": "teleport",
+
+    # Combat & Impacts
+    "hit": "impact", "strike": "impact", "blunt_hit": "impact", "collision": "impact", "clash": "impact",
+    "collapse": "thud", "body_fall": "thud", "fall": "thud", "foot_stomp": "thud",
+    "sword": "blade", "draw_sword": "blade", "unsheathe": "blade", "sheath": "blade", "dagger": "blade",
+    "plate_armor": "armor", "clank": "armor", "chainmail": "armor", "metal_armor": "armor",
+    "slice": "slash", "cut": "slash", "sword_slash": "slash", "cleave": "slash",
+    "roar": "monster", "beast_roar": "monster", "monster_roar": "monster", "screech_beast": "monster",
+    "growl": "snarl", "snarling": "snarl", "growling": "snarl",
+    "drums": "wardrum", "war_drum": "wardrum", "war_drums": "wardrum", "marching_drums": "wardrum",
+    "groan": "pain", "hurt": "pain", "agony": "pain", "wound": "pain", "grunt_pain": "pain",
+    "gun": "gunshot", "shot": "gunshot", "firearm": "gunshot", "revolver": "gunshot", "rifle": "gunshot",
+    "blast": "explosion", "detonation": "explosion", "bomb": "explosion", "boom": "explosion",
+
+    # LitRPG & Interface
+    "notification": "chime", "ding": "chime", "system_ding": "chime", "bell_chime": "chime",
+    "level_up": "levelup", "stat_increase": "levelup",
+    "ui": "interface", "menu": "interface", "status_window": "interface", "panel": "interface",
+    "warning": "alert", "alarm": "alert", "danger_alert": "alert", "system_warning": "alert",
+    "coins": "coin", "gold_coin": "coin", "gold": "coin", "money": "coin",
+    "treasure_chest": "chest", "open_chest": "chest", "treasure": "chest",
+    "equipment": "equip", "equip_item": "equip",
+
+    # Character Reactions & Daily Interactions
+    "pulse": "heartbeat", "racing_heart": "heartbeat", "heart": "heartbeat", "badump": "heartbeat",
+    "gasping": "gasp", "audible_gasp": "gasp",
+    "door_knock": "knock", "knocking": "knock", "rap": "knock",
+    "rustling": "rustle", "clothes": "rustle", "fabric": "rustle", "robe": "rustle", "kneel": "rustle", "bow": "rustle",
+    "water_splash": "splash", "splashing": "splash",
+    "door_slam": "slam", "slammed": "slam", "gate_slam": "slam",
+    "shatter": "glass_break", "broken_glass": "glass_break", "glass_shatter": "glass_break",
+    "page_turn": "paper", "turning_page": "paper", "scroll": "paper", "parchment": "paper", "unfold": "paper",
+
+    # Social & Sensory Dynamics
+    "crowd": "market", "bazaar": "market", "marketplace": "market", "crowd_chatter": "market",
+    "cheering": "cheer", "applause": "cheer", "crowd_cheer": "cheer",
+    "groan_crowd": "disappointed", "crowd_groan": "disappointed", "letdown": "disappointed",
+    "plates": "dishes", "plate": "dishes", "tableware": "dishes", "cutlery": "dishes",
+    "eat": "eating", "chew": "eating", "chewing": "eating", "bite": "eating",
+    "sizzle": "cooking", "frying": "cooking", "boiling": "cooking", "pot_bubbling": "cooking",
+
+    # Intimacy & Romance
+    "tenderness": "heartwarm", "blush": "heartwarm", "handhold": "heartwarm", "hand_holding": "heartwarm",
+    "sensual": "intimate", "embrace": "intimate", "close_whisper": "intimate",
+    "sighed": "sigh", "sighing": "sigh", "exhale": "sigh", "weary_exhale": "sigh",
+
+    # Supernatural & Bells
+    "whispering": "whisper", "murmur": "whisper", "occult_whisper": "whisper", "telepathy": "whisper",
+    "chilling": "haunt", "ghost": "haunt", "eerie": "haunt", "chill": "haunt", "supernatural_chill": "haunt",
+    "bell": "bells", "toll": "bells", "tolling": "bells", "church_bell": "bells", "clocktower": "bells",
+    "temple_bell": "gong", "bronze_gong": "gong", "chime_gong": "gong", "breakthrough_chime": "gong"
+}
+
+
 def normalize_sfx_key(value: Any) -> str:
-    """Return an allowed lowercase SFX key, or an empty string."""
+    """Return an allowed canonical SFX key, standardizing punctuation, casing, and director synonyms."""
     if not isinstance(value, str):
         return ""
-    key = value.strip().lower()
-    return key if key in SFX_KEYS else ""
+    
+    # Strip spaces, brackets, quotes, or accidental punctuation
+    clean = re.sub(r'[^a-zA-Z0-9_]', '', value.strip().lower().replace("-", "_").replace(" ", "_"))
+    
+    # Check direct canonical key
+    if clean in SFX_KEYS:
+        return clean
+        
+    # Check synonym mapping
+    canonical = SFX_SYNONYMS.get(clean, "")
+    return canonical if canonical in SFX_KEYS else ""
 
 
 def _get_sfx_semaphore() -> asyncio.Semaphore:
