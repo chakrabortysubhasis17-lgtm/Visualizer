@@ -141,14 +141,380 @@ SFX_KEYS = frozenset({
     "achievement", "reward", "loot", "coin", "chest", "equip",
     # Character reactions, physical interactions & everyday actions
     "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh", "slam", "glass_break", "paper",
+    # Biological breath additions
+    "short_breath_male", "short_breath_female",
     # Social, culinary & crowd dynamics
     "market", "cheer", "disappointed", "dishes", "eating", "cooking",
     # Romance & intimacy
     "heartwarm", "intimate",
     # Supernatural, occult & sacred
     "whisper", "haunt", "howl", "bells", "gong", "intro", "crow",
-    "bark", "dog_bark",
+    "bark", "dog_bark", "steam_engine",
 })
+
+# =====================================================================
+# 12-TONE SEMANTIC PITCH DECODER (Voice-Specific Acoustic Profiles)
+# =====================================================================
+
+VOICE_PITCH_PROFILES = {
+    # Christopher: Narrator & Dominant MCs (broad, deep chest resonance down to -3.5Hz, restrained highs)
+    "en-US-ChristopherNeural": {
+        "whisper_intimate": "-3.5Hz",
+        "grave_somber": "-3.0Hz",
+        "grim_rumble": "-2.5Hz",
+        "subdued_neutral": "-2.2Hz",
+        "narrator_anchor": "-2.0Hz",
+        "conversational_mid": "-1.5Hz",
+        "engaged_alert": "-1.0Hz",
+        "lung_reset_entry": "+0.5Hz",
+        "inquisitive_lift": "+1.0Hz",
+        "tense_strained": "+1.5Hz",
+        "command_shout": "+2.0Hz",
+        "hysterical_peak": "+2.5Hz",
+    },
+
+    # Guy: Agile young male leads & versatile dialogue (clean baseline 0Hz, balanced +/- 3Hz span)
+    "en-US-GuyNeural": {
+        "whisper_intimate": "-3.0Hz",
+        "grave_somber": "-2.5Hz",
+        "grim_rumble": "-2.0Hz",
+        "subdued_neutral": "-1.0Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+1.0Hz",
+        "lung_reset_entry": "+1.5Hz",
+        "inquisitive_lift": "+2.0Hz",
+        "tense_strained": "+2.0Hz",
+        "command_shout": "+2.5Hz",
+        "hysterical_peak": "+3.0Hz",
+    },
+
+    # Eric: Arrogant young masters, rivals & antagonists (piercing upper midrange, biting high peaks)
+    "en-US-EricNeural": {
+        "whisper_intimate": "-2.5Hz",
+        "grave_somber": "-2.0Hz",
+        "grim_rumble": "-1.5Hz",
+        "subdued_neutral": "-0.5Hz",
+        "narrator_anchor": "+0.5Hz",
+        "conversational_mid": "+0.5Hz",
+        "engaged_alert": "+1.5Hz",
+        "lung_reset_entry": "+2.0Hz",
+        "inquisitive_lift": "+2.5Hz",
+        "tense_strained": "+2.5Hz",
+        "command_shout": "+3.0Hz",
+        "hysterical_peak": "+3.5Hz",
+    },
+
+    # Tony: Panicked civilian mobs & frantic crowd shouts (rapid, tense pitch elevation)
+    "en-US-TonyNeural": {
+        "whisper_intimate": "-2.5Hz",
+        "grave_somber": "-2.0Hz",
+        "grim_rumble": "-1.0Hz",
+        "subdued_neutral": "-0.5Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.5Hz",
+        "engaged_alert": "+1.5Hz",
+        "lung_reset_entry": "+2.0Hz",
+        "inquisitive_lift": "+2.5Hz",
+        "tense_strained": "+2.8Hz",
+        "command_shout": "+3.0Hz",
+        "hysterical_peak": "+3.5Hz",
+    },
+
+    # Roger: Grand elders, academy deans & martial masters (heavy low baritone, compressed upward shifts)
+    "en-US-RogerNeural": {
+        "whisper_intimate": "-4.0Hz",
+        "grave_somber": "-3.5Hz",
+        "grim_rumble": "-3.0Hz",
+        "subdued_neutral": "-2.5Hz",
+        "narrator_anchor": "-2.0Hz",
+        "conversational_mid": "-1.5Hz",
+        "engaged_alert": "-1.0Hz",
+        "lung_reset_entry": "+0.0Hz",
+        "inquisitive_lift": "+0.5Hz",
+        "tense_strained": "+1.0Hz",
+        "command_shout": "+1.5Hz",
+        "hysterical_peak": "+2.0Hz",
+    },
+
+    # Jenny: Primary heroines, gentle wives & healers (warm feminine register, capped to prevent tinny artifacts)
+    "en-US-JennyNeural": {
+        "whisper_intimate": "-2.5Hz",
+        "grave_somber": "-2.0Hz",
+        "grim_rumble": "-1.5Hz",
+        "subdued_neutral": "-1.0Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+1.0Hz",
+        "lung_reset_entry": "+1.5Hz",
+        "inquisitive_lift": "+2.0Hz",
+        "tense_strained": "+2.0Hz",
+        "command_shout": "+2.5Hz",
+        "hysterical_peak": "+2.5Hz",
+    },
+
+    # Emma: Spirited younger sisters, second heroines & consorts (bright, nimble, slightly higher peak ceiling)
+    "en-US-EmmaNeural": {
+        "whisper_intimate": "-2.0Hz",
+        "grave_somber": "-1.5Hz",
+        "grim_rumble": "-1.0Hz",
+        "subdued_neutral": "-0.5Hz",
+        "narrator_anchor": "+0.5Hz",
+        "conversational_mid": "+0.5Hz",
+        "engaged_alert": "+1.5Hz",
+        "lung_reset_entry": "+2.0Hz",
+        "inquisitive_lift": "+2.5Hz",
+        "tense_strained": "+2.5Hz",
+        "command_shout": "+3.0Hz",
+        "hysterical_peak": "+3.0Hz",
+    },
+
+    # Ana: Mascot familiars, beast pets, cute slimes & young children (inherently high fundamental pitch)
+    "en-US-AnaNeural": {
+        "whisper_intimate": "-1.5Hz",
+        "grave_somber": "-1.0Hz",
+        "grim_rumble": "-0.5Hz",
+        "subdued_neutral": "+0.0Hz",
+        "narrator_anchor": "+0.5Hz",
+        "conversational_mid": "+0.5Hz",
+        "engaged_alert": "+1.5Hz",
+        "lung_reset_entry": "+2.0Hz",
+        "inquisitive_lift": "+2.0Hz",
+        "tense_strained": "+2.5Hz",
+        "command_shout": "+2.5Hz",
+        "hysterical_peak": "+2.8Hz",  # Capped tightly to prevent digital screeching
+    },
+
+    # Steffan: Boss monsters, abyssal titans & demonic beasts (deepest sub-bass chest floor, minimal top lift)
+    "en-US-SteffanNeural": {
+        "whisper_intimate": "-4.5Hz",
+        "grave_somber": "-4.0Hz",
+        "grim_rumble": "-3.5Hz",
+        "subdued_neutral": "-3.0Hz",
+        "narrator_anchor": "-2.5Hz",
+        "conversational_mid": "-2.0Hz",
+        "engaged_alert": "-1.5Hz",
+        "lung_reset_entry": "-0.5Hz",
+        "inquisitive_lift": "+0.0Hz",
+        "tense_strained": "+0.5Hz",
+        "command_shout": "+1.0Hz",
+        "hysterical_peak": "+1.5Hz",
+    },
+
+    # Aria: Systems & Divine Empresses (crystalline, emotionally detached, tightest dynamic variation)
+    "en-US-AriaNeural": {
+        "whisper_intimate": "-2.0Hz",
+        "grave_somber": "-1.5Hz",
+        "grim_rumble": "-1.0Hz",
+        "subdued_neutral": "-0.5Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+0.5Hz",
+        "lung_reset_entry": "+1.0Hz",
+        "inquisitive_lift": "+1.5Hz",
+        "tense_strained": "+1.5Hz",
+        "command_shout": "+2.0Hz",
+        "hysterical_peak": "+2.0Hz",
+    },
+
+    # Ryan (en-US): Young modern leads, bards & peers (casual, balanced American neutral register)
+    "en-US-RyanNeural": {
+        "whisper_intimate": "-3.0Hz",
+        "grave_somber": "-2.5Hz",
+        "grim_rumble": "-2.0Hz",
+        "subdued_neutral": "-1.0Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+1.0Hz",
+        "lung_reset_entry": "+1.5Hz",
+        "inquisitive_lift": "+2.0Hz",
+        "tense_strained": "+2.0Hz",
+        "command_shout": "+2.5Hz",
+        "hysterical_peak": "+3.0Hz",
+    },
+
+    # Ryan (en-GB): British accented nobles, scholars & refined companions (smoother, slightly lower crest)
+    "en-GB-RyanNeural": {
+        "whisper_intimate": "-3.0Hz",
+        "grave_somber": "-2.5Hz",
+        "grim_rumble": "-2.0Hz",
+        "subdued_neutral": "-1.5Hz",
+        "narrator_anchor": "-0.5Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+1.0Hz",
+        "lung_reset_entry": "+1.2Hz",
+        "inquisitive_lift": "+1.8Hz",
+        "tense_strained": "+2.0Hz",
+        "command_shout": "+2.2Hz",
+        "hysterical_peak": "+2.6Hz",
+    },
+
+    # Neerja: South-Asian regional heroines, matriarchs & scholars (rich warm mid-frequencies)
+    "en-IN-NeerjaNeural": {
+        "whisper_intimate": "-2.5Hz",
+        "grave_somber": "-2.0Hz",
+        "grim_rumble": "-1.5Hz",
+        "subdued_neutral": "-1.0Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+1.0Hz",
+        "lung_reset_entry": "+1.5Hz",
+        "inquisitive_lift": "+2.0Hz",
+        "tense_strained": "+2.0Hz",
+        "command_shout": "+2.5Hz",
+        "hysterical_peak": "+2.5Hz",
+    },
+
+    # Fallback for any unlisted or dynamically staged character voice
+    "default": {
+        "whisper_intimate": "-2.5Hz",
+        "grave_somber": "-2.0Hz",
+        "grim_rumble": "-1.5Hz",
+        "subdued_neutral": "-1.0Hz",
+        "narrator_anchor": "+0.0Hz",
+        "conversational_mid": "+0.0Hz",
+        "engaged_alert": "+1.0Hz",
+        "lung_reset_entry": "+1.0Hz",
+        "inquisitive_lift": "+1.5Hz",
+        "tense_strained": "+2.0Hz",
+        "command_shout": "+2.5Hz",
+        "hysterical_peak": "+2.5Hz",
+    }
+}
+
+# =====================================================================
+# BGM MOOD PITCH DELTAS (Dynamic Atmospheric Frequency Shifts)
+# =====================================================================
+
+BGM_MOOD_PITCH_DELTAS_BY_VOICE = {
+    # Christopher: Narrator (tight pitch discipline; slight lifts in combat, deep drags in dread)
+    "en-US-ChristopherNeural": {
+        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.2,
+    },
+    # Guy: Agile young male leads & versatile dialogue
+    "en-US-GuyNeural": {
+        "combat": 1.2, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    # Eric: Sharp, aggressive rivals (high combat pitch spikes)
+    "en-US-EricNeural": {
+        "combat": 1.4, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.6, "dread": -0.8,
+    },
+    # Roger: Grand elders & martial masters (heavy, resistant to high spikes)
+    "en-US-RogerNeural": {
+        "combat": 0.5, "triumph": 0.4, "tension": 0.3, "playful": 0.2, "no_mood": 0.0,
+        "intrigue": -0.4, "warmth": -0.4, "wonder": -0.6, "sorrow": -0.9, "dread": -1.3,
+    },
+    # Jenny: Primary heroines & healers
+    "en-US-JennyNeural": {
+        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    # Steffan: Titans, monsters & demons (sub-bass grounding)
+    "en-US-SteffanNeural": {
+        "combat": 0.4, "triumph": 0.3, "tension": 0.2, "playful": 0.1, "no_mood": 0.0,
+        "intrigue": -0.4, "warmth": -0.4, "wonder": -0.6, "sorrow": -1.0, "dread": -1.5,
+    },
+    # Ana: Familiars & children (capped shifts to prevent squeaks)
+    "en-US-AnaNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.3, "sorrow": -0.5, "dread": -0.6,
+    },
+    # Default fallback
+    "default": {
+        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.5, "sorrow": -0.7, "dread": -1.0,
+    }
+}
+
+# Optional speaker micro-pitch offsets (semitone differentiation when sharing same voice)
+SPEAKER_PITCH_OFFSETS = {
+    "elder": -0.8,
+    "sect_master": -0.6,
+    "patriarch": -0.6,
+    "ancestor": -1.0,
+    "disciple": +0.4,
+    "guard": -0.3,
+    "system": -1.5,
+}
+
+def calculate_rate_velocity_pitch_offset(rate_str: str) -> float:
+    """Computes micro-pitch shift driven by speech velocity (+10% rate -> +0.3Hz, -10% -> -0.3Hz)."""
+    try:
+        match = re.search(r'([+-]?\d+)', str(rate_str))
+        if match:
+            rate_val = int(match.group(1))
+            # 0.03 Hz shift per 1% rate deviation from baseline
+            return round(rate_val * 0.03, 2)
+    except Exception:
+        pass
+    return 0.0
+
+
+def calculate_speaker_pitch_offset(speaker_name: str) -> float:
+    """Assigns deterministic micro-pitch offsets for distinct roles sharing identical voices."""
+    if not speaker_name:
+        return 0.0
+    sp_clean = speaker_name.strip().lower()
+    for role_key, offset in SPEAKER_PITCH_OFFSETS.items():
+        if role_key in sp_clean:
+            return offset
+    # Deterministic pseudo-random micro-offset (-0.2Hz to +0.2Hz) to keep characters distinct
+    h = int(hashlib.md5(sp_clean.encode("utf-8")).hexdigest()[:4], 16)
+    return round(((h % 5) - 2) * 0.1, 2)
+
+
+def resolve_dynamic_voice_pitch(
+    voice_name: str,
+    pitch_tier: Optional[str] = None,
+    bgm_mood: str = "no_mood",
+    current_rate: str = "+0%",
+    speaker: str = "",
+    fallback_pitch: str = "-2Hz"
+) -> str:
+    voice_key = str(voice_name).strip()
+    profile = VOICE_PITCH_PROFILES.get(voice_key, VOICE_PITCH_PROFILES["default"])
+
+    # 1. Base Pitch from Tier
+    tier_clean = str(pitch_tier).strip().lower() if pitch_tier else "narrator_anchor"
+    base_pitch_str = profile.get(tier_clean, fallback_pitch)
+
+    try:
+        m = re.search(r'([+-]?\d+(?:\.\d+)?)', str(base_pitch_str))
+        base_hz = float(m.group(1)) if m else -2.0
+    except Exception:
+        base_hz = -2.0
+
+    # 2. BGM Mood Pitch Delta
+    mood = normalize_bgm_mood(bgm_mood)
+    mood_profiles = BGM_MOOD_PITCH_DELTAS_BY_VOICE.get(voice_key, BGM_MOOD_PITCH_DELTAS_BY_VOICE["default"])
+    mood_hz = mood_profiles.get(mood, 0.0)
+
+    # 3. Speech Rate Velocity Offset
+    velocity_hz = calculate_rate_velocity_pitch_offset(current_rate)
+
+    # 4. Speaker Identity Offset
+    is_narrator = "christopher" in voice_key.lower() or speaker.strip().lower() == "narrator"
+    speaker_hz = 0.0 if is_narrator else calculate_speaker_pitch_offset(speaker)
+
+    # Composite Combined Pitch
+    total_hz = base_hz + mood_hz + velocity_hz + speaker_hz
+
+    # Hardware Acoustic Safety Clamping per voice category
+    if "steffan" in voice_key.lower() or "roger" in voice_key.lower():
+        clamped_hz = max(-5.0, min(2.0, total_hz))
+    elif "ana" in voice_key.lower() or "emma" in voice_key.lower() or "jenny" in voice_key.lower():
+        clamped_hz = max(-3.0, min(3.0, total_hz))
+    elif "christopher" in voice_key.lower():
+        clamped_hz = max(-4.0, min(2.5, total_hz))
+    else:
+        clamped_hz = max(-3.5, min(3.2, total_hz))
+
+    # Edge TTS strictly requires integer Hertz (+0Hz, -2Hz, +1Hz)
+    int_hz = int(round(clamped_hz))
+    return f"{int_hz:+d}Hz"
 
 SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
 
@@ -468,6 +834,12 @@ SFX_SYNONYMS = {
     "barking": "bark", "dog_bark": "bark", "dog_barking": "bark", "yelp": "bark", "canine_bark": "bark",
     "caw": "crow", "cawing": "crow", "raven": "crow", "raven_caw": "crow",
     "wolf_howl": "howl", "howling": "howl",
+
+    # Biological Breaths
+    "short_breath_male": "short_breath_male", "short-breath-male": "short_breath_male",
+    "breath_male": "short_breath_male", "male_breath": "short_breath_male",
+    "short_breath_female": "short_breath_female", "short-breath-female": "short_breath_female",
+    "breath_female": "short_breath_female", "female_breath": "short_breath_female",
 
     # Environment & Ambience
     "creaking": "creak", "door_creak": "creak", "hinge": "creak", "gate_creak": "creak",
@@ -799,15 +1171,30 @@ def _atomic_copy_audio(source_path: str, target_path: str) -> None:
 
 
 def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str) -> None:
-    """Create a new segment with the SFX first and the original speech second."""
+    """Concatenate SFX with speech, applying crossfade smoothing on breath assets."""
     temp_output = output_path + ".sfx_tmp.mp3"
-    filter_complex = (
-        "[0:a:0]aresample=24000,"
-        "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[sfx];"
-        "[1:a:0]aresample=24000,"
-        "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
-        "[sfx][speech]concat=n=2:v=0:a=1[out]"
-    )
+    filename = os.path.basename(sfx_path).lower()
+    is_breath = "breath" in filename or "gasp" in filename
+
+    if is_breath:
+        # Crossfade tail of breath asset with head of speech to eliminate plosive clicks.
+        # volume=0.32 attenuates the breath by ~10 dB so it remains an intimate, soft background intake.
+        filter_complex = (
+            "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+            "volume=0.32,"
+            "afade=t=out:st=0.20:d=0.035[sfx];"
+            "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+            "[sfx][speech]acrossfade=d=0.025:c1=exp:c2=log[out]"
+        )
+    else:
+        filter_complex = (
+            "[0:a:0]aresample=24000,"
+            "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[sfx];"
+            "[1:a:0]aresample=24000,"
+            "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+            "[sfx][speech]concat=n=2:v=0:a=1[out]"
+        )
+
     cmd = [
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         "-i", sfx_path,
@@ -1034,10 +1421,15 @@ async def synthesize_line_record(
         return
 
     pause_dur = row.get("pause_duration")
-    raw_text = row.get("text", "").strip()
+    
+    # Dual-Text Separation: Route tts_text to voice engine, falling back to text
+    raw_text = row.get("tts_text") or row.get("text", "").strip()
     text = RE_PAUSE_TAGS.sub("", raw_text).strip()
 
-    if pause_dur or not text or not RE_ALPHANUM.search(text):
+    # A row is ONLY a pure pause if it contains no spoken alphanumeric text
+    is_pure_pause = not text or not RE_ALPHANUM.search(text)
+
+    if is_pure_pause:
         dur = float(pause_dur) if pause_dur else 0.5
         await asyncio.to_thread(
             subprocess.run,
@@ -1054,30 +1446,42 @@ async def synthesize_line_record(
     line_type = row.get("line_type", "Narration")
     is_system = (line_type == "System")
     is_narration = (line_type == "Narration" or row.get("speaker", "").lower() == "narrator")
+    speaker_name = row.get("speaker", "Narrator")
 
-    # Read ambient mood generated upstream by Gemini
     bgm_mood = normalize_bgm_mood(row.get("bgm_mood", "no_mood"))
+    pitch_tier = row.get("pitch_tier")
 
     if is_system:
-        # System status banners remain at a flat, stable pace
         voice = "en-US-AriaNeural"
         pitch = "-2Hz"
         rate = "+0%"
     elif is_narration:
         voice = "en-US-ChristopherNeural"
-        pitch = row.get("pitch", "-2Hz")
         base_rate = row.get("rate", "+0%")
-        # Dynamic pacing calibrated for Christopher
         rate = calculate_dynamic_rate(base_rate, bgm_mood, voice)
+        pitch = resolve_dynamic_voice_pitch(
+            voice_name=voice,
+            pitch_tier=pitch_tier,
+            bgm_mood=bgm_mood,
+            current_rate=rate,
+            speaker=speaker_name,
+            fallback_pitch=row.get("pitch", "-2Hz")
+        )
     else:
         req_voice = row.get("voice", "en-US-GuyNeural")
         if req_voice in ["en-US-TonyNeural", "en-US-JasonNeural"]:
             req_voice = "en-US-ChristopherNeural"
         voice = req_voice
-        pitch = row.get("pitch", "+0Hz")
-        base_rate = row.get("rate", "+5%")
-        # Dynamic pacing calibrated for character voice (Eric, Jenny, Tony, Roger, etc.)
+        base_rate = row.get("rate", "-4%" if line_type == "Dialogue" else "+0%")
         rate = calculate_dynamic_rate(base_rate, bgm_mood, voice)
+        pitch = resolve_dynamic_voice_pitch(
+            voice_name=voice,
+            pitch_tier=pitch_tier,
+            bgm_mood=bgm_mood,
+            current_rate=rate,
+            speaker=speaker_name,
+            fallback_pitch=row.get("pitch", "+0Hz")
+        )
 
     chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
     raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
@@ -1114,10 +1518,8 @@ async def synthesize_line_record(
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL
                 )
-
                 if not (os.path.exists(out_file) and os.path.getsize(out_file) > 300):
                     shutil.copy2(raw_tts_file, out_file)
-
                 try:
                     os.remove(raw_tts_file)
                 except OSError:
@@ -1129,8 +1531,9 @@ async def synthesize_line_record(
                 await ensure_segment_sfx(row, out_file, sfx_dir)
                 return
 
-        except Exception:
-            pass
+        except Exception as exc:
+            if attempt == max_retries:
+                print(f"[TTS Error] Final attempt failed for line {row.get('line_id')}: {exc} (Voice: {active_voice}, Pitch: {pitch}, Rate: {rate})", flush=True)
 
         if attempt == max_retries:
             await asyncio.to_thread(
@@ -1216,7 +1619,10 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             valid_chunks.append(cf)
             dur = await get_audio_duration(cf)
             line_durations.append(dur)
-            raw_text = RE_PAUSE_TAGS.sub("", row.get("text", "")).strip()
+            
+            # Subtitle reads literary display_text, keeping phonetic respellings OFF the screen
+            raw_display_text = row.get("display_text") or row.get("text", "")
+            disp_clean = RE_PAUSE_TAGS.sub("", raw_display_text).strip()
 
             sfx_offset = 0.0
             segment_meta = _read_sfx_metadata(cf)
@@ -1230,10 +1636,10 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
                         )
                     sfx_offset = min(sfx_duration_cache.get(applied_key, 0.0), dur)
 
-            if raw_text and not row.get("pause_duration"):
-                sub_text = f"[{row['speaker']}]: {raw_text}" if row.get("line_type") == "Dialogue" else raw_text
+            if disp_clean and not row.get("pause_duration"):
+                sub_text = f"[{row['speaker']}]: {disp_clean}" if row.get("line_type") == "Dialogue" else disp_clean
                 subtitle_start = rel_time + sfx_offset
-                subtitle_end = rel_time + dur
+                subtitle_end = max(subtitle_start + 0.1, rel_time + dur)
                 if subtitle_start < subtitle_end:
                     rel_subtitles.append((subtitle_start, subtitle_end, sub_text))
 
@@ -1467,10 +1873,20 @@ def master_final_audio(
             source_audio = working_source
             audio_filter = f"{BROADCAST_VOCAL_FILTER},apad=pad_dur=15"
 
-        print("[Audio Master Engine] Applying EBU R128 loudness normalization (-14 LUFS)...", flush=True)
+        print("[Audio Master Engine] Applying EBU R128 loudness normalization & analog room tone (-54 dB)...", flush=True)
+        
+        # Inject continuous room tone AFTER compression so it cannot pump during pauses
+        # -54 dB amplitude = 0.002
+        post_filter = (
+            f"[0:a]{audio_filter}[master_clean];"
+            f"anoisesrc=d=100000:c=pink:r=44100:a=0.002[room_tone];"
+            f"[master_clean][room_tone]amix=inputs=2:duration=first:weights=1 1[outa]"
+        )
+
         subprocess.run([
             "ffmpeg", "-y", "-i", source_audio,
-            "-af", audio_filter,
+            "-filter_complex", post_filter,
+            "-map", "[outa]",
             "-c:a", "libmp3lame", "-b:a", "192k", final_audio_path
         ], check=True)
         print(f"[Audio Master Engine] [OK] Mastered audio written to {final_audio_path}", flush=True)

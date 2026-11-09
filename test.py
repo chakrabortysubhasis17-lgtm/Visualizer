@@ -48,7 +48,7 @@ def purge_corrupt_cache(build_dir: str):
                 with open(fpath, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 rows = data.get("rows", [])
-                if len(rows) < 8 or any("Exposition details continue" in r.get("text", "") for r in rows):
+                if len(rows) < 8 or any("Exposition details continue" in (r.get("display_text") or r.get("tts_text") or r.get("text", "")) for r in rows):
                     os.remove(fpath)
                     removed += 1
             except Exception:
@@ -69,22 +69,146 @@ CONFIG = {
     "cf_account_id": cf_id,
     "cf_api_token": cf_token,
 
-    # Novel & Episode Parameters
-    "novel_slug": "catgirls-and-dungeons-yuri",
+    # Source & Range Parameters
+    "source_type": "scrape",
     "start_url": "https://freewebnovel.com/novel/catgirls-and-dungeons-yuri/chapter-201",
+    "novel_slug": "catgirls-and-dungeons-yuri",
     "start_chapter": 201,
     "end_chapter": 203,
     "default_topic": "Catgirls and Dungeons",
 
-    # Concurrency Settings & Narrator Lock
+    # Concurrency Settings & Hardcoded Narrator Lock
     "batch_size": 3,
     "parallel_chapters": 3,
     "global_max_tts": 6,
     "max_narration_merge": 650,
     "narrator_voice": "en-US-ChristopherNeural",
 
-    # 1-Liner Story Intro Hook (Since start_chapter > 1, pipeline prefixes "Today's journey continues from previous episode.")
-    "intro_hook": "We rejoin Felicia and Aris as they settle into their new sanctuary and encounter their surprisingly lifelike homunculi maids.",
+    # Locked 5-Beat Intro Hook Sequence (8-Element Architecture)
+    "intro_hook": [
+        # Beat 1: High-Stakes Teaser (0:00 - 0:12)
+        {
+            "line_id": "intro_01_teaser",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "Five candy-colored catgirl maids bow in terrifyingly perfect synchronization! Sustained purely by artificial mana cores and packing the combat reflexes of C-rank adventurers, this is no ordinary welcome party!",
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "heartwarm",
+            "bgm_mood": "warmth"
+        },
+        {
+            "line_id": "intro_pause_01",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 0.4,
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "",
+            "bgm_mood": "no_mood"
+        },
+
+        # Beat 2: Trademark Channel Signature (0:12 - 0:17)
+        {
+            "line_id": "intro_02_trademark",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "Welcome back to Being a Bong. We narrate the unreal worlds to life.",
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "whoosh",
+            "bgm_mood": "no_mood"
+        },
+        {
+            "line_id": "intro_pause_02",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 0.3,
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "",
+            "bgm_mood": "no_mood"
+        },
+
+        # Beat 3: In-Universe Lore-Bound CTA (0:17 - 0:27)
+        {
+            "line_id": "intro_03_cta",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "Sanctuary Mana Directive: To fuel the artificial core matrix and unseal today's double release, strike the Like button and subscribe to the channel. Registering your party bond ensures zero maintenance failure.",
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "chime",
+            "bgm_mood": "no_mood"
+        },
+        {
+            "line_id": "intro_pause_03",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 0.3,
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "",
+            "bgm_mood": "no_mood"
+        },
+
+        # Beat 4: Recap Bridge (0:27 - 0:40)
+        {
+            "line_id": "intro_04_bridge",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "Previously, Felicia and Eris finalized their claim over the warded gothic estate of Noctis Sanctum. Now, unlocking an alchemical surprise prepared by the guildmaster, their new domestic life descends into delightful chaos. Let us enter.",
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "",
+            "bgm_mood": "warmth"
+        },
+
+        # Beat 5: Post-Intro Scene SFX & Transition Silence (0:40 - 0:42)
+        {
+            "line_id": "intro_05_scene_sfx",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 0.2,
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "footsteps",
+            "bgm_mood": "no_mood"
+        },
+        {
+            "line_id": "intro_06_lead_in_silence",
+            "speaker": "Narrator",
+            "gender": "Male",
+            "line_type": "Narration",
+            "text": "",
+            "pause_duration": 1.0,
+            "voice": "en-US-ChristopherNeural",
+            "pitch": "-2Hz",
+            "rate": "+0%",
+            "sfx": "",
+            "bgm_mood": "no_mood"
+        }
+    ],
 
     # Filepaths & Outputs
     "build_dir": BUILD_DIR,
@@ -110,57 +234,34 @@ CONFIG = {
         "LitRPG Audiobook", "System Audiobook", "Audiobook Test", "Being A Bong"
     ],
     "desc_header": (
-        "Testing the new integrated pipeline upgrades with Chapters 201 to 203 of 'Catgirls and Dungeons (Yuri)'!\n\n"
-        "From unexpected personal gifts and intimate campsite conversations to discovering eerie alchemical homunculi "
-        "in the deeper dungeon layers, this short 3-chapter test verifies end-to-end multi-voice TTS, subtitle alignment, "
+        "Testing the integrated pipeline upgrades with Chapters 201 to 203 of 'Catgirls and Dungeons (Yuri)'!\n\n"
+        "From the grand gates of Noctis Sanctum to uncovering five identical alchemical homunculi maids "
+        "and navigating domestic training, this short 3-chapter test verifies multi-voice TTS, subtitle alignment, "
         "and video rendering.\n\n"
         "🎧 AUDIO MASTER: Broadcast Standard (-14 LUFS, flat dynamic curve, vocal clarity).\n"
-        "📖 CLOSED CAPTIONS: Soft Subtitles (CC Enabled for dialogue, system alerts, and stats).\n"
+        "📖 CLOSED CAPTIONS: Soft Subtitles (CC Enabled for dialogue and system notifications).\n"
         "🎨 VISUAL ENGINE: High-Contrast 4K 3D Visuals + 15s End-Card Outro with official branding.\n\n"
         "══════════════════════════════════════════════\nTIMESTAMPS:\n"
     ),
     "desc_footer": (
         "\n══════════════════════════════════════════════\n\n"
-        "🌟 CHAPTER BREAKDOWN:\n"
-        "• Ch 201: Surprise Present: Heartwarming Camp Exchange\n"
-        "• Ch 202: Homunculi: Uncovering Forgotten Alchemy Labs\n"
-        "• Ch 203: Lab Defense: Tactically Clearing Artificial Fiends\n\n"
-        "══════════════════════════════════════════════\n"
         "DISCLAIMER:\nThis audiobook is an edited dramatized adaptation produced for entertainment and literature commentary. "
         "All original novel concepts belong to the author. Subscribe for more!\n\n"
         "#CatgirlsAndDungeons #YuriAudiobook #LitRPG #ProgressionFantasy #AudiobookTest #BeingABong"
     ),
 
-    # Visual Prompts (1 block per chapter for the 3-chapter test)
+    # Visual Prompts (Single block covering all 3 chapters for this test run)
     "blocks": [
         {
-            "index": 1, "range": (201, 201),
-            "title": ["SURPRISE PRESENT", "CAMPFIRE INTIMACY"],
+            "index": 1,
+            "range": (201, 203),
+            "title": ["NOCTIS SANCTUM", "THE HOMUNCULI ARRIVAL"],
             "fallback_color": (30, 20, 35),
             "prompt": (
-                "Cinematic 3D fantasy portrait of a female adventurer presenting a small wrapped gift box with a glowing ribbon to an excited catgirl companion, "
-                "surprised adorable expression, glowing amber campfire light illuminating their faces. Cozy dungeon campsite alcove background, "
-                "crisp detailed facial features, realistic skin textures, medium close-up shot."
-            )
-        },
-        {
-            "index": 2, "range": (202, 202),
-            "title": ["HOMUNCULI DISCOVERY", "ALCHEMICAL CHAMBER"],
-            "fallback_color": (15, 25, 40),
-            "prompt": (
-                "Cinematic 3D fantasy portrait of adventurous explorers entering a dusty subterranean laboratory lined with glowing green glass fluid vats "
-                "containing homunculi silhouettes, cautious vigilant expressions, glowing blue lantern light. Ancient stone laboratory background, "
-                "crisp detailed facial features, realistic skin textures, medium close-up shot."
-            )
-        },
-        {
-            "index": 3, "range": (203, 203),
-            "title": ["LAB DEFENSE", "SYNCHRONIZED STRIKE"],
-            "fallback_color": (35, 15, 30),
-            "prompt": (
-                "Cinematic 3D fantasy portrait of the adventurer and catgirl standing back-to-back with drawn glowing daggers and a primed mana shield, "
-                "fierce determined expressions, sparks and magic runes illuminating the stone floor. Dungeon laboratory corridor background, "
-                "crisp detailed facial features, realistic skin textures, medium close-up shot."
+                "Cinematic 3D fantasy illustration of a female catgirl adventurer and her companion discovering a grand gothic estate hall, "
+                "five identical catgirl maids in frilly black-and-white uniforms bowing in synchronized formation before them, "
+                "soft golden chandelier light, gothic stone architecture with crimson flower petals drifting through open arches, "
+                "octane render, unreal engine 5 style, crisp skin textures, volumetric fog, rim lighting, medium shot."
             )
         }
     ]

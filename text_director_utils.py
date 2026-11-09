@@ -169,6 +169,8 @@ SFX_KEYS = frozenset({
     "achievement", "reward", "loot", "coin", "chest", "equip",
     # Character reactions & everyday actions
     "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh", "slam", "clock", "glass_break", "paper",
+    # Biological breath additions
+    "short_breath_male", "short_breath_female",
     # Social, culinary & crowd dynamics
     "market", "cheer", "disappointed", "dishes", "eating", "cooking",
     # Romance & intimacy
@@ -200,6 +202,21 @@ def normalize_bgm_mood(value: Any) -> str:
         return "no_mood"
     key = value.strip().lower()
     return key if key in BGM_MOODS else "no_mood"
+
+
+PITCH_TIERS = frozenset({
+    "whisper_intimate", "grave_somber", "grim_rumble", "subdued_neutral",
+    "narrator_anchor", "conversational_mid", "engaged_alert", "lung_reset_entry",
+    "inquisitive_lift", "tense_strained", "command_shout", "hysterical_peak"
+})
+
+def normalize_pitch_tier(value: Any, line_type: str = "Narration") -> str:
+    """Return an allowed pitch tier key, defaulting sensibly by line type."""
+    if isinstance(value, str):
+        clean = value.strip().lower()
+        if clean in PITCH_TIERS:
+            return clean
+    return "narrator_anchor" if line_type == "Narration" else "conversational_mid"
 
 # Pre-compiled citation and normalization patterns
 RE_CITATION = re.compile(r'\[\s*\d+\s*\]')
@@ -234,11 +251,23 @@ class SpeechSegment(BaseModel):
     line_id: str = Field(description="Sequential identifier, e.g. '0001', '0002'")
     speaker_role: str = Field(description="Speaker name, character alias, or 'Narrator'")
     gender: str = Field(description="Strictly: 'Male', 'Female', or 'Neutral'")
-    age_category: str = Field(description="Strictly: 'toddler', 'young', 'teen', 'middle-aged', 'elder', or 'n/a'")
-    emotion: str = Field(description="Dominant emotion: e.g. 'angry', 'fearful', 'sarcastic', 'neutral', 'excited', 'solemn'")
+    age_category: str = Field(default="young", description="Strictly: 'toddler', 'young', 'teen', 'middle-aged', 'elder', or 'n/a'")
+    emotion: str = Field(default="neutral", description="Dominant emotion: e.g. 'angry', 'fearful', 'sarcastic', 'neutral', 'excited', 'solemn'")
     line_type: str = Field(description="'Dialogue', 'Narration', or 'System'")
     edge_tts_voice: str = Field(description="Edge TTS neural voice")
-    text: str = Field(description="Spoken dialogue or narrative string")
+    display_text: str = Field(default="", description="Verbatim literary text for display/subtitles (.srt) with proper spelling")
+    tts_text: str = Field(default="", description="Phonetically respelled and sanitized text for TTS vocal execution")
+    text: str = Field(default="", description="Fallback single text field for backward compatibility")
+    pitch_tier: str = Field(
+        default="narrator_anchor",
+        description="One of: 'whisper_intimate', 'grave_somber', 'grim_rumble', 'subdued_neutral', 'narrator_anchor', 'conversational_mid', 'engaged_alert', 'lung_reset_entry', 'inquisitive_lift', 'tense_strained', 'command_shout', 'hysterical_peak'"
+    )
+    lung_reset: bool = Field(
+        default=False, 
+        description="True ONLY on the opening sentence of fresh paragraphs/scenes for Narrator lines"
+    )
+    pause_duration: float = Field(default=0.0, description="Pause buffer duration in seconds")
+    rate: str = Field(default="+0%", description="Dynamic rate clamp (-4% for dialogue, +0% for narration)")
     sfx: str = Field(default="", description="One permitted SFX key or an empty string")
     bgm_mood: str = Field(
         default="no_mood", 
@@ -933,7 +962,7 @@ def parse_single_chunk_via_gemini(
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
     # Versioned cache key to enforce parsing of sustained BGM moods alongside SFX
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v8", chunk_text)
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v9", chunk_text)
 
     if not refresh_legacy_cache_for_sfx:
         cached_segments = cache_get(chunk_cache_key)
@@ -1006,18 +1035,44 @@ def parse_single_chunk_via_gemini(
                 raw_list = data if isinstance(data, list) else data.get("segments", [])
 
                 for s in raw_list:
-                    pitch, rate = calculate_prosody_adjustments(s)
+                    l_type = s.get("line_type", "Narration")
+                    
+                    # Dual-text field extraction with cross-fallback
+                    d_text = s.get("display_text") or s.get("text", "").strip()
+                    t_text = s.get("tts_text") or d_text
+
+                    # Enforce -4% dialogue rate clamp vs base narration rate
+                    calc_pitch, calc_rate = calculate_prosody_adjustments(s)
+                    explicit_rate = s.get("rate")
+                    if not explicit_rate:
+                        explicit_rate = "-4%" if l_type == "Dialogue" else calc_rate
+
+                    # Validate semantic pitch tier
+                    raw_pitch_tier = s.get("pitch_tier")
+                    norm_pitch_tier = normalize_pitch_tier(raw_pitch_tier, line_type=l_type)
+
+                    # Narrator lung reset gating
+                    is_narr = (l_type == "Narration")
+                    lung_reset_val = bool(s.get("lung_reset", False)) if is_narr else False
+                    if lung_reset_val and is_narr:
+                        norm_pitch_tier = "lung_reset_entry"
+
                     staged.append({
                         "line_id": s.get("line_id", "0001"),
                         "speaker": s.get("speaker_role") or s.get("speaker") or "Narrator",
                         "gender": s.get("gender", "Male"),
-                        "line_type": s.get("line_type", "Narration"),
+                        "line_type": l_type,
                         "emotion": s.get("emotion", "neutral"),
                         "age_category": s.get("age_category", "young"),
-                        "text": s.get("text", "").strip(),
+                        "display_text": d_text,
+                        "tts_text": t_text,
+                        "text": d_text,  # Backward compatibility
                         "voice": s.get("edge_tts_voice") or s.get("voice") or "en-US-GuyNeural",
-                        "pitch": pitch,
-                        "rate": rate,
+                        "pitch_tier": norm_pitch_tier,
+                        "pitch": calc_pitch,
+                        "rate": explicit_rate,
+                        "lung_reset": lung_reset_val,
+                        "pause_duration": float(s.get("pause_duration", 0.0)),
                         "sfx": normalize_sfx_key(s.get("sfx", "")),
                         "bgm_mood": normalize_bgm_mood(s.get("bgm_mood", "no_mood"))
                     })
@@ -1090,31 +1145,60 @@ Your mandate is to convert web novel chapter text into an execution-grade JSON s
 
 You must follow every directive below without deviation:
 
-### CORE DIRECTIVE 1: STRICT NARRATIVE INTEGRITY & LOSSLESS TEXT PRESERVATION
+### CORE DIRECTIVE 1: STRICT NARRATIVE INTEGRITY & DUAL-TEXT SCHEMA
 1. Zero Text Elimination: Every single narrative description, dialogue line, interior monologue, interjection, title, and sound effect must appear in the final output array in exact, chronological reading order.
-2. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
-3. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
+2. Dual-Text Separation ("display_text" vs "tts_text"):
+   - "display_text": MUST preserve authentic literary spelling, proper capitalization, and correct fantasy/cultivation terminology for on-screen subtitles (.srt) (e.g., "His Qi surged within his Dantian.").
+   - "tts_text": MUST contain phonetically transliterated, engine-safe spellings for flawless TTS pronunciation (e.g., "His Chee surged within his Dahn-tyen.").
+   - For regular English words without pronunciation ambiguity, "display_text" and "tts_text" should be identical.
+3. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
+4. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
 
 ### CORE DIRECTIVE 2: CHARACTER, ENTITY & DIALOGUE SEGREGATION
 1. Dialogue Tag Separation: Spoken dialogue MUST be isolated from adjacent narrative tags.
    - Example: '"Shall we?" she whispered, glancing back.' -> Segment 1: Dialogue by speaker; Segment 2: Narration by Narrator.
-2. Speaker Identification & Gender Lock:
+2. Conversational Turn-Taking (Dialogue Gaps):
+   - Whenever Speaker A finishes speaking and Speaker B speaks next, emit a dedicated pause row between them:
+     {{"line_id": "0000", "speaker": "Narrator", "gender": "Neutral", "line_type": "Narration", "display_text": "", "tts_text": "", "text": "", "pause_duration": 0.8, "pitch_tier": "narrator_anchor", "lung_reset": false, "rate": "+0%", "voice": "en-US-ChristopherNeural", "sfx": "", "bgm_mood": "no_mood"}}
+   - For rapid combat banter or heated arguments, reduce "pause_duration" to 0.2.
+   - For mid-sentence interruptions (trailing hyphen), reduce "pause_duration" to 0.05.
+3. Dialogue Rate Clamping:
+   - For all rows where "line_type" is "Dialogue", set "rate" strictly to "-4%" (or "-5%" for heavy/menacing threats). Voice actors speak more deliberately than third-person narration.
+   - For "Narration", set "rate" to "+0%".
+4. Speaker Identification & Gender Lock:
    - Always reference the ACTIVE STAGED CHARACTERS manifest below first. A female character must NEVER become male, and a male character must NEVER become female.
    - The "speaker" field must be a CLEAN character name or "Narrator". NEVER put spoken quotes, phrases, or full sentences into the speaker field.
    - If a character is the first-person narrator ('I', 'me') and has an explicit identity established in context, assign them their true character name and gender instead of a generic "Protagonist" label.
    - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
-3. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System". Character internal thoughts must NEVER be marked as "System".
+5. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System". Character internal thoughts must NEVER be marked as "System".
 
-### CORE DIRECTIVE 3: EDGE TTS PUNCTUATION, CADENCE & PHONETIC STABILITY
-1. Mandatory Terminal Punctuation: Every segment's text field MUST terminate with a valid punctuation mark ('.', '!', '?', '...', or '—'). If missing in the raw text, append the contextually appropriate mark.
-2. Pause & Cadence Upgrades:
-   - Retain all natural internal commas.
-   - Convert trailing hyphens or incomplete thoughts into ellipses ('...') and abrupt speech cut-offs into em-dashes ('—') to prevent Edge TTS from clipping syllables.
-   - Use exclamation marks ('!') for shouted lines or screams to trigger dynamic neural inflections.
-3. Phonetic Normalization for Repetitive Character Patterns:
+### CORE DIRECTIVE 3: 12-TONE PITCH MATRIX, NARRATOR LUNG RESETS & CADENCE
+1. Pitch Tiers ("pitch_tier"): Every segment must include one of the following 12 semantic tiers:
+   - "whisper_intimate" : Breathless, conspiratorial, soft lovers' murmurs, dying words.
+   - "grave_somber"     : Tragic realizations, grief, solemn vows, heavy mourning.
+   - "grim_rumble"      : Menacing threats, cold warrior grunts, demonic resonance.
+   - "subdued_neutral"  : Weary exposition, campfire fatigue, transition valleys.
+   - "narrator_anchor"  : Default baseline storytelling frequency (home register).
+   - "conversational_mid": Everyday casual tavern chatter, standard character dialogue.
+   - "engaged_alert"    : Active tactical observation, heightened senses, combat analysis.
+   - "lung_reset_entry" : Paragraph entrance, fresh scene awakening, high-energy opening.
+   - "inquisitive_lift" : Suspicious queries, genuine questions, trailing curiosity.
+   - "tense_strained"   : Mid-combat exertion, rising panic, desperate warnings.
+   - "command_shout"    : Battlefield orders, righteous fury, arrogant clan declarations.
+   - "hysterical_peak"  : Berserk screams, terror-stricken retreats, crazed laughter.
+2. Narrator Lung Reset ("lung_reset"):
+   - Set "lung_reset": true ONLY on the first sentence of a fresh scene, new paragraph, or major topic shift for "line_type": "Narration".
+   - Automatically pair "lung_reset": true with "pitch_tier": "lung_reset_entry".
+   - Set "lung_reset": false on all subsequent continuing narration rows and on ALL character dialogue.
+3. Mandatory Terminal Punctuation: Every segment's text field MUST terminate with a valid punctuation mark ('.', '!', '?', '...', or '—'). If missing in the raw text, append the contextually appropriate mark.
+4. Natural Punctuation & Anti-Comma Bounce:
+   - NEVER insert artificial commas into sentences to slow them down. Neural engines create an unnatural rising-falling sing-song "comma bounce" on commas. Maintain grammatically natural commas only.
+   - In "tts_text", replace em-dashes ('—') or double hyphens ('--') with an ellipsis ('...') or split the clause into separate segments so Edge TTS never speaks the literal word "dash".
+   - In fast combat, use coordinating conjunctions and semicolons (';') to maintain adrenaline flow without the abrupt terminal drops of hard periods.
+   - Strip trailing ellipses ('...') from ordinary declarative statements and end with a hard period ('.') so the neural voice drops cleanly into terminal pitch.
+5. Phonetic Normalization for Repetitive Character Patterns:
    - Leading Repetitions (Stutters): When a word is preceded by detached or hyphenated repeating characters (e.g., 'W W W WHAT' or 'W-w-w-what'), collapse them into a single hyphenated stutter attached directly to the base word (e.g., 'W-what'). Do NOT leave isolated single letters detached so Edge TTS does not spell out alphabet names.
    - Internal & Trailing Elongations: When words contain excessively multiplied characters to simulate shouting or shock (e.g., 'OH H H H', 'NOOOO!'), normalize the run to a natural 2-to-3 character sequence (e.g., 'Ohhh...', 'Nooo!') with appropriate terminal punctuation.
-   - Semantic Boundary: These phonetic adjustments are strictly restricted to smoothing vocal delivery. Never drop, rewrite, replace, or invent underlying vocabulary words.
 
 ### CORE DIRECTIVE 4: JSON SCHEMA & OUTPUT FORMAT
 Return ONLY a valid JSON object with a single key "segments" containing an array of objects. Do NOT output markdown code fences, citations, or conversational text.
@@ -1125,8 +1209,12 @@ Each object in the array must strictly comply with this schema:
   "speaker": "Speaker Name",
   "gender": "Female / Male / Neutral",
   "line_type": "Narration / Dialogue / System",
-  "style": "omniscient_narrator / kinetic_action / whispered / system_monolith",
-  "pause_duration": 0.3,
+  "pitch_tier": "narrator_anchor",
+  "lung_reset": false,
+  "rate": "+0%",
+  "pause_duration": 0.0,
+  "display_text": "Verbatim literary text for display/subtitles (.srt).",
+  "tts_text": "Phonetically sanitized text for TTS vocal execution.",
   "text": "Verbatim text segment with normalized Edge TTS punctuation.",
   "voice": "en-US-GuyNeural",
   "sfx": "footsteps",
@@ -1174,6 +1262,7 @@ MANDATORY NEGATIVE CONSTRAINTS:
    - "armor": Strictly heavy metallic plate armor clanking. NEVER tag cloth robes, dresses, or uniforms.
    - "bark": Use for dog barks, canine yelps, or excited dog alerts (e.g., Owney barking at trains or greeting clerks).
    - "steam_engine": Use for roaring steam locomotive engines, train chugging, chuffs, or departure whistles.
+   - "short_breath_male" / "short_breath_female": Use right before high-exertion dialogue, after running/combat, or before long narrator sentences (25+ words) during active tension or combat. NEVER tag breaths during calm narrative exposition or ordinary dialogue.
 
 MATCHING TRIGGER DIRECTORY:
 • "gasp": Explicit character audible gasp -> 'I gasp', 'she gasps', 'gasped in horror'.
@@ -1234,7 +1323,7 @@ MATCHING TRIGGER DIRECTORY:
 • "steam_engine": Use for roaring steam locomotive engines, train chugging, chuffs, or departure whistles.
 
 AUTHORIZED SFX KEYS (EXACT LIST):
-[footsteps, run, tiptoe, horseandcart, steps_indoor, patter, heavy_steps, car, screech, creak, crackle, thunder, drip, wind, forest, ocean, crickets, rain, hum, whoosh, teleport, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, gunshot, explosion, snarl, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, slam, clock, glass_break, paper, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong, crow, bark, steam_engine]
+[footsteps, run, tiptoe, horseandcart, steps_indoor, patter, heavy_steps, car, screech, creak, crackle, thunder, drip, wind, forest, ocean, crickets, rain, hum, whoosh, teleport, impact, thud, blade, armor, swish, slash, monster, wardrum, pain, gunshot, explosion, snarl, chime, levelup, interface, quest, alert, achievement, reward, loot, coin, chest, equip, heartbeat, gasp, knock, rustle, splash, squeak, sigh, slam, clock, glass_break, paper, short_breath_male, short_breath_female, market, cheer, disappointed, dishes, eating, cooking, heartwarm, intimate, whisper, haunt, howl, bells, gong, crow, bark, steam_engine]
 
 STRICT SFX RULES:
 - Every segment MUST contain an "sfx" field. If no condition applies, use "". Never use null, "none", "N/A", or whitespace.
@@ -1317,48 +1406,73 @@ ACTIVE STAGED CHARACTERS:
             sp = "Narrator" if seg.get("line_type") == "Narration" else "mc"
         seg["speaker"] = sp
 
-        # Strip any leaking speaker prefixes from the spoken text (e.g. "[Harry]:", "[Protagonist]:")
-        seg_text = RE_INLINE_SPEAKER_PREFIX.sub("", seg.get("text", "")).strip()
+        # Normalize Dual-Text fields with cross-fallback
+        disp_text = seg.get("display_text") or seg.get("text", "")
+        tts_text = seg.get("tts_text") or disp_text
+
+        # Strip any leaking speaker prefixes from the text (e.g. "[Harry]:", "[Protagonist]:")
+        disp_text = RE_INLINE_SPEAKER_PREFIX.sub("", disp_text).strip()
+        tts_text = RE_INLINE_SPEAKER_PREFIX.sub("", tts_text).strip()
+
+        # Sanitize TTS text: remove em-dashes and replace with ellipses so Edge TTS never says "dash"
+        tts_text = re.sub(r'[\u2014\u2013]', ' ... ', tts_text)
+        tts_text = re.sub(r'\s+-\s+', ' ... ', tts_text)
 
         # Decouple third-person speech attributions (Self-Voicing ban in Dialogue)
         # e.g. '"We have hidden the ship." Joseph said, straightening.'
         if seg.get("line_type") == "Dialogue":
-            attr_match = re.search(r'["\']\s*([A-Z][a-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued)\b.*)$', seg_text)
-            if attr_match:
-                dialogue_part = seg_text[:attr_match.start()].strip().strip('"').strip("'")
-                narration_part = attr_match.group(1).strip()
-                if dialogue_part:
-                    seg["text"] = dialogue_part
+            attr_match_disp = re.search(r'["\']\s*([A-Z][a-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued)\b.*)$', disp_text)
+            attr_match_tts = re.search(r'["\']\s*([A-Z][a-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued)\b.*)$', tts_text)
+
+            if attr_match_disp:
+                dialogue_disp = disp_text[:attr_match_disp.start()].strip().strip('"').strip("'")
+                narration_disp = attr_match_disp.group(1).strip()
+                dialogue_tts = tts_text[:attr_match_tts.start()].strip().strip('"').strip("'") if attr_match_tts else dialogue_disp
+                narration_tts = attr_match_tts.group(1).strip() if attr_match_tts else narration_disp
+
+                if dialogue_disp:
+                    seg["display_text"] = dialogue_disp
+                    seg["tts_text"] = dialogue_tts
+                    seg["text"] = dialogue_disp
                     refined_staged.append(seg)
                     refined_staged.append({
                         "line_id": seg.get("line_id", "0001") + "_tag",
                         "speaker": "Narrator",
                         "gender": "Neutral",
                         "line_type": "Narration",
-                        "text": narration_part,
+                        "pitch_tier": "narrator_anchor",
+                        "lung_reset": False,
+                        "display_text": narration_disp,
+                        "tts_text": narration_tts,
+                        "text": narration_disp,
                         "voice": "en-US-ChristopherNeural",
                         "pitch": "-2Hz",
                         "rate": "+0%",
+                        "pause_duration": 0.0,
                         "sfx": "",
                         "bgm_mood": seg.get("bgm_mood", "no_mood")
                     })
                     continue
 
         # WI-2.10: Intercept standalone comic sound words and convert them to SFX cues
-        if RE_STANDALONE_ONOMATOPOEIA.fullmatch(seg_text):
+        if RE_STANDALONE_ONOMATOPOEIA.fullmatch(disp_text):
             detected_sfx = ""
-            for word in re.findall(r'[a-zA-Z]+', seg_text.lower()):
+            for word in re.findall(r'[a-zA-Z]+', disp_text.lower()):
                 if word in ONOMATOPOEIA_MAP:
                     detected_sfx = ONOMATOPOEIA_MAP[word]
                     break
             if detected_sfx and not seg.get("sfx"):
                 seg["sfx"] = detected_sfx
+            seg["display_text"] = ""
+            seg["tts_text"] = ""
             seg["text"] = ""
             seg["pause_duration"] = 0.4
             refined_staged.append(seg)
             continue
 
-        seg["text"] = seg_text
+        seg["display_text"] = disp_text
+        seg["tts_text"] = tts_text
+        seg["text"] = disp_text
 
         # Fuzzy character voice lock & continuity enforcement
         sp = seg.get("speaker", "Narrator")
@@ -1371,7 +1485,7 @@ ACTIVE STAGED CHARACTERS:
         elif seg.get("line_type") == "System":
             seg["voice"] = "en-US-ChristopherNeural"
 
-        seg_text = seg.get("text", "")
+        seg_text = seg.get("display_text", "")
         t_low = seg_text.lower()
         is_brief_event = len(seg_text.split()) < 22
 
@@ -1439,6 +1553,12 @@ ACTIVE STAGED CHARACTERS:
         # Suppress 'gasp' on lines without literal gasp words
         if seg["sfx"] == "gasp" and not re.search(r'\b(gasp|gasps|gasped|sharp\s+intake\s+of\s+breath)\b', seg_text, re.I):
             seg["sfx"] = ""
+
+        # Suppress breaths on calm narrative exposition
+        if seg["sfx"] in ("short_breath_male", "short_breath_female"):
+            is_urgent = seg.get("bgm_mood") in ("combat", "tension", "dread") or "!" in seg_text
+            if not is_urgent and seg.get("line_type") == "Narration":
+                seg["sfx"] = ""
 
         # =================================================================
         # HARDENED DETERMINISTIC FALLBACK PATTERNS (Literal Events Only)
@@ -1535,13 +1655,26 @@ ACTIVE STAGED CHARACTERS:
             seg["sfx"] = ""
 
         # Narration block splitting threshold
-        if seg.get("line_type") == "Narration" and len(seg_text) > max_narr_merge:
-            narr_splits = split_by_sentence_threshold(seg_text, threshold=max_narr_merge)
+        if seg.get("line_type") == "Narration" and len(disp_text) > max_narr_merge:
+            disp_splits = split_by_sentence_threshold(disp_text, threshold=max_narr_merge)
+            tts_splits = split_by_sentence_threshold(tts_text, threshold=max_narr_merge)
+            if len(disp_splits) != len(tts_splits):
+                tts_splits = disp_splits
+
             sfx_assigned_to_split = False
-            for split_txt in narr_splits:
-                if clean_and_normalize_text(split_txt):
+            for split_idx, split_disp in enumerate(disp_splits):
+                if clean_and_normalize_text(split_disp):
                     sub_seg = dict(seg)
-                    sub_seg["text"] = split_txt
+                    sub_seg["display_text"] = split_disp
+                    sub_seg["tts_text"] = tts_splits[split_idx] if split_idx < len(tts_splits) else split_disp
+                    sub_seg["text"] = split_disp
+
+                    # Only the very first split retains lung reset
+                    if split_idx > 0:
+                        sub_seg["lung_reset"] = False
+                        if sub_seg.get("pitch_tier") == "lung_reset_entry":
+                            sub_seg["pitch_tier"] = "narrator_anchor"
+
                     if sfx_assigned_to_split:
                         sub_seg["sfx"] = ""
                     else:
@@ -1732,15 +1865,25 @@ def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int =
         if sfx_val and sfx_val in recent_sfx:
             sfx_val = ""
 
+        # Ensure default pitch tier and lung reset are emitted on rule-based fallbacks
+        is_narr = (seg["line_type"] == "Narration")
+        default_pitch_tier = "narrator_anchor" if is_narr else "conversational_mid"
+        default_rate = "-4%" if seg["line_type"] == "Dialogue" else "+0%"
+
         staged_records.append({
             "line_id": f"{idx:04d}",
             "speaker": role_meta.get("display_name", rk.title()),
             "gender": role_meta.get("gender", "Male"),
             "line_type": seg["line_type"],
+            "pitch_tier": default_pitch_tier,
+            "lung_reset": (idx == 1 and is_narr),
+            "display_text": tp,
+            "tts_text": tp,
             "text": tp,
             "voice": voice,
             "pitch": role_meta.get("pitch", "+0Hz"),
-            "rate": role_meta.get("rate", "+5%"),
+            "rate": default_rate,
+            "pause_duration": 0.0,
             "sfx": sfx_val,
             "bgm_mood": "no_mood"
         })
