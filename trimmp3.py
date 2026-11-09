@@ -45,4 +45,4 @@ def trim_mp3_files(source_folder, max_duration_sec=10):
 # Example usage:
 # Replace 'path/to/your/folder' with your actual target folder path
 source_directory = "assets/sfx"
-trim_mp3_files(source_directory)
+trim_mp3_files(source_directory, 5)
