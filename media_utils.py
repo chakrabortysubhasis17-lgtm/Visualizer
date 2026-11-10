@@ -122,7 +122,7 @@ PLUGINS_DIR = _LOCAL_PLUGINS if os.path.exists(_LOCAL_PLUGINS) else _CWD_PLUGINS
 # SFX ADDITIONS (separate from TTS throttling and semaphore)
 # =====================================================================
 
-SFX_PIPELINE_VERSION = 2
+SFX_PIPELINE_VERSION = 3
 SFX_MAX_CONCURRENT_FFMPEG = 2
 
 # Complete 53-Key Master SFX Taxonomy
@@ -472,7 +472,8 @@ def resolve_dynamic_voice_pitch(
     bgm_mood: str = "no_mood",
     current_rate: str = "+0%",
     speaker: str = "",
-    fallback_pitch: str = "-2Hz"
+    fallback_pitch: str = "-2Hz",
+    line_id: str = "",
 ) -> str:
     voice_key = str(voice_name).strip()
     profile = VOICE_PITCH_PROFILES.get(voice_key, VOICE_PITCH_PROFILES["default"])
@@ -500,7 +501,8 @@ def resolve_dynamic_voice_pitch(
     speaker_hz = 0.0 if is_narrator else calculate_speaker_pitch_offset(speaker)
 
     # Composite Combined Pitch
-    total_hz = base_hz + mood_hz + velocity_hz + speaker_hz
+    pitch_drift = get_sub_perceptual_jitter(line_id, "pitch", -0.6, 0.6) if line_id else 0.0
+    total_hz = base_hz + mood_hz + velocity_hz + speaker_hz + pitch_drift
 
     # Hardware Acoustic Safety Clamping per voice category
     if "steffan" in voice_key.lower() or "roger" in voice_key.lower():
@@ -621,7 +623,7 @@ BGM_MOOD_RATE_DELTAS_BY_VOICE = {
 }
 
 
-def calculate_dynamic_rate(base_rate_str: str, bgm_mood_str: str, voice_name: str) -> str:
+def calculate_dynamic_rate(base_rate_str: str, bgm_mood_str: str, voice_name: str, line_id: str = "") -> str:
     """Calculates vocal rate using speaker-specific mood deltas, strictly preserving no_mood."""
     mood = normalize_bgm_mood(bgm_mood_str)
     if mood == "no_mood":
@@ -640,9 +642,10 @@ def calculate_dynamic_rate(base_rate_str: str, bgm_mood_str: str, voice_name: st
     match = re.search(r'([+-]?\d+)', str(base_rate_str))
     base_val = int(match.group(1)) if match else 0
 
-    combined = base_val + delta
+    rate_drift = get_sub_perceptual_jitter(line_id, "rate", -1.5, 1.8) if line_id else 0.0
+    combined = base_val + delta + rate_drift
     # Clamp bounds to avoid Edge-TTS distortion or intelligibility loss
-    clamped = max(-25, min(40, combined))
+    clamped = max(-25, min(40, int(round(combined))))
     return f"{clamped:+d}%"
 
 def prepare_bgm_assets(build_dir: str) -> str:
@@ -763,18 +766,19 @@ def mix_chapter_bgm_bed(
 
     for idx, (bgm_file, start, end, dur) in enumerate(valid_intervals, start=1):
         inputs.extend(["-i", bgm_file])
-        fade_in = min(2.5, dur * 0.25)
+        fade_in = min(3.0, dur * 0.25)
         fade_out = min(3.0, dur * 0.25)
         out_start = max(0.0, dur - fade_out)
 
-        # Loop, trim, fade-in/out, clear vocal mids (dip at 2.5kHz), and set volume to -27dB (~0.044 gain)
+        # Loop, trim, exponential swell, linear egress decay, clear vocal mids & tame high-frequency air
         filt = (
             f"[{idx}:a]aloop=loop=-1:size=2e+09,"
             f"atrim=0:{dur:.3f},"
-            f"afade=t=in:ss=0:d={fade_in:.2f},"
-            f"afade=t=out:st={out_start:.2f}:d={fade_out:.2f},"
+            f"afade=t=in:ss=0:d={fade_in:.2f}:curve=exp,"
+            f"afade=t=out:st={out_start:.2f}:d={fade_out:.2f}:curve=tri,"
             f"equalizer=f=2500:t=q:w=1.0:g=-4.0,"
-            f"volume=0.044,"
+            f"highshelf=f=7000:g=-3.0,"
+            f"volume=0.079,"
             f"adelay={int(start * 1000)}|{int(start * 1000)}[bgm_{idx}]"
         )
         filter_complex_parts.append(filt)
@@ -1134,6 +1138,7 @@ def _write_sfx_metadata(
     sfx_key: str,
     sfx_applied: bool,
     asset_signature: Optional[dict] = None,
+    t_lead: float = 0.0,
 ) -> None:
     path = _sfx_metadata_path(segment_path)
     temp_path = path + ".tmp"
@@ -1142,6 +1147,7 @@ def _write_sfx_metadata(
         "sfx": normalize_sfx_key(sfx_key),
         "sfx_applied": bool(sfx_applied),
         "sfx_asset_signature": asset_signature,
+        "t_lead": float(t_lead),
     }
     try:
         with open(temp_path, "w", encoding="utf-8") as f:
@@ -1170,15 +1176,56 @@ def _atomic_copy_audio(source_path: str, target_path: str) -> None:
                 pass
 
 
-def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str) -> None:
-    """Concatenate SFX with speech, applying crossfade smoothing on breath assets."""
+# =====================================================================
+# SUB-PERCEPTUAL HUMANIZATION & SFX TIMING HELPERS
+# =====================================================================
+
+def get_sub_perceptual_jitter(identifier: str, param_name: str, min_val: float, max_val: float) -> float:
+    """Computes a deterministic, sub-perceptual floating-point delta within [min_val, max_val].
+
+    Seeded by identifier + param_name to ensure cache stability and reproducible builds.
+    """
+    if not identifier:
+        return 0.0
+    seed_key = f"{identifier}_{param_name}".encode("utf-8")
+    digest = hashlib.md5(seed_key).hexdigest()
+    normalized_ratio = int(digest[:8], 16) / 0xFFFFFFFF
+    return min_val + normalized_ratio * (max_val - min_val)
+
+
+def calculate_sfx_overlap_timing(d_sfx: float, line_id: str = "") -> Tuple[float, float]:
+    """Calculates lead-in (T_lead) and under-voice bleed (T_bleed) based on asset duration.
+
+    - Short (<= 1.5s): 100% solo lead, 0.0s bleed.
+    - Medium (1.5s - 3.0s): First 80% solo lead, remaining 20% bleed (0.3s - 0.6s).
+    - Full (3.0s - 5.0s): Solo lead is (d_sfx - 1.0s), bleed capped at 1.0s.
+    """
+    d_clamped = min(5.0, max(0.1, float(d_sfx)))
+
+    if d_clamped <= 1.5:
+        return round(d_clamped, 3), 0.0
+    elif d_clamped <= 3.0:
+        t_bleed = round(0.2 * d_clamped, 2)
+        t_lead = round(d_clamped - t_bleed, 2)
+    else:
+        t_bleed = 1.0
+        t_lead = round(d_clamped - 1.0, 2)
+
+    if line_id and t_bleed > 0.0:
+        drift = get_sub_perceptual_jitter(line_id, "sfx_lead", -0.04, 0.05)
+        t_lead = max(0.3, round(t_lead + drift, 3))
+        t_bleed = max(0.1, round(d_clamped - t_lead, 3))
+
+    return t_lead, t_bleed
+
+def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, line_id: str = "") -> float:
+    """Concatenate or crossfade SFX with speech, ensuring the speech track remains an untouched master bus."""
     temp_output = output_path + ".sfx_tmp.mp3"
     filename = os.path.basename(sfx_path).lower()
     is_breath = "breath" in filename or "gasp" in filename
 
     if is_breath:
-        # Crossfade tail of breath asset with head of speech to eliminate plosive clicks.
-        # volume=0.32 attenuates the breath by ~10 dB so it remains an intimate, soft background intake.
+        # Retain original gentle crossfade for breath assets
         filter_complex = (
             "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
             "volume=0.32,"
@@ -1186,14 +1233,33 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str) -
             "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
             "[sfx][speech]acrossfade=d=0.025:c1=exp:c2=log[out]"
         )
+        t_lead = 0.20
     else:
-        filter_complex = (
-            "[0:a:0]aresample=24000,"
-            "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[sfx];"
-            "[1:a:0]aresample=24000,"
-            "aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
-            "[sfx][speech]concat=n=2:v=0:a=1[out]"
-        )
+        d_sfx = _probe_duration_sync(sfx_path)
+        t_lead, t_bleed = calculate_sfx_overlap_timing(d_sfx, line_id=line_id)
+
+        if t_bleed <= 0.05:
+            # Short SFX (<= 1.5s): Pure sequential playback
+            filter_complex = (
+                "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[sfx];"
+                "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+                "[sfx][speech]concat=n=2:v=0:a=1[out]"
+            )
+        else:
+            # Medium/Full SFX (> 1.5s): Asymmetric dampening & midrange notch on SFX tail only
+            d_total = t_lead + t_bleed
+            duck_dur = min(0.15, round(0.25 * t_bleed, 3))
+            filter_complex = (
+                f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,asplit=2[sfx_raw1][sfx_raw2];"
+                f"[sfx_raw1]atrim=0:{t_lead:.3f}[sfx_head];"
+                f"[sfx_raw2]atrim={t_lead:.3f}:{d_total:.3f},asetpts=PTS-STARTPTS,"
+                f"equalizer=f=2000:t=q:w=1.2:g=-6,highpass=f=100,"
+                f"volume=0.20,"
+                f"afade=t=out:st=0:d={t_bleed:.3f}:curve=log[sfx_tail];"
+                f"[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+                f"[speech][sfx_tail]amix=inputs=2:duration=first:dropout_transition=0:weights=1 1:normalize=0[speech_tail];"
+                f"[sfx_head][speech_tail]concat=n=2:v=0:a=1[out]"
+            )
 
     cmd = [
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
@@ -1205,16 +1271,11 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str) -
         temp_output,
     ]
     try:
-        subprocess.run(
-            cmd,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=True,
-        )
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, check=True)
         if not os.path.isfile(temp_output) or os.path.getsize(temp_output) <= 300:
             raise RuntimeError("FFmpeg did not produce a valid SFX-prefixed segment.")
         os.replace(temp_output, output_path)
+        return t_lead
     finally:
         if os.path.exists(temp_output):
             try:
@@ -1291,13 +1352,14 @@ async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None
 
     try:
         async with _get_sfx_semaphore():
-            await asyncio.to_thread(
+            t_lead_applied = await asyncio.to_thread(
                 _prepend_sfx_audio_sync,
                 sfx_path,
                 speech_path,
                 segment_path,
+                line_id=line_id,
             )
-        _write_sfx_metadata(segment_path, sfx_key, True, asset_signature)
+        _write_sfx_metadata(segment_path, sfx_key, True, asset_signature, t_lead=t_lead_applied)
     except Exception as exc:
         try:
             await asyncio.to_thread(_atomic_copy_audio, speech_path, segment_path)
@@ -1421,6 +1483,17 @@ async def synthesize_line_record(
         return
 
     pause_dur = row.get("pause_duration")
+    line_id = str(row.get("line_id", ""))
+
+    # Micro-pause jitter: break metronomic 300ms turn-taking gap
+    if pause_dur is not None:
+        try:
+            base_p = float(pause_dur)
+            if base_p > 0.05:
+                jitter = get_sub_perceptual_jitter(line_id, "pause", -0.035, 0.040)
+                pause_dur = max(0.05, round(base_p + jitter, 3))
+        except (ValueError, TypeError):
+            pass
     
     # Dual-Text Separation: Route tts_text to voice engine, falling back to text
     raw_text = row.get("tts_text") or row.get("text", "").strip()
@@ -1458,14 +1531,15 @@ async def synthesize_line_record(
     elif is_narration:
         voice = "en-US-ChristopherNeural"
         base_rate = row.get("rate", "+0%")
-        rate = calculate_dynamic_rate(base_rate, bgm_mood, voice)
+        rate = calculate_dynamic_rate(base_rate, bgm_mood, voice, line_id=line_id)
         pitch = resolve_dynamic_voice_pitch(
             voice_name=voice,
             pitch_tier=pitch_tier,
             bgm_mood=bgm_mood,
             current_rate=rate,
             speaker=speaker_name,
-            fallback_pitch=row.get("pitch", "-2Hz")
+            fallback_pitch=row.get("pitch", "-2Hz"),
+            line_id=line_id
         )
     else:
         req_voice = row.get("voice", "en-US-GuyNeural")
@@ -1473,14 +1547,15 @@ async def synthesize_line_record(
             req_voice = "en-US-ChristopherNeural"
         voice = req_voice
         base_rate = row.get("rate", "-4%" if line_type == "Dialogue" else "+0%")
-        rate = calculate_dynamic_rate(base_rate, bgm_mood, voice)
+        rate = calculate_dynamic_rate(base_rate, bgm_mood, voice, line_id=line_id)
         pitch = resolve_dynamic_voice_pitch(
             voice_name=voice,
             pitch_tier=pitch_tier,
             bgm_mood=bgm_mood,
             current_rate=rate,
             speaker=speaker_name,
-            fallback_pitch=row.get("pitch", "+0Hz")
+            fallback_pitch=row.get("pitch", "+0Hz"),
+            line_id=line_id
         )
 
     chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
@@ -1627,14 +1702,18 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
             sfx_offset = 0.0
             segment_meta = _read_sfx_metadata(cf)
             if segment_meta and segment_meta.get("sfx_applied"):
-                applied_key = normalize_sfx_key(segment_meta.get("sfx", ""))
-                if applied_key:
-                    if applied_key not in sfx_duration_cache:
-                        applied_path = find_sfx_file(sfx_dir, applied_key)
-                        sfx_duration_cache[applied_key] = (
-                            await get_audio_duration(applied_path) if applied_path else 0.0
-                        )
-                    sfx_offset = min(sfx_duration_cache.get(applied_key, 0.0), dur)
+                # Use exact speech onset time (t_lead) rather than full SFX file length
+                if "t_lead" in segment_meta:
+                    sfx_offset = min(float(segment_meta["t_lead"]), dur)
+                else:
+                    applied_key = normalize_sfx_key(segment_meta.get("sfx", ""))
+                    if applied_key:
+                        if applied_key not in sfx_duration_cache:
+                            applied_path = find_sfx_file(sfx_dir, applied_key)
+                            sfx_duration_cache[applied_key] = (
+                                await get_audio_duration(applied_path) if applied_path else 0.0
+                            )
+                        sfx_offset = min(sfx_duration_cache.get(applied_key, 0.0), dur)
 
             if disp_clean and not row.get("pause_duration"):
                 sub_text = f"[{row['speaker']}]: {disp_clean}" if row.get("line_type") == "Dialogue" else disp_clean
