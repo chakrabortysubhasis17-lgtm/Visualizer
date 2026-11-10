@@ -204,10 +204,14 @@ def normalize_bgm_mood(value: Any) -> str:
     return key if key in BGM_MOODS else "no_mood"
 
 
+# Master 21-Tier Solfège Pitch Matrix across 3 Octaves
 PITCH_TIERS = frozenset({
-    "whisper_intimate", "grave_somber", "grim_rumble", "subdued_neutral",
-    "narrator_anchor", "conversational_mid", "engaged_alert", "lung_reset_entry",
-    "inquisitive_lift", "tense_strained", "command_shout", "hysterical_peak"
+    # Octave 1: Sub-Bass & Heavy Chest Floor
+    "abyssal_floor", "grave_somber", "grim_rumble", "menacing_growl", "subdued_mournful", "intimate_whisper", "authoritative_low",
+    # Octave 2: Natural Speaking Core
+    "narrator_anchor", "thoughtful_drawl", "conversational_mid", "engaged_alert", "neutral_statement", "buoyant_lift", "inquisitive_tilt",
+    # Octave 3: Upper Midrange, Head Voice & Strained Peaks
+    "lung_reset_entry", "tense_strained", "urgent_command", "alarmed_spike", "defiant_shout", "frantic_screech", "hysterical_peak"
 })
 
 def normalize_pitch_tier(value: Any, line_type: str = "Narration") -> str:
@@ -260,7 +264,7 @@ class SpeechSegment(BaseModel):
     text: str = Field(default="", description="Fallback single text field for backward compatibility")
     pitch_tier: str = Field(
         default="narrator_anchor",
-        description="One of: 'whisper_intimate', 'grave_somber', 'grim_rumble', 'subdued_neutral', 'narrator_anchor', 'conversational_mid', 'engaged_alert', 'lung_reset_entry', 'inquisitive_lift', 'tense_strained', 'command_shout', 'hysterical_peak'"
+        description="One of 21 semantic Solfège tiers: 'abyssal_floor', 'grave_somber', 'grim_rumble', 'menacing_growl', 'subdued_mournful', 'intimate_whisper', 'authoritative_low', 'narrator_anchor', 'thoughtful_drawl', 'conversational_mid', 'engaged_alert', 'neutral_statement', 'buoyant_lift', 'inquisitive_tilt', 'lung_reset_entry', 'tense_strained', 'urgent_command', 'alarmed_spike', 'defiant_shout', 'frantic_screech', 'hysterical_peak'"
     )
     lung_reset: bool = Field(
         default=False, 
@@ -962,7 +966,7 @@ def parse_single_chunk_via_gemini(
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
     # Versioned cache key to enforce parsing of sustained BGM moods alongside SFX
-    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v9", chunk_text)
+    chunk_cache_key = make_cache_key("gemini_chunk_sfx_bgm_v10", chunk_text)
 
     if not refresh_legacy_cache_for_sfx:
         cached_segments = cache_get(chunk_cache_key)
@@ -1150,9 +1154,13 @@ You must follow every directive below without deviation:
 2. Dual-Text Separation ("display_text" vs "tts_text"):
    - "display_text": MUST preserve authentic literary spelling, proper capitalization, and correct fantasy/cultivation terminology for on-screen subtitles (.srt) (e.g., "His Qi surged within his Dantian.").
    - "tts_text": MUST contain phonetically transliterated, engine-safe spellings for flawless TTS pronunciation (e.g., "His Chee surged within his Dahn-tyen.").
-   - For regular English words without pronunciation ambiguity, "display_text" and "tts_text" should be identical.
-3. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
-4. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
+3. ANTICIPATORY PROSODY SCULPTING (Subtext Modeling in "tts_text"):
+   - Neural TTS cannot read ahead. If a sudden shock, horrific discovery, or dramatic pause occurs, sculpt "tts_text" so the delivery *anticipates* the emotion before the final word lands.
+   - Pre-Climax Phonation Hooks: Insert trailing ellipses ('...'), em-dashes, or rhythmic pauses in "tts_text" *before* shocking revelations or tension spikes (e.g., display_text: "He reached for the door and found it unlocked." -> tts_text: "He reached for the door... and found it... unlocked.").
+   - Anticipatory Register Setup: Assign the tension pitch tier ("grim_rumble", "tense_strained", "intimate_whisper") on the *setup line* leading into an action beat rather than delaying until the climax line.
+   - "display_text" remains 100% clean and literary for viewers; all anticipatory hesitation marks go into "tts_text".
+4. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
+5. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
 
 ### CORE DIRECTIVE 2: CHARACTER, ENTITY & DIALOGUE SEGREGATION
 1. Dialogue Tag Separation: Spoken dialogue MUST be isolated from adjacent narrative tags.
@@ -1172,20 +1180,32 @@ You must follow every directive below without deviation:
    - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
 5. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System". Character internal thoughts must NEVER be marked as "System".
 
-### CORE DIRECTIVE 3: 12-TONE PITCH MATRIX, NARRATOR LUNG RESETS & CADENCE
-1. Pitch Tiers ("pitch_tier"): Every segment must include one of the following 12 semantic tiers:
-   - "whisper_intimate" : Breathless, conspiratorial, soft lovers' murmurs, dying words.
-   - "grave_somber"     : Tragic realizations, grief, solemn vows, heavy mourning.
-   - "grim_rumble"      : Menacing threats, cold warrior grunts, demonic resonance.
-   - "subdued_neutral"  : Weary exposition, campfire fatigue, transition valleys.
-   - "narrator_anchor"  : Default baseline storytelling frequency (home register).
-   - "conversational_mid": Everyday casual tavern chatter, standard character dialogue.
-   - "engaged_alert"    : Active tactical observation, heightened senses, combat analysis.
-   - "lung_reset_entry" : Paragraph entrance, fresh scene awakening, high-energy opening.
-   - "inquisitive_lift" : Suspicious queries, genuine questions, trailing curiosity.
-   - "tense_strained"   : Mid-combat exertion, rising panic, desperate warnings.
-   - "command_shout"    : Battlefield orders, righteous fury, arrogant clan declarations.
-   - "hysterical_peak"  : Berserk screams, terror-stricken retreats, crazed laughter.
+### CORE DIRECTIVE 3: 21-TIER SOLFÈGE PITCH MATRIX, NARRATOR LUNG RESETS & CADENCE
+1. 21-Tier Solfège Pitch Matrix ("pitch_tier"): Select the exact semantic tier across the 3-octave matrix:
+   [OCTAVE 1: SUB-BASS & HEAVY CHEST FLOOR (-6.0Hz to -2.5Hz)]
+   - "abyssal_floor"     : Eldritch monstrosities, ancient titan rumblings, deepest mortal dread.
+   - "grave_somber"      : Tragic realizations, crushing grief, solemn blood oaths, heavy mourning.
+   - "grim_rumble"       : Cold menacing threats, hardened warrior grunts, demonic low resonance.
+   - "menacing_growl"    : Suppressed feral fury, predatory warnings, venomous undertones.
+   - "subdued_mournful"  : Quiet heartbreak, sorrowful confessions, defeat, lingering loss.
+   - "intimate_whisper"  : Breathless conspiracies, romantic closeness, dying final breaths.
+   - "authoritative_low" : Grand elders, academy deans, absolute royal decrees.
+   [OCTAVE 2: NATURAL SPEAKING CORE (-2.0Hz to +0.8Hz)]
+   - "narrator_anchor"   : Default baseline storytelling frequency (home register).
+   - "thoughtful_drawl"  : Pondering deductions, relaxed observations, philosophical musing.
+   - "conversational_mid": Everyday casual tavern banter, standard character dialogue.
+   - "engaged_alert"     : Heightened tactical awareness, combat analysis, scouting focus.
+   - "neutral_statement" : Detached factual narration, objective descriptions.
+   - "buoyant_lift"      : Cheerful banter, pleasant discoveries, playful greetings.
+   - "inquisitive_tilt"  : Genuine questions, suspicious queries, raised curiosity.
+   [OCTAVE 3: UPPER MIDRANGE, HEAD VOICE & STRAINED PEAKS (+1.0Hz to +4.5Hz)]
+   - "lung_reset_entry"  : Fresh scene awakening, paragraph entrance, energetic opening line.
+   - "tense_strained"    : Mid-combat physical exertion, rising panic, desperate warnings.
+   - "urgent_command"    : Battlefield commands, urgent calls to arms, frantic directives.
+   - "alarmed_spike"     : Sudden shock, sudden terror ambush, startled yelps.
+   - "defiant_shout"     : Arrogant clan declarations, furious challenges, righteous battle cries.
+   - "frantic_screech"   : Out-of-control terror, panicked retreats, manic desperation.
+   - "hysterical_peak"   : Berserk madness, unhinged laughter, maximum climax screams.
 2. Narrator Lung Reset ("lung_reset"):
    - Set "lung_reset": true ONLY on the first sentence of a fresh scene, new paragraph, or major topic shift for "line_type": "Narration".
    - Automatically pair "lung_reset": true with "pitch_tier": "lung_reset_entry".

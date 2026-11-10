@@ -623,15 +623,19 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 # Normalize title pronunciation
                 title = sanitize_chapter_title(title)
 
-                # Clean text and filter out author notes
+                # Clean text and filter out author notes across dual-text fields
                 cleaned_rows = []
                 for r in rows:
-                    txt = r.get("text", "")
+                    txt = r.get("display_text") or r.get("text", "")
                     if is_author_note_or_meta(txt):
                         continue
-                    r["text"] = sanitize_audiobook_text(txt)
-                    # Persist only an allowed lowercase SFX key, or an empty string.
-                    # This also gives generated intro/pause rows an explicit SFX field.
+                    
+                    r["text"] = sanitize_audiobook_text(r.get("text", ""))
+                    if "display_text" in r and r["display_text"]:
+                        r["display_text"] = sanitize_audiobook_text(r["display_text"])
+                    if "tts_text" in r and r["tts_text"]:
+                        r["tts_text"] = sanitize_audiobook_text(r["tts_text"])
+
                     r["sfx"] = normalize_sfx_key(r.get("sfx", ""))
                     cleaned_rows.append(r)
                 rows = cleaned_rows

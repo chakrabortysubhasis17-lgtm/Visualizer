@@ -29947,6 +29947,216 @@
         "aliases": [
           "elle"
         ]
+      },
+      "brynn": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "brynn"
+        ]
+      },
+      "pip": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "pip"
+        ]
+      },
+      "astraea": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "astraea"
+        ]
+      },
+      "ernesto hogue": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ernesto hogue"
+        ]
+      },
+      "siena": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "siena"
+        ]
+      },
+      "frank": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "frank"
+        ]
+      },
+      "oliver": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "oliver"
+        ]
+      },
+      "thug": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "thug"
+        ]
+      },
+      "skye": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "skye"
+        ]
+      },
+      "jenny": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "jenny"
+        ]
+      },
+      "kai": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "kai"
+        ]
+      },
+      "joseph": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "joseph"
+        ]
+      },
+      "kael": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "kael"
+        ]
+      },
+      "dalyor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "dalyor"
+        ]
+      },
+      "jax": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jax"
+        ]
+      },
+      "mira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "mira"
+        ]
+      },
+      "isaac": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "isaac"
+        ]
+      },
+      "martha": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "martha"
+        ]
+      },
+      "evelyn": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "evelyn"
+        ]
+      },
+      "oscar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "oscar"
+        ]
+      },
+      "hayes": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hayes"
+        ]
       }
     },
     "vocatives": {}

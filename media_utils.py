@@ -19,6 +19,22 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="torch.jit")
 
 import edge_tts
 
+from audio_constants import (
+    SFX_PIPELINE_VERSION,
+    SFX_MAX_CONCURRENT_FFMPEG,
+    BROADCAST_VOCAL_FILTER,
+    VOICE_PITCH_PROFILES,
+    BGM_MOODS,
+    BGM_MOOD_PITCH_DELTAS_BY_VOICE,
+    BGM_MOOD_RATE_DELTAS_BY_VOICE,
+    SPEAKER_PITCH_OFFSETS,
+    SFX_EXTENSIONS,
+    BGM_EXTENSIONS,
+    SFX_KEYS,
+    SFX_SYNONYMS,
+)
+from lexicon_utils import apply_pronunciation_lexicon
+
 # =====================================================================
 # SUBTITLE ENGINE DELEGATION (Maintains 100% Backwards Compatibility)
 # =====================================================================
@@ -86,25 +102,6 @@ except ImportError:
     VOICEFIXER_AVAILABLE = False
     _voicefixer_model = None
 
-# =====================================================================
-# ACOUSTIC MASTERING CONSTANTS (BROADCAST VOCAL POLISHING)
-# =====================================================================
-
-# Studio vocal mastering filter chain:
-# 1. highpass=f=80: Eliminates artificial digital rumble/plosives below 80 Hz.
-# 2. equalizer (250 Hz, +1.8dB): Restores vocal body and natural chest resonance.
-# 3. equalizer (6500 Hz, -2.5dB): Tames brittle digital sibilance ('s', 'sh', 't' artifacts).
-# 4. acompressor: Tames dynamic spikes between shouts and murmurs with transparent release.
-# 5. aecho: Applies a 5% subtle room dimension to remove dead-air sterility.
-# 6. loudnorm: Conforms to YouTube/broadcast loudness standard (-14 LUFS, flat dynamic curve).
-BROADCAST_VOCAL_FILTER = (
-    "highpass=f=80,"
-    "equalizer=f=250:width_type=h:width=120:g=1.8,"
-    "equalizer=f=6500:width_type=h:width=1400:g=-2.5,"
-    "acompressor=threshold=-18dB:ratio=3:attack=5:release=100:makeup=2dB,"
-    "aecho=0.8:0.88:20|40:0.05|0.02,"
-    "loudnorm=I=-14:LRA=7:TP=-1.5"
-)
 
 # =====================================================================
 # CONSTANTS & DIRECTORIES
@@ -118,327 +115,6 @@ _LOCAL_PLUGINS = os.path.join(_SCRIPT_DIR, "assets", "plugins")
 _CWD_PLUGINS = os.path.join(os.getcwd(), "assets", "plugins")
 PLUGINS_DIR = _LOCAL_PLUGINS if os.path.exists(_LOCAL_PLUGINS) else _CWD_PLUGINS
 
-# =====================================================================
-# SFX ADDITIONS (separate from TTS throttling and semaphore)
-# =====================================================================
-
-SFX_PIPELINE_VERSION = 3
-SFX_MAX_CONCURRENT_FFMPEG = 2
-
-# Complete 53-Key Master SFX Taxonomy
-# Master SFX Taxonomy (including new targeted movement, ambient & action keys)
-SFX_KEYS = frozenset({
-    # Physical movement & transport
-    "footsteps", "run", "tiptoe", "horseandcart", "steps_indoor", "patter", "heavy_steps", "car", "screech",
-    # Environmental & atmosphere
-    "creak", "crackle", "thunder", "drip", "wind", "forest", "ocean", "crickets", "rain", "clock",
-    # Magic, portals & energy
-    "hum", "whoosh", "teleport",
-    # Combat, martial & bodily impact
-    "impact", "thud", "blade", "armor", "slash", "monster", "wardrum", "pain", "gunshot", "explosion", "snarl",
-    # LitRPG, item & system events
-    "chime", "levelup", "interface", "swish", "quest", "alert",
-    "achievement", "reward", "loot", "coin", "chest", "equip",
-    # Character reactions, physical interactions & everyday actions
-    "heartbeat", "gasp", "knock", "rustle", "splash", "squeak", "sigh", "slam", "glass_break", "paper",
-    # Biological breath additions
-    "short_breath_male", "short_breath_female",
-    # Social, culinary & crowd dynamics
-    "market", "cheer", "disappointed", "dishes", "eating", "cooking",
-    # Romance & intimacy
-    "heartwarm", "intimate",
-    # Supernatural, occult & sacred
-    "whisper", "haunt", "howl", "bells", "gong", "intro", "crow",
-    "bark", "dog_bark", "steam_engine",
-})
-
-# =====================================================================
-# 12-TONE SEMANTIC PITCH DECODER (Voice-Specific Acoustic Profiles)
-# =====================================================================
-
-VOICE_PITCH_PROFILES = {
-    # Christopher: Narrator & Dominant MCs (broad, deep chest resonance down to -3.5Hz, restrained highs)
-    "en-US-ChristopherNeural": {
-        "whisper_intimate": "-3.5Hz",
-        "grave_somber": "-3.0Hz",
-        "grim_rumble": "-2.5Hz",
-        "subdued_neutral": "-2.2Hz",
-        "narrator_anchor": "-2.0Hz",
-        "conversational_mid": "-1.5Hz",
-        "engaged_alert": "-1.0Hz",
-        "lung_reset_entry": "+0.5Hz",
-        "inquisitive_lift": "+1.0Hz",
-        "tense_strained": "+1.5Hz",
-        "command_shout": "+2.0Hz",
-        "hysterical_peak": "+2.5Hz",
-    },
-
-    # Guy: Agile young male leads & versatile dialogue (clean baseline 0Hz, balanced +/- 3Hz span)
-    "en-US-GuyNeural": {
-        "whisper_intimate": "-3.0Hz",
-        "grave_somber": "-2.5Hz",
-        "grim_rumble": "-2.0Hz",
-        "subdued_neutral": "-1.0Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+1.0Hz",
-        "lung_reset_entry": "+1.5Hz",
-        "inquisitive_lift": "+2.0Hz",
-        "tense_strained": "+2.0Hz",
-        "command_shout": "+2.5Hz",
-        "hysterical_peak": "+3.0Hz",
-    },
-
-    # Eric: Arrogant young masters, rivals & antagonists (piercing upper midrange, biting high peaks)
-    "en-US-EricNeural": {
-        "whisper_intimate": "-2.5Hz",
-        "grave_somber": "-2.0Hz",
-        "grim_rumble": "-1.5Hz",
-        "subdued_neutral": "-0.5Hz",
-        "narrator_anchor": "+0.5Hz",
-        "conversational_mid": "+0.5Hz",
-        "engaged_alert": "+1.5Hz",
-        "lung_reset_entry": "+2.0Hz",
-        "inquisitive_lift": "+2.5Hz",
-        "tense_strained": "+2.5Hz",
-        "command_shout": "+3.0Hz",
-        "hysterical_peak": "+3.5Hz",
-    },
-
-    # Tony: Panicked civilian mobs & frantic crowd shouts (rapid, tense pitch elevation)
-    "en-US-TonyNeural": {
-        "whisper_intimate": "-2.5Hz",
-        "grave_somber": "-2.0Hz",
-        "grim_rumble": "-1.0Hz",
-        "subdued_neutral": "-0.5Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.5Hz",
-        "engaged_alert": "+1.5Hz",
-        "lung_reset_entry": "+2.0Hz",
-        "inquisitive_lift": "+2.5Hz",
-        "tense_strained": "+2.8Hz",
-        "command_shout": "+3.0Hz",
-        "hysterical_peak": "+3.5Hz",
-    },
-
-    # Roger: Grand elders, academy deans & martial masters (heavy low baritone, compressed upward shifts)
-    "en-US-RogerNeural": {
-        "whisper_intimate": "-4.0Hz",
-        "grave_somber": "-3.5Hz",
-        "grim_rumble": "-3.0Hz",
-        "subdued_neutral": "-2.5Hz",
-        "narrator_anchor": "-2.0Hz",
-        "conversational_mid": "-1.5Hz",
-        "engaged_alert": "-1.0Hz",
-        "lung_reset_entry": "+0.0Hz",
-        "inquisitive_lift": "+0.5Hz",
-        "tense_strained": "+1.0Hz",
-        "command_shout": "+1.5Hz",
-        "hysterical_peak": "+2.0Hz",
-    },
-
-    # Jenny: Primary heroines, gentle wives & healers (warm feminine register, capped to prevent tinny artifacts)
-    "en-US-JennyNeural": {
-        "whisper_intimate": "-2.5Hz",
-        "grave_somber": "-2.0Hz",
-        "grim_rumble": "-1.5Hz",
-        "subdued_neutral": "-1.0Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+1.0Hz",
-        "lung_reset_entry": "+1.5Hz",
-        "inquisitive_lift": "+2.0Hz",
-        "tense_strained": "+2.0Hz",
-        "command_shout": "+2.5Hz",
-        "hysterical_peak": "+2.5Hz",
-    },
-
-    # Emma: Spirited younger sisters, second heroines & consorts (bright, nimble, slightly higher peak ceiling)
-    "en-US-EmmaNeural": {
-        "whisper_intimate": "-2.0Hz",
-        "grave_somber": "-1.5Hz",
-        "grim_rumble": "-1.0Hz",
-        "subdued_neutral": "-0.5Hz",
-        "narrator_anchor": "+0.5Hz",
-        "conversational_mid": "+0.5Hz",
-        "engaged_alert": "+1.5Hz",
-        "lung_reset_entry": "+2.0Hz",
-        "inquisitive_lift": "+2.5Hz",
-        "tense_strained": "+2.5Hz",
-        "command_shout": "+3.0Hz",
-        "hysterical_peak": "+3.0Hz",
-    },
-
-    # Ana: Mascot familiars, beast pets, cute slimes & young children (inherently high fundamental pitch)
-    "en-US-AnaNeural": {
-        "whisper_intimate": "-1.5Hz",
-        "grave_somber": "-1.0Hz",
-        "grim_rumble": "-0.5Hz",
-        "subdued_neutral": "+0.0Hz",
-        "narrator_anchor": "+0.5Hz",
-        "conversational_mid": "+0.5Hz",
-        "engaged_alert": "+1.5Hz",
-        "lung_reset_entry": "+2.0Hz",
-        "inquisitive_lift": "+2.0Hz",
-        "tense_strained": "+2.5Hz",
-        "command_shout": "+2.5Hz",
-        "hysterical_peak": "+2.8Hz",  # Capped tightly to prevent digital screeching
-    },
-
-    # Steffan: Boss monsters, abyssal titans & demonic beasts (deepest sub-bass chest floor, minimal top lift)
-    "en-US-SteffanNeural": {
-        "whisper_intimate": "-4.5Hz",
-        "grave_somber": "-4.0Hz",
-        "grim_rumble": "-3.5Hz",
-        "subdued_neutral": "-3.0Hz",
-        "narrator_anchor": "-2.5Hz",
-        "conversational_mid": "-2.0Hz",
-        "engaged_alert": "-1.5Hz",
-        "lung_reset_entry": "-0.5Hz",
-        "inquisitive_lift": "+0.0Hz",
-        "tense_strained": "+0.5Hz",
-        "command_shout": "+1.0Hz",
-        "hysterical_peak": "+1.5Hz",
-    },
-
-    # Aria: Systems & Divine Empresses (crystalline, emotionally detached, tightest dynamic variation)
-    "en-US-AriaNeural": {
-        "whisper_intimate": "-2.0Hz",
-        "grave_somber": "-1.5Hz",
-        "grim_rumble": "-1.0Hz",
-        "subdued_neutral": "-0.5Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+0.5Hz",
-        "lung_reset_entry": "+1.0Hz",
-        "inquisitive_lift": "+1.5Hz",
-        "tense_strained": "+1.5Hz",
-        "command_shout": "+2.0Hz",
-        "hysterical_peak": "+2.0Hz",
-    },
-
-    # Ryan (en-US): Young modern leads, bards & peers (casual, balanced American neutral register)
-    "en-US-RyanNeural": {
-        "whisper_intimate": "-3.0Hz",
-        "grave_somber": "-2.5Hz",
-        "grim_rumble": "-2.0Hz",
-        "subdued_neutral": "-1.0Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+1.0Hz",
-        "lung_reset_entry": "+1.5Hz",
-        "inquisitive_lift": "+2.0Hz",
-        "tense_strained": "+2.0Hz",
-        "command_shout": "+2.5Hz",
-        "hysterical_peak": "+3.0Hz",
-    },
-
-    # Ryan (en-GB): British accented nobles, scholars & refined companions (smoother, slightly lower crest)
-    "en-GB-RyanNeural": {
-        "whisper_intimate": "-3.0Hz",
-        "grave_somber": "-2.5Hz",
-        "grim_rumble": "-2.0Hz",
-        "subdued_neutral": "-1.5Hz",
-        "narrator_anchor": "-0.5Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+1.0Hz",
-        "lung_reset_entry": "+1.2Hz",
-        "inquisitive_lift": "+1.8Hz",
-        "tense_strained": "+2.0Hz",
-        "command_shout": "+2.2Hz",
-        "hysterical_peak": "+2.6Hz",
-    },
-
-    # Neerja: South-Asian regional heroines, matriarchs & scholars (rich warm mid-frequencies)
-    "en-IN-NeerjaNeural": {
-        "whisper_intimate": "-2.5Hz",
-        "grave_somber": "-2.0Hz",
-        "grim_rumble": "-1.5Hz",
-        "subdued_neutral": "-1.0Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+1.0Hz",
-        "lung_reset_entry": "+1.5Hz",
-        "inquisitive_lift": "+2.0Hz",
-        "tense_strained": "+2.0Hz",
-        "command_shout": "+2.5Hz",
-        "hysterical_peak": "+2.5Hz",
-    },
-
-    # Fallback for any unlisted or dynamically staged character voice
-    "default": {
-        "whisper_intimate": "-2.5Hz",
-        "grave_somber": "-2.0Hz",
-        "grim_rumble": "-1.5Hz",
-        "subdued_neutral": "-1.0Hz",
-        "narrator_anchor": "+0.0Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+1.0Hz",
-        "lung_reset_entry": "+1.0Hz",
-        "inquisitive_lift": "+1.5Hz",
-        "tense_strained": "+2.0Hz",
-        "command_shout": "+2.5Hz",
-        "hysterical_peak": "+2.5Hz",
-    }
-}
-
-# =====================================================================
-# BGM MOOD PITCH DELTAS (Dynamic Atmospheric Frequency Shifts)
-# =====================================================================
-
-BGM_MOOD_PITCH_DELTAS_BY_VOICE = {
-    # Christopher: Narrator (tight pitch discipline; slight lifts in combat, deep drags in dread)
-    "en-US-ChristopherNeural": {
-        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.2,
-    },
-    # Guy: Agile young male leads & versatile dialogue
-    "en-US-GuyNeural": {
-        "combat": 1.2, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    # Eric: Sharp, aggressive rivals (high combat pitch spikes)
-    "en-US-EricNeural": {
-        "combat": 1.4, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.6, "dread": -0.8,
-    },
-    # Roger: Grand elders & martial masters (heavy, resistant to high spikes)
-    "en-US-RogerNeural": {
-        "combat": 0.5, "triumph": 0.4, "tension": 0.3, "playful": 0.2, "no_mood": 0.0,
-        "intrigue": -0.4, "warmth": -0.4, "wonder": -0.6, "sorrow": -0.9, "dread": -1.3,
-    },
-    # Jenny: Primary heroines & healers
-    "en-US-JennyNeural": {
-        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    # Steffan: Titans, monsters & demons (sub-bass grounding)
-    "en-US-SteffanNeural": {
-        "combat": 0.4, "triumph": 0.3, "tension": 0.2, "playful": 0.1, "no_mood": 0.0,
-        "intrigue": -0.4, "warmth": -0.4, "wonder": -0.6, "sorrow": -1.0, "dread": -1.5,
-    },
-    # Ana: Familiars & children (capped shifts to prevent squeaks)
-    "en-US-AnaNeural": {
-        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.3, "sorrow": -0.5, "dread": -0.6,
-    },
-    # Default fallback
-    "default": {
-        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.5, "sorrow": -0.7, "dread": -1.0,
-    }
-}
-
-# Optional speaker micro-pitch offsets (semitone differentiation when sharing same voice)
-SPEAKER_PITCH_OFFSETS = {
-    "elder": -0.8,
-    "sect_master": -0.6,
-    "patriarch": -0.6,
-    "ancestor": -1.0,
-    "disciple": +0.4,
-    "guard": -0.3,
-    "system": -1.5,
-}
 
 def calculate_rate_velocity_pitch_offset(rate_str: str) -> float:
     """Computes micro-pitch shift driven by speech velocity (+10% rate -> +0.3Hz, -10% -> -0.3Hz)."""
@@ -478,8 +154,8 @@ def resolve_dynamic_voice_pitch(
     voice_key = str(voice_name).strip()
     profile = VOICE_PITCH_PROFILES.get(voice_key, VOICE_PITCH_PROFILES["default"])
 
-    # 1. Base Pitch from Tier
-    tier_clean = str(pitch_tier).strip().lower() if pitch_tier else "narrator_anchor"
+    # 1. Base Pitch from Tier (falls back cleanly if line has no pitch_tier)
+    tier_clean = str(pitch_tier).strip().lower() if pitch_tier else ""
     base_pitch_str = profile.get(tier_clean, fallback_pitch)
 
     try:
@@ -504,36 +180,19 @@ def resolve_dynamic_voice_pitch(
     pitch_drift = get_sub_perceptual_jitter(line_id, "pitch", -0.6, 0.6) if line_id else 0.0
     total_hz = base_hz + mood_hz + velocity_hz + speaker_hz + pitch_drift
 
-    # Hardware Acoustic Safety Clamping per voice category
-    if "steffan" in voice_key.lower() or "roger" in voice_key.lower():
-        clamped_hz = max(-5.0, min(2.0, total_hz))
-    elif "ana" in voice_key.lower() or "emma" in voice_key.lower() or "jenny" in voice_key.lower():
-        clamped_hz = max(-3.0, min(3.0, total_hz))
-    elif "christopher" in voice_key.lower():
-        clamped_hz = max(-4.0, min(2.5, total_hz))
-    else:
-        clamped_hz = max(-3.5, min(3.2, total_hz))
+    # Expanded Acoustic Headroom allows full 3-octave SolfÃ¨ge scale (-6.5Hz to +4.5Hz)
+    clamped_hz = max(-7.0, min(5.0, total_hz))
 
     # Edge TTS strictly requires integer Hertz (+0Hz, -2Hz, +1Hz)
     int_hz = int(round(clamped_hz))
     return f"{int_hz:+d}Hz"
 
-SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
 
 _SFX_COPY_LOCK = threading.Lock()
 _SFX_COPIED_BUILDS = {}
 _SFX_SEMAPHORES = weakref.WeakKeyDictionary()
 
-# =====================================================================
-# BGM ADDITIONS (Low Volume Ambient Scene Mood Beds)
-# =====================================================================
 
-BGM_MOODS = frozenset({
-    "combat", "tension", "sorrow", "wonder", "warmth",
-    "intrigue", "triumph", "dread", "playful",
-    "no_mood"
-})
-BGM_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
 _BGM_COPY_LOCK = threading.Lock()
 _BGM_COPIED_BUILDS = {}
 
@@ -546,81 +205,6 @@ def normalize_bgm_mood(value: Any) -> str:
     return key if key in BGM_MOODS else "no_mood"
 
 
-# =====================================================================
-# VOICE-AWARE BGM MOOD PACING DELTAS
-# =====================================================================
-
-BGM_MOOD_RATE_DELTAS_BY_VOICE = {
-    # Christopher: Narrator & Dominant MCs (authoritative, controlled top speed, deep slow drag)
-    "en-US-ChristopherNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -5, "sorrow": -7, "dread": -10,
-    },
-    # Guy: Agile young male leads & versatile dialogue
-    "en-US-GuyNeural": {
-        "combat": 12, "playful": 7, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
-    },
-    # Eric: Arrogant scions, villains & aggressive rivals (sharp, fast verbal velocity)
-    "en-US-EricNeural": {
-        "combat": 14, "playful": 8, "triumph": 5, "tension": 4, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -6,
-    },
-    # Tony: Panicked mobs, crowd shouts & civilian background chatter
-    "en-US-TonyNeural": {
-        "combat": 14, "playful": 8, "triumph": 5, "tension": 4, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -6,
-    },
-    # Roger: Grand elders, academy deans & veteran martial masters (measured, heavier enunciation)
-    "en-US-RogerNeural": {
-        "combat": 6, "playful": 3, "triumph": 2, "tension": 2, "no_mood": 0,
-        "intrigue": -3, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
-    },
-    # Jenny: Primary heroines, gentle wives & healers
-    "en-US-JennyNeural": {
-        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
-    },
-    # Emma: Spirited younger sisters, lively second heroines & consorts
-    "en-US-EmmaNeural": {
-        "combat": 11, "playful": 7, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -7,
-    },
-    # Ana: Mascot familiars, beast pets, cute slimes & young children
-    "en-US-AnaNeural": {
-        "combat": 12, "playful": 9, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -5,
-    },
-    # Steffan: Boss monsters, deep abyssal titans & demonic beasts (retains low heavy register)
-    "en-US-SteffanNeural": {
-        "combat": 6, "playful": 2, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -5, "dread": -10,
-    },
-    # Aria: Systems & Divine Empresses (System lines ignore this, used only if Aria speaks Dialogue)
-    "en-US-AriaNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -8,
-    },
-    # Ryan (US / GB): Young modern leads, bards & peers
-    "en-US-RyanNeural": {
-        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
-    },
-    "en-GB-RyanNeural": {
-        "combat": 10, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
-    },
-    # Neerja: South-Asian regional heroines & matriarchs
-    "en-IN-NeerjaNeural": {
-        "combat": 9, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -7, "dread": -9,
-    },
-    # Fallback for any unlisted side voice
-    "default": {
-        "combat": 10, "playful": 6, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -8,
-    }
-}
 
 
 def calculate_dynamic_rate(base_rate_str: str, bgm_mood_str: str, voice_name: str, line_id: str = "") -> str:
@@ -772,9 +356,10 @@ def mix_chapter_bgm_bed(
 
         # Loop, trim, exponential swell, linear egress decay, clear vocal mids & tame high-frequency air
         filt = (
-            f"[{idx}:a]aloop=loop=-1:size=2e+09,"
+            f"[{idx}:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+            f"aloop=loop=-1:size=2e+09,"
             f"atrim=0:{dur:.3f},"
-            f"afade=t=in:ss=0:d={fade_in:.2f}:curve=exp,"
+            f"afade=t=in:ss=0:d={fade_in:.2f}:curve=qsin,"
             f"afade=t=out:st={out_start:.2f}:d={fade_out:.2f}:curve=tri,"
             f"equalizer=f=2500:t=q:w=1.0:g=-4.0,"
             f"highshelf=f=7000:g=-3.0,"
@@ -814,105 +399,6 @@ def mix_chapter_bgm_bed(
                 pass
 
     return False
-
-
-# Comprehensive synonym mapping resolving gerunds, compound words, and director aliases
-SFX_SYNONYMS = {
-    # Movement & Transport
-    "footstep": "footsteps", "walking": "footsteps", "steps": "footsteps", "walk": "footsteps",
-    "step_indoor": "steps_indoor", "indoor_steps": "steps_indoor", "indoor_footsteps": "steps_indoor",
-    "pacing": "steps_indoor", "corridor_steps": "steps_indoor",
-    "running": "run", "sprint": "run", "sprinting": "run", "charge": "run", "charging": "run", "flee": "run",
-    "stealth": "tiptoe", "sneaking": "tiptoe", "sneak": "tiptoe", "careful_steps": "tiptoe",
-    "scurry": "patter", "scuttling": "patter", "pattering": "patter", "claws": "patter", "paw_steps": "patter",
-    "stomp": "heavy_steps", "stomps": "heavy_steps", "heavysteps": "heavy_steps", "colossus_steps": "heavy_steps",
-    "giant_steps": "heavy_steps", "earthquake_steps": "heavy_steps",
-    "carriage": "horseandcart", "cart": "horseandcart", "wagon": "horseandcart", "horse_cart": "horseandcart",
-    "horse_and_cart": "horseandcart", "hooves": "horseandcart",
-    "automobile": "car", "vehicle": "car", "driving": "car", "motor": "car",
-    "skid": "screech", "skidding": "screech", "braking": "screech", "tire_screech": "screech",
-    "locomotive": "steam_engine", "train": "steam_engine", "train_engine": "steam_engine",
-    "train_whistle": "steam_engine", "steam_train": "steam_engine", "railway": "steam_engine",
-
-    # Canine & Fauna
-    "barking": "bark", "dog_bark": "bark", "dog_barking": "bark", "yelp": "bark", "canine_bark": "bark",
-    "caw": "crow", "cawing": "crow", "raven": "crow", "raven_caw": "crow",
-    "wolf_howl": "howl", "howling": "howl",
-
-    # Biological Breaths
-    "short_breath_male": "short_breath_male", "short-breath-male": "short_breath_male",
-    "breath_male": "short_breath_male", "male_breath": "short_breath_male",
-    "short_breath_female": "short_breath_female", "short-breath-female": "short_breath_female",
-    "breath_female": "short_breath_female", "female_breath": "short_breath_female",
-
-    # Environment & Ambience
-    "creaking": "creak", "door_creak": "creak", "hinge": "creak", "gate_creak": "creak",
-    "fire": "crackle", "crackling": "crackle", "campfire": "crackle", "bonfire": "crackle", "flames": "crackle",
-    "lightning": "thunder", "thunderclap": "thunder", "thunderstorm": "thunder",
-    "dripping": "drip", "water_drop": "drip", "droplet": "drip",
-    "gale": "wind", "breeze": "wind", "draft": "wind", "howling_wind": "wind",
-    "woods": "forest", "woodland": "forest", "jungle": "forest", "canopy": "forest",
-    "sea": "ocean", "waves": "ocean", "surf": "ocean", "ocean_waves": "ocean", "tide": "ocean",
-    "cricket": "crickets", "cicadas": "crickets", "night_insects": "crickets",
-    "rainfall": "rain", "downpour": "rain", "drizzle": "rain", "storm_rain": "rain",
-    "ticking": "clock", "clock_tick": "clock", "pendulum": "clock",
-
-    # Magic & Energy
-    "magic": "hum", "aura": "hum", "shimmer": "hum", "mana_hum": "hum", "glow": "hum",
-    "air_whoosh": "whoosh", "gust": "whoosh", "swish_air": "whoosh",
-    "teleportation": "teleport", "blink": "teleport", "phase_shift": "teleport", "spatial_jump": "teleport",
-
-    # Combat & Impacts
-    "hit": "impact", "strike": "impact", "blunt_hit": "impact", "collision": "impact", "clash": "impact",
-    "collapse": "thud", "body_fall": "thud", "fall": "thud", "foot_stomp": "thud",
-    "sword": "blade", "draw_sword": "blade", "unsheathe": "blade", "sheath": "blade", "dagger": "blade",
-    "plate_armor": "armor", "clank": "armor", "chainmail": "armor", "metal_armor": "armor",
-    "slice": "slash", "cut": "slash", "sword_slash": "slash", "cleave": "slash",
-    "roar": "monster", "beast_roar": "monster", "monster_roar": "monster", "screech_beast": "monster",
-    "growl": "snarl", "snarling": "snarl", "growling": "snarl",
-    "drums": "wardrum", "war_drum": "wardrum", "war_drums": "wardrum", "marching_drums": "wardrum",
-    "groan": "pain", "hurt": "pain", "agony": "pain", "wound": "pain", "grunt_pain": "pain",
-    "gun": "gunshot", "shot": "gunshot", "firearm": "gunshot", "revolver": "gunshot", "rifle": "gunshot",
-    "blast": "explosion", "detonation": "explosion", "bomb": "explosion", "boom": "explosion",
-
-    # LitRPG & Interface
-    "notification": "chime", "ding": "chime", "system_ding": "chime", "bell_chime": "chime",
-    "level_up": "levelup", "stat_increase": "levelup",
-    "ui": "interface", "menu": "interface", "status_window": "interface", "panel": "interface",
-    "warning": "alert", "alarm": "alert", "danger_alert": "alert", "system_warning": "alert",
-    "coins": "coin", "gold_coin": "coin", "gold": "coin", "money": "coin",
-    "treasure_chest": "chest", "open_chest": "chest", "treasure": "chest",
-    "equipment": "equip", "equip_item": "equip",
-
-    # Character Reactions & Daily Interactions
-    "pulse": "heartbeat", "racing_heart": "heartbeat", "heart": "heartbeat", "badump": "heartbeat",
-    "gasping": "gasp", "audible_gasp": "gasp",
-    "door_knock": "knock", "knocking": "knock", "rap": "knock",
-    "rustling": "rustle", "clothes": "rustle", "fabric": "rustle", "robe": "rustle", "kneel": "rustle", "bow": "rustle",
-    "water_splash": "splash", "splashing": "splash",
-    "door_slam": "slam", "slammed": "slam", "gate_slam": "slam",
-    "shatter": "glass_break", "broken_glass": "glass_break", "glass_shatter": "glass_break",
-    "page_turn": "paper", "turning_page": "paper", "scroll": "paper", "parchment": "paper", "unfold": "paper",
-
-    # Social & Sensory Dynamics
-    "crowd": "market", "bazaar": "market", "marketplace": "market", "crowd_chatter": "market",
-    "cheering": "cheer", "applause": "cheer", "crowd_cheer": "cheer",
-    "groan_crowd": "disappointed", "crowd_groan": "disappointed", "letdown": "disappointed",
-    "plates": "dishes", "plate": "dishes", "tableware": "dishes", "cutlery": "dishes",
-    "eat": "eating", "chew": "eating", "chewing": "eating", "bite": "eating",
-    "sizzle": "cooking", "frying": "cooking", "boiling": "cooking", "pot_bubbling": "cooking",
-
-    # Intimacy & Romance
-    "tenderness": "heartwarm", "blush": "heartwarm", "handhold": "heartwarm", "hand_holding": "heartwarm",
-    "sensual": "intimate", "embrace": "intimate", "close_whisper": "intimate",
-    "sighed": "sigh", "sighing": "sigh", "exhale": "sigh", "weary_exhale": "sigh",
-
-    # Supernatural & Bells
-    "whispering": "whisper", "murmur": "whisper", "occult_whisper": "whisper", "telepathy": "whisper",
-    "chilling": "haunt", "ghost": "haunt", "eerie": "haunt", "chill": "haunt", "supernatural_chill": "haunt",
-    "bell": "bells", "toll": "bells", "tolling": "bells", "church_bell": "bells", "clocktower": "bells",
-    "temple_bell": "gong", "bronze_gong": "gong", "chime_gong": "gong", "breakthrough_chime": "gong"
-}
 
 
 def normalize_sfx_key(value: Any) -> str:
@@ -1497,7 +983,9 @@ async def synthesize_line_record(
     
     # Dual-Text Separation: Route tts_text to voice engine, falling back to text
     raw_text = row.get("tts_text") or row.get("text", "").strip()
-    text = RE_PAUSE_TAGS.sub("", raw_text).strip()
+    # Apply LitRPG phonetic dictionary ONLY to spoken audio
+    tts_sculpted = apply_pronunciation_lexicon(raw_text)
+    text = RE_PAUSE_TAGS.sub("", tts_sculpted).strip()
 
     # A row is ONLY a pure pause if it contains no spoken alphanumeric text
     is_pure_pause = not text or not RE_ALPHANUM.search(text)
@@ -1715,7 +1203,8 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
                             )
                         sfx_offset = min(sfx_duration_cache.get(applied_key, 0.0), dur)
 
-            if disp_clean and not row.get("pause_duration"):
+            # Subtitle is generated for any row that contains spoken literary words
+            if disp_clean and RE_ALPHANUM.search(disp_clean):
                 sub_text = f"[{row['speaker']}]: {disp_clean}" if row.get("line_type") == "Dialogue" else disp_clean
                 subtitle_start = rel_time + sfx_offset
                 subtitle_end = max(subtitle_start + 0.1, rel_time + dur)
