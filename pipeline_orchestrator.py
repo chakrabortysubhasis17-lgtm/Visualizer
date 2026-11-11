@@ -98,27 +98,24 @@ from subtitle_utils import generate_subtitles_bundle, build_srt_subtitles
 # =====================================================================
 
 def sanitize_chapter_title(title: str) -> str:
-    """
-    Normalizes chapter titles for natural neural narration:
-    - Expands 'CH 012', 'Ch. 012', 'ch012', 'Chapter 012' -> 'Chapter 12'
-    - Normalizes gaming/tier rank indicators in titles.
-    """
     if not title:
         return title
 
-    # Convert 'CH 012', 'Ch. 005', 'ch12' -> 'Chapter 12', 'Chapter 5' (strips leading zeroes)
     def _expand_chapter(match):
         num_str = match.group(1)
         clean_num = str(int(num_str)) if num_str.isdigit() else num_str
         return f"Chapter {clean_num}"
 
-    # Matches "CH 012", "CH.012", "Chapter 012", "Ch 012"
-    clean_title = re.sub(r'\b(?:CH|Ch|ch|Chapter|CHAPTER)\.?\s*0*(\d+)', _expand_chapter, title)
-    
-    # Expand rank tiers
+    # 1. Substitute from 'title' (not 'clean_title')
+    clean_title = re.sub(r'(?i)\bCh(?:apter)?\.?\s*(\d+):(\d+)\b', r'Chapter \1\2', title)
+
+    # 2. Expand 'CH 012', 'Ch. 012', 'Chapter 012' on 'clean_title'
+    clean_title = re.sub(r'\b(?:CH|Ch|ch|Chapter|CHAPTER)\.?\s*0*(\d+)', _expand_chapter, clean_title)
+
+    # 3. Expand rank tiers
     clean_title = re.sub(r'\bSSS-rank\b', 'Triple-S rank', clean_title, flags=re.IGNORECASE)
     clean_title = re.sub(r'\bSS-rank\b', 'Double-S rank', clean_title, flags=re.IGNORECASE)
-    
+
     return clean_title.strip()
 
 
@@ -135,7 +132,16 @@ def is_author_note_or_meta(text: str) -> bool:
         r"^(?:author['’\u2019]?s?\s*notes?|a/n)\b",
         r"^note\s*from\s*(?:the\s*)?author",
         r"^translator['’\u2019]?s?\s*notes?",
-        r"^editor['’\u2019]?s?\s*notes?"
+        r"^editor['’\u2019]?s?\s*notes?",
+        # Minimal additions for Patreon, gifters, and next-book promos:
+        r"(?i)\bif\s+you\s+enjoy\s+my\s+work\s+and\s+would\s+like\s+to\s+support\s+me\b",
+        r"(?i)\b(?:special\s+)?hugs\s+(?:as\s+always\s+)?to\s+the\s+people\s+who\s+gave\s+extra\s+support\b",
+        r"(?i)\b(?:top\s+)?golden\s+gifters?\b",
+        r"(?i)\bthe\s+\w+\s+story\s+will\s+be\s+published\b",
+        r"(?i)\bhere(?:'s|\s+is)\s+a\s+sneak\s+peek\s+of\s+the\s+next\s+books?\b",
+        r"(?i)^\s*end\s+of\s+book\s+(?:one|two|three|\d+)\b",
+        r"(?i)^\s*ch0*(\d+)\s+bonus\s+chapter\b",
+        r"(?i)discord\.gg\/\S+",
     ]
     for pat in patterns:
         if re.search(pat, clean, flags=re.IGNORECASE):
@@ -243,6 +249,24 @@ def sanitize_audiobook_text(text: str) -> str:
     # 7. Japanese Loanwords that Edge-TTS flattens
     text = re.sub(r'\bKitsune\b', 'Kit-soo-nay', text)
     text = re.sub(r'\bkitsune\b', 'kit-soo-nay', text)
+
+    # Clamp runaway laughter loops (>= 3 repetitions)
+    text = re.sub(r'(?i)\b(?:ha){3,}\b', 'Hahaha...', text)
+    text = re.sub(r'(?i)\b(?:he){3,}\b', 'Hehehe...', text)
+
+    # 1. Collapse elongated scream/sound words (e.g., Riiiiiiip! -> Rip!, Ahhhhh -> Ahh)
+    text = re.sub(r'(?i)\b([a-z])\1{2,}([a-z]*)\b', r'\1\1\2', text)
+
+    # 2. Smooth out rapid-fire staccato punctuation (Cling! Clang! -> Cling, Clang...)
+    text = re.sub(r'(!\s*){2,}', '! ', text)
+    text = re.sub(r'(?<=\w)!\s+(?=[A-Z][a-z]+!)', ', ', text)
+
+    # Clean literal "Dot" vocalizations
+    text = re.sub(r'([.!?]["\'”’]?)\s*Dot\s+', r'\1 ', text)
+
+    # Clean LitRPG stat slashes so TTS doesn't say "forward slash"
+    text = re.sub(r'(?i)\bforward\s+slash\b', ', ', text)
+    text = re.sub(r'(\d+)\s*/\s*(\d+)', r'\1 of \2', text)
 
     # 8. The "World Wide Web" Stutter Trap
     text = re.sub(r'(?i)\b[wW]-[wW]-[wW]\s+what\b', 'Wh-what', text)

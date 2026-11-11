@@ -116,6 +116,12 @@ WATERMARK_PATTERNS = [
     re.compile(r"(?:Support me here:\s*)?\(?Patreon\)?\s*,?\s*Abin\s*Kydd.*", re.I),
     re.compile(r"^-\s*Abin\s*Kydd.*$", re.I | re.MULTILINE),
     re.compile(r"Every bit of (?:support|encouragement) means (?:the world|a lot).*", re.I),
+    re.compile(r"(?i)\bif\s+you\s+enjoy\s+my\s+work\s+and\s+would\s+like\s+to\s+support\s+me\b.*", re.I),
+    re.compile(r"(?i)\b(?:special\s+)?hugs\s+(?:as\s+always\s+)?to\s+the\s+people\s+who\s+gave\s+extra\s+support\b.*", re.I),
+    re.compile(r"(?i)\b(?:top\s+)?golden\s+gifters?\b.*", re.I),
+    re.compile(r"(?i)\bthe\s+\w+\s+story\s+will\s+be\s+published\b.*", re.I),
+    re.compile(r"(?i)\bhere(?:'s|\s+is)\s+a\s+sneak\s+peek\s+of\s+the\s+next\s+books?\b.*", re.I),
+    re.compile(r"(?i)^\s*end\s+of\s+book\s+(?:one|two|three|\d+)\b.*", re.I | re.MULTILINE),
 ]
 
 # In-line screenplay prefix stripping (e.g. '[Harry]:', '[Protagonist]:', '[Arthur]:')
@@ -1441,8 +1447,8 @@ ACTIVE STAGED CHARACTERS:
         # Decouple third-person speech attributions (Self-Voicing ban in Dialogue)
         # e.g. '"We have hidden the ship." Joseph said, straightening.'
         if seg.get("line_type") == "Dialogue":
-            attr_match_disp = re.search(r'["\']\s*([A-Z][a-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued)\b.*)$', disp_text)
-            attr_match_tts = re.search(r'["\']\s*([A-Z][a-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued)\b.*)$', tts_text)
+            attr_match_disp = re.search(r'["\']\s*([A-Za-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued|laughed|screamed|growled)\b.*)$', disp_text)
+            attr_match_tts = re.search(r'["\']\s*([A-Za-z]+\s+(?:said|replied|asked|murmured|whispered|shouted|muttered|yelled|continued|laughed|screamed|growled)\b.*)$', tts_text)
 
             if attr_match_disp:
                 dialogue_disp = disp_text[:attr_match_disp.start()].strip().strip('"').strip("'")

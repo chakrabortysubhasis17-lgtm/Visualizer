@@ -422,8 +422,16 @@ BGM_MOODS = frozenset({
 
 BGM_MOOD_PITCH_DELTAS_BY_VOICE = {
     "en-US-ChristopherNeural": {
-        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.2,
+        "combat": 0.0,    # Anchor pitch in resonant chest floor (was 0.8)
+        "triumph": 0.2,   # Slight lift (was 0.5)
+        "tension": -0.2,  # Drop slightly into darker tone for suspense (was 0.4)
+        "playful": 0.2,
+        "no_mood": 0.0,
+        "intrigue": -0.3,
+        "warmth": -0.4,
+        "wonder": -0.5,
+        "sorrow": -0.8,
+        "dread": -1.2,
     },
     "en-US-GuyNeural": {
         "combat": 1.2, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
@@ -457,8 +465,16 @@ BGM_MOOD_PITCH_DELTAS_BY_VOICE = {
 
 BGM_MOOD_RATE_DELTAS_BY_VOICE = {
     "en-US-ChristopherNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -5, "sorrow": -7, "dread": -10,
+        "combat": -2,     # Slow down by -2% so fast-paced action is articulated cleanly (was +8)
+        "playful": 2,     # (was +4)
+        "triumph": 0,     # (was +3)
+        "tension": -3,    # Slow down by -3% for atmospheric suspense (was +2)
+        "no_mood": 0,
+        "intrigue": -2,
+        "warmth": -3,
+        "wonder": -5,
+        "sorrow": -7,
+        "dread": -10,
     },
     "en-US-GuyNeural": {
         "combat": 12, "playful": 7, "triumph": 4, "tension": 3, "no_mood": 0,
