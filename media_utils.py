@@ -1753,11 +1753,28 @@ def assemble_multi_image_video(
             candidate = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
             cover_path = candidate if os.path.exists(candidate) else cover_path
 
+        # 1. Render single 1080p blurred canvas frame (takes ~0.05s once per block)
+        canvas_img = os.path.join(build_dir, f"canvas_block_{b_idx}.jpg")
+        if not os.path.exists(canvas_img) or os.path.getsize(canvas_img) < 1000:
+            blur_filter = (
+                "[0:v]split=2[bg_raw][fg_raw];"
+                "[bg_raw]scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,boxblur=25:5,eq=brightness=-0.15[bg];"
+                "[fg_raw]scale=1920:1080:force_original_aspect_ratio=decrease[fg];"
+                "[bg][fg]overlay=(W-w)/2:(H-h)/2"
+            )
+            subprocess.run([
+                "ffmpeg", "-y", "-i", cover_path,
+                "-filter_complex", blur_filter,
+                "-vframes", "1",
+                canvas_img
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+
+        # 2. Feed the ready 1080p canvas into the high-speed 1-fps stream
         segment_video = os.path.join(build_dir, f"v_seg_block_{b_idx}.mp4")
         subprocess.run([
             "ffmpeg", "-y", "-loop", "1", "-framerate", "1", "-t", f"{dur:.3f}",
-            "-i", cover_path,
-            "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,format=yuv420p",
+            "-i", canvas_img,
+            "-vf", "format=yuv420p",
             "-r", "1",
             "-c:v", "libx264", "-tune", "stillimage", "-preset", "ultrafast",
             segment_video

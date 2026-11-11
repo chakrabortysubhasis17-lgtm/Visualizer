@@ -139,52 +139,56 @@ def stamp_four_corner_branding(base: Image.Image, build_dir: str, branding_asset
         base = base.convert("RGBA")
 
     # 1. Top-Left: logo.png (380px wide)
-    logo_path = os.path.join(build_dir, branding_assets.get("logo", "logo.png"))
-    if os.path.exists(logo_path):
-        try:
-            img = Image.open(logo_path).convert("RGBA")
-            target_w = 380
-            target_h = int(img.size[1] * (target_w / float(img.size[0])))
-            img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
-            base.paste(img_resized, (30, 30), mask=img_resized.split()[3])
-        except Exception as e:
-            print(f"[Watermark] Failed pasting logo: {e}", flush=True)
+    if  branding_assets.get("logo") is not None:
+        logo_path = os.path.join(build_dir, branding_assets.get("logo", "logo.png"))
+        if os.path.exists(logo_path):
+            try:
+                img = Image.open(logo_path).convert("RGBA")
+                target_w = 380
+                target_h = int(img.size[1] * (target_w / float(img.size[0])))
+                img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+                base.paste(img_resized, (30, 30), mask=img_resized.split()[3])
+            except Exception as e:
+                print(f"[Watermark] Failed pasting logo: {e}", flush=True)
 
-    # 2. Top-Right: subscribe.png (460px wide)
-    sub_path = os.path.join(build_dir, branding_assets.get("subscribe", "subscribe.png"))
-    if os.path.exists(sub_path):
-        try:
-            img = Image.open(sub_path).convert("RGBA")
-            target_w = 460
-            target_h = int(img.size[1] * (target_w / float(img.size[0])))
-            img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
-            base.paste(img_resized, (1920 - target_w - 30, 30), mask=img_resized.split()[3])
-        except Exception as e:
-            print(f"[Watermark] Failed pasting subscribe: {e}", flush=True)
+    if  branding_assets.get("subscribe") is not None:
+        # 2. Top-Right: subscribe.png (460px wide)
+        sub_path = os.path.join(build_dir, branding_assets.get("subscribe", "subscribe.png"))
+        if os.path.exists(sub_path):
+            try:
+                img = Image.open(sub_path).convert("RGBA")
+                target_w = 460
+                target_h = int(img.size[1] * (target_w / float(img.size[0])))
+                img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+                base.paste(img_resized, (1920 - target_w - 30, 30), mask=img_resized.split()[3])
+            except Exception as e:
+                print(f"[Watermark] Failed pasting subscribe: {e}", flush=True)
 
-    # 3. Bottom-Left: like.png (240px tall)
-    like_path = os.path.join(build_dir, branding_assets.get("like", "like.png"))
-    if os.path.exists(like_path):
-        try:
-            img = Image.open(like_path).convert("RGBA")
-            target_h = 240
-            target_w = int(img.size[0] * (target_h / float(img.size[1])))
-            img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
-            base.paste(img_resized, (30, 1080 - target_h - 30), mask=img_resized.split()[3])
-        except Exception as e:
-            print(f"[Watermark] Failed pasting like: {e}", flush=True)
+    if  branding_assets.get("like") is not None:
+        # 3. Bottom-Left: like.png (240px tall)
+        like_path = os.path.join(build_dir, branding_assets.get("like", "like.png"))
+        if os.path.exists(like_path):
+            try:
+                img = Image.open(like_path).convert("RGBA")
+                target_h = 240
+                target_w = int(img.size[0] * (target_h / float(img.size[1])))
+                img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+                base.paste(img_resized, (30, 1080 - target_h - 30), mask=img_resized.split()[3])
+            except Exception as e:
+                print(f"[Watermark] Failed pasting like: {e}", flush=True)
 
-    # 4. Bottom-Right: voice.png (480px wide)
-    voice_path = os.path.join(build_dir, branding_assets.get("voice", "voice.png"))
-    if os.path.exists(voice_path):
-        try:
-            img = Image.open(voice_path).convert("RGBA")
-            target_w = 480
-            target_h = int(img.size[1] * (target_w / float(img.size[0])))
-            img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
-            base.paste(img_resized, (1920 - target_w - 30, 1080 - target_h - 30), mask=img_resized.split()[3])
-        except Exception as e:
-            print(f"[Watermark] Failed pasting voice: {e}", flush=True)
+    if  branding_assets.get("voice") is not None:
+        # 4. Bottom-Right: voice.png (480px wide)
+        voice_path = os.path.join(build_dir, branding_assets.get("voice", "voice.png"))
+        if os.path.exists(voice_path):
+            try:
+                img = Image.open(voice_path).convert("RGBA")
+                target_w = 480
+                target_h = int(img.size[1] * (target_w / float(img.size[0])))
+                img_resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+                base.paste(img_resized, (1920 - target_w - 30, 1080 - target_h - 30), mask=img_resized.split()[3])
+            except Exception as e:
+                print(f"[Watermark] Failed pasting voice: {e}", flush=True)
 
     return base
 

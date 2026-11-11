@@ -33818,5 +33818,1453 @@
       }
     },
     "vocatives": {}
+  },
+  "lotm-reader": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "daly": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "daly"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "ray": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ray"
+        ]
+      },
+      "ebner": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ebner"
+        ]
+      },
+      "cullen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "cullen"
+        ]
+      },
+      "mcconner": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "mcconner"
+        ]
+      },
+      "george iii": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "george iii"
+        ]
+      },
+      "viscount stratford": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "viscount stratford"
+        ]
+      },
+      "old-school gentleman": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "old-school gentleman"
+        ]
+      },
+      "irene": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "irene"
+        ]
+      },
+      "evan bingley": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "evan bingley"
+        ]
+      },
+      "xio": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xio"
+        ]
+      },
+      "audrey": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "audrey"
+        ]
+      },
+      "susie": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "susie"
+        ]
+      },
+      "judy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "judy"
+        ]
+      },
+      "captain arsenov": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "captain arsenov"
+        ]
+      },
+      "lawrence nord": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lawrence nord"
+        ]
+      },
+      "daxter": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "daxter"
+        ]
+      },
+      "shoko": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "shoko"
+        ]
+      },
+      "lena": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lena"
+        ]
+      },
+      "darkwill": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "darkwill"
+        ]
+      },
+      "aetris": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "aetris"
+        ]
+      },
+      "chelly": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chelly"
+        ]
+      },
+      "bishop utravsky": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bishop utravsky"
+        ]
+      },
+      "crestet cesimir": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "crestet cesimir"
+        ]
+      },
+      "cesimir": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "cesimir"
+        ]
+      },
+      "alger": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "alger"
+        ]
+      },
+      "klein": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "klein"
+        ]
+      },
+      "masked man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "masked man"
+        ]
+      },
+      "waiter": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "waiter"
+        ]
+      },
+      "earl hall": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "earl hall"
+        ]
+      },
+      "hazel": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hazel"
+        ]
+      },
+      "fors": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fors"
+        ]
+      },
+      "detective zreal": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "detective zreal"
+        ]
+      },
+      "rosago": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "rosago"
+        ]
+      },
+      "older girl": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "older girl"
+        ]
+      },
+      "younger girl": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "younger girl"
+        ]
+      },
+      "jane": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "jane"
+        ]
+      },
+      "anderson": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "anderson"
+        ]
+      },
+      "detective isengard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "detective isengard"
+        ]
+      },
+      "dunn": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "dunn"
+        ]
+      },
+      "will": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "will"
+        ]
+      },
+      "unknown voice": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "unknown voice"
+        ]
+      },
+      "roman": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "roman"
+        ]
+      },
+      "susan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "susan"
+        ]
+      },
+      "portland moment": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "portland moment"
+        ]
+      },
+      "macht": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "macht"
+        ]
+      },
+      "leonard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "leonard"
+        ]
+      },
+      "frye": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "frye"
+        ]
+      },
+      "ludwell": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ludwell"
+        ]
+      },
+      "elder": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "elder"
+        ]
+      },
+      "stewart": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "stewart"
+        ]
+      },
+      "glaint": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "glaint"
+        ]
+      },
+      "masked lady": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "masked lady"
+        ]
+      },
+      "hidden lady": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hidden lady"
+        ]
+      },
+      "lady in the mask": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lady in the mask"
+        ]
+      },
+      "scholar of secrets": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "scholar of secrets"
+        ]
+      },
+      "hooded lady": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hooded lady"
+        ]
+      },
+      "blue-haired man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "blue-haired man"
+        ]
+      },
+      "derrick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "derrick"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "reverend-insanity": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "clan head": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "clan head"
+        ]
+      },
+      "fang yuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fang yuan"
+        ]
+      },
+      "fang zheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fang zheng"
+        ]
+      },
+      "academy elder": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "academy elder"
+        ]
+      },
+      "gu yue chi lian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "gu yue chi lian"
+        ]
+      },
+      "ren zu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ren zu"
+        ]
+      },
+      "gu yue mo chen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "gu yue mo chen"
+        ]
+      },
+      "student": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "student"
+        ]
+      },
+      "shen cui": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "shen cui"
+        ]
+      },
+      "innkeeper": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "innkeeper"
+        ]
+      },
+      "flower wine monk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "flower wine monk"
+        ]
+      },
+      "uncle": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "uncle"
+        ]
+      },
+      "subordinate": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "subordinate"
+        ]
+      },
+      "man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "man"
+        ]
+      },
+      "gu yue chi chen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gu yue chi chen"
+        ]
+      },
+      "gu yue mo bei": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "gu yue mo bei"
+        ]
+      },
+      "gu yue fang zheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gu yue fang zheng"
+        ]
+      },
+      "jiang ya": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "jiang ya"
+        ]
+      },
+      "gu yue chi cheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gu yue chi cheng"
+        ]
+      },
+      "guard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "guard"
+        ]
+      },
+      "aunt": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "aunt"
+        ]
+      },
+      "mo yan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "mo yan"
+        ]
+      },
+      "gao wan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gao wan"
+        ]
+      },
+      "grandson": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "grandson"
+        ]
+      },
+      "grandfather": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "grandfather"
+        ]
+      },
+      "gu yue bo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gu yue bo"
+        ]
+      },
+      "jia fu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "jia fu"
+        ]
+      },
+      "jia jin sheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jia jin sheng"
+        ]
+      },
+      "shop assistant": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "shop assistant"
+        ]
+      },
+      "gu master": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gu master"
+        ]
+      },
+      "gu yue mo yan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gu yue mo yan"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "vampire-bat-tyrant": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "ink dance": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ink dance"
+        ]
+      },
+      "young man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "young man"
+        ]
+      },
+      "li zihuang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "li zihuang"
+        ]
+      },
+      "su li": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "su li"
+        ]
+      },
+      "iron mountain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "iron mountain"
+        ]
+      },
+      "tieshan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "tieshan"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "uncle qin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "uncle qin"
+        ]
+      },
+      "blood-shell warrior": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "blood-shell warrior"
+        ]
+      },
+      "night raven": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "night raven"
+        ]
+      },
+      "lin xiaowan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin xiaowan"
+        ]
+      },
+      "receptionist": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "receptionist"
+        ]
+      },
+      "thousand faces": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "thousand faces"
+        ]
+      },
+      "yue lian": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yue lian"
+        ]
+      },
+      "su ye": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "su ye"
+        ]
+      },
+      "jun lin": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "jun lin"
+        ]
+      },
+      "lan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lan"
+        ]
+      },
+      "lilith": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lilith"
+        ]
+      },
+      "saori": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "saori"
+        ]
+      },
+      "noflenna": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "noflenna"
+        ]
+      },
+      "xuanwu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xuanwu"
+        ]
+      },
+      "xiao tianxing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xiao tianxing"
+        ]
+      },
+      "william": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "william"
+        ]
+      },
+      "su bai": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "su bai"
+        ]
+      },
+      "heavenly monarch zixiao": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "heavenly monarch zixiao"
+        ]
+      },
+      "ancestor blood moon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ancestor blood moon"
+        ]
+      },
+      "white-haired old man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "white-haired old man"
+        ]
+      },
+      "purple-robed envoy": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "purple-robed envoy"
+        ]
+      },
+      "leader": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "leader"
+        ]
+      },
+      "sterk": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "sterk"
+        ]
+      },
+      "communications soldier": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "communications soldier"
+        ]
+      },
+      "burly man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "burly man"
+        ]
+      },
+      "blue": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "blue"
+        ]
+      },
+      "giant beast": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "giant beast"
+        ]
+      },
+      "lin yao": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin yao"
+        ]
+      },
+      "masked man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "masked man"
+        ]
+      }
+    },
+    "vocatives": {}
   }
 }
