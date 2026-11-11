@@ -173,6 +173,13 @@ def sanitize_audiobook_text(text: str) -> str:
     if not text:
         return text
 
+    # Strip redundant consecutive chapter titles / duplicate headers
+    text = re.sub(
+        r'(?i)(?:^|\n)\s*(?:chapter|ch\.?)\s*\d+[\s:\-–—]*[^\n]*\n+\s*(?:chapter|ch\.?)\s*0*\d+[\s:\-–—]*[^\n]*(?=\n|$)',
+        '',
+        text
+    )
+
     # 1. Strip trailing author notes if joined onto narrative lines
     text = re.sub(r'(?i)\n*(?:author[\'’\u2019]?s?\s*notes?|a/n)\s*:.*$', '', text)
 
