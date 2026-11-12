@@ -1184,6 +1184,9 @@ You must follow every directive below without deviation:
    - The "speaker" field must be a CLEAN character name or "Narrator". NEVER put spoken quotes, phrases, or full sentences into the speaker field.
    - If a character is the first-person narrator ('I', 'me') and has an explicit identity established in context, assign them their true character name and gender instead of a generic "Protagonist" label.
    - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
+   - For newly introduced characters not yet in ACTIVE STAGED CHARACTERS, diversify casting across these authorized free US neural voices based on gender, age, and personality (use "en-US-ChristopherNeural" for Narrator and "en-US-AriaNeural" for System; NEVER invent unlisted voice IDs):
+     * Male Options: "en-US-AndrewMultilingualNeural" (warm heroic baritone), "en-US-AndrewNeural" (grounded adult male), "en-US-BrianMultilingualNeural" (youthful/young adult male), "en-US-BrianNeural" (friendly young male), "en-US-EricNeural" (sharp rival/schemer/commander), "en-US-GuyNeural" (energetic/gritty fighter), "en-US-RogerNeural" (mature elder/noble/sovereign), "en-US-SteffanNeural" (crisp scholar/analyst).
+     * Female Options: "en-US-AvaMultilingualNeural" (expressive lead heroine), "en-US-AvaNeural" (bright young female), "en-US-EmmaMultilingualNeural" (warm articulate heroine), "en-US-EmmaNeural" (calm/mature woman), "en-US-JennyNeural" (versatile adult female), "en-US-MichelleNeural" (grounded mature mentor/elder), "en-US-AriaNeural" (commanding noblewoman/warrior).
 5. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System". Character internal thoughts must NEVER be marked as "System".
 
 ### CORE DIRECTIVE 3: 21-TIER SOLFÈGE PITCH MATRIX, NARRATOR LUNG RESETS & CADENCE

@@ -386,6 +386,88 @@ VOICE_PITCH_PROFILES = {
         "hysterical_peak": "+3.5Hz",
     },
 
+    # Andrew & AndrewMultilingual: Warm, grounded baritone leads
+    "en-US-AndrewMultilingualNeural": {
+        "abyssal_floor": "-5.5Hz", "grave_somber": "-4.5Hz", "grim_rumble": "-3.8Hz",
+        "menacing_growl": "-3.2Hz", "subdued_mournful": "-2.6Hz", "intimate_whisper": "-2.2Hz",
+        "authoritative_low": "-1.8Hz", "narrator_anchor": "-1.2Hz", "thoughtful_drawl": "-0.8Hz",
+        "conversational_mid": "-0.4Hz", "engaged_alert": "+0.0Hz", "neutral_statement": "+0.4Hz",
+        "buoyant_lift": "+0.8Hz", "inquisitive_tilt": "+1.2Hz", "lung_reset_entry": "+1.5Hz",
+        "tense_strained": "+1.8Hz", "urgent_command": "+2.2Hz", "alarmed_spike": "+2.6Hz",
+        "defiant_shout": "+3.0Hz", "frantic_screech": "+3.4Hz", "hysterical_peak": "+3.8Hz",
+    },
+    "en-US-AndrewNeural": {
+        "abyssal_floor": "-5.5Hz", "grave_somber": "-4.5Hz", "grim_rumble": "-3.8Hz",
+        "menacing_growl": "-3.2Hz", "subdued_mournful": "-2.6Hz", "intimate_whisper": "-2.2Hz",
+        "authoritative_low": "-1.8Hz", "narrator_anchor": "-1.2Hz", "thoughtful_drawl": "-0.8Hz",
+        "conversational_mid": "-0.4Hz", "engaged_alert": "+0.0Hz", "neutral_statement": "+0.4Hz",
+        "buoyant_lift": "+0.8Hz", "inquisitive_tilt": "+1.2Hz", "lung_reset_entry": "+1.5Hz",
+        "tense_strained": "+1.8Hz", "urgent_command": "+2.2Hz", "alarmed_spike": "+2.6Hz",
+        "defiant_shout": "+3.0Hz", "frantic_screech": "+3.4Hz", "hysterical_peak": "+3.8Hz",
+    },
+
+    # Brian & BrianMultilingual: Approachable, clear young-to-adult male
+    "en-US-BrianMultilingualNeural": {
+        "abyssal_floor": "-4.2Hz", "grave_somber": "-3.5Hz", "grim_rumble": "-2.8Hz",
+        "menacing_growl": "-2.4Hz", "subdued_mournful": "-1.8Hz", "intimate_whisper": "-1.4Hz",
+        "authoritative_low": "-0.8Hz", "narrator_anchor": "-0.2Hz", "thoughtful_drawl": "+0.0Hz",
+        "conversational_mid": "+0.2Hz", "engaged_alert": "+0.6Hz", "neutral_statement": "+1.0Hz",
+        "buoyant_lift": "+1.4Hz", "inquisitive_tilt": "+1.8Hz", "lung_reset_entry": "+2.0Hz",
+        "tense_strained": "+2.4Hz", "urgent_command": "+2.8Hz", "alarmed_spike": "+3.2Hz",
+        "defiant_shout": "+3.5Hz", "frantic_screech": "+3.8Hz", "hysterical_peak": "+4.2Hz",
+    },
+    "en-US-BrianNeural": {
+        "abyssal_floor": "-4.2Hz", "grave_somber": "-3.5Hz", "grim_rumble": "-2.8Hz",
+        "menacing_growl": "-2.4Hz", "subdued_mournful": "-1.8Hz", "intimate_whisper": "-1.4Hz",
+        "authoritative_low": "-0.8Hz", "narrator_anchor": "-0.2Hz", "thoughtful_drawl": "+0.0Hz",
+        "conversational_mid": "+0.2Hz", "engaged_alert": "+0.6Hz", "neutral_statement": "+1.0Hz",
+        "buoyant_lift": "+1.4Hz", "inquisitive_tilt": "+1.8Hz", "lung_reset_entry": "+2.0Hz",
+        "tense_strained": "+2.4Hz", "urgent_command": "+2.8Hz", "alarmed_spike": "+3.2Hz",
+        "defiant_shout": "+3.5Hz", "frantic_screech": "+3.8Hz", "hysterical_peak": "+4.2Hz",
+    },
+
+    # Ava & AvaMultilingual: Expressive lead heroines
+    "en-US-AvaMultilingualNeural": {
+        "abyssal_floor": "-3.8Hz", "grave_somber": "-3.0Hz", "grim_rumble": "-2.4Hz",
+        "menacing_growl": "-1.8Hz", "subdued_mournful": "-1.4Hz", "intimate_whisper": "-0.8Hz",
+        "authoritative_low": "-0.4Hz", "narrator_anchor": "+0.0Hz", "thoughtful_drawl": "+0.3Hz",
+        "conversational_mid": "+0.5Hz", "engaged_alert": "+0.9Hz", "neutral_statement": "+1.2Hz",
+        "buoyant_lift": "+1.5Hz", "inquisitive_tilt": "+1.8Hz", "lung_reset_entry": "+2.0Hz",
+        "tense_strained": "+2.3Hz", "urgent_command": "+2.5Hz", "alarmed_spike": "+2.8Hz",
+        "defiant_shout": "+3.0Hz", "frantic_screech": "+3.3Hz", "hysterical_peak": "+3.6Hz",
+    },
+    "en-US-AvaNeural": {
+        "abyssal_floor": "-3.8Hz", "grave_somber": "-3.0Hz", "grim_rumble": "-2.4Hz",
+        "menacing_growl": "-1.8Hz", "subdued_mournful": "-1.4Hz", "intimate_whisper": "-0.8Hz",
+        "authoritative_low": "-0.4Hz", "narrator_anchor": "+0.0Hz", "thoughtful_drawl": "+0.3Hz",
+        "conversational_mid": "+0.5Hz", "engaged_alert": "+0.9Hz", "neutral_statement": "+1.2Hz",
+        "buoyant_lift": "+1.5Hz", "inquisitive_tilt": "+1.8Hz", "lung_reset_entry": "+2.0Hz",
+        "tense_strained": "+2.3Hz", "urgent_command": "+2.5Hz", "alarmed_spike": "+2.8Hz",
+        "defiant_shout": "+3.0Hz", "frantic_screech": "+3.3Hz", "hysterical_peak": "+3.6Hz",
+    },
+
+    # EmmaMultilingual: Warm, articulate heroine
+    "en-US-EmmaMultilingualNeural": {
+        "abyssal_floor": "-3.5Hz", "grave_somber": "-2.8Hz", "grim_rumble": "-2.0Hz",
+        "menacing_growl": "-1.5Hz", "subdued_mournful": "-1.0Hz", "intimate_whisper": "-0.5Hz",
+        "authoritative_low": "+0.0Hz", "narrator_anchor": "+0.4Hz", "thoughtful_drawl": "+0.7Hz",
+        "conversational_mid": "+0.9Hz", "engaged_alert": "+1.4Hz", "neutral_statement": "+1.7Hz",
+        "buoyant_lift": "+1.9Hz", "inquisitive_tilt": "+2.2Hz", "lung_reset_entry": "+2.4Hz",
+        "tense_strained": "+2.6Hz", "urgent_command": "+2.8Hz", "alarmed_spike": "+3.0Hz",
+        "defiant_shout": "+3.3Hz", "frantic_screech": "+3.6Hz", "hysterical_peak": "+3.8Hz",
+    },
+
+    # Michelle: Grounded, mature female mentor / matriarch
+    "en-US-MichelleNeural": {
+        "abyssal_floor": "-4.5Hz", "grave_somber": "-3.8Hz", "grim_rumble": "-3.0Hz",
+        "menacing_growl": "-2.4Hz", "subdued_mournful": "-1.8Hz", "intimate_whisper": "-1.2Hz",
+        "authoritative_low": "-0.8Hz", "narrator_anchor": "-0.4Hz", "thoughtful_drawl": "-0.1Hz",
+        "conversational_mid": "+0.2Hz", "engaged_alert": "+0.6Hz", "neutral_statement": "+0.9Hz",
+        "buoyant_lift": "+1.2Hz", "inquisitive_tilt": "+1.5Hz", "lung_reset_entry": "+1.8Hz",
+        "tense_strained": "+2.0Hz", "urgent_command": "+2.2Hz", "alarmed_spike": "+2.5Hz",
+        "defiant_shout": "+2.8Hz", "frantic_screech": "+3.0Hz", "hysterical_peak": "+3.3Hz",
+    },
+
     # Default Generalized Fallback
     "default": {
         "abyssal_floor": "-4.0Hz",
@@ -457,6 +539,46 @@ BGM_MOOD_PITCH_DELTAS_BY_VOICE = {
         "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.4, "no_mood": 0.0,
         "intrigue": -0.2, "warmth": -0.3, "wonder": -0.3, "sorrow": -0.5, "dread": -0.6,
     },
+    "en-US-AndrewMultilingualNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.9, "dread": -1.2,
+    },
+    "en-US-AndrewNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.9, "dread": -1.2,
+    },
+    "en-US-BrianMultilingualNeural": {
+        "combat": 1.0, "triumph": 0.7, "tension": 0.5, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
+    "en-US-BrianNeural": {
+        "combat": 1.0, "triumph": 0.7, "tension": 0.5, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
+    "en-US-AvaMultilingualNeural": {
+        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-AvaNeural": {
+        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-EmmaMultilingualNeural": {
+        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-EmmaNeural": {
+        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-MichelleNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.9, "dread": -1.1,
+    },
+    "en-US-AriaNeural": {
+        "combat": 0.5, "triumph": 0.4, "tension": 0.2, "playful": 0.2, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
     "default": {
         "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
         "intrigue": -0.3, "warmth": -0.3, "wonder": -0.5, "sorrow": -0.7, "dread": -1.0,
@@ -523,6 +645,38 @@ BGM_MOOD_RATE_DELTAS_BY_VOICE = {
     "en-IN-NeerjaNeural": {
         "combat": 9, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
         "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -7, "dread": -9,
+    },
+    "en-US-AndrewMultilingualNeural": {
+        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+    },
+    "en-US-AndrewNeural": {
+        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+    },
+    "en-US-BrianMultilingualNeural": {
+        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+    },
+    "en-US-BrianNeural": {
+        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+    },
+    "en-US-AvaMultilingualNeural": {
+        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
+    },
+    "en-US-AvaNeural": {
+        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
+    },
+    "en-US-EmmaMultilingualNeural": {
+        "combat": 11, "playful": 7, "triumph": 4, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -7,
+    },
+    "en-US-MichelleNeural": {
+        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
     },
     "default": {
         "combat": 10, "playful": 6, "triumph": 3, "tension": 2, "no_mood": 0,
