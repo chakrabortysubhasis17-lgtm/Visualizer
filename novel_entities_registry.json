@@ -29855,6 +29855,396 @@
         "aliases": [
           "chen ying"
         ]
+      },
+      "lin ke": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin ke"
+        ]
+      },
+      "lin guo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin guo"
+        ]
+      },
+      "lin xian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin xian"
+        ]
+      },
+      "hong desheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hong desheng"
+        ]
+      },
+      "ye yong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ye yong"
+        ]
+      },
+      "chen feirong": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chen feirong"
+        ]
+      },
+      "bandit": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "bandit"
+        ]
+      },
+      "qin shi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "qin shi"
+        ]
+      },
+      "chen caixiu": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chen caixiu"
+        ]
+      },
+      "chen li": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chen li"
+        ]
+      },
+      "liu mu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "liu mu"
+        ]
+      },
+      "bandit head": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "bandit head"
+        ]
+      },
+      "bandits": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bandits"
+        ]
+      },
+      "captain lin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "captain lin"
+        ]
+      },
+      "patriarch": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "patriarch"
+        ]
+      },
+      "fei rong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fei rong"
+        ]
+      },
+      "lin chenghu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin chenghu"
+        ]
+      },
+      "patriarchs": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "patriarchs"
+        ]
+      },
+      "yang zhanfei": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "yang zhanfei"
+        ]
+      },
+      "fei ming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "fei ming"
+        ]
+      },
+      "tao zhe": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-EmmaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "tao zhe"
+        ]
+      },
+      "yang an": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "yang an"
+        ]
+      },
+      "zhu yi": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "zhu yi"
+        ]
+      },
+      "yang zheng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "yang zheng"
+        ]
+      },
+      "yang dong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yang dong"
+        ]
+      },
+      "chief marshal chen tong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chief marshal chen tong"
+        ]
+      },
+      "fan zhe": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "fan zhe"
+        ]
+      },
+      "fan yizhe": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "fan yizhe"
+        ]
+      },
+      "prince fan yizhe": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "prince fan yizhe"
+        ]
+      },
+      "yuwai king": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yuwai king"
+        ]
+      },
+      "duan wuhen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "duan wuhen"
+        ]
+      },
+      "sun liang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "sun liang"
+        ]
+      },
+      "senior brother wu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "senior brother wu"
+        ]
+      },
+      "tall and skinny young man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "tall and skinny young man"
+        ]
+      },
+      "fatty": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fatty"
+        ]
+      },
+      "young woman": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "young woman"
+        ]
+      },
+      "lei tianxing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lei tianxing"
+        ]
+      },
+      "yu chen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yu chen"
+        ]
+      },
+      "lin zhiren": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lin zhiren"
+        ]
       }
     },
     "vocatives": {}

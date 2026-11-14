@@ -65,10 +65,11 @@ def fetch_comic_artwork_landscape(prompt: str, out_path: str, block_index: int, 
 
     # Tier 1: Cloudflare Workers AI
     if cf_account_id and cf_token:
+        cf_prompt = clean_p[:950].rsplit(" ", 1)[0] if len(clean_p) > 950 else clean_p
         print(f"     [Visual Engine] Requesting Block {block_index} via Cloudflare Workers AI (FLUX-1-schnell)...", flush=True)
         url_cf = f"https://api.cloudflare.com/client/v4/accounts/{cf_account_id}/ai/run/@cf/black-forest-labs/flux-1-schnell"
         headers_cf = {"Authorization": f"Bearer {cf_token}", "Content-Type": "application/json"}
-        payload_cf = {"prompt": clean_p, "steps": 4}
+        payload_cf = {"prompt": cf_prompt, "steps": 4}
         try:
             resp = requests.post(url_cf, headers=headers_cf, json=payload_cf, timeout=request_timeout)
             if resp.status_code == 200:
@@ -88,6 +89,8 @@ def fetch_comic_artwork_landscape(prompt: str, out_path: str, block_index: int, 
                     img.convert("RGB").save(out_path, "JPEG", quality=98)
                     print(f"     [Visual Engine] [✓] Delivered Block {block_index} via Cloudflare!", flush=True)
                     return True
+            else:
+                print(f"     [Visual Engine] Cloudflare HTTP {resp.status_code}: {resp.text[:200]}", flush=True)
         except Exception as e:
             print(f"     [Visual Engine] Cloudflare notice: {e}. Falling back to Pollinations...", flush=True)
 
