@@ -7,6 +7,7 @@ import urllib.parse
 import requests
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
+
 CINZEL_URL = "https://github.com/google/fonts/raw/main/ofl/cinzeldecorative/CinzelDecorative-Bold.ttf"
 CINZEL_LOCAL_PATH = "CinzelDecorative-Bold.ttf"
 
@@ -248,9 +249,15 @@ def ensure_block_cover_jit(cfg: dict, build_dir: str, branding_assets: dict, cf_
     else:
         base = Image.new("RGBA", (1920, 1080), (*cfg.get("fallback_color", (15, 25, 40)), 255))
 
-    base = apply_lower_third_vignette(base)
+    title_lines = cfg.get("title")
+    if title_lines:
+        base = apply_lower_third_vignette(base)
+
     base = stamp_four_corner_branding(base, build_dir, branding_assets)
-    base = stamp_3d_metallic_flame_typography(base, cfg["title"])
+
+    if title_lines:
+        base = stamp_3d_metallic_flame_typography(base, title_lines)
+
     base.convert("RGB").save(out_file, "JPEG", quality=98)
     print(f"[Visual Saved] Block {b_idx} Cover: '{out_file}'", flush=True)
 

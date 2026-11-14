@@ -37376,5 +37376,421 @@
       }
     },
     "vocatives": {}
+  },
+  "cultivation-online-novel": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "beauty": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "beauty"
+        ]
+      },
+      "elder song": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "elder song"
+        ]
+      },
+      "shen ming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "shen ming"
+        ]
+      },
+      "zhan xuegang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "zhan xuegang"
+        ]
+      },
+      "meng li": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "meng li"
+        ]
+      },
+      "xiao hua": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xiao hua"
+        ]
+      },
+      "wang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "wang"
+        ]
+      },
+      "ling": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ling"
+        ]
+      },
+      "mo zhou": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "mo zhou"
+        ]
+      },
+      "yuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yuan"
+        ]
+      },
+      "ren": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ren"
+        ]
+      },
+      "ren fuchen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ren fuchen"
+        ]
+      },
+      "disciple": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "disciple"
+        ]
+      },
+      "guard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "guard"
+        ]
+      },
+      "stranger": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "stranger"
+        ]
+      },
+      "old man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "old man"
+        ]
+      },
+      "xuan wuhan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xuan wuhan"
+        ]
+      },
+      "lian rong": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lian rong"
+        ]
+      },
+      "na ying": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "na ying"
+        ]
+      },
+      "senior chang": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-MichelleNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "senior chang"
+        ]
+      },
+      "du bai": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "du bai"
+        ]
+      },
+      "du hai": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "du hai"
+        ]
+      },
+      "qing qing": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "qing qing"
+        ]
+      },
+      "xuan wuhuan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xuan wuhuan"
+        ]
+      },
+      "spirit master": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "spirit master"
+        ]
+      },
+      "demonic spider": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "demonic spider"
+        ]
+      },
+      "monster": {
+        "gender": "Neutral",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "monster"
+        ]
+      },
+      "mu qing": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "mu qing"
+        ]
+      },
+      "yu rou": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yu rou"
+        ]
+      },
+      "lord luo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lord luo"
+        ]
+      },
+      "luo ling": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "luo ling"
+        ]
+      },
+      "luo ming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "luo ming"
+        ]
+      },
+      "luo li": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "luo li"
+        ]
+      },
+      "crow": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "crow"
+        ]
+      },
+      "mysterious goddess": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaMultilingualNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "mysterious goddess"
+        ]
+      }
+    },
+    "vocatives": {}
   }
 }

@@ -483,23 +483,52 @@ async def run_audiobook_pipeline(config: dict) -> dict:
 
     primary_thumb = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
 
-    def _execute_visuals_sync():
-        log_info(f"[{novel_slug}] [Step 2: Visual Engine] Spawning background cover and outro slate generation...")
+    async def _execute_visuals_async():
+        log_info(f"[{novel_slug}] [Step 2: Visual Engine] Generating {len(blocks)} background covers and outro slate...")
         for cfg in blocks:
             r_start, r_end = cfg["range"]
+            b_idx = cfg.get("index", 1)
             cfg["cover_file"] = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
-            ensure_block_cover_jit(
-                cfg,
-                build_dir,
-                branding,
-                config.get("cf_account_id"),
-                config.get("cf_api_token")
-            )
+            try:
+                res = ensure_block_cover_jit(
+                    cfg,
+                    build_dir,
+                    branding,
+                    config.get("cf_account_id"),
+                    config.get("cf_api_token")
+                )
+                if asyncio.iscoroutine(res):
+                    await res
+            except Exception as vis_err:
+                log_warning(f"Block {b_idx:02d} post-process notice: {vis_err}")
+
+            # If cover_block_X_Y.jpg wasn't written (e.g. textless/logoless mode),
+            # promote the clean raw_block image directly so no Cloudflare credits are wasted.
+            if not verify_cover_integrity(cfg["cover_file"]):
+                raw_candidates = [
+                    os.path.join(build_dir, f"raw_block_{b_idx}.jpg"),
+                    os.path.join(build_dir, f"raw_block_{b_idx:02d}.jpg"),
+                    os.path.join(build_dir, f"raw_block_{r_start}_{r_end}.jpg"),
+                ]
+                for raw_path in raw_candidates:
+                    if verify_cover_integrity(raw_path):
+                        shutil.copy2(raw_path, cfg["cover_file"])
+                        log_info(f"Block {b_idx:02d}: Promoted clean '{os.path.basename(raw_path)}' -> '{os.path.basename(cfg['cover_file'])}'")
+                        break
+
             if verify_cover_integrity(cfg["cover_file"]):
-                log_success(f"Block {cfg.get('index', 1):02d} Cover verified: '{os.path.basename(cfg['cover_file'])}'")
+                log_success(f"Block {b_idx:02d} Cover verified: '{os.path.basename(cfg['cover_file'])}'")
+            else:
+                log_warning(f"Block {b_idx:02d} Cover missing or invalid: '{cfg['cover_file']}'")
 
         outro_slate = os.path.join(build_dir, "outro_slate_card.jpg")
-        create_dynamic_outro_slate(outro_slate, build_dir, branding, next_ch_num=end_ch + 1)
+        try:
+            outro_res = create_dynamic_outro_slate(outro_slate, build_dir, branding, next_ch_num=end_ch + 1)
+            if asyncio.iscoroutine(outro_res):
+                await outro_res
+        except Exception as outro_err:
+            log_warning(f"Outro slate generation warning: {outro_err}")
+
         if verify_cover_integrity(outro_slate):
             log_success("Outro slate card verified.")
 
@@ -507,7 +536,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
             shutil.copy2(blocks[0]["cover_file"], primary_thumb)
             log_success(f"Primary thumbnail created: '{primary_thumb}'")
 
-    visuals_background_task = asyncio.create_task(asyncio.to_thread(_execute_visuals_sync))
+    visuals_background_task = asyncio.create_task(_execute_visuals_async())
 
     # ---------------------------------------------------------
     # STEPS 1 & 3: STREAMING PIPELINE (Producer -> Consumer via Queue)
@@ -756,18 +785,39 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     build_srt_subtitles(all_subtitles, subtitles_file)
     log_success(f"English Master Subtitles written: '{subtitles_file}'")
 
-    # ---------------------------------------------------------
+    # -------------------------------------------------------
     # PHASE 4: Audio Normalization (-14 LUFS) & VST3 Mastering
-    # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 4/5] Normalizing Audio to -14 LUFS with Studio Mastering...")
+    # -------------------------------------------------------
     final_audio = config.get("final_audio", os.path.join(build_dir, "final_audio.mp3"))
-    master_final_audio(
-        chapter_files=chapter_files,
-        build_dir=build_dir,
-        final_audio_path=final_audio,
-        enable_voicefixer=config.get("enable_voicefixer", False)
-    )
-    log_success(f"Master Audio complete: '{final_audio}'")
+    if (
+        not config.get("force_remaster", False)
+        and os.path.isfile(final_audio)
+        and os.path.getsize(final_audio) > 100_000
+    ):
+        log_success(f"[{novel_slug}] [Phase 4/5] Reusing existing Master Audio: '{final_audio}'")
+    else:
+        log_info(f"[{novel_slug}] [Phase 4/5] Normalizing Audio to -14 LUFS with Studio Mastering...")
+        master_final_audio(
+            chapter_files=chapter_files,
+            build_dir=build_dir,
+            final_audio_path=final_audio,
+            enable_voicefixer=config.get("enable_voicefixer", False)
+        )
+        log_success(f"Master Audio complete: '{final_audio}'")
+
+    # Ensure background visual generation task has completely finished before Phase 5
+    if not visuals_background_task.done():
+        log_info(f"[{novel_slug}] Waiting for all {len(blocks)} background images to finish generating...")
+        await visuals_background_task
+
+    missing_covers = [
+        cfg["cover_file"] for cfg in blocks
+        if not verify_cover_integrity(cfg.get("cover_file", ""))
+    ]
+    if missing_covers:
+        raise RuntimeError(
+            f"Cannot build 5-minute HUD loop: {len(missing_covers)}/{len(blocks)} background images are missing: {missing_covers}"
+        )
 
     # ---------------------------------------------------------
     # PHASE 5: Multiplexing Final Video

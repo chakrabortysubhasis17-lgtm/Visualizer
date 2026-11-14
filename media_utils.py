@@ -1,3 +1,11 @@
+try:
+    import cv2
+    import numpy as np
+    CV2_NUMPY_AVAILABLE = True
+except ImportError:
+    cv2 = None
+    np = None
+    CV2_NUMPY_AVAILABLE = False
 import asyncio
 import hashlib
 import json
@@ -1406,8 +1414,21 @@ def master_final_audio(
     chapter_files: list,
     build_dir: str,
     final_audio_path: str,
-    enable_voicefixer: bool = False
+    enable_voicefixer: bool = False,
+    force_remaster: bool = False,
 ):
+    if (
+        not force_remaster
+        and os.path.isfile(final_audio_path)
+        and os.path.getsize(final_audio_path) > 100_000
+    ):
+        dur_str = format_timestamp(_probe_duration_sync(final_audio_path))
+        print(
+            f"\n[Audio Master Engine] [✓] Reusing existing mastered audio: {final_audio_path} ({dur_str})",
+            flush=True,
+        )
+        return
+
     raw_master_audio = os.path.join(build_dir, "raw_master.mp3")
     voicefixer_staged = os.path.join(build_dir, "voicefixer_master.wav")
     pedalboard_staged = os.path.join(build_dir, "pedalboard_master.wav")
@@ -1727,8 +1748,412 @@ def embed_soft_subtitles(
     return output_path
 
 # =====================================================================
-# VIDEO MULTIPLEXING (Compatible with Single Path or Multilingual Dict)
+# VIDEO MULTIPLEXING (5-Minute Rolling HUD Loop + 10 Backgrounds)
 # =====================================================================
+
+def _resolve_hud_overlay_path() -> Optional[str]:
+    """Locates hud_overlay_10s.webm in assets/ or working directory."""
+    candidates = [
+        os.path.join(_SCRIPT_DIR, "assets", "hud_overlay_10s.webm"),
+        os.path.join(os.getcwd(), "assets", "hud_overlay_10s.webm"),
+        os.path.join(_SCRIPT_DIR, "hud_overlay_10s.webm"),
+    ]
+    for path in candidates:
+        if os.path.isfile(path) and os.path.getsize(path) > 1000:
+            return path
+    return None
+
+
+def _build_pseudo_depth_map(bgr_img: "np.ndarray") -> "np.ndarray":
+    """
+    Computes a smooth [0.0..1.0] 2.5D depth map (1.0 = foreground character/limelight,
+    0.0 = distant sky/horizon) combining vertical perspective, center saliency, and edge detail.
+    """
+    h, w = bgr_img.shape[:2]
+    gray = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2GRAY).astype(np.float32) / 255.0
+
+    # 1. Vertical depth gradient (bottom foreground is closer than upper sky)
+    y_grad = np.linspace(0.10, 0.85, h, dtype=np.float32)[:, None]
+    y_map = np.repeat(y_grad, w, axis=1)
+
+    # 2. High-detail edge/focal saliency (sharp foreground subjects vs soft sky/mist)
+    lap = np.abs(cv2.Laplacian(gray, cv2.CV_32F, ksize=3))
+    lap_blur = cv2.GaussianBlur(lap, (0, 0), sigmaX=max(25, w // 32))
+    if lap_blur.max() > 1e-5:
+        lap_blur /= lap_blur.max()
+
+    # 3. Rule-of-thirds / lower-center subject bias
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    cx, cy = w * 0.50, h * 0.58
+    dist_sq = ((xx - cx) / (w * 0.42)) ** 2 + ((yy - cy) / (h * 0.45)) ** 2
+    center_bias = np.exp(-0.5 * dist_sq)
+
+    depth = 0.42 * y_map + 0.33 * center_bias + 0.25 * lap_blur
+    depth = cv2.GaussianBlur(depth, (0, 0), sigmaX=max(35, w // 24))
+    d_min, d_max = float(depth.min()), float(depth.max())
+    if d_max - d_min > 1e-5:
+        depth = (depth - d_min) / (d_max - d_min)
+    return depth.astype(np.float32)
+
+
+def _build_energy_shimmer_mask(bgr_img: "np.ndarray") -> "np.ndarray":
+    """
+    Isolates luminous magic/Qi energy & high-saturation aura zones so heat-haze
+    pixel ripples target glowing Spirit Qi, flames, and skies rather than rigid faces.
+    """
+    hsv = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV).astype(np.float32)
+    sat = hsv[:, :, 1] / 255.0
+    val = hsv[:, :, 2] / 255.0
+    energy = np.clip((val - 0.52) * 1.6 + sat * 0.45, 0.0, 1.0)
+    energy = cv2.GaussianBlur(energy, (0, 0), sigmaX=24)
+    return energy.astype(np.float32)
+
+
+def _build_god_rays_overlay(w: int, h: int, seed_val: int) -> "np.ndarray":
+    """Precomputes diagonal volumetric god-ray light shafts (float32 [0..1] BGR tint)."""
+    rng = random.Random(seed_val)
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    angle = rng.uniform(0.32, 0.58)  # Diagonal sunbeam tilt
+    coord = xx * math.cos(angle) + yy * math.sin(angle)
+
+    rays = (
+        0.50 * np.sin(coord * 0.011 + rng.uniform(0, 6.28))
+        + 0.30 * np.sin(coord * 0.027 + rng.uniform(0, 6.28))
+        + 0.20 * np.cos(coord * 0.049 + rng.uniform(0, 6.28))
+    )
+    rays = np.clip((rays + 0.25) / 1.25, 0.0, 1.0) ** 1.8
+
+    # Fade rays smoothly toward bottom so they illuminate the upper atmosphere
+    vert_fade = np.clip(1.0 - (yy / (h * 0.88)), 0.0, 1.0)[:, :, None]
+    tint_bgr = np.array([155.0, 220.0, 255.0], dtype=np.float32)  # Warm Celestial Gold-White
+    return (rays[:, :, None] * vert_fade * tint_bgr).astype(np.float32)
+
+
+def _render_25d_parallax_shot_to_ffmpeg(
+    img_path: str,
+    out_mp4: str,
+    num_frames: int,
+    fps: int,
+    z0: float,
+    dz: float,
+    x0: float,
+    dx: float,
+    y0: float,
+    dy: float,
+    seed_key: str,
+) -> None:
+    """
+    Renders a 1080p shot with true 2.5D Depth Parallax, sinusoidal Energy/Heat-Haze
+    Shimmer, and sweeping Volumetric God Rays via OpenCV/NumPy, then pipes directly into
+    FFmpeg for Optical Rack Focus, Magic Qi Highlight Bloom, Dynamic Vignette, and 35mm Grain.
+    """
+    raw_bgr = cv2.imread(img_path, cv2.IMREAD_COLOR)
+    if raw_bgr is None:
+        raise FileNotFoundError(f"Failed to load background image: {img_path}")
+
+    out_w, out_h = 1920, 1080
+    src_bgr = cv2.resize(raw_bgr, (out_w, out_h), interpolation=cv2.INTER_LANCZOS4)
+    depth_map = _build_pseudo_depth_map(src_bgr)
+    shimmer_mask = _build_energy_shimmer_mask(src_bgr)
+
+    rng = random.Random(seed_key)
+    god_rays = _build_god_rays_overlay(out_w, out_h, rng.randint(1, 999999))
+    sway_x_amp = rng.uniform(0.012, 0.022) * rng.choice([-1, 1])
+    sway_y_amp = rng.uniform(0.012, 0.022) * rng.choice([-1, 1])
+    sway_ph = rng.uniform(0.0, 2.0 * math.pi)
+    shimmer_phase = rng.uniform(0.0, 2.0 * math.pi)
+
+    # Precompute base normalized pixel grid [0..out_w-1], [0..out_h-1]
+    grid_y, grid_x = np.mgrid[0:out_h, 0:out_w].astype(np.float32)
+    norm_x = grid_x / float(out_w)
+    norm_y = grid_y / float(out_h)
+
+    # FFmpeg post-FX chain:
+    # 1. Optical Rack Focus (first 0.65s snaps from soft lens blur into razor focus)
+    # 2. Magic / Qi Highlight Bloom (bright energy areas blurred and screen-blended)
+    # 3. Dynamic Lighting pulse + Cinematic Vignette + 35mm Film Grain
+    vf_post = (
+        "[0:v]"
+        "gblur=sigma=9:enable='lt(t,0.30)',"
+        "gblur=sigma=3.5:enable='between(t,0.30,0.65)',"
+        "split[base][hi];"
+        "[hi]lutyuv=y='if(gt(val,185),val,0)':u=128:v=128,gblur=sigma=20[bloom];"
+        "[base][bloom]blend=all_mode=screen:all_opacity=0.42,"
+        "eq=brightness='0.018*sin(2*PI*t/10)':contrast=1.04:saturation=1.08,"
+        "vignette=angle=PI/4.6,"
+        "noise=alls=6:allf=t+u,"
+        "format=yuv420p[outv]"
+    )
+
+    cmd = [
+        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+        "-f", "rawvideo", "-pix_fmt", "bgr24",
+        "-s", f"{out_w}x{out_h}", "-r", str(fps),
+        "-i", "pipe:0",
+        "-filter_complex", vf_post,
+        "-map", "[outv]",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "21",
+        "-pix_fmt", "yuv420p", "-an",
+        out_mp4,
+    ]
+
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
+    try:
+        for f_idx in range(num_frames):
+            t_u = f_idx / float(max(1, num_frames - 1))
+            ease = 0.5 * (1.0 - math.cos(math.pi * t_u))
+
+            # 2.5D Parallax: foreground moves/zooms 1.45x faster than distant background
+            z_base = z0 + dz * ease
+            z_fg = 1.0 + (z_base - 1.0) * 1.45
+            z_bg = 1.0 + (z_base - 1.0) * 0.72
+            z_map = z_bg + (z_fg - z_bg) * depth_map
+
+            pan_x = np.clip(
+                x0 + dx * ease + sway_x_amp * math.sin(math.pi * t_u + sway_ph),
+                0.0, 1.0
+            )
+            pan_y = np.clip(
+                y0 + dy * ease + sway_y_amp * math.cos(math.pi * t_u + sway_ph),
+                0.0, 1.0
+            )
+
+            # Parallax shift amplifies on foreground pixels (depth_map -> 1.0)
+            parallax_gain = 0.65 + 0.75 * depth_map
+            eff_pan_x = np.clip(0.5 + (pan_x - 0.5) * parallax_gain, 0.0, 1.0)
+            eff_pan_y = np.clip(0.5 + (pan_y - 0.5) * parallax_gain, 0.0, 1.0)
+
+            crop_w = out_w / z_map
+            crop_h = out_h / z_map
+            map_x = (out_w - crop_w) * eff_pan_x + norm_x * crop_w
+            map_y = (out_h - crop_h) * eff_pan_y + norm_y * crop_h
+
+            # Sinusoidal Energy & Heat-Haze Shimmer on glowing Qi/aura regions
+            wave_t = (2.0 * math.pi * 2.0 * t_u) + shimmer_phase
+            ripple_x = 2.2 * np.sin(grid_y * 0.045 + wave_t) * shimmer_mask
+            ripple_y = 1.6 * np.cos(grid_x * 0.040 + wave_t * 1.3) * shimmer_mask
+            map_x = (map_x + ripple_x).astype(np.float32)
+            map_y = (map_y + ripple_y).astype(np.float32)
+
+            warped = cv2.remap(
+                src_bgr, map_x, map_y,
+                interpolation=cv2.INTER_LINEAR,
+                borderMode=cv2.BORDER_REFLECT_101,
+            )
+
+            # Volumetric God Rays sweeping gently in brightness
+            ray_strength = 0.14 + 0.08 * math.sin(2.0 * math.pi * t_u + sway_ph)
+            composited = np.clip(
+                warped.astype(np.float32) + god_rays * ray_strength,
+                0, 255
+            ).astype(np.uint8)
+
+            proc.stdin.write(composited.tobytes())
+    finally:
+        if proc.stdin:
+            proc.stdin.close()
+        ret = proc.wait()
+        if ret != 0:
+            raise RuntimeError(f"FFmpeg post-FX pipe failed with exit code {ret}")
+
+
+def build_5min_hud_loop_video(
+    blocks: list,
+    build_dir: str,
+    loop_duration_sec: float = 300.0,
+    fps: int = 30,
+) -> str:
+    """
+    Builds a 5-minute (300s) 1080p/30fps animated master loop using the 10 blocks x 3 angles x 10s
+    structure enhanced with:
+      - 2.5D Depth Parallax, Energy Shimmer & Volumetric God Rays (OpenCV/NumPy)
+      - Optical Rack Focus, Magic Qi Highlight Bloom, Dynamic Vignette & 35mm Grain (FFmpeg)
+      - Seamless xfade Morph Transitions between all 30 camera angles + hud_overlay_10s.webm
+    """
+    master_loop_path = os.path.join(build_dir, "master_hud_loop_5m.mp4")
+    if os.path.isfile(master_loop_path) and os.path.getsize(master_loop_path) > 100_000:
+        print(f"[HUD Loop] [✓] Reusing cached 5-minute master loop: {master_loop_path}", flush=True)
+        return master_loop_path
+
+    bg_images: List[Tuple[int, str]] = []
+    for cfg in blocks:
+        b_idx = cfg["index"]
+        cover_path = cfg.get("cover_file")
+        if not cover_path or not os.path.exists(cover_path):
+            r_start, r_end = cfg.get("range", (0, 0))
+            candidate = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
+            if os.path.exists(candidate):
+                cover_path = candidate
+        if cover_path and os.path.exists(cover_path):
+            bg_images.append((b_idx, cover_path))
+
+    if not bg_images:
+        raise FileNotFoundError("No background cover images found to build the 5-minute HUD loop.")
+
+    hud_webm = _resolve_hud_overlay_path()
+    if not hud_webm:
+        raise FileNotFoundError(
+            "assets/hud_overlay_10s.webm not found. Run 'python testdraw.py' first to generate the HUD overlay."
+        )
+
+    num_imgs = len(bg_images)
+    angles_per_img = 3
+    effective_angle_sec = round(loop_duration_sec / (num_imgs * angles_per_img), 3)  # 10.0s per angle
+    xfade_dur = 0.50  # 0.50s smooth xfade overlap between every camera cut
+    raw_angle_frames = int(round((effective_angle_sec + xfade_dur) * fps))  # 315 frames = 10.50s
+    raw_angle_sec = raw_angle_frames / float(fps)
+    block_dur_with_tail = round(angles_per_img * effective_angle_sec + xfade_dur, 3)  # 30.50s
+
+    angle_templates = [
+        ("Hero Right Push-In",    1.02, 0.24, 0.48,  0.28, 0.48, -0.08),
+        ("Upper-Left Vista Zoom", 1.04, 0.23, 0.42, -0.25, 0.42, -0.18),
+        ("Rising Center Reveal",  1.03, 0.25, 0.46,  0.12, 0.70, -0.30),
+    ]
+    intra_xfades = ["dissolve", "smoothup", "radial", "smoothright"]
+    inter_xfades = ["fadeblack", "dissolve", "smoothleft", "wipeleft"]
+
+    print(
+        f"[HUD Loop] Building {loop_duration_sec:.0f}s 2.5D FX reel from {num_imgs} backgrounds "
+        f"({angles_per_img} angles x {effective_angle_sec:.1f}s + {xfade_dur}s xfade)...",
+        flush=True,
+    )
+
+    block_clips = []
+    temp_files = []
+    total_shots = num_imgs * angles_per_img
+    shot_counter = 0
+
+    for seq_idx, (b_idx, img_path) in enumerate(bg_images, 1):
+        angle_clips = []
+        for ang_idx, (ang_name, z0, dz, x0, dx, y0, dy) in enumerate(angle_templates, 1):
+            shot_counter += 1
+            ang_out = os.path.join(build_dir, f"_tmp_25d_b{seq_idx:02d}_a{ang_idx}.mp4")
+            temp_files.append(ang_out)
+
+            if CV2_NUMPY_AVAILABLE:
+                _render_25d_parallax_shot_to_ffmpeg(
+                    img_path=img_path,
+                    out_mp4=ang_out,
+                    num_frames=raw_angle_frames,
+                    fps=fps,
+                    z0=z0, dz=dz, x0=x0, dx=dx, y0=y0, dy=dy,
+                    seed_key=f"fx_25d_{b_idx}_{ang_idx}",
+                )
+            else:
+                # Pure-FFmpeg fallback if OpenCV is unavailable
+                ease = f"(0.5*(1-cos(PI*on/{raw_angle_frames})))"
+                vf = (
+                    f"scale=5760:-1:flags=lanczos,"
+                    f"zoompan=z='{z0}+{dz}*{ease}':"
+                    f"x='(iw-iw/zoom)*clip({x0}+({dx})*{ease},0,1)':"
+                    f"y='(ih-ih/zoom)*clip({y0}+({dy})*{ease},0,1)':"
+                    f"d={raw_angle_frames}:s=1920x1080:fps={fps},"
+                    f"gblur=sigma=8:enable='lt(t,0.45)',"
+                    f"vignette=angle=PI/4.6,noise=alls=6:allf=t+u,format=yuv420p"
+                )
+                subprocess.run(
+                    [
+                        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                        "-loop", "1", "-t", f"{raw_angle_sec:.3f}", "-i", img_path,
+                        "-vf", vf, "-t", f"{raw_angle_sec:.3f}",
+                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
+                        "-pix_fmt", "yuv420p", "-an", ang_out,
+                    ],
+                    check=True,
+                )
+
+            angle_clips.append(ang_out)
+            print(
+                f"     [HUD Loop] Rendered {shot_counter:02d}/{total_shots} "
+                f"(2.5D FX {ang_name}): {os.path.basename(img_path)}",
+                flush=True,
+            )
+
+        # Blend the 3 angles of this block with xfade (keeps 0.50s tail for inter-block xfade)
+        block_out = os.path.join(build_dir, f"_tmp_25d_block_{seq_idx:02d}.mp4")
+        temp_files.append(block_out)
+        tr1 = intra_xfades[(b_idx) % len(intra_xfades)]
+        tr2 = intra_xfades[(b_idx + 1) % len(intra_xfades)]
+        off1 = round(effective_angle_sec, 3)
+        off2 = round(effective_angle_sec * 2.0, 3)
+
+        subprocess.run(
+            [
+                "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                "-i", angle_clips[0], "-i", angle_clips[1], "-i", angle_clips[2],
+                "-filter_complex",
+                f"[0:v][1:v]xfade=transition={tr1}:duration={xfade_dur:.2f}:offset={off1:.3f}[xf1];"
+                f"[xf1][2:v]xfade=transition={tr2}:duration={xfade_dur:.2f}:offset={off2:.3f}[vblk]",
+                "-map", "[vblk]",
+                "-t", f"{block_dur_with_tail:.3f}",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "22", "-g", str(fps),
+                "-pix_fmt", "yuv420p", "-an",
+                block_out,
+            ],
+            check=True,
+        )
+        block_clips.append(block_out)
+
+    # Blend all 10 block clips together via xfade into the 300s background track
+    raw_bg_300s = os.path.join(build_dir, "_tmp_25d_bg_300s.mp4")
+    temp_files.append(raw_bg_300s)
+
+    blk_inputs = []
+    for bc in block_clips:
+        blk_inputs.extend(["-i", bc])
+
+    blk_xfade_chains = []
+    prev_pad = "[0:v]"
+    per_block_step = round(angles_per_img * effective_angle_sec, 3)  # 30.0s
+    for k in range(1, len(block_clips)):
+        off_b = round(k * per_block_step, 3)
+        tr_b = inter_xfades[k % len(inter_xfades)]
+        out_pad = f"[bxf{k}]" if k < len(block_clips) - 1 else "[v300]"
+        blk_xfade_chains.append(
+            f"{prev_pad}[{k}:v]xfade=transition={tr_b}:duration={xfade_dur:.2f}:offset={off_b:.3f}{out_pad}"
+        )
+        prev_pad = out_pad
+
+    subprocess.run(
+        [
+            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+            *blk_inputs,
+            "-filter_complex", ";".join(blk_xfade_chains),
+            "-map", "[v300]",
+            "-t", f"{loop_duration_sec:.3f}",
+            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-g", str(fps),
+            "-pix_fmt", "yuv420p", "-an",
+            raw_bg_300s,
+        ],
+        check=True,
+    )
+
+    # Composite transparent hud_overlay_10s.webm over the 300s 2.5D FX reel
+    subprocess.run(
+        [
+            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+            "-i", raw_bg_300s,
+            "-c:v", "libvpx-vp9", "-stream_loop", "-1", "-i", hud_webm,
+            "-filter_complex", "[0:v][1:v]overlay=0:0:shortest=1,format=yuv420p[outv]",
+            "-map", "[outv]",
+            "-t", f"{loop_duration_sec:.3f}",
+            "-c:v", "libx264", "-preset", "veryfast", "-crf", "24", "-g", str(fps),
+            "-pix_fmt", "yuv420p", "-an",
+            master_loop_path,
+        ],
+        check=True,
+    )
+
+    for tmp in temp_files:
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except OSError:
+            pass
+
+    print(f"[HUD Loop] [✓] Created 5-minute 2.5D FX master loop: {master_loop_path}", flush=True)
+    return master_loop_path
+
 
 def assemble_multi_image_video(
     blocks: list,
@@ -1738,60 +2163,52 @@ def assemble_multi_image_video(
     output_video_path: str,
     subtitles_srt_path: Optional[Union[str, Dict[str, str]]] = None
 ):
-    print("\n[Multiplexer] Assembling Video Frames + Outro Card...", flush=True)
-    video_segments = []
+    print("\n[Multiplexer] Assembling 5-Minute Rolling HUD Video + Outro Card...", flush=True)
 
-    for cfg in blocks:
-        b_idx = cfg["index"]
-        dur = block_durations.get(b_idx, 0.0)
-        if dur <= 0.1:
-            dur = 60.0
-
-        cover_path = cfg.get("cover_file")
-        if not cover_path or not os.path.exists(cover_path):
-            r_start, r_end = cfg.get("range", (0, 0))
-            candidate = os.path.join(build_dir, f"cover_block_{r_start}_{r_end}.jpg")
-            cover_path = candidate if os.path.exists(candidate) else cover_path
-
-        # 1. Render single 1080p blurred canvas frame (takes ~0.05s once per block)
-        canvas_img = os.path.join(build_dir, f"canvas_block_{b_idx}.jpg")
-        if not os.path.exists(canvas_img) or os.path.getsize(canvas_img) < 1000:
-            blur_filter = (
-                "[0:v]split=2[bg_raw][fg_raw];"
-                "[bg_raw]scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,boxblur=25:5,eq=brightness=-0.15[bg];"
-                "[fg_raw]scale=1920:1080:force_original_aspect_ratio=decrease[fg];"
-                "[bg][fg]overlay=(W-w)/2:(H-h)/2"
-            )
-            subprocess.run([
-                "ffmpeg", "-y", "-i", cover_path,
-                "-filter_complex", blur_filter,
-                "-vframes", "1",
-                canvas_img
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-
-        # 2. Feed the ready 1080p canvas into the high-speed 1-fps stream
-        segment_video = os.path.join(build_dir, f"v_seg_block_{b_idx}.mp4")
-        subprocess.run([
-            "ffmpeg", "-y", "-loop", "1", "-framerate", "1", "-t", f"{dur:.3f}",
-            "-i", canvas_img,
-            "-vf", "format=yuv420p",
-            "-r", "1",
-            "-c:v", "libx264", "-tune", "stillimage", "-preset", "ultrafast",
-            segment_video
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        video_segments.append(segment_video)
+    total_audio_dur = _probe_duration_sync(final_audio_path)
+    if total_audio_dur <= 1.0:
+        total_audio_dur = max(60.0, sum(block_durations.values()))
 
     outro_slate = os.path.join(build_dir, "outro_slate_card.jpg")
+    has_outro = os.path.exists(outro_slate)
+    outro_dur = 15.0 if has_outro else 0.0
+    main_video_dur = max(10.0, total_audio_dur - outro_dur)
+
+    # 1. Build (or reuse) the 5-minute (300s) 10-background animated HUD loop
+    master_loop_5m = build_5min_hud_loop_video(blocks, build_dir, loop_duration_sec=300.0, fps=30)
+
+    # 2. Stream-copy the 5-minute loop across the entire main audiobook duration (instantaneous)
+    main_looped_track = os.path.join(build_dir, "v_seg_main_hud_loop.mp4")
+    subprocess.run(
+        [
+            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+            "-stream_loop", "-1",
+            "-i", master_loop_5m,
+            "-t", f"{main_video_dur:.3f}",
+            "-c:v", "copy",
+            main_looped_track,
+        ],
+        check=True,
+    )
+
+    video_segments = [main_looped_track]
+
+    # 3. Append 15s Outro Card encoded at matching 30fps yuv420p so concat -c copy is seamless
     outro_seg = os.path.join(build_dir, "v_seg_outro.mp4")
-    if os.path.exists(outro_slate):
-        subprocess.run([
-            "ffmpeg", "-y", "-loop", "1", "-framerate", "1", "-t", "15.000",
-            "-i", outro_slate,
-            "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,format=yuv420p",
-            "-r", "1",
-            "-c:v", "libx264", "-tune", "stillimage", "-preset", "ultrafast",
-            outro_seg
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    if has_outro:
+        subprocess.run(
+            [
+                "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                "-loop", "1", "-framerate", "30", "-t", f"{outro_dur:.3f}",
+                "-i", outro_slate,
+                "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,format=yuv420p",
+                "-r", "30",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "25", "-g", "30",
+                "-pix_fmt", "yuv420p", "-an",
+                outro_seg,
+            ],
+            check=True,
+        )
         video_segments.append(outro_seg)
 
     v_manifest = os.path.join(build_dir, "v_segments_list.txt")
@@ -1801,14 +2218,14 @@ def assemble_multi_image_video(
 
     full_video_track = os.path.join(build_dir, "full_video_track.mp4")
     subprocess.run(
-        ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", v_manifest, "-c", "copy", full_video_track],
-        check=True
+        ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", v_manifest, "-c", "copy", full_video_track],
+        check=True,
     )
 
     mux_cmd = [
-        "ffmpeg", "-y",
+        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
         "-i", full_video_track,
-        "-i", final_audio_path
+        "-i", final_audio_path,
     ]
 
     valid_subs: Dict[str, str] = {}
@@ -1839,7 +2256,7 @@ def assemble_multi_image_video(
         "-c:a", "copy",
         "-movflags", "+faststart",
         "-shortest",
-        output_video_path
+        output_video_path,
     ])
 
     subprocess.run(mux_cmd, check=True)
