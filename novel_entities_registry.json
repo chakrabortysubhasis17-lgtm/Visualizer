@@ -38182,5 +38182,301 @@
       }
     },
     "vocatives": {}
+  },
+  "dominate-the-super-bowl": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "burns": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "burns"
+        ]
+      },
+      "coach burton burns": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+1Hz",
+        "rate": "-2%",
+        "aliases": [
+          "coach burton burns"
+        ]
+      },
+      "stuart bell": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "stuart bell"
+        ]
+      },
+      "bell": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bell"
+        ]
+      },
+      "allen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "allen"
+        ]
+      },
+      "foster": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "foster"
+        ]
+      },
+      "jackson": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jackson"
+        ]
+      },
+      "saban": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "saban"
+        ]
+      },
+      "li wei": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "li wei"
+        ]
+      },
+      "humphrey": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "humphrey"
+        ]
+      },
+      "clark": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "clark"
+        ]
+      },
+      "hertz": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hertz"
+        ]
+      },
+      "tyree clark": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "tyree clark"
+        ]
+      },
+      "tyree": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "tyree"
+        ]
+      },
+      "bateman": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bateman"
+        ]
+      },
+      "beteman": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "beteman"
+        ]
+      },
+      "pash": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "pash"
+        ]
+      },
+      "watson": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "watson"
+        ]
+      },
+      "blackledge": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "blackledge"
+        ]
+      },
+      "farrell": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "farrell"
+        ]
+      },
+      "sweeney": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "sweeney"
+        ]
+      },
+      "lawrence": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lawrence"
+        ]
+      },
+      "blackley": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "blackley"
+        ]
+      }
+    },
+    "vocatives": {}
   }
 }

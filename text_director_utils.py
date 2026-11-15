@@ -1169,25 +1169,29 @@ You must follow every directive below without deviation:
 5. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
 
 ### CORE DIRECTIVE 2: CHARACTER, ENTITY & DIALOGUE SEGREGATION
-1. Dialogue Tag Separation: Spoken dialogue MUST be isolated from adjacent narrative tags.
-   - Example: '"Shall we?" she whispered, glancing back.' -> Segment 1: Dialogue by speaker; Segment 2: Narration by Narrator.
+1. Dialogue Tag & Mid-Quote Action Separation:
+   - Spoken dialogue MUST be isolated from adjacent narrative tags and mid-sentence actions.
+   - Example 1: '"Shall we?" she whispered, glancing back.' -> Segment 1: Dialogue by speaker; Segment 2: Narration by Narrator.
+   - Example 2: '"Hold the line," he raised his shield against the shockwave, "and do not lose your formation!"' -> Segment 1: Dialogue by speaker; Segment 2: Narration by Narrator; Segment 3: Dialogue by speaker. NEVER let a character voice read third-person narration.
 2. Conversational Turn-Taking (Dialogue Gaps):
    - Whenever Speaker A finishes speaking and Speaker B speaks next, emit a dedicated pause row between them:
-     {{"line_id": "0000", "speaker": "Narrator", "gender": "Neutral", "line_type": "Narration", "display_text": "", "tts_text": "", "text": "", "pause_duration": 0.8, "pitch_tier": "narrator_anchor", "lung_reset": false, "rate": "+0%", "voice": "en-US-ChristopherNeural", "sfx": "", "bgm_mood": "no_mood"}}
+     {{"line_id": "0000", "speaker": "Narrator", "gender": "Neutral", "line_type": "Narration", "display_text": "", "tts_text": "", "text": "", "pause_duration": 0.6, "pitch_tier": "narrator_anchor", "lung_reset": false, "rate": "+0%", "voice": "en-US-ChristopherNeural", "sfx": "", "bgm_mood": "no_mood"}}
    - For rapid combat banter or heated arguments, reduce "pause_duration" to 0.2.
    - For mid-sentence interruptions (trailing hyphen), reduce "pause_duration" to 0.05.
 3. Dialogue Rate Clamping:
    - For all rows where "line_type" is "Dialogue", set "rate" strictly to "-4%" (or "-5%" for heavy/menacing threats). Voice actors speak more deliberately than third-person narration.
    - For "Narration", set "rate" to "+0%".
-4. Speaker Identification & Gender Lock:
-   - Always reference the ACTIVE STAGED CHARACTERS manifest below first. A female character must NEVER become male, and a male character must NEVER become female.
+   - For "System", set "rate" to "+2%" so stat sheets, skill trees, and status windows read crisply without dragging.
+4. Speaker Identification, Internal Thoughts & Gender Lock:
+   - Always reference the ACTIVE STAGED CHARACTERS manifest below first (including all listed ALIASES and recurring contextual titles or epithets such as "the young lady", "Senior Sister", "the guild master", "the commander", or "the old man"). A female character must NEVER become male, and a male character must NEVER become female.
    - The "speaker" field must be a CLEAN character name or "Narrator". NEVER put spoken quotes, phrases, or full sentences into the speaker field.
    - If a character is the first-person narrator ('I', 'me') and has an explicit identity established in context, assign them their true character name and gender instead of a generic "Protagonist" label.
-   - Mark general narration and descriptive actions with speaker "Narrator", gender "Neutral", and line_type "Narration".
-   - For newly introduced characters not yet in ACTIVE STAGED CHARACTERS, diversify casting across these authorized free US neural voices based on gender, age, and personality (use "en-US-ChristopherNeural" for Narrator and "en-US-AriaNeural" for System; NEVER invent unlisted voice IDs):
-     * Male Options: "en-US-AndrewMultilingualNeural" (warm heroic baritone), "en-US-AndrewNeural" (grounded adult male), "en-US-BrianMultilingualNeural" (youthful/young adult male), "en-US-BrianNeural" (friendly young male), "en-US-EricNeural" (sharp rival/schemer/commander), "en-US-GuyNeural" (energetic/gritty fighter), "en-US-RogerNeural" (mature elder/noble/sovereign), "en-US-SteffanNeural" (crisp scholar/analyst).
-     * Female Options: "en-US-AvaMultilingualNeural" (expressive lead heroine), "en-US-AvaNeural" (bright young female), "en-US-EmmaMultilingualNeural" (warm articulate heroine), "en-US-EmmaNeural" (calm/mature woman), "en-US-JennyNeural" (versatile adult female), "en-US-MichelleNeural" (grounded mature mentor/elder), "en-US-AriaNeural" (commanding noblewoman/warrior).
-5. System & Interface Blocks: Screen prompts, level-up banners, and robotic notifications must be marked with speaker "System", gender "Neutral", and line_type "System". Character internal thoughts must NEVER be marked as "System".
+   - First-person internal thoughts and unspoken monologues ('Is this a hidden quest?', 'My mana is nearly depleted...') MUST be assigned "line_type": "Dialogue" under the thinking character's true name, gender, and voice—NEVER "Narrator" and NEVER "System".
+   - Mark ALL third-person narration, scene descriptions, attribution tags, and silent pause rows with speaker "Narrator", gender "Neutral", line_type "Narration", and voice "en-US-ChristopherNeural". NEVER assign any other voice to "Narrator".
+   - For newly introduced characters not yet in ACTIVE STAGED CHARACTERS, diversify casting across these authorized free US neural voices strictly matching their gender, age, and personality (use "en-US-ChristopherNeural" for Narrator and "en-US-AriaNeural" for System; NEVER invent unlisted voice IDs):
+     * Male Options (STRICTLY Male characters/titles): "en-US-AndrewMultilingualNeural" (warm heroic baritone), "en-US-AndrewNeural" (grounded adult male), "en-US-BrianMultilingualNeural" (youthful/young adult male), "en-US-BrianNeural" (friendly young male), "en-US-EricNeural" (sharp rival/schemer/commander), "en-US-GuyNeural" (energetic/gritty fighter), "en-US-RogerNeural" (mature elder/noble/sovereign), "en-US-SteffanNeural" (crisp scholar/analyst).
+     * Female Options (STRICTLY Female characters/titles): "en-US-AvaMultilingualNeural" (expressive lead heroine), "en-US-AvaNeural" (bright young female), "en-US-EmmaMultilingualNeural" (warm articulate heroine), "en-US-EmmaNeural" (calm/mature woman), "en-US-JennyNeural" (versatile adult female), "en-US-MichelleNeural" (grounded mature mentor/elder), "en-US-AriaNeural" (commanding noblewoman/warrior).
+5. System & Interface Blocks: Screen prompts, level-up banners, stat windows, quest logs, item descriptions, and robotic notifications must be marked with speaker "System", gender "Neutral", line_type "System", and voice "en-US-AriaNeural". Character internal thoughts must NEVER be marked as "System".
 
 ### CORE DIRECTIVE 3: 21-TIER SOLFÈGE PITCH MATRIX, NARRATOR LUNG RESETS & CADENCE
 1. 21-Tier Solfège Pitch Matrix ("pitch_tier"): Select the exact semantic tier across the 3-octave matrix:
@@ -1219,7 +1223,7 @@ You must follow every directive below without deviation:
    - Set "lung_reset": true ONLY on the first sentence of a fresh scene, new paragraph, or major topic shift for "line_type": "Narration".
    - Automatically pair "lung_reset": true with "pitch_tier": "lung_reset_entry".
    - Set "lung_reset": false on all subsequent continuing narration rows and on ALL character dialogue.
-3. Mandatory Terminal Punctuation: Every segment's text field MUST terminate with a valid punctuation mark ('.', '!', '?', '...', or '—'). If missing in the raw text, append the contextually appropriate mark.
+3. Mandatory Terminal Punctuation: Every segment's text field MUST terminate with a valid punctuation mark ('.', '!', '?', or '...'). If missing in the raw text, append the contextually appropriate mark.
 4. Natural Punctuation & Anti-Comma Bounce:
    - NEVER insert artificial commas into sentences to slow them down. Neural engines create an unnatural rising-falling sing-song "comma bounce" on commas. Maintain grammatically natural commas only.
    - In "tts_text", replace em-dashes ('—') or double hyphens ('--') with an ellipsis ('...') or split the clause into separate segments so Edge TTS never speaks the literal word "dash".
@@ -1228,9 +1232,9 @@ You must follow every directive below without deviation:
 5. Phonetic Normalization for Repetitive Character Patterns:
    - Leading Repetitions (Stutters): When a word is preceded by detached or hyphenated repeating characters (e.g., 'W W W WHAT' or 'W-w-w-what'), collapse them into a single hyphenated stutter attached directly to the base word (e.g., 'W-what'). Do NOT leave isolated single letters detached so Edge TTS does not spell out alphabet names.
    - Internal & Trailing Elongations: When words contain excessively multiplied characters to simulate shouting or shock (e.g., 'OH H H H', 'NOOOO!'), normalize the run to a natural 2-to-3 character sequence (e.g., 'Ohhh...', 'Nooo!') with appropriate terminal punctuation.
-
 ### CORE DIRECTIVE 4: JSON SCHEMA & OUTPUT FORMAT
 Return ONLY a valid JSON object with a single key "segments" containing an array of objects. Do NOT output markdown code fences, citations, or conversational text.
+Default Voice Mapping: "Narration" -> "en-US-ChristopherNeural" | "System" -> "en-US-AriaNeural" | "Dialogue" -> matched character voice.
 
 Each object in the array must strictly comply with this schema:
 {{
@@ -1504,15 +1508,48 @@ ACTIVE STAGED CHARACTERS:
         seg["text"] = disp_text
 
         # Fuzzy character voice lock & continuity enforcement
+        FEMALE_VOICES = {
+            "en-US-AvaMultilingualNeural", "en-US-AvaNeural",
+            "en-US-EmmaMultilingualNeural", "en-US-EmmaNeural",
+            "en-US-JennyNeural", "en-US-MichelleNeural", "en-US-AriaNeural"
+        }
+        MALE_VOICES = {
+            "en-US-AndrewMultilingualNeural", "en-US-AndrewNeural",
+            "en-US-BrianMultilingualNeural", "en-US-BrianNeural",
+            "en-US-EricNeural", "en-US-GuyNeural",
+            "en-US-RogerNeural", "en-US-SteffanNeural", "en-US-ChristopherNeural"
+        }
+
         sp = seg.get("speaker", "Narrator")
+        gender_norm = seg.get("gender", "Neutral").strip().title()
         current_voice = seg.get("voice", "en-US-ChristopherNeural")
+
         if seg.get("line_type") == "Narration" or sp.lower() == "narrator":
             seg["speaker"] = "Narrator"
+            seg["gender"] = "Neutral"
+            seg["line_type"] = "Narration"
             seg["voice"] = "en-US-ChristopherNeural"
+        elif seg.get("line_type") == "System" or sp.lower() == "system":
+            seg["speaker"] = "System"
+            seg["gender"] = "Neutral"
+            seg["line_type"] = "System"
+            seg["voice"] = "en-US-AriaNeural"
         elif seg.get("line_type") == "Dialogue":
-            seg["voice"] = resolve_character_voice(sp, staged_chars, default_voice=current_voice)
-        elif seg.get("line_type") == "System":
-            seg["voice"] = "en-US-ChristopherNeural"
+            resolved_v = resolve_character_voice(sp, staged_chars, default_voice=current_voice)
+            if gender_norm == "Female" and resolved_v not in FEMALE_VOICES:
+                resolved_v = "en-US-AvaMultilingualNeural"
+            elif gender_norm == "Male" and resolved_v not in MALE_VOICES:
+                resolved_v = "en-US-GuyNeural"
+            seg["voice"] = resolved_v
+
+        # Clamp pause_duration and rate to prevent dead-air hangs or clipped speech
+        seg["pause_duration"] = max(0.0, min(1.0, float(seg.get("pause_duration", 0.0))))
+        m_rate = re.match(r'^([+-]?\d+)%$', str(seg.get("rate", "+0%")).strip())
+        if m_rate:
+            clamped_r = max(-5, min(3, int(m_rate.group(1))))
+            seg["rate"] = f"{clamped_r:+d}%"
+        else:
+            seg["rate"] = "+2%" if seg.get("line_type") == "System" else ("-4%" if seg.get("line_type") == "Dialogue" else "+0%")
 
         seg_text = seg.get("display_text", "")
         t_low = seg_text.lower()

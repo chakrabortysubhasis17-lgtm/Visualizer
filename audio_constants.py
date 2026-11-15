@@ -22,60 +22,60 @@ BROADCAST_VOCAL_FILTER = (
 # Octave 3 (Do3-Ti3): Upper Midrange, Head Voice & Strained Peaks (+1.0Hz to +4.5Hz)
 # ---------------------------------------------------------------------------
 VOICE_PITCH_PROFILES = {
-    # Christopher: Narrator & Dominant Leads (broad chest resonance down to -6Hz)
+    # Christopher: Narrator & Dominant Leads (6Hz human dynamic range: -5Hz deep floor to +1Hz peak)
     "en-US-ChristopherNeural": {
-        # Octave 1 (Do1 - Ti1): Abyssal Dread & Low Authority
-        "abyssal_floor": "-6.0Hz",
-        "grave_somber": "-5.0Hz",
-        "grim_rumble": "-4.0Hz",
-        "menacing_growl": "-3.5Hz",
-        "subdued_mournful": "-3.0Hz",
-        "intimate_whisper": "-2.8Hz",
-        "authoritative_low": "-2.5Hz",
-        # Octave 2 (Do2 - Ti2): Narrative Foundation & Dialogue Mid
+        # Octave 1 (Do1 - Ti1): Deep Chest Low (-4.5Hz to -2.2Hz)
+        "abyssal_floor": "-4.5Hz",
+        "grave_somber": "-4.0Hz",
+        "grim_rumble": "-3.6Hz",
+        "menacing_growl": "-3.2Hz",
+        "subdued_mournful": "-2.8Hz",
+        "intimate_whisper": "-2.5Hz",
+        "authoritative_low": "-2.2Hz",
+        # Octave 2 (Do2 - Ti2): Narrative Core & Mid (-2.0Hz to +0.4Hz)
         "narrator_anchor": "-2.0Hz",
         "thoughtful_drawl": "-1.5Hz",
-        "conversational_mid": "-1.0Hz",
-        "engaged_alert": "-0.5Hz",
-        "neutral_statement": "+0.0Hz",
-        "buoyant_lift": "+0.4Hz",
-        "inquisitive_tilt": "+0.8Hz",
-        # Octave 3 (Do3 - Ti3): High-Tension, Strain & Peaks
-        "lung_reset_entry": "+1.2Hz",
-        "tense_strained": "+1.6Hz",
-        "urgent_command": "+2.0Hz",
-        "alarmed_spike": "+2.4Hz",
-        "defiant_shout": "+2.8Hz",
-        "frantic_screech": "+3.2Hz",
-        "hysterical_peak": "+3.6Hz",
+        "conversational_mid": "-1.2Hz",
+        "engaged_alert": "-0.6Hz",
+        "neutral_statement": "-0.4Hz",
+        "buoyant_lift": "+0.2Hz",
+        "inquisitive_tilt": "+0.4Hz",
+        # Octave 3 (Do3 - Ti3): High-Energy War, Tension & Peaks (+0.0Hz to +0.8Hz)
+        "lung_reset_entry": "+0.0Hz",
+        "tense_strained": "+0.2Hz",
+        "urgent_command": "+0.5Hz",
+        "alarmed_spike": "+0.6Hz",
+        "defiant_shout": "+0.8Hz",
+        "frantic_screech": "+0.8Hz",
+        "hysterical_peak": "+0.8Hz",
     },
 
-    # Guy: Agile young male leads & versatile dialogue
+    # Guy: Agile young male leads & versatile dialogue (calibrated to [-3Hz, +2Hz] human sweet spot)
     "en-US-GuyNeural": {
-        # Octave 1
-        "abyssal_floor": "-4.5Hz",
-        "grave_somber": "-3.8Hz",
-        "grim_rumble": "-3.2Hz",
-        "menacing_growl": "-2.8Hz",
-        "subdued_mournful": "-2.2Hz",
-        "intimate_whisper": "-1.8Hz",
-        "authoritative_low": "-1.2Hz",
-        # Octave 2
-        "narrator_anchor": "-0.5Hz",
-        "thoughtful_drawl": "-0.2Hz",
-        "conversational_mid": "+0.0Hz",
-        "engaged_alert": "+0.5Hz",
-        "neutral_statement": "+0.8Hz",
-        "buoyant_lift": "+1.2Hz",
-        "inquisitive_tilt": "+1.5Hz",
-        # Octave 3
-        "lung_reset_entry": "+1.8Hz",
-        "tense_strained": "+2.2Hz",
-        "urgent_command": "+2.6Hz",
-        "alarmed_spike": "+3.0Hz",
-        "defiant_shout": "+3.4Hz",
-        "frantic_screech": "+3.8Hz",
-        "hysterical_peak": "+4.2Hz",
+        # Octave 1 (Do1 - Ti1): Deep Chest & Menacing Floor (-2.6Hz to -1.0Hz)
+        "abyssal_floor": "-2.6Hz",
+        "grave_somber": "-2.4Hz",
+        "grim_rumble": "-2.0Hz",
+        "menacing_growl": "-1.8Hz",
+        "subdued_mournful": "-1.5Hz",
+        "intimate_whisper": "-1.2Hz",
+        "authoritative_low": "-1.0Hz",
+        # Octave 2 (Do2 - Ti2): Natural Speaking Core (-0.6Hz to +1.2Hz)
+        "narrator_anchor": "+0.0Hz",
+        "thoughtful_drawl": "-0.6Hz",
+        "conversational_mid": "-0.4Hz",
+        "engaged_alert": "+0.4Hz",
+        "neutral_statement": "+0.0Hz",
+        "buoyant_lift": "+0.8Hz",
+        "inquisitive_tilt": "+1.2Hz",
+        # Octave 3 (Do3 - Ti3): Action, Tension & Peaks (+0.8Hz to +1.6Hz)
+        "lung_reset_entry": "+0.8Hz",
+        "tense_strained": "+0.8Hz",
+        "urgent_command": "+1.4Hz",
+        "alarmed_spike": "+1.5Hz",
+        "defiant_shout": "+1.6Hz",
+        "frantic_screech": "+1.6Hz",
+        "hysterical_peak": "+1.6Hz",
     },
 
     # Eric: Arrogant scions, rivals & aggressive antagonists
@@ -103,34 +103,6 @@ VOICE_PITCH_PROFILES = {
         "alarmed_spike": "+3.4Hz",
         "defiant_shout": "+3.8Hz",
         "frantic_screech": "+4.0Hz",
-        "hysterical_peak": "+4.5Hz",
-    },
-
-    # Tony: Panicked civilian mobs & frantic crowd shouts
-    "en-US-TonyNeural": {
-        # Octave 1
-        "abyssal_floor": "-3.5Hz",
-        "grave_somber": "-2.8Hz",
-        "grim_rumble": "-2.0Hz",
-        "menacing_growl": "-1.5Hz",
-        "subdued_mournful": "-1.0Hz",
-        "intimate_whisper": "-0.5Hz",
-        "authoritative_low": "+0.0Hz",
-        # Octave 2
-        "narrator_anchor": "+0.2Hz",
-        "thoughtful_drawl": "+0.5Hz",
-        "conversational_mid": "+0.8Hz",
-        "engaged_alert": "+1.5Hz",
-        "neutral_statement": "+1.8Hz",
-        "buoyant_lift": "+2.0Hz",
-        "inquisitive_tilt": "+2.4Hz",
-        # Octave 3
-        "lung_reset_entry": "+2.6Hz",
-        "tense_strained": "+2.8Hz",
-        "urgent_command": "+3.0Hz",
-        "alarmed_spike": "+3.4Hz",
-        "defiant_shout": "+3.8Hz",
-        "frantic_screech": "+4.2Hz",
         "hysterical_peak": "+4.5Hz",
     },
 
@@ -274,60 +246,32 @@ VOICE_PITCH_PROFILES = {
         "hysterical_peak": "+2.8Hz",
     },
 
-    # Aria: Systems & Divine Empresses (crystalline, emotionally detached)
+    # Aria: Systems & Commanding Noblewomen/Empresses (calibrated to [-3Hz, +2Hz] sweet spot)
     "en-US-AriaNeural": {
-        # Octave 1
-        "abyssal_floor": "-3.0Hz",
-        "grave_somber": "-2.5Hz",
+        # Octave 1 (Do1 - Ti1): Deep Sovereign & Somber Floor (-2.6Hz to -1.2Hz)
+        "abyssal_floor": "-2.6Hz",
+        "grave_somber": "-2.2Hz",
         "grim_rumble": "-2.0Hz",
-        "menacing_growl": "-1.5Hz",
-        "subdued_mournful": "-1.0Hz",
-        "intimate_whisper": "-0.5Hz",
-        "authoritative_low": "-0.2Hz",
-        # Octave 2
+        "menacing_growl": "-1.8Hz",
+        "subdued_mournful": "-1.6Hz",
+        "intimate_whisper": "-1.4Hz",
+        "authoritative_low": "-1.2Hz",
+        # Octave 2 (Do2 - Ti2): Crisp System Core & Dialogue Mid (-1.0Hz to +1.2Hz)
         "narrator_anchor": "+0.0Hz",
-        "thoughtful_drawl": "+0.0Hz",
-        "conversational_mid": "+0.2Hz",
-        "engaged_alert": "+0.5Hz",
-        "neutral_statement": "+0.8Hz",
-        "buoyant_lift": "+1.0Hz",
+        "thoughtful_drawl": "-0.8Hz",
+        "conversational_mid": "-0.6Hz",
+        "engaged_alert": "+0.4Hz",
+        "neutral_statement": "+0.0Hz",
+        "buoyant_lift": "+0.8Hz",
         "inquisitive_tilt": "+1.2Hz",
-        # Octave 3
-        "lung_reset_entry": "+1.4Hz",
-        "tense_strained": "+1.6Hz",
-        "urgent_command": "+1.8Hz",
-        "alarmed_spike": "+2.0Hz",
-        "defiant_shout": "+2.2Hz",
-        "frantic_screech": "+2.4Hz",
-        "hysterical_peak": "+2.5Hz",
-    },
-
-    # Ryan (en-US): Young modern leads, bards & peers
-    "en-US-RyanNeural": {
-        # Octave 1
-        "abyssal_floor": "-4.5Hz",
-        "grave_somber": "-3.8Hz",
-        "grim_rumble": "-3.0Hz",
-        "menacing_growl": "-2.5Hz",
-        "subdued_mournful": "-2.0Hz",
-        "intimate_whisper": "-1.5Hz",
-        "authoritative_low": "-1.0Hz",
-        # Octave 2
-        "narrator_anchor": "+0.0Hz",
-        "thoughtful_drawl": "+0.2Hz",
-        "conversational_mid": "+0.5Hz",
-        "engaged_alert": "+1.0Hz",
-        "neutral_statement": "+1.4Hz",
-        "buoyant_lift": "+1.8Hz",
-        "inquisitive_tilt": "+2.0Hz",
-        # Octave 3
-        "lung_reset_entry": "+2.2Hz",
-        "tense_strained": "+2.5Hz",
-        "urgent_command": "+2.8Hz",
-        "alarmed_spike": "+3.0Hz",
-        "defiant_shout": "+3.4Hz",
-        "frantic_screech": "+3.8Hz",
-        "hysterical_peak": "+4.0Hz",
+        # Octave 3 (Do3 - Ti3): High-Command & Climax Peaks (+1.0Hz to +1.8Hz)
+        "lung_reset_entry": "+0.8Hz",
+        "tense_strained": "+1.0Hz",
+        "urgent_command": "+1.4Hz",
+        "alarmed_spike": "+1.6Hz",
+        "defiant_shout": "+1.8Hz",
+        "frantic_screech": "+1.8Hz",
+        "hysterical_peak": "+1.8Hz",
     },
 
     # Ryan (en-GB): British accented nobles & scholars
@@ -495,7 +439,7 @@ VOICE_PITCH_PROFILES = {
 }
 
 # ---------------------------------------------------------------------------
-# BGM MOOD PACING & PITCH MATRIX
+# BGM MOOD PACING & PITCH MATRIX (Calibrated for Crisp Articulation & Pacing)
 # ---------------------------------------------------------------------------
 BGM_MOODS = frozenset({
     "combat", "tension", "sorrow", "wonder", "warmth",
@@ -504,183 +448,172 @@ BGM_MOODS = frozenset({
 
 BGM_MOOD_PITCH_DELTAS_BY_VOICE = {
     "en-US-ChristopherNeural": {
-        "combat": 0.0,    # Anchor pitch in resonant chest floor (was 0.8)
-        "triumph": 0.2,   # Slight lift (was 0.5)
-        "tension": -0.2,  # Drop slightly into darker tone for suspense (was 0.4)
-        "playful": 0.2,
-        "no_mood": 0.0,
-        "intrigue": -0.3,
-        "warmth": -0.4,
-        "wonder": -0.5,
-        "sorrow": -0.8,
-        "dread": -1.2,
+        "combat": 0.4, "triumph": 0.3, "playful": 0.2, "tension": 0.2, "no_mood": 0.0,
+        "wonder": -0.1, "warmth": -0.2, "intrigue": -0.3, "sorrow": -0.4, "dread": -0.5,
     },
     "en-US-GuyNeural": {
-        "combat": 1.2, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+        "combat": 0.4, "triumph": 0.4, "playful": 0.4, "tension": 0.2, "no_mood": 0.0,
+        "wonder": 0.0, "warmth": -0.2, "intrigue": -0.3, "sorrow": -0.4, "dread": -0.4,
     },
     "en-US-EricNeural": {
-        "combat": 1.4, "triumph": 0.8, "tension": 0.6, "playful": 0.5, "no_mood": 0.0,
+        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.6, "dread": -0.8,
+    },
+    "en-US-TonyNeural": {
+        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
         "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.6, "dread": -0.8,
     },
     "en-US-RogerNeural": {
-        "combat": 0.5, "triumph": 0.4, "tension": 0.3, "playful": 0.2, "no_mood": 0.0,
-        "intrigue": -0.4, "warmth": -0.4, "wonder": -0.6, "sorrow": -0.9, "dread": -1.3,
+        "combat": 0.4, "triumph": 0.3, "tension": 0.2, "playful": 0.2, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
     },
     "en-US-JennyNeural": {
-        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    "en-US-SteffanNeural": {
-        "combat": 0.4, "triumph": 0.3, "tension": 0.2, "playful": 0.1, "no_mood": 0.0,
-        "intrigue": -0.4, "warmth": -0.4, "wonder": -0.6, "sorrow": -1.0, "dread": -1.5,
-    },
-    "en-US-AnaNeural": {
-        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.3, "sorrow": -0.5, "dread": -0.6,
-    },
-    "en-US-AndrewMultilingualNeural": {
-        "combat": 0.6, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.9, "dread": -1.2,
-    },
-    "en-US-AndrewNeural": {
-        "combat": 0.6, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.9, "dread": -1.2,
-    },
-    "en-US-BrianMultilingualNeural": {
-        "combat": 1.0, "triumph": 0.7, "tension": 0.5, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
-    },
-    "en-US-BrianNeural": {
-        "combat": 1.0, "triumph": 0.7, "tension": 0.5, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
-    },
-    "en-US-AvaMultilingualNeural": {
-        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    "en-US-AvaNeural": {
-        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    "en-US-EmmaMultilingualNeural": {
-        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    "en-US-EmmaNeural": {
-        "combat": 0.8, "triumph": 0.6, "tension": 0.4, "playful": 0.4, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
-    },
-    "en-US-MichelleNeural": {
-        "combat": 0.6, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.9, "dread": -1.1,
-    },
-    "en-US-AriaNeural": {
-        "combat": 0.5, "triumph": 0.4, "tension": 0.2, "playful": 0.2, "no_mood": 0.0,
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.3, "no_mood": 0.0,
         "intrigue": -0.3, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
     },
+    "en-US-EmmaNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
+    "en-US-SteffanNeural": {
+        "combat": 0.3, "triumph": 0.2, "tension": 0.1, "playful": 0.1, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.1,
+    },
+    "en-US-AnaNeural": {
+        "combat": 0.5, "triumph": 0.4, "tension": 0.2, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.2, "wonder": -0.3, "sorrow": -0.5, "dread": -0.6,
+    },
+    "en-US-AndrewMultilingualNeural": {
+        "combat": 0.5, "triumph": 0.3, "tension": 0.2, "playful": 0.2, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-AndrewNeural": {
+        "combat": 0.5, "triumph": 0.3, "tension": 0.2, "playful": 0.2, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-BrianMultilingualNeural": {
+        "combat": 0.7, "triumph": 0.5, "tension": 0.3, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.6, "dread": -0.8,
+    },
+    "en-US-BrianNeural": {
+        "combat": 0.7, "triumph": 0.5, "tension": 0.3, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.6, "dread": -0.8,
+    },
+    "en-US-AvaMultilingualNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
+    "en-US-AvaNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
+    "en-US-EmmaMultilingualNeural": {
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.4, "no_mood": 0.0,
+        "intrigue": -0.2, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
+    },
+    "en-US-MichelleNeural": {
+        "combat": 0.5, "triumph": 0.3, "tension": 0.2, "playful": 0.2, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.4, "wonder": -0.5, "sorrow": -0.8, "dread": -1.0,
+    },
+    "en-US-AriaNeural": {
+        "combat": 0.4, "triumph": 0.3, "playful": 0.3, "tension": 0.2, "no_mood": 0.0,
+        "wonder": 0.0, "warmth": -0.2, "intrigue": -0.2, "sorrow": -0.3, "dread": -0.4,
+    },
     "default": {
-        "combat": 0.8, "triumph": 0.5, "tension": 0.4, "playful": 0.3, "no_mood": 0.0,
-        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.5, "sorrow": -0.7, "dread": -1.0,
+        "combat": 0.6, "triumph": 0.4, "tension": 0.3, "playful": 0.3, "no_mood": 0.0,
+        "intrigue": -0.3, "warmth": -0.3, "wonder": -0.4, "sorrow": -0.7, "dread": -0.9,
     }
 }
 
+# Clamped strictly to [-5%, +5%] so shouted dialogue stays crisp and slow scenes never drag
 BGM_MOOD_RATE_DELTAS_BY_VOICE = {
     "en-US-ChristopherNeural": {
-        "combat": -2,     # Slow down by -2% so fast-paced action is articulated cleanly (was +8)
-        "playful": 2,     # (was +4)
-        "triumph": 0,     # (was +3)
-        "tension": -3,    # Slow down by -3% for atmospheric suspense (was +2)
-        "no_mood": 0,
-        "intrigue": -2,
-        "warmth": -3,
-        "wonder": -5,
-        "sorrow": -7,
-        "dread": -10,
+        "combat": 4, "triumph": 3, "playful": 2, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -4, "dread": -5,
     },
     "en-US-GuyNeural": {
-        "combat": 12, "playful": 7, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+        "combat": 5, "triumph": 4, "playful": 4, "tension": 3, "no_mood": 0,
+        "intrigue": 1, "warmth": 1, "wonder": 0, "sorrow": -1, "dread": -2,
     },
     "en-US-EricNeural": {
-        "combat": 14, "playful": 8, "triumph": 5, "tension": 4, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -6,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -4, "dread": -5,
     },
     "en-US-TonyNeural": {
-        "combat": 14, "playful": 8, "triumph": 5, "tension": 4, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -6,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -4, "dread": -5,
     },
     "en-US-RogerNeural": {
-        "combat": 6, "playful": 3, "triumph": 2, "tension": 2, "no_mood": 0,
-        "intrigue": -3, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 3, "playful": 2, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-JennyNeural": {
-        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-EmmaNeural": {
-        "combat": 11, "playful": 7, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -7,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-AnaNeural": {
-        "combat": 12, "playful": 9, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -5,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -3, "dread": -4,
     },
     "en-US-SteffanNeural": {
-        "combat": 6, "playful": 2, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -5, "dread": -10,
+        "combat": 3, "playful": 2, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-AriaNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 2, "triumph": 2, "playful": 1, "tension": 1, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -3, "dread": -4,
     },
     "en-US-RyanNeural": {
-        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -4, "dread": -5,
     },
     "en-GB-RyanNeural": {
-        "combat": 10, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-IN-NeerjaNeural": {
-        "combat": 9, "playful": 5, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -7, "dread": -9,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-AndrewMultilingualNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-AndrewNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-BrianMultilingualNeural": {
-        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -4, "dread": -5,
     },
     "en-US-BrianNeural": {
-        "combat": 11, "playful": 6, "triumph": 4, "tension": 3, "no_mood": 0,
-        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -5, "dread": -7,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -2, "sorrow": -4, "dread": -5,
     },
     "en-US-AvaMultilingualNeural": {
-        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-AvaNeural": {
-        "combat": 10, "playful": 6, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -7,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-EmmaMultilingualNeural": {
-        "combat": 11, "playful": 7, "triumph": 4, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -7,
+        "combat": 5, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
+        "intrigue": -1, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "en-US-MichelleNeural": {
-        "combat": 8, "playful": 4, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -3, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     },
     "default": {
-        "combat": 10, "playful": 6, "triumph": 3, "tension": 2, "no_mood": 0,
-        "intrigue": -2, "warmth": -2, "wonder": -4, "sorrow": -6, "dread": -8,
+        "combat": 4, "playful": 3, "triumph": 2, "tension": 1, "no_mood": 0,
+        "intrigue": -2, "warmth": -2, "wonder": -3, "sorrow": -4, "dread": -5,
     }
 }
 
@@ -691,7 +624,7 @@ SPEAKER_PITCH_OFFSETS = {
     "ancestor": -1.0,
     "disciple": +0.4,
     "guard": -0.3,
-    "system": -1.5,
+    "system": -1.0,
 }
 
 SFX_EXTENSIONS = (".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")
