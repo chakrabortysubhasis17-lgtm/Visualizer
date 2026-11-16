@@ -67,7 +67,7 @@ def generate_falling_leaves(count: int = 22, seed: int = 99) -> list[dict]:
             "y0": rng.uniform(0, HEIGHT),
             "scale": rng.uniform(0.75, 1.35),
             "cycles_y": rng.choice([1, 1, 2]),
-            "drift_x": rng.choice([-1, 0, 1]) * WIDTH,  # Integer screen wraps for seamless loop
+            "drift_x": rng.choice([-1, 0, 1]) * WIDTH,
             "sway_amp": rng.uniform(35.0, 85.0),
             "sway_freq": rng.choice([1.0, 2.0]),
             "rot_freq": rng.choice([1.0, 2.0, 3.0]),
@@ -100,7 +100,6 @@ def draw_falling_leaves(draw: ImageDraw.ImageDraw, t_norm: float, phase: float, 
         sc = lf["scale"]
         a = lf["alpha"]
 
-        # Pointed leaf silhouette rotated in 2D with subtle flutter foreshortening
         flutter = 0.65 + 0.35 * abs(math.cos(angle * 0.5))
         local_pts = [
             (-16.0 * sc, 0.0),
@@ -116,7 +115,6 @@ def draw_falling_leaves(draw: ImageDraw.ImageDraw, t_norm: float, phase: float, 
             return (cx + px * cos_a - py * sin_a, cy + px * sin_a + py * cos_a)
 
         poly = [rot(px, py) for px, py in local_pts]
-        stem_start = rot(-16.0 * sc, 0.0)
         stem_end = rot(-23.0 * sc, -2.5 * sc * flutter)
         tip = rot(15.0 * sc, 0.0)
 
@@ -127,11 +125,11 @@ def draw_falling_leaves(draw: ImageDraw.ImageDraw, t_norm: float, phase: float, 
 def draw_origami_birds(draw: ImageDraw.ImageDraw, t_norm: float, phase: float) -> None:
     """
     Draws 3 distinct-colored folded-paper origami cranes/birds flying smoothly
-    from right to left across the upper canvas.
+    from right to left across the upper-left/center canvas without colliding with the right HUD.
     """
     birds = [
         (
-            0.05, 175, 1.05, 5.0,
+            0.05, 115, 0.98, 5.0,
             {
                 "body": (245, 158, 11, 245),       # Celestial Gold
                 "wing_top": (254, 240, 138, 250),  # Champagne Gold facet
@@ -140,7 +138,7 @@ def draw_origami_birds(draw: ImageDraw.ImageDraw, t_norm: float, phase: float) -
             },
         ),
         (
-            0.38, 250, 0.92, 6.0,
+            0.38, 175, 0.88, 6.0,
             {
                 "body": (225, 29, 72, 245),        # Royal Crimson
                 "wing_top": (253, 164, 175, 250),  # Rose-Silk highlight facet
@@ -149,7 +147,7 @@ def draw_origami_birds(draw: ImageDraw.ImageDraw, t_norm: float, phase: float) -
             },
         ),
         (
-            0.70, 320, 0.85, 5.0,
+            0.70, 235, 0.82, 5.0,
             {
                 "body": (16, 185, 129, 245),       # Jade Emerald
                 "wing_top": (167, 243, 208, 250),  # Mint-Jade highlight facet
@@ -159,11 +157,11 @@ def draw_origami_birds(draw: ImageDraw.ImageDraw, t_norm: float, phase: float) -
         ),
     ]
 
-    span_x = WIDTH + 260
+    span_x = 1150
     for idx, (offset_t, base_y, sc, flap_freq, pal) in enumerate(birds):
         prog = (t_norm + offset_t) % 1.0
-        cx = (WIDTH + 130) - prog * span_x
-        cy = base_y + math.sin(phase * 2.0 + idx * 2.1) * 16.0
+        cx = 1020 - prog * span_x
+        cy = base_y + math.sin(phase * 2.0 + idx * 2.1) * 15.0
         flap = math.sin(phase * flap_freq + idx * 1.4)
 
         beak = (cx - 46 * sc, cy + 2 * sc)
@@ -184,6 +182,313 @@ def draw_origami_birds(draw: ImageDraw.ImageDraw, t_norm: float, phase: float) -
         draw.line([head_top, chest], fill=pal["outline"], width=2)
         draw.polygon([neck_base, near_wing_tip, wing_fold], fill=pal["wing_top"], outline=pal["outline"])
         draw.polygon([wing_fold, near_wing_tip, tail_base], fill=pal["body"], outline=pal["outline"])
+
+
+# =============================================================================
+# SEMI-TRANSPARENT 3D-ANGLED HOLOGRAPHIC STATS HUD (DOCKED RIGHT)
+# =============================================================================
+
+def _find_perspective_coeffs(src_pts: list[tuple[float, float]], dst_pts: list[tuple[float, float]]) -> list[float]:
+    """Solves 8x8 linear system for PIL Image.Transform.PERSPECTIVE (dst -> src mapping)."""
+    matrix = []
+    for (sx, sy), (dx, dy) in zip(src_pts, dst_pts):
+        matrix.append([dx, dy, 1, 0, 0, 0, -sx * dx, -sx * dy])
+        matrix.append([0, 0, 0, dx, dy, 1, -sy * dx, -sy * dy])
+
+    rhs = [coord for pt in src_pts for coord in pt]
+    n = 8
+    aug = [row[:] + [rhs[i]] for i, row in enumerate(matrix)]
+
+    for col in range(n):
+        piv = max(range(col, n), key=lambda r: abs(aug[r][col]))
+        aug[col], aug[piv] = aug[piv], aug[col]
+        div = aug[col][col]
+        for j in range(col, n + 1):
+            aug[col][j] /= div
+        for r in range(n):
+            if r != col and aug[r][col] != 0:
+                factor = aug[r][col]
+                for j in range(col, n + 1):
+                    aug[r][j] -= factor * aug[col][j]
+
+    return [aug[i][n] for i in range(n)]
+
+
+def draw_translucent_holo_card(
+    draw: ImageDraw.ImageDraw,
+    x0: int,
+    y0: int,
+    x1: int,
+    y1: int,
+    accent: tuple[int, int, int],
+    pulse: float,
+    fill_alpha: int = 72,
+) -> None:
+    """Draws a semi-transparent glowing holographic glass card with double neon borders."""
+    glow_a = int(42 + 28 * pulse)
+    border_a = int(195 + 55 * pulse)
+    inner_a = int(95 + 45 * pulse)
+    bright = (min(255, accent[0] + 75), min(255, accent[1] + 75), min(255, accent[2] + 75), border_a)
+
+    # Soft outer holographic aura
+    draw.rounded_rectangle([x0 - 5, y0 - 5, x1 + 5, y1 + 5], radius=14, outline=(*accent, glow_a), width=5)
+    # Semi-transparent glass fill (low alpha so background art shows clearly through)
+    draw.rounded_rectangle([x0, y0, x1, y1], radius=10, fill=(8, 22, 34, fill_alpha), outline=bright, width=2)
+    # Inner double-frame hairline
+    draw.rounded_rectangle([x0 + 5, y0 + 5, x1 - 5, y1 - 5], radius=7, outline=(*accent, inner_a), width=1)
+
+    # Glowing corner L-accents
+    cl = 16
+    for cx, cy, dx, dy in [(x0, y0, 1, 1), (x1, y0, -1, 1), (x0, y1, 1, -1), (x1, y1, -1, -1)]:
+        draw.line([(cx, cy), (cx + dx * cl, cy)], fill=bright, width=3)
+        draw.line([(cx, cy), (cx, cy + dy * cl)], fill=bright, width=3)
+
+
+def draw_isometric_pagoda_wireframe(
+    draw: ImageDraw.ImageDraw,
+    cx: int,
+    cy: int,
+    phase: float,
+) -> None:
+    """Draws the glowing golden 3D-projected multi-tiered pagoda with blueprint callout lines."""
+    rot = phase * 1.0
+    bob = math.sin(phase * 2.0) * 4.0
+    base_y = cy + bob
+
+    gold_bright = (255, 232, 145, 235)
+    gold_mid = (245, 185, 66, 185)
+    cyan_line = (103, 232, 249, 145)
+
+    # Base foundation platform diamond
+    for plat_i, (pw, ph) in enumerate([(76, 26), (62, 21)]):
+        py = base_y + 44 - plat_i * 7
+        pts = []
+        for k in range(4):
+            a = rot + k * (math.pi / 2.0)
+            pts.append((cx + pw * math.cos(a), py + ph * math.sin(a)))
+        draw.polygon(pts, fill=(245, 185, 66, 26), outline=gold_mid)
+
+    # 3 Rotating Pagoda Roof & Pillar Tiers
+    tiers = [
+        (22, 62, 21, 18, 16),
+        (-4, 48, 16, 16, 14),
+        (-28, 34, 12, 15, 12),
+    ]
+    for y_off, rx, ry, roof_h, wall_h in tiers:
+        ty = base_y + y_off
+        eaves = []
+        walls = []
+        for k in range(4):
+            a = rot + k * (math.pi / 2.0) + math.pi / 4.0
+            ex = cx + rx * math.cos(a)
+            ey = ty + ry * math.sin(a)
+            eaves.append((ex, ey))
+            walls.append((cx + rx * 0.72 * math.cos(a), ty + ry * 0.72 * math.sin(a) + wall_h))
+
+        apex = (cx, ty - roof_h)
+        # Roof ribs + upturned eaves
+        for k in range(4):
+            nxt = (k + 1) % 4
+            draw.line([eaves[k], eaves[nxt]], fill=gold_bright, width=2)
+            draw.line([apex, eaves[k]], fill=gold_bright, width=2)
+            draw.line([walls[k], walls[nxt]], fill=gold_mid, width=1)
+            draw.line([eaves[k], walls[k]], fill=gold_mid, width=1)
+
+    # Spire pinnacle
+    draw.line([(cx, base_y - 43), (cx, base_y - 62)], fill=gold_bright, width=2)
+    draw.ellipse([cx - 3, base_y - 66, cx + 3, base_y - 60], fill=(255, 250, 210, 245))
+
+    # Holographic blueprint callout lines & telemetry micro-bars (matching reference center panel)
+    draw.line([(cx + 42, base_y - 34), (cx + 76, base_y - 54), (cx + 124, base_y - 54)], fill=cyan_line, width=1)
+    draw.line([(cx + 54, base_y + 10), (cx + 84, base_y - 6), (cx + 124, base_y - 6)], fill=cyan_line, width=1)
+    for idx_b in range(5):
+        w_bar = int(28 + 22 * abs(math.sin(phase * 2.0 + idx_b * 0.8)))
+        by_line = int(base_y - 68 + idx_b * 7)
+        draw.rectangle([cx - 122, by_line, cx - 122 + w_bar, by_line + 3], fill=(103, 232, 249, 135))
+
+
+def draw_cyan_spirit_well_icon(
+    draw: ImageDraw.ImageDraw,
+    cx: int,
+    cy: int,
+    scale: float,
+    phase: float,
+) -> None:
+    """Draws the glowing cyan hexagonal Spirit Well shrine/gazebo wireframe."""
+    rot = -phase * 0.8
+    cyan_bright = (165, 243, 252, 235)
+    cyan_mid = (34, 211, 238, 180)
+    cyan_fill = (34, 211, 238, 34)
+
+    rx = 46 * scale
+    ry = 16 * scale
+    top_y = cy - 18 * scale
+    bot_y = cy + 28 * scale
+    apex = (cx, cy - 42 * scale)
+
+    top_pts = []
+    bot_pts = []
+    for k in range(6):
+        a = rot + k * (math.pi / 3.0)
+        top_pts.append((cx + rx * math.cos(a), top_y + ry * math.sin(a)))
+        bot_pts.append((cx + rx * 0.88 * math.cos(a), bot_y + ry * 0.88 * math.sin(a)))
+
+    draw.polygon(bot_pts, fill=cyan_fill, outline=cyan_mid)
+    for k in range(6):
+        nxt = (k + 1) % 6
+        draw.line([top_pts[k], top_pts[nxt]], fill=cyan_bright, width=max(1, int(2 * scale)))
+        draw.line([bot_pts[k], bot_pts[nxt]], fill=cyan_mid, width=max(1, int(2 * scale)))
+        draw.line([top_pts[k], bot_pts[k]], fill=cyan_mid, width=max(1, int(2 * scale)))
+        draw.line([apex, top_pts[k]], fill=cyan_bright, width=max(1, int(2 * scale)))
+
+
+def draw_docked_right_system_hud(
+    canvas: Image.Image,
+    t_norm: float,
+    phase: float,
+    fonts: dict[str, ImageFont.FreeTypeFont],
+) -> None:
+    """
+    Builds the 5-panel holographic stats & quest HUD matching the reference image,
+    warps it with 3D perspective (angled inward from the right edge), and composites
+    it semi-transparently onto the right side of the 1920x1080 frame.
+    """
+    src_w, src_h = 980, 560
+    hud_src = Image.new("RGBA", (src_w, src_h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(hud_src)
+
+    cyan = (34, 211, 238)
+    gold = (245, 190, 75)
+    pulse = 0.5 + 0.5 * math.sin(phase * 2.0)
+
+    # =========================================================================
+    # 1. LEFT COLUMN: "Faction Stats" (Top) + "Construction Queue" (Bottom)
+    # =========================================================================
+    lx0, lx1 = 16, 304
+    # Top-Left Panel: Faction Stats
+    draw_translucent_holo_card(d, lx0, 36, lx1, 266, cyan, pulse, fill_alpha=76)
+    d.text((lx0 + 62, 50), "Faction Stats", font=fonts["title"], fill=(235, 252, 255, 245))
+    d.line([(lx0 + 18, 84), (lx1 - 18, 84)], fill=(34, 211, 238, 120), width=1)
+
+    members = int(1500 + 25 * math.sin(phase))
+    pwr = 8.5 + 0.2 * math.sin(phase * 2.0)
+    d.text((lx0 + 20, 102), f"Members: {members:,}", font=fonts["body"], fill=(230, 248, 255, 240))
+    d.text((lx0 + 20, 144), f"Power Level: {pwr:.1f}/10", font=fonts["body"], fill=(230, 248, 255, 240))
+    d.text((lx0 + 20, 186), "Influence: Growing", font=fonts["body"], fill=(165, 243, 252, 240))
+
+    # Bottom-Left Panel: Construction Queue
+    draw_translucent_holo_card(d, lx0, 286, lx1, 514, cyan, pulse, fill_alpha=76)
+    d.text((lx0 + 36, 300), "Construction Queue", font=fonts["title"], fill=(235, 252, 255, 245))
+    d.line([(lx0 + 18, 334), (lx1 - 18, 334)], fill=(34, 211, 238, 120), width=1)
+
+    # Mini isometric library wireframe on left + "Great Library / Tier 2" + progress bar
+    draw_cyan_spirit_well_icon(d, lx0 + 74, 412, scale=0.82, phase=-phase)
+    d.text((lx0 + 142, 368), "Great Library", font=fonts["sub"], fill=(235, 252, 255, 245))
+    d.text((lx0 + 168, 396), "Tier 2", font=fonts["sub"], fill=(165, 243, 252, 235))
+    cq_prog = 0.58 + 0.22 * (0.5 + 0.5 * math.sin(phase - 0.7))
+    d.rounded_rectangle([lx0 + 138, 434, lx1 - 20, 448], radius=5, fill=(10, 32, 48, 140), outline=(34, 211, 238, 175), width=1)
+    d.rounded_rectangle([lx0 + 140, 436, lx0 + 140 + int((lx1 - lx0 - 162) * cq_prog), 446], radius=4, fill=(103, 232, 249, 235))
+
+    # =========================================================================
+    # 2. CENTER TALL PANEL: Golden Wireframe Pagoda + Overlapping "Spirit Well Tier 2"
+    # =========================================================================
+    cx0, cx1 = 318, 636
+    draw_translucent_holo_card(d, cx0, 14, cx1, 536, gold, pulse, fill_alpha=64)
+    draw_isometric_pagoda_wireframe(d, (cx0 + cx1) // 2, 165, phase)
+
+    # Sweeping vertical scanline across center panel
+    scan_y = int(28 + (0.5 + 0.5 * math.sin(phase)) * 490)
+    d.line([(cx0 + 8, scan_y), (cx1 - 8, scan_y)], fill=(254, 240, 138, 130), width=2)
+
+    # Overlapping Bottom Sub-Card inside Center Panel: "Spirit Well Tier 2"
+    draw_translucent_holo_card(d, cx0 + 14, 342, cx1 - 14, 522, cyan, pulse, fill_alpha=84)
+    draw_cyan_spirit_well_icon(d, cx0 + 92, 428, scale=0.98, phase=phase)
+    d.text((cx0 + 164, 384), "Spirit Well", font=fonts["title"], fill=(235, 252, 255, 245))
+    d.text((cx0 + 186, 416), "Tier 2", font=fonts["sub"], fill=(165, 243, 252, 240))
+    sw_prog = 0.44 + 0.26 * (0.5 + 0.5 * math.cos(phase))
+    d.rounded_rectangle([cx0 + 158, 468, cx1 - 30, 482], radius=5, fill=(10, 32, 48, 140), outline=(34, 211, 238, 175), width=1)
+    d.rounded_rectangle([cx0 + 160, 470, cx0 + 160 + int((cx1 - cx0 - 192) * sw_prog), 480], radius=4, fill=(103, 232, 249, 235))
+
+    # =========================================================================
+    # 3. RIGHT COLUMN: Two "Active Quests" Panels (Top Progress Cards + Bottom List)
+    # =========================================================================
+    rx0, rx1 = 650, 964
+    # Top-Right Panel: Active Quests (2 quest cards with progress bars)
+    draw_translucent_holo_card(d, rx0, 24, rx1, 308, cyan, pulse, fill_alpha=76)
+    d.text((rx0 + 82, 38), "Active Quests", font=fonts["title"], fill=(235, 252, 255, 245))
+
+    quest_cards = [
+        ("Expand Territory", "Northward", 0.65 + 0.14 * (0.5 + 0.5 * math.sin(phase))),
+        ("Spirit Well", "Tier 2", 0.32 + 0.16 * (0.5 + 0.5 * math.cos(phase))),
+    ]
+    for q_idx, (line1, line2, q_prog) in enumerate(quest_cards):
+        qy0 = 78 + q_idx * 110
+        qy1 = qy0 + 98
+        d.rounded_rectangle([rx0 + 16, qy0, rx1 - 16, qy1], radius=8, fill=(12, 36, 54, 92), outline=(34, 211, 238, 150), width=1)
+
+        # Mini cyan isometric shrine emblem on left of quest card
+        draw_cyan_spirit_well_icon(d, rx0 + 54, qy0 + 48, scale=0.56, phase=phase + q_idx)
+        d.text((rx0 + 96, qy0 + 12), line1, font=fonts["sub"], fill=(235, 252, 255, 245))
+        d.text((rx0 + 96, qy0 + 36), line2, font=fonts["sub"], fill=(207, 250, 254, 240))
+
+        # Progress bar + live percentage
+        bx0, by0, bx1, by1 = rx0 + 96, qy0 + 68, rx1 - 74, qy0 + 80
+        d.rounded_rectangle([bx0, by0, bx1, by1], radius=4, fill=(8, 26, 42, 160), outline=(34, 211, 238, 150), width=1)
+        fw = max(6, int((bx1 - bx0 - 2) * q_prog))
+        d.rounded_rectangle([bx0 + 1, by0 + 1, bx0 + 1 + fw, by1 - 1], radius=3, fill=(103, 232, 249, 240))
+        d.text((bx1 + 8, qy0 + 64), f"{int(q_prog * 100)}%", font=fonts["small"], fill=(224, 242, 254, 245))
+
+    # Bottom-Right Panel: Active Quests (3 bulleted directives)
+    draw_translucent_holo_card(d, rx0, 326, rx1, 526, cyan, pulse, fill_alpha=76)
+    d.text((rx0 + 82, 340), "Active Quests", font=fonts["title"], fill=(235, 252, 255, 245))
+    d.line([(rx0 + 18, 374), (rx1 - 18, 374)], fill=(34, 211, 238, 120), width=1)
+
+    directives = [
+        "Expand Territory Northward",
+        "Diplomacy with Silent Peak",
+        "Diplomacy with Strong Faction",
+    ]
+    for d_idx, d_txt in enumerate(directives):
+        dy = 392 + d_idx * 40
+        gx, gy = rx0 + 28, dy + 11
+        blink = int(175 + 80 * math.sin(phase * 3.0 + d_idx))
+        d.polygon([(gx, gy - 6), (gx + 6, gy), (gx, gy + 6), (gx - 6, gy)], fill=(103, 232, 249, blink))
+        d.text((rx0 + 44, dy), d_txt, font=fonts["small"], fill=(235, 252, 255, 245))
+
+    # Floating luminous cyan & gold spirit orbs drifting around the HUD
+    orb_rng = random.Random(77)
+    for o_i in range(18):
+        ox0 = orb_rng.uniform(10, src_w - 10)
+        oy0 = orb_rng.uniform(10, src_h - 10)
+        orad = orb_rng.choice([3, 4, 5, 7])
+        col = (103, 232, 249) if o_i % 3 != 0 else (254, 215, 102)
+        u = (t_norm + o_i / 18.0) % 1.0
+        ox = ox0 + 14.0 * math.sin(phase * 2.0 + o_i)
+        oy = (oy0 - u * 95.0) % src_h
+        oa = int(190 * (0.4 + 0.6 * abs(math.sin(phase * 2.0 + o_i * 1.1))))
+        d.ellipse([ox - orad - 3, oy - orad - 3, ox + orad + 3, oy + orad + 3], fill=(*col, oa // 4))
+        d.ellipse([ox - orad, oy - orad, ox + orad, oy + orad], fill=(*col, oa))
+
+    # =========================================================================
+    # 3D PERSPECTIVE WARP: Docked on Right Side & Angled Toward Viewer
+    # =========================================================================
+    # Left edge (closer to center screen) is slightly narrower vertically (foreshortened);
+    # Right edge (docked along right side) is taller, creating an authentic 3D angled HUD plane.
+    src_quad = [(0.0, 0.0), (float(src_w), 0.0), (float(src_w), float(src_h)), (0.0, float(src_h))]
+    dst_quad = [
+        (1005.0, 92.0),   # Top-Left (angled inward)
+        (1885.0, 42.0),   # Top-Right (docked right, taller)
+        (1885.0, 565.0),  # Bottom-Right (sits cleanly above LIKE/SHARE/SUBSCRIBE at y=585)
+        (1005.0, 505.0),  # Bottom-Left (angled inward)
+    ]
+    coeffs = _find_perspective_coeffs(src_quad, dst_quad)
+    warped = hud_src.transform(
+        (WIDTH, HEIGHT),
+        Image.Transform.PERSPECTIVE,
+        coeffs,
+        resample=Image.Resampling.BICUBIC,
+    )
+    canvas.alpha_composite(warped)
 
 
 def draw_unique_audiobook_crest(
@@ -224,17 +529,11 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
     2. Over-ear obsidian-and-gold headphones beside the book on the right, with glowing
        audio waveforms rising smoothly out of the headphones into the air.
     """
-    # =========================================================================
-    # PART A: OPEN BOOK WITH FLIPPING PAGES (Bottom-Left)
-    # =========================================================================
     bx, by = 75, 595
     bw, bh = 420, 255
     mid_x = bx + bw // 2
 
-    # Soft ground shadow beneath the book
     draw.rounded_rectangle([bx + 8, by + 12, bx + bw + 8, by + bh + 12], radius=16, fill=(8, 8, 14, 165))
-
-    # Outer deep obsidian-burgundy leather cover with antique gold border
     draw.rounded_rectangle(
         [bx, by, bx + bw, by + bh],
         radius=14,
@@ -243,7 +542,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         width=4,
     )
 
-    # Gold corner brackets
     gold_accent = (245, 195, 80, 255)
     c_len = 20
     for cx, cy, dx, dy in [
@@ -255,7 +553,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         draw.line([(cx, cy), (cx + dx * c_len, cy)], fill=gold_accent, width=3)
         draw.line([(cx, cy), (cx, cy + dy * c_len)], fill=gold_accent, width=3)
 
-    # 3D stacked parchment page edges at bottom
     draw.polygon(
         [(bx + 14, by + bh - 15), (mid_x, by + bh - 11), (mid_x, by + bh - 4), (bx + 16, by + bh - 8)],
         fill=(206, 182, 138, 255),
@@ -267,7 +564,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         outline=(135, 108, 70, 255),
     )
 
-    # Left & Right open parchment pages
     pad_x, pad_top, pad_bot = 15, 12, 15
     draw.polygon(
         [(bx + pad_x, by + pad_top), (mid_x - 2, by + pad_top + 5), (mid_x - 2, by + bh - pad_bot + 3), (bx + pad_x, by + bh - pad_bot)],
@@ -280,7 +576,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         outline=(145, 118, 78, 255),
     )
 
-    # Static ruled text lines on the base left & right pages
     ink_normal = (176, 158, 130, 200)
     for row in range(7):
         ly = by + 32 + row * 27
@@ -292,7 +587,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         r_x1 = bx + bw - 30
         draw.line([(r_x0, ly), (r_x1, ly)], fill=ink_normal, width=2)
 
-    # Spine crease & royal crimson silk bookmark ribbon
     draw.line([(mid_x, by + pad_top + 4), (mid_x, by + bh - pad_bot + 4)], fill=(95, 72, 48, 255), width=4)
     rx = bx + 42
     draw.polygon(
@@ -301,7 +595,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         outline=(245, 195, 80, 255),
     )
 
-    # Animated flipping parchment page (2 smooth page turns per 10s loop)
     turn_cycle = (phase * 2.0) % (2.0 * math.pi)
     flip_cos = math.cos(turn_cycle)
     page_span = int((bw // 2 - 22) * flip_cos)
@@ -318,7 +611,6 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
         shade = 252 if flip_cos >= 0 else 233
         draw.polygon(poly, fill=(shade, shade - 7, shade - 22, 248), outline=(145, 118, 78, 255))
 
-        # Printed lines moving across with the flipping page
         x_left = min(mid_x, p_x) + 12
         x_right = max(mid_x, p_x) - 12
         if x_right - x_left > 14:
@@ -326,52 +618,38 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
                 ly_f = by + 36 + row * 28 - int(lift_y * 0.55)
                 draw.line([(x_left, ly_f), (x_right, ly_f)], fill=(168, 150, 122, 195), width=2)
 
-    # =========================================================================
-    # PART B: OVER-EAR HEADPHONES BESIDE THE BOOK + RISING AUDIO WAVEFORMS
-    # =========================================================================
     hx = 615
     hy = 755
     pulse = 0.5 + 0.5 * math.sin(phase * 4.0)
 
-    # Ground shadow under headphones
     draw.ellipse([hx - 95, hy + 68, hx + 95, hy + 104], fill=(8, 8, 14, 165))
 
-    # Outer & inner padded headband arch
     arch_box = [hx - 78, hy - 115, hx + 78, hy + 45]
     draw.arc(arch_box, start=180, end=360, fill=(28, 24, 36, 255), width=16)
     draw.arc(arch_box, start=180, end=360, fill=(234, 170, 46, 255), width=3)
-    # Inner gold-stitched headband cushion
     inner_box = [hx - 64, hy - 101, hx + 64, hy + 31]
     draw.arc(inner_box, start=192, end=348, fill=(58, 24, 36, 255), width=8)
 
-    # Metallic gold yokes connecting headband to earcups
     draw.line([(hx - 76, hy - 35), (hx - 72, hy + 12)], fill=(234, 170, 46, 255), width=5)
     draw.line([(hx + 76, hy - 35), (hx + 72, hy + 12)], fill=(234, 170, 46, 255), width=5)
 
-    # Left Earcup (obsidian shell + gold rim + memory-foam cushion)
     draw.rounded_rectangle([hx - 92, hy - 8, hx - 48, hy + 76], radius=20, fill=(32, 22, 34, 255), outline=(234, 170, 46, 255), width=3)
     draw.rounded_rectangle([hx - 54, hy - 2, hx - 36, hy + 70], radius=10, fill=(54, 24, 34, 255), outline=(180, 130, 50, 255), width=2)
-    # Glowing acoustic ring on left cup
     draw.ellipse([hx - 82, hy + 16, hx - 58, hy + 52], outline=(254, 224, 130, int(170 + 85 * pulse)), width=2)
 
-    # Right Earcup (obsidian shell + gold rim + memory-foam cushion)
     draw.rounded_rectangle([hx + 48, hy - 8, hx + 92, hy + 76], radius=20, fill=(32, 22, 34, 255), outline=(234, 170, 46, 255), width=3)
     draw.rounded_rectangle([hx + 36, hy - 2, hx + 54, hy + 70], radius=10, fill=(54, 24, 34, 255), outline=(180, 130, 50, 255), width=2)
-    # Glowing acoustic ring on right cup
     draw.ellipse([hx + 58, hy + 16, hx + 82, hy + 52], outline=(254, 224, 130, int(170 + 85 * pulse)), width=2)
 
-    # Glowing Audio Waveforms Rising From the Headphones (NOT the book)
     wave_streams = [
-        # (offset_t, start_x, start_y, drift_x, lift_h, core_rgb, glow_rgb)
-        (0.00, hx - 58, hy - 18, -32, 275, (254, 243, 199), (245, 158, 11)),
-        (0.20, hx, hy - 112, 0, 255, (254, 240, 138), (234, 170, 46)),
-        (0.40, hx + 58, hy - 18, 36, 280, (255, 251, 235), (217, 119, 6)),
-        (0.60, hx - 32, hy - 78, -18, 265, (209, 250, 229), (16, 185, 129)),
-        (0.80, hx + 32, hy - 78, 22, 270, (254, 226, 226), (225, 29, 72)),
+        (0.00, hx - 58, hy - 18, -32, 240, (254, 243, 199), (245, 158, 11)),
+        (0.20, hx, hy - 112, 0, 220, (254, 240, 138), (234, 170, 46)),
+        (0.40, hx + 58, hy - 18, 36, 245, (255, 251, 235), (217, 119, 6)),
+        (0.60, hx - 32, hy - 78, -18, 230, (209, 250, 229), (16, 185, 129)),
+        (0.80, hx + 32, hy - 78, 22, 235, (254, 226, 226), (225, 29, 72)),
     ]
 
     for idx_w, (off_t, sx, sy, t_dx, lift_h, core_rgb, glow_rgb) in enumerate(wave_streams):
-        # 2 seamless rise cycles per 10-second loop
         u = (t_norm * 2.0 + off_t) % 1.0
 
         if u < 0.16:
@@ -400,13 +678,11 @@ def draw_book_and_headphones(draw: ImageDraw.ImageDraw, t_norm: float, phase: fl
             bh_m = max(4.0, 34.0 * c_w * scale_env * osc)
             bx_i = mx0 + b_i * (mb_w + mb_gap)
 
-            # Soft outer glow
             draw.rounded_rectangle(
                 [bx_i - 2, cur_y - bh_m / 2.0 - 2, bx_i + mb_w + 2, cur_y + bh_m / 2.0 + 2],
                 radius=3,
                 fill=(*glow_rgb, max(6, alpha // 3)),
             )
-            # Luminous waveform bar core
             draw.rounded_rectangle(
                 [bx_i, cur_y - bh_m / 2.0, bx_i + mb_w, cur_y + bh_m / 2.0],
                 radius=2,
@@ -519,6 +795,13 @@ def build_hud_webm() -> None:
 
     crest_font = load_font(24, serif=True)
     cta_font = load_font(34, serif=False)
+    hud_fonts = {
+        "title": load_font(22, serif=False),
+        "sub": load_font(18, serif=False),
+        "body": load_font(19, serif=False),
+        "small": load_font(15, serif=False),
+    }
+
     snow_flakes = generate_snow_particles(count=65, seed=42)
     leaves = generate_falling_leaves(count=22, seed=99)
 
@@ -532,6 +815,7 @@ def build_hud_webm() -> None:
         draw_falling_snow(draw, t_norm, phase, snow_flakes)
         draw_falling_leaves(draw, t_norm, phase, leaves)
         draw_origami_birds(draw, t_norm, phase)
+        draw_docked_right_system_hud(frame, t_norm, phase, hud_fonts)
         draw_book_and_headphones(draw, t_norm, phase)
         draw_unique_audiobook_crest(draw, phase, crest_font)
         draw_voice_meter(draw, phase)
