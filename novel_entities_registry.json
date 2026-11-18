@@ -38711,6 +38711,376 @@
         "aliases": [
           "zhao tianlong"
         ]
+      },
+      "primal demon emperor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "primal demon emperor"
+        ]
+      },
+      "lily qin": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lily qin"
+        ]
+      },
+      "yue": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yue"
+        ]
+      },
+      "mei": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "mei"
+        ]
+      },
+      "feng": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "feng"
+        ]
+      },
+      "sect master ling": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "sect master ling"
+        ]
+      },
+      "grand elder": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "grand elder"
+        ]
+      },
+      "patriarch xue wuji": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "patriarch xue wuji"
+        ]
+      },
+      "lieutenant": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lieutenant"
+        ]
+      },
+      "the blade": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "the blade"
+        ]
+      },
+      "chen weiyuan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chen weiyuan"
+        ]
+      },
+      "li meixiu": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "li meixiu"
+        ]
+      },
+      "master chen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "master chen"
+        ]
+      },
+      "old wang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "old wang"
+        ]
+      },
+      "sergeant yang": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "sergeant yang"
+        ]
+      },
+      "soldier": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "soldier"
+        ]
+      },
+      "commander li": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "commander li"
+        ]
+      },
+      "zhou yifei": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "zhou yifei"
+        ]
+      },
+      "liu ming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "liu ming"
+        ]
+      },
+      "ling haoran": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ling haoran"
+        ]
+      },
+      "wang xuefeng": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "wang xuefeng"
+        ]
+      },
+      "elder zhou": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "elder zhou"
+        ]
+      },
+      "sect master ling haoran": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "sect master ling haoran"
+        ]
+      },
+      "elder liu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "elder liu"
+        ]
+      },
+      "azure dragon warrior": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "azure dragon warrior"
+        ]
+      },
+      "zhang wuji": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "zhang wuji"
+        ]
+      },
+      "chen wei": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "chen wei"
+        ]
+      },
+      "liang wei": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "liang wei"
+        ]
+      },
+      "huo tianming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "huo tianming"
+        ]
+      },
+      "shao lin": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "shao lin"
+        ]
+      },
+      "wei jun": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "wei jun"
+        ]
+      },
+      "rong kai": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "rong kai"
+        ]
+      },
+      "tianlong": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "tianlong"
+        ]
+      },
+      "xiao yin": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "xiao yin"
+        ]
+      },
+      "elder chen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "elder chen"
+        ]
+      },
+      "bai zhengming": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bai zhengming"
+        ]
+      },
+      "elder wu": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "elder wu"
+        ]
       }
     },
     "vocatives": {}
@@ -39067,6 +39437,166 @@
         "aliases": [
           "adrian"
         ]
+      },
+      "fox mask": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "fox mask"
+        ]
+      },
+      "leopard mask": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "leopard mask"
+        ]
+      },
+      "bear mask": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bear mask"
+        ]
+      },
+      "cat mask": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "cat mask"
+        ]
+      },
+      "jack": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "jack"
+        ]
+      },
+      "leader": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "leader"
+        ]
+      },
+      "wolf mask": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "wolf mask"
+        ]
+      },
+      "erina's father": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "erina's father"
+        ]
+      },
+      "joker": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "joker"
+        ]
+      },
+      "enzo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "enzo"
+        ]
+      },
+      "ace": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ace"
+        ]
+      },
+      "queen": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "queen"
+        ]
+      },
+      "diamond": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "diamond"
+        ]
+      },
+      "dia": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "dia"
+        ]
+      },
+      "grandma grey": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-MichelleNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "grandma grey"
+        ]
+      },
+      "gobina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gobina"
+        ]
       }
     },
     "vocatives": {}
@@ -39252,6 +39782,106 @@
         "rate": "-5%",
         "aliases": [
           "foreman"
+        ]
+      },
+      "rashka": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "rashka"
+        ]
+      },
+      "ava": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ava"
+        ]
+      },
+      "ryland": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ryland"
+        ]
+      },
+      "sylanna's ancient": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "sylanna's ancient"
+        ]
+      },
+      "edrach": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "edrach"
+        ]
+      },
+      "fat tiger": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fat tiger"
+        ]
+      },
+      "césar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "césar"
+        ]
+      },
+      "broom": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "broom"
+        ]
+      },
+      "grigori": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "grigori"
+        ]
+      },
+      "cassandra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "cassandra"
         ]
       }
     },
@@ -39548,6 +40178,56 @@
         "rate": "-5%",
         "aliases": [
           "shadow imp"
+        ]
+      },
+      "foxy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "foxy"
+        ]
+      },
+      "damian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "damian"
+        ]
+      },
+      "mrs clea": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "mrs clea"
+        ]
+      },
+      "tyler": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "tyler"
+        ]
+      },
+      "ruby": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ruby"
         ]
       }
     },
