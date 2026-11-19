@@ -690,25 +690,23 @@ def get_sub_perceptual_jitter(identifier: str, param_name: str, min_val: float, 
 def calculate_sfx_overlap_timing(d_sfx: float, line_id: str = "") -> Tuple[float, float]:
     """Calculates lead-in (T_lead) and under-voice bleed (T_bleed) based on asset duration.
 
-    - Short (<= 1.5s): 100% solo lead, 0.0s bleed.
-    - Medium (1.5s - 3.0s): First 80% solo lead, remaining 20% bleed (0.3s - 0.6s).
-    - Full (3.0s - 5.0s): Solo lead is (d_sfx - 1.0s), bleed capped at 1.0s.
+    - Short (<= 1s): 100% solo lead, 0.0s bleed.
+    - Full (1.0s - 3.0s): Solo lead is (d_sfx - 1.0s), bleed capped at 1.0s.
     """
-    d_clamped = min(5.0, max(0.1, float(d_sfx)))
+    d_clamped = min(3.0, max(0.1, float(d_sfx)))
 
-    if d_clamped <= 1.5:
+    if d_clamped <= 1:
         return round(d_clamped, 3), 0.0
     elif d_clamped <= 3.0:
-        t_bleed = round(0.2 * d_clamped, 2)
+        t_bleed = round(0.5 * d_clamped, 2)
         t_lead = round(d_clamped - t_bleed, 2)
-    else:
-        t_bleed = 1.0
-        t_lead = round(d_clamped - 1.0, 2)
 
     if line_id and t_bleed > 0.0:
-        drift = get_sub_perceptual_jitter(line_id, "sfx_lead", -0.04, 0.05)
+        max_drift = round(0.2 * t_bleed, 3)
+        drift = get_sub_perceptual_jitter(line_id, "sfx_lead", -max_drift, max_drift)
         t_lead = max(0.3, round(t_lead + drift, 3))
         t_bleed = max(0.1, round(d_clamped - t_lead, 3))
+
 
     return t_lead, t_bleed
 
@@ -719,9 +717,9 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
     is_breath = "breath" in filename or "gasp" in filename
 
     if is_breath:
-        # Retain original gentle crossfade for breath assets
         filter_complex = (
             "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+            "apad=whole_dur=0.235,atrim=0:0.235,asetpts=PTS-STARTPTS,"
             "volume=0.32,"
             "afade=t=out:st=0.20:d=0.035[sfx];"
             "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
@@ -731,24 +729,28 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
     else:
         d_sfx = _probe_duration_sync(sfx_path)
         t_lead, t_bleed = calculate_sfx_overlap_timing(d_sfx, line_id=line_id)
+        d_total = t_lead + t_bleed
 
         if t_bleed <= 0.05:
-            # Short SFX (<= 1.5s): Pure sequential playback
+            # Short SFX (<= 1.0s): Pure sequential playback
             filter_complex = (
-                "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[sfx];"
+                "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+                "loudnorm=I=-20:TP=-3:LRA=7,volume=0.55[sfx];"
                 "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
                 "[sfx][speech]concat=n=2:v=0:a=1[out]"
             )
         else:
-            # Medium/Full SFX (> 1.5s): Asymmetric dampening & midrange notch on SFX tail only
-            d_total = t_lead + t_bleed
-            duck_dur = min(0.15, round(0.25 * t_bleed, 3))
+            # Full SFX (> 1.0s): Normalized head at 55% volume + dampened/notched tail under speech
             filter_complex = (
-                f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,asplit=2[sfx_raw1][sfx_raw2];"
-                f"[sfx_raw1]atrim=0:{t_lead:.3f}[sfx_head];"
+                f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+                f"atrim=0:{d_total:.3f},asetpts=PTS-STARTPTS,"
+                f"loudnorm=I=-20:TP=-3:LRA=7,"
+                f"asplit=2[sfx_raw1][sfx_raw2];"
+                f"[sfx_raw1]atrim=0:{t_lead:.3f},asetpts=PTS-STARTPTS,"
+                f"volume=0.55[sfx_head];"
                 f"[sfx_raw2]atrim={t_lead:.3f}:{d_total:.3f},asetpts=PTS-STARTPTS,"
                 f"equalizer=f=2000:t=q:w=1.2:g=-6,highpass=f=100,"
-                f"volume=0.20,"
+                f"volume=0.22,"
                 f"afade=t=out:st=0:d={t_bleed:.3f}:curve=log[sfx_tail];"
                 f"[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
                 f"[speech][sfx_tail]amix=inputs=2:duration=first:dropout_transition=0:weights=1 1:normalize=0[speech_tail];"

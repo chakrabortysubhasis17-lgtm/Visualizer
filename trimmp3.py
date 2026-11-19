@@ -36,7 +36,7 @@ def trim_mp3_files(source_folder, max_duration_sec=10):
                 else:
                     # If it's less than 5 seconds, leave it as is and copy/save it
                     audio.export(output_file_path, format="mp3")
-                    print(f"Left as is (under 5s): {file_name}")
+                    print(f"Left as is (under {max_duration_sec}s): {file_name}")
 
             except Exception as e:
                 print(f"Error processing {file_name}: {e}")
@@ -45,4 +45,4 @@ def trim_mp3_files(source_folder, max_duration_sec=10):
 # Example usage:
 # Replace 'path/to/your/folder' with your actual target folder path
 source_directory = "assets/sfx"
-trim_mp3_files(source_directory, 5)
+trim_mp3_files(source_directory, 3)
