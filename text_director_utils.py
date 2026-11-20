@@ -130,6 +130,9 @@ RE_INLINE_SPEAKER_PREFIX = re.compile(r'\[[A-Za-z0-9_\s\.\'-]+\]:\s*')
 # Stat/Interface unparsed question mark normalization
 RE_QUESTION_MARK_RUNS = re.compile(r'\?{2,}')
 
+# Stat/Interface unparsed question mark normalization
+RE_QUESTION_MARK_RUNS = re.compile(r'\?{3,}')
+
 # Onomatopoeia to audio SFX mapping dictionary
 ONOMATOPOEIA_MAP = {
     "boom": "explosion",
@@ -1162,9 +1165,11 @@ You must follow every directive below without deviation:
    - "tts_text": MUST contain phonetically transliterated, engine-safe spellings for flawless TTS pronunciation (e.g., "His Chee surged within his Dahn-tyen.").
 3. ANTICIPATORY PROSODY SCULPTING (Subtext Modeling in "tts_text"):
    - Neural TTS cannot read ahead. If a sudden shock, horrific discovery, or dramatic pause occurs, sculpt "tts_text" so the delivery *anticipates* the emotion before the final word lands.
-   - Pre-Climax Phonation Hooks: Insert trailing ellipses ('...'), em-dashes, or rhythmic pauses in "tts_text" *before* shocking revelations or tension spikes (e.g., display_text: "He reached for the door and found it unlocked." -> tts_text: "He reached for the door... and found it... unlocked.").
+   - Pre-Climax Phonation Hooks: Insert trailing ellipses ('...') or rhythmic pauses in "tts_text" *before* shocking revelations or tension spikes (e.g., display_text: "He reached for the door and found it unlocked." -> tts_text: "He reached for the door... and found it... unlocked.").
    - Anticipatory Register Setup: Assign the tension pitch tier ("grim_rumble", "tense_strained", "intimate_whisper") on the *setup line* leading into an action beat rather than delaying until the climax line.
    - "display_text" remains 100% clean and literary for viewers; all anticipatory hesitation marks go into "tts_text".
+   - Dramatic Word Pressure ("tts_text" Only — STRICT NO-HYPHEN RULE): NEVER break normal English words or character names into hyphenated syllables (never write "sub-or-di-nates" or "Cas-san-dra") and NEVER use ALL-CAPS or altered vowel spellings on normal words, as Edge TTS spells out hyphenated or capitalized fragments letter-by-letter. Keep every word spelled completely normally; create vocal weight solely by placing a brief ellipsis ('...') immediately before a pivotal word (e.g., "...never", "...useless").
+   - Restraint Rule: Apply this '...' pacing selectively (at most 1-2 key beats per paragraph) so normal narration remains smooth and conversational rather than choppy.
 4. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
 5. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
 
@@ -1620,6 +1625,10 @@ ACTIVE STAGED CHARACTERS:
         if seg["sfx"] == "gasp" and not re.search(r'\b(gasp|gasps|gasped|sharp\s+intake\s+of\s+breath)\b', seg_text, re.I):
             seg["sfx"] = ""
 
+        # Suppress 'tiptoe' on stationary lines without stealth/footstep movement words
+        if seg["sfx"] == "tiptoe" and not re.search(r'\b(tiptoe(?:d|s|ing)?|sneak(?:s|ed|ing)?|creep(?:s|ing)?|crept|quiet\s+steps?|cautious\s+steps?|light\s+footing|across\s+the\s+(?:floor|room|hall))\b', seg_text, re.I):
+            seg["sfx"] = ""
+
         # Suppress breaths on calm narrative exposition
         if seg["sfx"] in ("short_breath_male", "short_breath_female"):
             is_urgent = seg.get("bgm_mood") in ("combat", "tension", "dread") or "!" in seg_text
@@ -1714,11 +1723,30 @@ ACTIVE STAGED CHARACTERS:
                 seg["sfx"] = "ocean"
 
         # =================================================================
-        # SLIDING-WINDOW DEDUPLICATION & COOLDOWN FILTER
+        # SYSTEM SFX DEFAULT & TYPE-AWARE DEDUPLICATION
         # =================================================================
-        recent_sfx = [r["sfx"] for r in refined_staged[-3:] if r.get("sfx")]
-        if seg["sfx"] and seg["sfx"] in recent_sfx:
-            seg["sfx"] = ""
+        SYSTEM_SFX_KEYS = {
+            "chime", "interface", "alert", "quest",
+            "levelup", "achievement", "reward", "loot"
+        }
+        is_sys_row = (seg.get("line_type") == "System" or seg.get("speaker") == "System")
+        spoken_history = [r for r in refined_staged if r.get("display_text", "").strip()]
+        last_spoken_sfx = spoken_history[-1].get("sfx", "") if spoken_history else ""
+
+        if is_sys_row and not seg["sfx"] and clean_and_normalize_text(disp_text):
+            if last_spoken_sfx not in SYSTEM_SFX_KEYS:
+                seg["sfx"] = "chime" if ("!" in disp_text or "ding" in t_low) else "interface"
+
+        if seg["sfx"]:
+            if is_sys_row and seg["sfx"] in SYSTEM_SFX_KEYS:
+                # Block only immediate back-to-back repetition on consecutive spoken System lines
+                if seg["sfx"] == last_spoken_sfx:
+                    seg["sfx"] = ""
+            else:
+                # Keep the 3-row sliding window cooldown for non-system narrative/action SFX
+                recent_sfx = [r["sfx"] for r in refined_staged[-3:] if r.get("sfx")]
+                if seg["sfx"] in recent_sfx:
+                    seg["sfx"] = ""
 
         # Narration block splitting threshold
         if seg.get("line_type") == "Narration" and len(disp_text) > max_narr_merge:
