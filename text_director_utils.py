@@ -1168,8 +1168,7 @@ You must follow every directive below without deviation:
    - Pre-Climax Phonation Hooks: Insert trailing ellipses ('...') or rhythmic pauses in "tts_text" *before* shocking revelations or tension spikes (e.g., display_text: "He reached for the door and found it unlocked." -> tts_text: "He reached for the door... and found it... unlocked.").
    - Anticipatory Register Setup: Assign the tension pitch tier ("grim_rumble", "tense_strained", "intimate_whisper") on the *setup line* leading into an action beat rather than delaying until the climax line.
    - "display_text" remains 100% clean and literary for viewers; all anticipatory hesitation marks go into "tts_text".
-   - Dramatic Word Pressure ("tts_text" Only — STRICT NO-HYPHEN RULE): NEVER break normal English words or character names into hyphenated syllables (never write "sub-or-di-nates" or "Cas-san-dra") and NEVER use ALL-CAPS or altered vowel spellings on normal words, as Edge TTS spells out hyphenated or capitalized fragments letter-by-letter. Keep every word spelled completely normally; create vocal weight solely by placing a brief ellipsis ('...') immediately before a pivotal word (e.g., "...never", "...useless").
-   - Restraint Rule: Apply this '...' pacing selectively (at most 1-2 key beats per paragraph) so normal narration remains smooth and conversational rather than choppy.
+   - Restraint Rule: Keep all standard English words spelled normally and apply '...' pauses selectively (at most 1–2 key beats per paragraph) so normal narration remains smooth and conversational rather than choppy.
 4. Prohibited Alterations: NEVER summarize, truncate, paraphrase, reword, sanitize, or censor any narrative content.
 5. Clause Order: Keep the exact internal order of sentences and clauses as provided in the raw chunk.
 
@@ -1731,16 +1730,17 @@ ACTIVE STAGED CHARACTERS:
         }
         is_sys_row = (seg.get("line_type") == "System" or seg.get("speaker") == "System")
         spoken_history = [r for r in refined_staged if r.get("display_text", "").strip()]
-        last_spoken_sfx = spoken_history[-1].get("sfx", "") if spoken_history else ""
+        recent_spoken_sfx = [r.get("sfx", "") for r in spoken_history[-4:] if r.get("sfx")]
+        has_recent_sys_sfx = any(s in SYSTEM_SFX_KEYS for s in recent_spoken_sfx)
 
         if is_sys_row and not seg["sfx"] and clean_and_normalize_text(disp_text):
-            if last_spoken_sfx not in SYSTEM_SFX_KEYS:
+            if not has_recent_sys_sfx:
                 seg["sfx"] = "chime" if ("!" in disp_text or "ding" in t_low) else "interface"
 
         if seg["sfx"]:
             if is_sys_row and seg["sfx"] in SYSTEM_SFX_KEYS:
-                # Block only immediate back-to-back repetition on consecutive spoken System lines
-                if seg["sfx"] == last_spoken_sfx:
+                # Suppress if ANY system sound already played in the last 4 spoken lines
+                if has_recent_sys_sfx:
                     seg["sfx"] = ""
             else:
                 # Keep the 3-row sliding window cooldown for non-system narrative/action SFX
