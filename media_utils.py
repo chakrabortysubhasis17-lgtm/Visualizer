@@ -746,7 +746,7 @@ def calculate_sfx_overlap_timing(d_sfx: float, line_id: str = "") -> Tuple[float
     return t_lead, t_bleed
 
 def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, line_id: str = "") -> float:
-    """Concatenate or crossfade stereo SFX with center-mono speech, preserving exact timing and log curves."""
+    """Concatenate or crossfade stereo SFX with center-mono speech, adding organic micro-pitch/rate foley variation."""
     temp_output = output_path + ".sfx_tmp.mp3"
     filename = os.path.basename(sfx_path).lower()
     is_breath = "breath" in filename or "gasp" in filename
@@ -763,7 +763,14 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
         )
         t_lead = 0.20
     else:
-        d_sfx = _probe_duration_sync(sfx_path)
+        # Organic foley micro-variation: ±4% pitch and ±4% playback rate per line_id
+        sfx_pitch_ratio = round(get_sub_perceptual_jitter(line_id, "sfx_pitch", 0.96, 1.04), 4) if line_id else 1.0
+        sfx_rate_ratio = round(get_sub_perceptual_jitter(line_id, "sfx_rate", 0.96, 1.04), 4) if line_id else 1.0
+        shifted_sr = int(round(24000 * sfx_pitch_ratio))
+        tempo_comp = round(sfx_rate_ratio / sfx_pitch_ratio, 4)
+        foley_var_filter = f"asetrate={shifted_sr},aresample=24000,atempo={tempo_comp}"
+
+        d_sfx = _probe_duration_sync(sfx_path) / sfx_rate_ratio
         t_lead, t_bleed = calculate_sfx_overlap_timing(d_sfx, line_id=line_id)
         d_total = t_lead + t_bleed
 
@@ -771,6 +778,7 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
             # Short SFX (<= 1.0s): Pure sequential stereo playback
             filter_complex = (
                 f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
+                f"{foley_var_filter},"
                 f"loudnorm=I=-20:TP=-3:LRA=7,stereotools=mpan={sfx_pan},volume=0.40[sfx];"
                 f"[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[speech];"
                 f"[sfx][speech]concat=n=2:v=0:a=1[out]"
@@ -779,6 +787,7 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
             # Full SFX (> 1.0s): Normalized stereo head at 40% volume + dampened/notched tail under speech
             filter_complex = (
                 f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
+                f"{foley_var_filter},"
                 f"atrim=0:{d_total:.3f},asetpts=PTS-STARTPTS,"
                 f"loudnorm=I=-20:TP=-3:LRA=7,stereotools=mpan={sfx_pan},"
                 f"asplit=2[sfx_raw1][sfx_raw2];"
@@ -1122,15 +1131,30 @@ async def synthesize_line_record(
 
             if not is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
                 _stereo_tmp = out_file + ".st.mp3"
-                is_thought = str(line_type).strip().lower() in (
+                _lt_clean = str(line_type).strip().lower()
+                is_thought = _lt_clean in (
                     "thought", "internal", "monologue", "inner_monologue", "telepathy", "flashback"
                 )
-                voc_af = (
-                    "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
-                    "lowpass=f=5400,highpass=f=115,aecho=0.8:0.5:18|32:0.12|0.06,stereotools=slev=1.25"
-                    if is_thought else
-                    "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo"
-                )
+                is_dialogue = (_lt_clean == "dialogue")
+
+                # Trim Edge-TTS's bloated ~350ms trailing silence down to 95-135ms on Dialogue for snappy turn-taking
+                if is_dialogue:
+                    tail_gap = round(get_sub_perceptual_jitter(line_id, "turn_gap", 0.095, 0.135), 3) if line_id else 0.115
+                    turn_trim = f",areverse,silenceremove=start_periods=1:start_duration=0.02:start_threshold=-45dB,areverse,apad=pad_dur={tail_gap:.3f}"
+                else:
+                    turn_trim = ""
+
+                if is_thought:
+                    voc_af = (
+                        "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
+                        "lowpass=f=5400,highpass=f=115,aecho=0.8:0.5:18|32:0.12|0.06,stereotools=slev=1.25"
+                    )
+                else:
+                    voc_af = (
+                        "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo"
+                        + turn_trim
+                    )
+
                 await asyncio.to_thread(
                     subprocess.run,
                     [
