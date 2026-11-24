@@ -374,14 +374,15 @@ def mix_chapter_bgm_bed(
     if not valid_intervals:
         return False
 
-    # Build FFmpeg filter graph with sidechain ducking so BGM swells in pauses and ducks under speech
-    inputs = ["-i", chapter_audio_path]
+    # Build FFmpeg filter graph with separate vocal & sidechain inputs (avoids asplit buffer deadlock on long chapters)
+    inputs = ["-i", chapter_audio_path, "-i", chapter_audio_path]
     filter_complex_parts = [
-        "[0:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,asplit=2[base_voc][voc_sc]"
+        "[0:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[base_voc]",
+        "[1:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[voc_sc]",
     ]
     bed_inputs = []
 
-    for idx, (bed_file, start, end, dur, base_vol) in enumerate(valid_intervals, start=1):
+    for idx, (bed_file, start, end, dur, base_vol) in enumerate(valid_intervals, start=2):
         inputs.extend(["-stream_loop", "-1", "-i", bed_file])
         fade_in = min(3.0, dur * 0.25)
         fade_out = min(3.0, dur * 0.25)
@@ -428,7 +429,7 @@ def mix_chapter_bgm_bed(
     ]
 
     try:
-        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=45, check=True)
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300, check=True)
         if os.path.isfile(temp_mixed) and os.path.getsize(temp_mixed) > 300:
             os.replace(temp_mixed, output_path)
             return True
