@@ -122,6 +122,14 @@ WATERMARK_PATTERNS = [
     re.compile(r"(?i)\bthe\s+\w+\s+story\s+will\s+be\s+published\b.*", re.I),
     re.compile(r"(?i)\bhere(?:'s|\s+is)\s+a\s+sneak\s+peek\s+of\s+the\s+next\s+books?\b.*", re.I),
     re.compile(r"(?i)^\s*end\s+of\s+book\s+(?:one|two|three|\d+)\b.*", re.I | re.MULTILINE),
+    re.compile(
+        r"^\s*(?:Author\s*Note\s*:|Patreon[- ]members\s*:|Dun\s+forget\s+to\s+check\s+out\s+my\s+Pat\*?reon|Thank\s+you\s+for\s+reading!\s*[\r\n]+\s*Don'?t\s+forget\s+to\s+click).*",
+        re.I | re.MULTILINE | re.DOTALL,
+    ),
+    re.compile(
+        r"^\s*(?:My\s+(?:Pat\*?reon[- ]page|ko-fi\s+page|Discord)\s*:|\(erase\s+the\s+\*\)).*$",
+        re.I | re.MULTILINE,
+    ),
 ]
 
 # In-line screenplay prefix stripping (e.g. '[Harry]:', '[Protagonist]:', '[Arthur]:')

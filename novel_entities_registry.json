@@ -1494,6 +1494,116 @@
         "aliases": [
           "rowan keel"
         ]
+      },
+      "okonkwo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "okonkwo"
+        ]
+      },
+      "girl": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaMultilingualNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "girl"
+        ]
+      },
+      "brand": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "brand"
+        ]
+      },
+      "petra hollis": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "petra hollis"
+        ]
+      },
+      "owen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "owen"
+        ]
+      },
+      "crowe": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "crowe"
+        ]
+      },
+      "petra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaMultilingualNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "petra"
+        ]
+      },
+      "ottilie": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ottilie"
+        ]
+      },
+      "vasha": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaMultilingualNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "vasha"
+        ]
+      },
+      "marta_quill": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "marta_quill"
+        ]
+      },
+      "marta": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "marta"
+        ]
       }
     },
     "vocatives": {
@@ -23462,6 +23572,56 @@
         "aliases": [
           "avaroth"
         ]
+      },
+      "webfiend lord": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "webfiend lord"
+        ]
+      },
+      "katherine": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "katherine"
+        ]
+      },
+      "lilly": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lilly"
+        ]
+      },
+      "kate": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "kate"
+        ]
+      },
+      "joshua": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "joshua"
+        ]
       }
     },
     "vocatives": {}
@@ -39611,6 +39771,76 @@
         "aliases": [
           "elder chen wushen"
         ]
+      },
+      "cultivator": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "cultivator"
+        ]
+      },
+      "farmer's wife": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "farmer's wife"
+        ]
+      },
+      "old maid": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-MichelleNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "old maid"
+        ]
+      },
+      "younger maid": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "younger maid"
+        ]
+      },
+      "head maid": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-MichelleNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "head maid"
+        ]
+      },
+      "kitsune yuki": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "kitsune yuki"
+        ]
+      },
+      "akane": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "akane"
+        ]
       }
     },
     "vocatives": {}
@@ -40317,6 +40547,236 @@
         "aliases": [
           "arachne"
         ]
+      },
+      "auctioneer": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "auctioneer"
+        ]
+      },
+      "mira": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "mira"
+        ]
+      },
+      "plague-masked woman": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "plague-masked woman"
+        ]
+      },
+      "attendant": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "attendant"
+        ]
+      },
+      "dungeon core": {
+        "gender": "Neutral",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "dungeon core"
+        ]
+      },
+      "monster": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "monster"
+        ]
+      },
+      "lilim": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lilim"
+        ]
+      },
+      "nessa": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "nessa"
+        ]
+      },
+      "vyx": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "vyx"
+        ]
+      },
+      "sera": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "sera"
+        ]
+      },
+      "vel": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "vel"
+        ]
+      },
+      "nyra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "nyra"
+        ]
+      },
+      "inquisitor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "inquisitor"
+        ]
+      },
+      "endo": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "endo"
+        ]
+      },
+      "archer": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "archer"
+        ]
+      },
+      "noble": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "noble"
+        ]
+      },
+      "krogar": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "krogar"
+        ]
+      },
+      "orc": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "orc"
+        ]
+      },
+      "human mage": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "human mage"
+        ]
+      },
+      "grug": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "grug"
+        ]
+      },
+      "indra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "indra"
+        ]
+      },
+      "vellod": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "vellod"
+        ]
+      },
+      "rock": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "rock"
+        ]
       }
     },
     "vocatives": {}
@@ -40732,6 +41192,126 @@
         "rate": "-4%",
         "aliases": [
           "sea demons"
+        ]
+      },
+      "fury": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fury"
+        ]
+      },
+      "watcher": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "watcher"
+        ]
+      },
+      "avarice": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "avarice"
+        ]
+      },
+      "ulthane": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ulthane"
+        ]
+      },
+      "lilith": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lilith"
+        ]
+      },
+      "blood angel": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "blood angel"
+        ]
+      },
+      "wrath": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "wrath"
+        ]
+      },
+      "envy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "envy"
+        ]
+      },
+      "statue on the left": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "statue on the left"
+        ]
+      },
+      "statue in the middle": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "statue in the middle"
+        ]
+      },
+      "statue on the right": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "statue on the right"
+        ]
+      },
+      "raphael": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "raphael"
         ]
       }
     },
@@ -41288,6 +41868,76 @@
         "rate": "-4%",
         "aliases": [
           "luna"
+        ]
+      },
+      "mrs susan": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "mrs susan"
+        ]
+      },
+      "jordan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jordan"
+        ]
+      },
+      "damon arcano malignus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "damon arcano malignus"
+        ]
+      },
+      "lord damon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lord damon"
+        ]
+      },
+      "maria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "maria"
+        ]
+      },
+      "ivy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ivy"
+        ]
+      },
+      "alice": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "alice"
         ]
       }
     },
@@ -42050,6 +42700,1164 @@
         "rate": "-5%",
         "aliases": [
           "zhou chong"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "sign-in-system-starting-with-invincible-physique": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "seris": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "seris"
+        ]
+      },
+      "fennick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "fennick"
+        ]
+      },
+      "rhain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "rhain"
+        ]
+      },
+      "brennan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "brennan"
+        ]
+      },
+      "maren": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "maren"
+        ]
+      },
+      "gaelen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "gaelen"
+        ]
+      },
+      "opponent": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "opponent"
+        ]
+      },
+      "hallie": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hallie"
+        ]
+      },
+      "harmon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "harmon"
+        ]
+      },
+      "roderick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "roderick"
+        ]
+      },
+      "dorris": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "dorris"
+        ]
+      },
+      "silas": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "silas"
+        ]
+      },
+      "torin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "torin"
+        ]
+      },
+      "jaro": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jaro"
+        ]
+      },
+      "victor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "victor"
+        ]
+      },
+      "lowen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lowen"
+        ]
+      },
+      "dorian": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "dorian"
+        ]
+      },
+      "dylan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "dylan"
+        ]
+      },
+      "vargas": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "vargas"
+        ]
+      },
+      "hale": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "hale"
+        ]
+      },
+      "bria": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "bria"
+        ]
+      },
+      "valerius": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "valerius"
+        ]
+      },
+      "drask": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "drask"
+        ]
+      },
+      "garon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "garon"
+        ]
+      },
+      "graves elder": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "graves elder"
+        ]
+      },
+      "jorlan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jorlan"
+        ]
+      },
+      "byron": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "byron"
+        ]
+      },
+      "samael": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "samael"
+        ]
+      },
+      "noran": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "noran"
+        ]
+      },
+      "vespera": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "vespera"
+        ]
+      },
+      "zephyrus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "zephyrus"
+        ]
+      },
+      "marvin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "marvin"
+        ]
+      },
+      "soren": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "soren"
+        ]
+      },
+      "thorne": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "thorne"
+        ]
+      },
+      "kory": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "kory"
+        ]
+      },
+      "fenwick": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "fenwick"
+        ]
+      },
+      "evolet": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "evolet"
+        ]
+      },
+      "orion": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "orion"
+        ]
+      },
+      "hayden": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "hayden"
+        ]
+      },
+      "declan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "declan"
+        ]
+      },
+      "rosanna": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "rosanna"
+        ]
+      },
+      "jarek": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "jarek"
+        ]
+      },
+      "woman": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "woman"
+        ]
+      },
+      "owner": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "owner"
+        ]
+      },
+      "liana": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "liana"
+        ]
+      },
+      "vanya": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "vanya"
+        ]
+      },
+      "matthias": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "matthias"
+        ]
+      },
+      "atlas": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "atlas"
+        ]
+      },
+      "solari elder": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "solari elder"
+        ]
+      },
+      "madame vanya": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "madame vanya"
+        ]
+      },
+      "guard": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "guard"
+        ]
+      },
+      "shop boy": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "shop boy"
+        ]
+      },
+      "kynlee": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "kynlee"
+        ]
+      },
+      "tormund": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "tormund"
+        ]
+      },
+      "old man": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "old man"
+        ]
+      },
+      "belen": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "belen"
+        ]
+      },
+      "attendant": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "attendant"
+        ]
+      },
+      "aldric": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "aldric"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "the-kingmakers-codex-vol-2": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      }
+    },
+    "vocatives": {}
+  },
+  "kingmaker-system-vol2": {
+    "characters": {
+      "narrator": {
+        "display_name": "Narrator",
+        "gender": "Neutral",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "narrator",
+          "exposition",
+          "description"
+        ]
+      },
+      "mc": {
+        "display_name": "Protagonist",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "+6%",
+        "aliases": [
+          "host",
+          "mc",
+          "boss"
+        ]
+      },
+      "system": {
+        "display_name": "System",
+        "gender": "Female",
+        "line_type": "System",
+        "voice": "en-US-AriaNeural",
+        "pitch": "-2Hz",
+        "rate": "+0%",
+        "aliases": [
+          "system",
+          "prompt",
+          "ding"
+        ]
+      },
+      "mob": {
+        "display_name": "Crowd",
+        "gender": "Male",
+        "line_type": "Dialogue",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "aliases": [
+          "crowd",
+          "people",
+          "mob"
+        ]
+      },
+      "thrain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "thrain"
+        ]
+      },
+      "aedan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "aedan"
+        ]
+      },
+      "marcus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "marcus"
+        ]
+      },
+      "sir kay": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "sir kay"
+        ]
+      },
+      "protagonist": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "protagonist"
+        ]
+      },
+      "arthur": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "arthur"
+        ]
+      },
+      "morwenna": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "morwenna"
+        ]
+      },
+      "seraphina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "seraphina"
+        ]
+      },
+      "briar": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "briar"
+        ]
+      },
+      "geraint": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "geraint"
+        ]
+      },
+      "mercenary captain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "mercenary captain"
+        ]
+      },
+      "captain geraint": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "captain geraint"
+        ]
+      },
+      "gawain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "gawain"
+        ]
+      },
+      "nimue": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "nimue"
+        ]
+      },
+      "king lot": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "king lot"
+        ]
+      },
+      "accolon": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "accolon"
+        ]
+      },
+      "duke mark": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "duke mark"
+        ]
+      },
+      "king urien": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "king urien"
+        ]
+      },
+      "morgan le fay": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "morgan le fay"
+        ]
+      },
+      "admiral malakor": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "admiral malakor"
+        ]
+      },
+      "vespera": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "vespera"
+        ]
+      },
+      "devlin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-BrianNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "devlin"
+        ]
+      },
+      "master thrain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "master thrain"
+        ]
+      },
+      "baron vane": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "baron vane"
+        ]
+      },
+      "lord hollis": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-AndrewNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lord hollis"
+        ]
+      },
+      "baroness elda": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "baroness elda"
+        ]
+      },
+      "archbishop dubricus": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "archbishop dubricus"
+        ]
+      },
+      "king pellinore": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "king pellinore"
+        ]
+      },
+      "lionkin scout": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "lionkin scout"
+        ]
+      },
+      "pellinore": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "pellinore"
+        ]
+      },
+      "ashen lieutenant": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "ashen lieutenant"
+        ]
+      },
+      "sir ector": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "sir ector"
+        ]
+      },
+      "high king arthur": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "high king arthur"
+        ]
+      },
+      "grand architect aedan": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-GuyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "grand architect aedan"
+        ]
+      },
+      "tintagel bannerwarden": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "tintagel bannerwarden"
+        ]
+      },
+      "old torin": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "old torin"
+        ]
+      },
+      "king carados": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "king carados"
+        ]
+      },
+      "tintagel's senior bloodenvoy": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AriaNeural",
+        "pitch": "+0Hz",
+        "rate": "-5%",
+        "aliases": [
+          "tintagel's senior bloodenvoy"
+        ]
+      },
+      "lyra": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lyra"
+        ]
+      },
+      "lady nimue": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AvaNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lady nimue"
         ]
       }
     },

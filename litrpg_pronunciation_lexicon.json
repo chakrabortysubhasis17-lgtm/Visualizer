@@ -55,8 +55,6 @@
   "pve": "P v E",
   "aoe": "A O E",
   "dps": "D P S",
-  "dot": "D O T",
-  "hot": "H O T",
   "cd": "C D",
   "cds": "C Ds",
   "rng": "R N G",
@@ -236,5 +234,6 @@
   "harambe": "Hah rahm bay",
   "brorilla": "bro rilla",
   "brorillas": "bro rillas",
-  "Pffttt": "Pfft!"
+  "Pffttt": "Pfft!",
+  "Nn...": "Mmm..."
 }
