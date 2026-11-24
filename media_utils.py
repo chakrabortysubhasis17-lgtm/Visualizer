@@ -94,6 +94,7 @@ try:
         LowShelfFilter,
         PeakFilter,
         HighShelfFilter,
+        Reverb,
         load_plugin
     )
     from pedalboard.io import AudioFile
@@ -346,40 +347,74 @@ def mix_chapter_bgm_bed(
         if dur >= 8.0:
             bgm_file = find_bgm_file(bgm_dir, mood)
             if bgm_file:
-                valid_intervals.append((bgm_file, start, end, dur))
+                valid_intervals.append((bgm_file, start, end, dur, 0.095))
+
+    # Optional continuous scene ambience bed ("acoustic glue") if rows specify an 'ambience' key
+    sfx_dir = os.path.join(os.path.dirname(bgm_dir), "sfx")
+    amb_mood, amb_start, acc_t = "", 0.0, 0.0
+    amb_spans = []
+    for row, dur in zip(rows, line_durations):
+        amb_key = normalize_sfx_key(row.get("ambience", ""))
+        if amb_key != amb_mood:
+            if amb_mood:
+                amb_spans.append((amb_mood, amb_start, acc_t))
+            amb_mood = amb_key
+            amb_start = acc_t
+        acc_t += dur
+    if amb_mood:
+        amb_spans.append((amb_mood, amb_start, acc_t))
+
+    for amb_key, start, end in amb_spans:
+        dur = end - start
+        if dur >= 6.0:
+            amb_file = find_sfx_file(sfx_dir, amb_key) or find_bgm_file(bgm_dir, amb_key)
+            if amb_file:
+                valid_intervals.append((amb_file, start, end, dur, 0.022))
 
     if not valid_intervals:
         return False
 
-    # Build FFmpeg filter graph to overlay ambient music beds at an ultra-low volume (-27 dB)
+    # Build FFmpeg filter graph with sidechain ducking so BGM swells in pauses and ducks under speech
     inputs = ["-i", chapter_audio_path]
-    filter_complex_parts = []
-    mix_inputs = ["[0:a]"]
+    filter_complex_parts = [
+        "[0:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,asplit=2[base_voc][voc_sc]"
+    ]
+    bed_inputs = []
 
-    for idx, (bgm_file, start, end, dur) in enumerate(valid_intervals, start=1):
-        inputs.extend(["-i", bgm_file])
+    for idx, (bed_file, start, end, dur, base_vol) in enumerate(valid_intervals, start=1):
+        inputs.extend(["-stream_loop", "-1", "-i", bed_file])
         fade_in = min(3.0, dur * 0.25)
         fade_out = min(3.0, dur * 0.25)
         out_start = max(0.0, dur - fade_out)
 
-        # Loop, trim, exponential swell, linear egress decay, clear vocal mids & tame high-frequency air
         filt = (
-            f"[{idx}:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
-            f"aloop=loop=-1:size=2e+09,"
+            f"[{idx}:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
             f"atrim=0:{dur:.3f},"
             f"afade=t=in:ss=0:d={fade_in:.2f}:curve=qsin,"
             f"afade=t=out:st={out_start:.2f}:d={fade_out:.2f}:curve=tri,"
-            f"equalizer=f=2500:t=q:w=1.0:g=-4.0,"
-            f"highshelf=f=7000:g=-3.0,"
-            f"volume=0.079,"
-            f"adelay={int(start * 1000)}|{int(start * 1000)}[bgm_{idx}]"
+            f"equalizer=f=2200:t=q:w=0.9:g=-5.5,"
+            f"highshelf=f=6500:g=-3.5,"
+            f"stereotools=mlev=0.85:slev=1.25,"
+            f"volume={base_vol:.3f},"
+            f"adelay={int(start * 1000)}|{int(start * 1000)}[bed_{idx}]"
         )
         filter_complex_parts.append(filt)
-        mix_inputs.append(f"[bgm_{idx}]")
+        bed_inputs.append(f"[bed_{idx}]")
 
-    num_streams = len(mix_inputs)
+    num_beds = len(bed_inputs)
+    if num_beds == 1:
+        filter_complex_parts.append(f"{bed_inputs[0]}anull[bed_bus]")
+    else:
+        filter_complex_parts.append(
+            f"{''.join(bed_inputs)}amix=inputs={num_beds}:duration=longest:dropout_transition=2:normalize=0[bed_bus]"
+        )
+
+    # Sidechain compress BGM/ambience against speech: swells in pauses, ducks smoothly under narration
     filter_complex_parts.append(
-        f"{''.join(mix_inputs)}amix=inputs={num_streams}:duration=first:dropout_transition=2:weights=1.0 {'1.0 ' * (num_streams - 1)}[outa]"
+        "[bed_bus][voc_sc]sidechaincompress=threshold=0.015:ratio=4.5:attack=35:release=420:knee=6:makeup=1[bed_ducked]"
+    )
+    filter_complex_parts.append(
+        "[base_voc][bed_ducked]amix=inputs=2:duration=first:dropout_transition=2:normalize=0[outa]"
     )
 
     temp_mixed = output_path + ".bgm_tmp.mp3"
@@ -388,12 +423,12 @@ def mix_chapter_bgm_bed(
         *inputs,
         "-filter_complex", ";".join(filter_complex_parts),
         "-map", "[outa]",
-        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "1",
+        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "2",
         temp_mixed
     ]
 
     try:
-        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, check=True)
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=45, check=True)
         if os.path.isfile(temp_mixed) and os.path.getsize(temp_mixed) > 300:
             os.replace(temp_mixed, output_path)
             return True
@@ -711,18 +746,19 @@ def calculate_sfx_overlap_timing(d_sfx: float, line_id: str = "") -> Tuple[float
     return t_lead, t_bleed
 
 def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, line_id: str = "") -> float:
-    """Concatenate or crossfade SFX with speech, ensuring the speech track remains an untouched master bus."""
+    """Concatenate or crossfade stereo SFX with center-mono speech, preserving exact timing and log curves."""
     temp_output = output_path + ".sfx_tmp.mp3"
     filename = os.path.basename(sfx_path).lower()
     is_breath = "breath" in filename or "gasp" in filename
+    sfx_pan = round(get_sub_perceptual_jitter(line_id, "sfx_pan", -0.35, 0.35), 2) if line_id else 0.0
 
     if is_breath:
         filter_complex = (
-            "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+            "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
             "apad=whole_dur=0.235,atrim=0:0.235,asetpts=PTS-STARTPTS,"
-            "volume=0.32,"
+            "volume=0.24,"
             "afade=t=out:st=0.20:d=0.035[sfx];"
-            "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+            "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[speech];"
             "[sfx][speech]acrossfade=d=0.025:c1=exp:c2=log[out]"
         )
         t_lead = 0.20
@@ -732,27 +768,27 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
         d_total = t_lead + t_bleed
 
         if t_bleed <= 0.05:
-            # Short SFX (<= 1.0s): Pure sequential playback
+            # Short SFX (<= 1.0s): Pure sequential stereo playback
             filter_complex = (
-                "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
-                "loudnorm=I=-20:TP=-3:LRA=7,volume=0.55[sfx];"
-                "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
-                "[sfx][speech]concat=n=2:v=0:a=1[out]"
+                f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
+                f"loudnorm=I=-20:TP=-3:LRA=7,stereotools=mpan={sfx_pan},volume=0.40[sfx];"
+                f"[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[speech];"
+                f"[sfx][speech]concat=n=2:v=0:a=1[out]"
             )
         else:
-            # Full SFX (> 1.0s): Normalized head at 55% volume + dampened/notched tail under speech
+            # Full SFX (> 1.0s): Normalized stereo head at 40% volume + dampened/notched tail under speech
             filter_complex = (
-                f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+                f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
                 f"atrim=0:{d_total:.3f},asetpts=PTS-STARTPTS,"
-                f"loudnorm=I=-20:TP=-3:LRA=7,"
+                f"loudnorm=I=-20:TP=-3:LRA=7,stereotools=mpan={sfx_pan},"
                 f"asplit=2[sfx_raw1][sfx_raw2];"
                 f"[sfx_raw1]atrim=0:{t_lead:.3f},asetpts=PTS-STARTPTS,"
-                f"volume=0.55[sfx_head];"
+                f"volume=0.40[sfx_head];"
                 f"[sfx_raw2]atrim={t_lead:.3f}:{d_total:.3f},asetpts=PTS-STARTPTS,"
-                f"equalizer=f=2000:t=q:w=1.2:g=-6,highpass=f=100,"
-                f"volume=0.22,"
+                f"equalizer=f=2200:t=q:w=1.0:g=-8,highpass=f=110,"
+                f"volume=0.13,"
                 f"afade=t=out:st=0:d={t_bleed:.3f}:curve=log[sfx_tail];"
-                f"[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono[speech];"
+                f"[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[speech];"
                 f"[speech][sfx_tail]amix=inputs=2:duration=first:dropout_transition=0:weights=1 1:normalize=0[speech_tail];"
                 f"[sfx_head][speech_tail]concat=n=2:v=0:a=1[out]"
             )
@@ -763,7 +799,7 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
         "-i", speech_path,
         "-filter_complex", filter_complex,
         "-map", "[out]",
-        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "1",
+        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "2",
         temp_output,
     ]
     try:
@@ -1005,8 +1041,8 @@ async def synthesize_line_record(
         await asyncio.to_thread(
             subprocess.run,
             [
-                "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-                "-t", f"{dur:.2f}", "-q:a", "9", "-acodec", "libmp3lame", out_file
+                "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=stereo",
+                "-t", f"{dur:.2f}", "-ar", "24000", "-ac", "2", "-b:a", "192k", "-acodec", "libmp3lame", out_file
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
@@ -1056,6 +1092,11 @@ async def synthesize_line_record(
             line_id=line_id
         )
 
+    # Global 97% pace calibration (-5% rate offset across all voices)
+    _rate_m = re.search(r'([+-]?\d+)', str(rate))
+    _rate_val = (int(_rate_m.group(1)) if _rate_m else 0) - 3
+    rate = f"{max(-30, min(40, _rate_val)):+d}%"
+
     chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
     raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
 
@@ -1078,6 +1119,32 @@ async def synthesize_line_record(
                         await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
                 else:
                     await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
+
+            if not is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
+                _stereo_tmp = out_file + ".st.mp3"
+                is_thought = str(line_type).strip().lower() in (
+                    "thought", "internal", "monologue", "inner_monologue", "telepathy", "flashback"
+                )
+                voc_af = (
+                    "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
+                    "lowpass=f=5400,highpass=f=115,aecho=0.8:0.5:18|32:0.12|0.06,stereotools=slev=1.25"
+                    if is_thought else
+                    "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo"
+                )
+                await asyncio.to_thread(
+                    subprocess.run,
+                    [
+                        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                        "-i", raw_tts_file,
+                        "-af", voc_af,
+                        "-ar", "24000", "-ac", "2", "-b:a", "192k", "-acodec", "libmp3lame",
+                        _stereo_tmp,
+                    ],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                if os.path.exists(_stereo_tmp) and os.path.getsize(_stereo_tmp) > 300:
+                    os.replace(_stereo_tmp, out_file)
 
             if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
                 await asyncio.to_thread(
@@ -1227,8 +1294,8 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         await asyncio.to_thread(
             subprocess.run,
             [
-                "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-                "-t", "3.0", "-q:a", "9", "-acodec", "libmp3lame", chapter_mp3
+                "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=stereo",
+                "-t", "3.0", "-ar", "24000", "-ac", "2", "-b:a", "192k", "-acodec", "libmp3lame", chapter_mp3
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
@@ -1374,6 +1441,9 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
 
         # 2. Chest Resonance Warmth
         chain.append(LowShelfFilter(cutoff_frequency_hz=220.0, gain_db=1.8))
+        chain.append(PeakFilter(cutoff_frequency_hz=240.0, gain_db=1.2, q=0.9))
+        chain.append(HighShelfFilter(cutoff_frequency_hz=4500.0, gain_db=-1.2))
+        chain.append(HighShelfFilter(cutoff_frequency_hz=9500.0, gain_db=1.2))
 
         # 3. Optical Vocal Leveler (Analog Obsession LALA)
         lala_vst = os.path.join(PLUGINS_DIR, "LALA.vst3")
@@ -1394,6 +1464,9 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
         ])
 
         smoothing_board = Pedalboard(chain)
+        side_reverb = Pedalboard([
+            Reverb(room_size=0.32, damping=0.70, wet_level=0.22, dry_level=0.0, width=1.0)
+        ])
 
         print("[Pedalboard DSP] Streaming audio blocks through mastering chain...", flush=True)
         with AudioFile(input_path) as f:
@@ -1403,7 +1476,16 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
                 chunk_size = sr * 30
                 while f.tell() < f.frames:
                     chunk = f.read(chunk_size)
-                    effected = smoothing_board(chunk, sr, reset=False)
+                    if CV2_NUMPY_AVAILABLE and chunk.shape[0] == 2:
+                        mid = 0.5 * (chunk[0] + chunk[1])
+                        side = 0.5 * (chunk[0] - chunk[1])
+                        proc_mid = smoothing_board(mid[np.newaxis, :], sr, reset=False)[0]
+                        wet_side = side_reverb(np.vstack([side, -side]), sr, reset=False)
+                        out_l = proc_mid + side + wet_side[0]
+                        out_r = proc_mid - side + wet_side[1]
+                        effected = np.clip(np.vstack([out_l, out_r]), -0.98, 0.98)
+                    else:
+                        effected = smoothing_board(chunk, sr, reset=False)
                     o.write(effected)
 
         return os.path.exists(output_path) and os.path.getsize(output_path) > 10000
@@ -1478,7 +1560,7 @@ def master_final_audio(
             "ffmpeg", "-y", "-i", source_audio,
             "-filter_complex", post_filter,
             "-map", "[outa]",
-            "-c:a", "libmp3lame", "-b:a", "192k", final_audio_path
+            "-c:a", "libmp3lame", "-b:a", "192k", "-ac", "2", final_audio_path
         ], check=True)
         print(f"[Audio Master Engine] [OK] Mastered audio written to {final_audio_path}", flush=True)
 

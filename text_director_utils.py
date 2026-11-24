@@ -1013,6 +1013,7 @@ def parse_single_chunk_via_gemini(
         types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
     ]
 
+    #gemini-3.1-flash-lite
     for attempt in range(1, max_retries + 1):
         try:
             response = client.models.generate_content(
