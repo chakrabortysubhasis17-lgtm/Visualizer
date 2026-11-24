@@ -1023,6 +1023,7 @@ def parse_single_chunk_via_gemini(
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
                     safety_settings=safety_settings,
+                    thinking_config=types.ThinkingConfig(thinking_level="LOW"),
                     temperature=0.1
                 )
             )
