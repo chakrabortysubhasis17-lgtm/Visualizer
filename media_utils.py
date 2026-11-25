@@ -43,6 +43,12 @@ from audio_constants import (
 )
 from lexicon_utils import apply_pronunciation_lexicon
 
+# Internal audio-profile revisions. These invalidate only rendered audio caches
+# after mix/master settings change; synthesis, SFX selection and timing stay intact.
+BGM_MIX_PROFILE_VERSION = "voice_first_bgm_v2"
+VOICE_GAIN_PROFILE_VERSION = "voice_track_gain_3x_3d_v1"
+MASTERING_PROFILE_VERSION = "voice_first_master_v3"
+
 # =====================================================================
 # SUBTITLE ENGINE DELEGATION (Maintains 100% Backwards Compatibility)
 # =====================================================================
@@ -118,6 +124,7 @@ except ImportError:
 
 RE_ALPHANUM = re.compile(r'[a-zA-Z0-9]')
 RE_PAUSE_TAGS = re.compile(r'\[(?:pause|Pause)\s*[\w\s.]*\]|\((?:pause|Pause)\s*[\w\s.]*\)', re.I)
+RE_ELLIPSIS_SPLIT = re.compile(r'(\.\.\.+|\u2026|\u2014)')
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOCAL_PLUGINS = os.path.join(_SCRIPT_DIR, "assets", "plugins")
@@ -347,7 +354,7 @@ def mix_chapter_bgm_bed(
         if dur >= 8.0:
             bgm_file = find_bgm_file(bgm_dir, mood)
             if bgm_file:
-                valid_intervals.append((bgm_file, start, end, dur, 0.095))
+                valid_intervals.append((bgm_file, start, end, dur, 0.075))
 
     # Optional continuous scene ambience bed ("acoustic glue") if rows specify an 'ambience' key
     sfx_dir = os.path.join(os.path.dirname(bgm_dir), "sfx")
@@ -369,7 +376,7 @@ def mix_chapter_bgm_bed(
         if dur >= 6.0:
             amb_file = find_sfx_file(sfx_dir, amb_key) or find_bgm_file(bgm_dir, amb_key)
             if amb_file:
-                valid_intervals.append((amb_file, start, end, dur, 0.022))
+                valid_intervals.append((amb_file, start, end, dur, 0.018))
 
     if not valid_intervals:
         return False
@@ -391,6 +398,7 @@ def mix_chapter_bgm_bed(
         filt = (
             f"[{idx}:a]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
             f"atrim=0:{dur:.3f},"
+            f"highpass=f=95,"
             f"afade=t=in:ss=0:d={fade_in:.2f}:curve=qsin,"
             f"afade=t=out:st={out_start:.2f}:d={fade_out:.2f}:curve=tri,"
             f"equalizer=f=2200:t=q:w=0.9:g=-5.5,"
@@ -412,7 +420,7 @@ def mix_chapter_bgm_bed(
 
     # Sidechain compress BGM/ambience against speech: swells in pauses, ducks smoothly under narration
     filter_complex_parts.append(
-        "[bed_bus][voc_sc]sidechaincompress=threshold=0.015:ratio=4.5:attack=35:release=420:knee=6:makeup=1[bed_ducked]"
+        "[bed_bus][voc_sc]sidechaincompress=threshold=0.015:ratio=5.0:attack=25:release=480:knee=6:makeup=1[bed_ducked]"
     )
     filter_complex_parts.append(
         "[base_voc][bed_ducked]amix=inputs=2:duration=first:dropout_transition=2:normalize=0[outa]"
@@ -746,18 +754,135 @@ def calculate_sfx_overlap_timing(d_sfx: float, line_id: str = "") -> Tuple[float
 
     return t_lead, t_bleed
 
-def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, line_id: str = "") -> float:
-    """Concatenate or crossfade stereo SFX with center-mono speech, adding organic micro-pitch/rate foley variation."""
+# =====================================================================
+# 3D FRONT-STAGE SPATIALIZER (Narrator/System Center, Actors +/-30 deg)
+# =====================================================================
+
+def get_speaker_azimuth(speaker: str, line_type: str, line_id: str) -> float:
+    """Locks Narrator/System to 0.0 center and keeps all other actors within +/-30 deg ([-0.17, +0.17])."""
+    sp = str(speaker).strip().lower()
+    lt = str(line_type).strip().lower()
+    if lt in ("narration", "system") or sp == "narrator":
+        return 0.0
+    if "katherine" in sp:
+        base_pan = -0.13
+    elif "webfiend" in sp:
+        base_pan = 0.14
+    else:
+        h = int(hashlib.md5(sp.encode("utf-8")).hexdigest()[:4], 16)
+        # 5 front-stage positions: -0.14, -0.07, 0.0, +0.07, +0.14
+        base_pan = ((h % 5) - 2) * 0.07
+    drift = get_sub_perceptual_jitter(line_id, "pan3d", -0.015, 0.015)
+    return max(-0.17, min(0.17, round(base_pan + drift, 3)))
+
+
+def _apply_3d_stage_to_stereo_sync(stereo_mp3: str, speaker: str, line_type: str, line_id: str) -> float:
+    """Applies subtle +/-30 deg binaural ILD + ITD + head-shadowing to actor stereo clips; leaves Narrator/System at 0.0."""
+    pan = get_speaker_azimuth(speaker, line_type, line_id)
+    lt_clean = str(line_type).strip().lower()
+    is_thought = lt_clean in (
+        "thought", "internal", "monologue", "inner_monologue", "telepathy", "flashback"
+    )
+    if is_thought or abs(pan) < 0.01:
+        return 0.0
+
+    if not PEDALBOARD_AVAILABLE or not CV2_NUMPY_AVAILABLE:
+        tmp_pan = stereo_mp3 + ".pan_tmp.mp3"
+        subprocess.run(
+            [
+                "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                "-i", stereo_mp3,
+                "-af", f"stereotools=mpan={pan}",
+                "-ar", "24000", "-ac", "2", "-b:a", "320k", "-acodec", "libmp3lame",
+                tmp_pan,
+            ],
+            check=True,
+        )
+        os.replace(tmp_pan, stereo_mp3)
+        return pan
+
+    with AudioFile(stereo_mp3) as f:
+        sr = f.samplerate
+        audio = f.read(f.frames)
+
+    mono = 0.5 * (audio[0] + audio[1]) if audio.ndim > 1 and audio.shape[0] >= 2 else (audio[0] if audio.ndim > 1 else audio)
+    n = len(mono)
+    if n < int(sr * 0.04):
+        return pan
+
+    # Equal-power ILD panning within [-0.17, +0.17] (+/-30 degrees)
+    angle = (pan + 1.0) * (math.pi / 4.0)
+    left = mono * math.cos(angle)
+    right = mono * math.sin(angle)
+
+    # Subtle binaural Interaural Time Delay (max ~0.24ms at +/-30 deg)
+    itd_samples = int(round(abs(pan) * 0.00024 * sr))
+    if itd_samples > 0:
+        if pan > 0:
+            left = np.pad(left, (itd_samples, 0))[:n]
+        else:
+            right = np.pad(right, (itd_samples, 0))[:n]
+
+    stereo = np.vstack([left, right]).astype(np.float32)
+
+    # Gentle far-ear acoustic head shadow
+    if abs(pan) > 0.06:
+        shadow = HighShelfFilter(cutoff_frequency_hz=4500.0, gain_db=-2.2 * abs(pan) * 2.2)
+        far_ch = 0 if pan > 0 else 1
+        stereo[far_ch] = shadow(stereo[far_ch][None, :], sr)[0]
+
+    tmp_wav = stereo_mp3 + ".3d_tmp.wav"
+    with AudioFile(tmp_wav, "w", sr, 2) as o:
+        o.write(stereo)
+
+    tmp_mp3 = stereo_mp3 + ".3d_tmp.mp3"
+    subprocess.run(
+        [
+            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+            "-i", tmp_wav,
+            "-ar", str(sr), "-ac", "2", "-b:a", "320k", "-acodec", "libmp3lame",
+            tmp_mp3,
+        ],
+        check=True,
+    )
+    os.remove(tmp_wav)
+    os.replace(tmp_mp3, stereo_mp3)
+    return pan
+
+
+def compute_sfx_pan(sfx_key: str, speaker: str, speaker_pan: float, line_id: str) -> float:
+    """Keeps SFX within +/-0.25 of center and anchored to the active speaker's azimuth."""
+    key = sfx_key.lower()
+    sp = str(speaker).strip().lower()
+    if any(k in key for k in ("breath", "gasp", "step", "footstep", "cough")):
+        if abs(speaker_pan) > 0.03:
+            return round(speaker_pan, 2)
+        if "female" in key or "katherine" in sp:
+            return -0.13
+    if abs(speaker_pan) > 0.03:
+        jitter = get_sub_perceptual_jitter(line_id, "sfx_pan_bias", -0.06, 0.06)
+        return round(max(-0.25, min(0.25, speaker_pan + jitter)), 2)
+    return round(get_sub_perceptual_jitter(line_id, "sfx_pan", -0.22, 0.22), 2)
+
+def _prepend_sfx_audio_sync(
+    sfx_path: str,
+    speech_path: str,
+    output_path: str,
+    line_id: str = "",
+    speaker: str = "Narrator",
+    speaker_pan: float = 0.0,
+) -> float:
+    """Concatenate or crossfade stereo SFX with 3D speech, adding organic micro-pitch/rate foley variation."""
     temp_output = output_path + ".sfx_tmp.mp3"
     filename = os.path.basename(sfx_path).lower()
     is_breath = "breath" in filename or "gasp" in filename
-    sfx_pan = round(get_sub_perceptual_jitter(line_id, "sfx_pan", -0.35, 0.35), 2) if line_id else 0.0
+    sfx_pan = compute_sfx_pan(filename, speaker, speaker_pan, line_id) if line_id else speaker_pan
 
     if is_breath:
         filter_complex = (
             "[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
             "apad=whole_dur=0.235,atrim=0:0.235,asetpts=PTS-STARTPTS,"
-            "volume=0.24,"
+            f"volume=0.24,stereotools=mpan={sfx_pan},"
             "afade=t=out:st=0.20:d=0.035[sfx];"
             "[1:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo[speech];"
             "[sfx][speech]acrossfade=d=0.025:c1=exp:c2=log[out]"
@@ -785,7 +910,7 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
                 f"[sfx][speech]concat=n=2:v=0:a=1[out]"
             )
         else:
-            # Full SFX (> 1.0s): Normalized stereo head at 40% volume + dampened/notched tail under speech
+            # Full SFX (> 1.0s): Normalized stereo head at 60% volume + dampened/notched tail under speech
             filter_complex = (
                 f"[0:a:0]aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
                 f"{foley_var_filter},"
@@ -793,7 +918,7 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
                 f"loudnorm=I=-20:TP=-3:LRA=7,stereotools=mpan={sfx_pan},"
                 f"asplit=2[sfx_raw1][sfx_raw2];"
                 f"[sfx_raw1]atrim=0:{t_lead:.3f},asetpts=PTS-STARTPTS,"
-                f"volume=0.40[sfx_head];"
+                f"volume=0.60[sfx_head];"
                 f"[sfx_raw2]atrim={t_lead:.3f}:{d_total:.3f},asetpts=PTS-STARTPTS,"
                 f"equalizer=f=2200:t=q:w=1.0:g=-8,highpass=f=110,"
                 f"volume=0.13,"
@@ -826,13 +951,14 @@ def _prepend_sfx_audio_sync(sfx_path: str, speech_path: str, output_path: str, l
                 pass
 
 
-async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None:
-    """Apply the row's SFX once, rebuilding from the preserved speech copy when needed."""
+async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str, speaker_pan: float = 0.0) -> None:
+    """Apply the row's speaker-locked SFX once, rebuilding from the preserved speech copy when needed."""
     if not os.path.isfile(segment_path) or os.path.getsize(segment_path) <= 300:
         return
 
     sfx_key = normalize_sfx_key(row.get("sfx", ""))
     line_id = str(row.get("line_id", ""))
+    speaker = str(row.get("speaker", "Narrator"))
     sfx_path = find_sfx_file(sfx_dir, sfx_key, seed=f"{line_id}_{sfx_key}") if sfx_key else None
     asset_signature = _sfx_asset_identity(sfx_path)
     speech_path = _sfx_speech_path(segment_path)
@@ -900,6 +1026,8 @@ async def ensure_segment_sfx(row: dict, segment_path: str, sfx_dir: str) -> None
                 speech_path,
                 segment_path,
                 line_id=line_id,
+                speaker=speaker,
+                speaker_pan=speaker_pan,
             )
         _write_sfx_metadata(segment_path, sfx_key, True, asset_signature, t_lead=t_lead_applied)
     except Exception as exc:
@@ -1020,12 +1148,16 @@ async def synthesize_line_record(
     if sfx_dir is None:
         sfx_dir = os.path.join(_SCRIPT_DIR, "assets", "sfx")
 
+    line_id = str(row.get("line_id", ""))
+    line_type = row.get("line_type", "Narration")
+    speaker_name = row.get("speaker", "Narrator")
+
     if os.path.exists(out_file) and os.path.getsize(out_file) > 300:
-        await ensure_segment_sfx(row, out_file, sfx_dir)
+        cached_pan = get_speaker_azimuth(speaker_name, line_type, line_id)
+        await ensure_segment_sfx(row, out_file, sfx_dir, speaker_pan=cached_pan)
         return
 
     pause_dur = row.get("pause_duration")
-    line_id = str(row.get("line_id", ""))
 
     # Micro-pause jitter: break metronomic 300ms turn-taking gap
     if pause_dur is not None:
@@ -1036,7 +1168,7 @@ async def synthesize_line_record(
                 pause_dur = max(0.05, round(base_p + jitter, 3))
         except (ValueError, TypeError):
             pass
-    
+
     # Dual-Text Separation: Route tts_text to voice engine, falling back to text
     raw_text = row.get("tts_text") or row.get("text", "").strip()
     # Apply LitRPG phonetic dictionary ONLY to spoken audio
@@ -1057,13 +1189,12 @@ async def synthesize_line_record(
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
-        await ensure_segment_sfx(row, out_file, sfx_dir)
+        await ensure_segment_sfx(row, out_file, sfx_dir, speaker_pan=0.0)
         return
 
-    line_type = row.get("line_type", "Narration")
     is_system = (line_type == "System")
-    is_narration = (line_type == "Narration" or row.get("speaker", "").lower() == "narrator")
-    speaker_name = row.get("speaker", "Narrator")
+    is_narration = (line_type == "Narration" or speaker_name.lower() == "narrator")
+    is_actor = (not is_system and not is_narration)
 
     bgm_mood = normalize_bgm_mood(row.get("bgm_mood", "no_mood"))
     pitch_tier = row.get("pitch_tier")
@@ -1107,6 +1238,16 @@ async def synthesize_line_record(
     _rate_val = (int(_rate_m.group(1)) if _rate_m else 0) - 3
     rate = f"{max(-30, min(40, _rate_val)):+d}%"
 
+    if is_actor and ("..." in text or "\u2026" in text or "\u2014" in text):
+        raw_parts = [
+            p.strip()
+            for p in RE_ELLIPSIS_SPLIT.split(text)
+            if p and p.strip() not in ("...", "\u2026", "\u2014") and RE_ALPHANUM.search(p)
+        ]
+        actor_phrases = raw_parts if len(raw_parts) > 1 else [text]
+    else:
+        actor_phrases = [text]
+
     chunk_timeout = max(30.0, 20.0 + (len(text.split()) * 0.40))
     raw_tts_file = out_file + ".raw.mp3" if is_system else out_file
 
@@ -1121,14 +1262,77 @@ async def synthesize_line_record(
                 else:
                     active_voice = "en-US-GuyNeural" if row.get("gender") == "Male" else "en-US-JennyNeural"
 
-            comm = edge_tts.Communicate(text, active_voice, pitch=pitch, rate=rate)
-
-            async with sem:
-                if TTS_BURST_LIMITER:
-                    async with TTS_BURST_LIMITER:
+            if len(actor_phrases) == 1:
+                comm = edge_tts.Communicate(actor_phrases[0], active_voice, pitch=pitch, rate=rate)
+                async with sem:
+                    if TTS_BURST_LIMITER:
+                        async with TTS_BURST_LIMITER:
+                            await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
+                    else:
                         await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
-                else:
-                    await asyncio.wait_for(comm.save(raw_tts_file), timeout=chunk_timeout)
+            else:
+                sub_files = []
+                ellipsis_gap = round(get_sub_perceptual_jitter(line_id, "ellipsis_gap", 0.30, 0.38), 3)
+                for p_idx, phrase in enumerate(actor_phrases):
+                    sub_raw = f"{out_file}.sub_raw_{p_idx}.mp3"
+                    sub_clean = f"{out_file}.sub_{p_idx}.mp3"
+                    comm = edge_tts.Communicate(phrase, active_voice, pitch=pitch, rate=rate)
+                    async with sem:
+                        if TTS_BURST_LIMITER:
+                            async with TTS_BURST_LIMITER:
+                                await asyncio.wait_for(comm.save(sub_raw), timeout=chunk_timeout)
+                        else:
+                            await asyncio.wait_for(comm.save(sub_raw), timeout=chunk_timeout)
+
+                    sub_pad = ellipsis_gap if p_idx < len(actor_phrases) - 1 else 0.0
+                    pad_clause = f",apad=pad_dur={sub_pad:.3f}" if sub_pad > 0.02 else ""
+                    trim_af = (
+                        "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=mono,"
+                        "areverse,silenceremove=start_periods=1:start_duration=0.025:start_threshold=-55dB,areverse,"
+                        "afade=t=in:st=0:d=0.008,areverse,afade=t=in:st=0:d=0.015,areverse"
+                        f"{pad_clause}"
+                    )
+                    await asyncio.to_thread(
+                        subprocess.run,
+                        [
+                            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                            "-i", sub_raw, "-af", trim_af,
+                            "-ar", "24000", "-ac", "1", "-b:a", "192k", "-acodec", "libmp3lame",
+                            sub_clean,
+                        ],
+                        check=True,
+                    )
+                    try:
+                        os.remove(sub_raw)
+                    except OSError:
+                        pass
+                    sub_files.append(sub_clean)
+
+                sub_list = out_file + ".sub_list.txt"
+                with open(sub_list, "w", encoding="utf-8") as sf:
+                    for sp_f in sub_files:
+                        sf.write(f"file '{os.path.abspath(sp_f).replace(os.sep, '/')}'\n")
+                await asyncio.to_thread(
+                    subprocess.run,
+                    [
+                        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                        "-f", "concat", "-safe", "0", "-i", sub_list,
+                        "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "24000", "-ac", "1",
+                        raw_tts_file,
+                    ],
+                    check=True,
+                )
+                for sp_f in sub_files:
+                    try:
+                        os.remove(sp_f)
+                    except OSError:
+                        pass
+                try:
+                    os.remove(sub_list)
+                except OSError:
+                    pass
+
+            speaker_pan = 0.0
 
             if not is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
                 _stereo_tmp = out_file + ".st.mp3"
@@ -1145,15 +1349,27 @@ async def synthesize_line_record(
                 else:
                     turn_trim = ""
 
+                voice_gain_filter = (
+                    ",highpass=f=80,"
+                    "equalizer=f=180:t=q:w=1.2:g=3.2,"
+                    "equalizer=f=3200:t=q:w=1.5:g=2.5,"
+                    "equalizer=f=8000:t=q:w=1.5:g=1.5,"
+                    "acompressor=threshold=-22dB:ratio=5:attack=4:release=45:makeup=4.5dB,"
+                    "alimiter=limit=0.95:attack=3:release=40:level=disabled,"
+                    "loudnorm=I=-11:TP=-1.0:LRA=4"
+                )
+
                 if is_thought:
                     voc_af = (
                         "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo,"
                         "lowpass=f=5400,highpass=f=115,aecho=0.8:0.5:18|32:0.12|0.06,stereotools=slev=1.25"
+                        + voice_gain_filter
                     )
                 else:
                     voc_af = (
                         "aresample=24000,aformat=sample_fmts=fltp:sample_rates=24000:channel_layouts=stereo"
                         + turn_trim
+                        + voice_gain_filter
                     )
 
                 await asyncio.to_thread(
@@ -1162,13 +1378,16 @@ async def synthesize_line_record(
                         "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
                         "-i", raw_tts_file,
                         "-af", voc_af,
-                        "-ar", "24000", "-ac", "2", "-b:a", "192k", "-acodec", "libmp3lame",
+                        "-ar", "24000", "-ac", "2", "-b:a", "320k", "-acodec", "libmp3lame",
                         _stereo_tmp,
                     ],
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
                 )
                 if os.path.exists(_stereo_tmp) and os.path.getsize(_stereo_tmp) > 300:
+                    speaker_pan = await asyncio.to_thread(
+                        _apply_3d_stage_to_stereo_sync, _stereo_tmp, speaker_name, line_type, line_id
+                    )
                     os.replace(_stereo_tmp, out_file)
 
             if is_system and os.path.exists(raw_tts_file) and os.path.getsize(raw_tts_file) > 300:
@@ -1176,7 +1395,7 @@ async def synthesize_line_record(
                     subprocess.run,
                     [
                         "ffmpeg", "-y", "-i", raw_tts_file,
-                        "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2",
+                        "-af", "aecho=0.8:0.4:12:0.25,treble=g=3:f=3500,equalizer=f=800:width_type=q:w=1.2:g=-2,volume=3.0,alimiter=limit=0.98:attack=5:release=50:level=disabled",
                         "-ar", "24000", "-ac", "1",
                         "-q:a", "2", "-acodec", "libmp3lame", out_file
                     ],
@@ -1189,11 +1408,11 @@ async def synthesize_line_record(
                     os.remove(raw_tts_file)
                 except OSError:
                     pass
-                await ensure_segment_sfx(row, out_file, sfx_dir)
+                await ensure_segment_sfx(row, out_file, sfx_dir, speaker_pan=0.0)
                 return
 
             if os.path.exists(out_file) and os.path.getsize(out_file) > 300:
-                await ensure_segment_sfx(row, out_file, sfx_dir)
+                await ensure_segment_sfx(row, out_file, sfx_dir, speaker_pan=speaker_pan)
                 return
 
         except Exception as exc:
@@ -1210,7 +1429,7 @@ async def synthesize_line_record(
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
-            await ensure_segment_sfx(row, out_file, sfx_dir)
+            await ensure_segment_sfx(row, out_file, sfx_dir, speaker_pan=0.0)
             return
 
         await asyncio.sleep((attempt * 1.0) + random.uniform(0.3, 0.8))
@@ -1246,8 +1465,16 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
                     meta.get("sfx_pipeline_version") == SFX_PIPELINE_VERSION
                     and meta.get("sfx_manifest_signature") == sfx_manifest_signature
                 )
+            bgm_cache_valid = (
+                meta.get("bgm_mix_profile_version") == BGM_MIX_PROFILE_VERSION
+            )
+            voice_gain_cache_valid = (
+                meta.get("voice_gain_profile_version") == VOICE_GAIN_PROFILE_VERSION
+            )
             if (
                 sfx_cache_valid
+                and bgm_cache_valid
+                and voice_gain_cache_valid
                 and meta.get("duration", 0) > 10.0
                 and len(meta.get("relative_subtitles", [])) > 0
             ):
@@ -1355,6 +1582,8 @@ async def synthesize_chapter_task(ch_num: int, rows: list, title: str, build_dir
         "relative_subtitles": rel_subtitles,
         "sfx_pipeline_version": SFX_PIPELINE_VERSION,
         "sfx_manifest_signature": sfx_manifest_signature,
+        "bgm_mix_profile_version": BGM_MIX_PROFILE_VERSION,
+        "voice_gain_profile_version": VOICE_GAIN_PROFILE_VERSION,
     }
 
     if AIOFILES_AVAILABLE:
@@ -1444,7 +1673,7 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
     if not PEDALBOARD_AVAILABLE:
         return False
     try:
-        chain = [HighpassFilter(cutoff_frequency_hz=85.0)]
+        chain = [HighpassFilter(cutoff_frequency_hz=80.0)]
 
         # 1. Surgical Dynamic EQ / De-Esser (TDR Nova)
         nova_vst = os.path.join(PLUGINS_DIR, "TDR Nova.vst3")
@@ -1456,19 +1685,20 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
                 print(f"[Pedalboard DSP] Could not mount TDR Nova ({e}), using native EQ fallback.", flush=True)
                 chain.extend([
                     HighShelfFilter(cutoff_frequency_hz=6500.0, gain_db=-2.5),
-                    PeakFilter(cutoff_frequency_hz=850.0, gain_db=-1.5, q=1.0)
+                    PeakFilter(cutoff_frequency_hz=850.0, gain_db=-1.3, q=1.0)
                 ])
         else:
             chain.extend([
                 HighShelfFilter(cutoff_frequency_hz=6500.0, gain_db=-2.5),
-                PeakFilter(cutoff_frequency_hz=850.0, gain_db=-1.5, q=1.0)
+                PeakFilter(cutoff_frequency_hz=850.0, gain_db=-1.3, q=1.0)
             ])
 
-        # 2. Chest Resonance Warmth
-        chain.append(LowShelfFilter(cutoff_frequency_hz=220.0, gain_db=1.8))
-        chain.append(PeakFilter(cutoff_frequency_hz=240.0, gain_db=1.2, q=0.9))
-        chain.append(HighShelfFilter(cutoff_frequency_hz=4500.0, gain_db=-1.2))
-        chain.append(HighShelfFilter(cutoff_frequency_hz=9500.0, gain_db=1.2))
+        # 2. Vocal tone shaping: restrained warmth, clearer presence, controlled top end.
+        chain.append(LowShelfFilter(cutoff_frequency_hz=220.0, gain_db=0.8))
+        chain.append(PeakFilter(cutoff_frequency_hz=240.0, gain_db=0.4, q=0.9))
+        chain.append(PeakFilter(cutoff_frequency_hz=3200.0, gain_db=0.8, q=1.0))
+        chain.append(HighShelfFilter(cutoff_frequency_hz=4500.0, gain_db=-0.5))
+        chain.append(HighShelfFilter(cutoff_frequency_hz=9500.0, gain_db=0.5))
 
         # 3. Optical Vocal Leveler (Analog Obsession LALA)
         lala_vst = os.path.join(PLUGINS_DIR, "LALA.vst3")
@@ -1478,14 +1708,14 @@ def master_audio_with_pedalboard(input_path: str, output_path: str) -> bool:
                 print("[Pedalboard DSP] [OK] Attached VST3: LALA", flush=True)
             except Exception as e:
                 print(f"[Pedalboard DSP] Could not mount LALA ({e}), using native compressor fallback.", flush=True)
-                chain.append(Compressor(threshold_db=-19.0, ratio=2.2, attack_ms=25.0, release_ms=140.0))
+                chain.append(Compressor(threshold_db=-20.0, ratio=2.7, attack_ms=20.0, release_ms=130.0))
         else:
-            chain.append(Compressor(threshold_db=-19.0, ratio=2.2, attack_ms=25.0, release_ms=140.0))
+            chain.append(Compressor(threshold_db=-20.0, ratio=2.7, attack_ms=20.0, release_ms=130.0))
 
         # 4. Level Boost & True-Peak Limiter Ceiling
         chain.extend([
             Gain(gain_db=1.2),
-            Limiter(threshold_db=-1.0, release_ms=60.0)
+            Limiter(threshold_db=-1.2, release_ms=80.0)
         ])
 
         smoothing_board = Pedalboard(chain)
@@ -1526,8 +1756,24 @@ def master_final_audio(
     enable_voicefixer: bool = False,
     force_remaster: bool = False,
 ):
+    master_profile_path = final_audio_path + ".master_profile.json"
+    master_profile_matches = False
+    if os.path.isfile(master_profile_path):
+        try:
+            with open(master_profile_path, "r", encoding="utf-8") as profile_file:
+                stored_profile = json.load(profile_file)
+            master_profile_matches = (
+                isinstance(stored_profile, dict)
+                and stored_profile.get("mastering_profile_version") == MASTERING_PROFILE_VERSION
+                and stored_profile.get("bgm_mix_profile_version") == BGM_MIX_PROFILE_VERSION
+                and stored_profile.get("voice_gain_profile_version") == VOICE_GAIN_PROFILE_VERSION
+            )
+        except (OSError, ValueError):
+            master_profile_matches = False
+
     if (
         not force_remaster
+        and master_profile_matches
         and os.path.isfile(final_audio_path)
         and os.path.getsize(final_audio_path) > 100_000
     ):
@@ -1566,7 +1812,7 @@ def master_final_audio(
         pedalboard_ok = master_audio_with_pedalboard(working_source, pedalboard_staged)
         if pedalboard_ok:
             source_audio = pedalboard_staged
-            audio_filter = "volume=1.5dB,equalizer=f=3200:t=q:w=1.5:g=2.0,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
+            audio_filter = "volume=0.5dB,equalizer=f=3200:t=q:w=1.5:g=1.0,loudnorm=I=-14:TP=-1.5:LRA=7,apad=pad_dur=15"
         else:
             source_audio = working_source
             audio_filter = f"{BROADCAST_VOCAL_FILTER},apad=pad_dur=15"
@@ -1578,7 +1824,7 @@ def master_final_audio(
         post_filter = (
             f"[0:a]{audio_filter}[master_clean];"
             f"anoisesrc=d=100000:c=pink:r=44100:a=0.002[room_tone];"
-            f"[master_clean][room_tone]amix=inputs=2:duration=first:weights=1 1[outa]"
+            f"[master_clean][room_tone]amix=inputs=2:duration=first:weights=1 1:normalize=0[outa]"
         )
 
         subprocess.run([
@@ -1587,6 +1833,26 @@ def master_final_audio(
             "-map", "[outa]",
             "-c:a", "libmp3lame", "-b:a", "192k", "-ac", "2", final_audio_path
         ], check=True)
+        profile_temp_path = master_profile_path + ".tmp"
+        try:
+            with open(profile_temp_path, "w", encoding="utf-8") as profile_file:
+                json.dump(
+                    {
+                        "mastering_profile_version": MASTERING_PROFILE_VERSION,
+                        "bgm_mix_profile_version": BGM_MIX_PROFILE_VERSION,
+                        "voice_gain_profile_version": VOICE_GAIN_PROFILE_VERSION,
+                    },
+                    profile_file,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            os.replace(profile_temp_path, master_profile_path)
+        finally:
+            if os.path.exists(profile_temp_path):
+                try:
+                    os.remove(profile_temp_path)
+                except OSError:
+                    pass
         print(f"[Audio Master Engine] [OK] Mastered audio written to {final_audio_path}", flush=True)
 
     finally:
