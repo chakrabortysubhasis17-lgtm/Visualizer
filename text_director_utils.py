@@ -8,6 +8,7 @@ import asyncio
 import unicodedata
 import urllib.parse
 from typing import Any, Dict, List, Optional, Tuple
+from fallback_director_utils import run_comprehensive_fallback_director
 
 import httpx
 from bs4 import BeautifulSoup
@@ -781,13 +782,20 @@ def scrape_chapter_content(session, url: str, ch_num: int, default_topic: str = 
                 effective_url = str(resp.url)
                 break
         except Exception as e:
-                err_str = str(e)
-                if attempt == max_attempts:
-                    raise
-                # Exponential backoff with random jitter: 4s, 7s, 13s, 25s...
-                sleep_time = (base_delay * (2 ** (attempt - 1))) + random.uniform(1.0, 3.0)
-                print(f"[Gemini Director] 503 high demand spike. Backing off for {sleep_time:.1f}s (Attempt {attempt}/{max_attempts})...", flush=True)
-                time.sleep(sleep_time)
+            err_str = str(e)
+            if any(flag in err_str for flag in ("PROHIBITED_CONTENT", "BLOCKED", "SAFETY")):
+                print("     [Gemini Policy Block] Exception flagged policy violation. Routing to fallback director.", flush=True)
+                return []
+
+            delay = extract_retry_delay_seconds(e, attempt)
+            is_503 = ("503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower())
+            tag = "Gemini 503 Overload" if is_503 else "Gemini Director"
+            print(f"     [{tag}] Request error (Attempt {attempt}/{max_retries}): {e}", flush=True)
+            if attempt < max_retries:
+                print(f"     [Dynamic Cooldown] Waiting {delay:.1f}s before retrying...", flush=True)
+                time.sleep(delay)
+            elif is_503:
+                print("     [Gemini 503 Exhausted] All retries exhausted. Routing chunk to comprehensive fallback director.", flush=True)
 
 
     current_url_str = str(effective_url).lower()
@@ -979,7 +987,7 @@ def parse_single_chunk_via_gemini(
     title: str,
     chunk_text: str,
     system_instruction: str,
-    max_retries: int = 5,
+    max_retries: int = 2,
     refresh_legacy_cache_for_sfx: bool = False,
 ) -> list:
     # Versioned cache key to enforce parsing of sustained BGM moods alongside SFX
@@ -1827,171 +1835,7 @@ ACTIVE STAGED CHARACTERS:
 # =====================================================================
 
 def fallback_rule_based_staging(text: str, char_map: dict, max_narr_merge: int = 650) -> list:
-    paragraphs = text.split("\n\n")
-    raw_tokens = []
-    for p in paragraphs:
-        p_clean = balance_paragraph_quotes(p.strip())
-        if not p_clean or not RE_ALPHANUM.search(p_clean):
-            continue
-        parts = p_clean.split('"')
-        for i, raw_chunk in enumerate(parts):
-            chunk = raw_chunk.strip()
-            if not chunk or not RE_ALPHANUM.search(chunk):
-                continue
-            raw_tokens.append({"is_quote": (i % 2 != 0), "text": chunk})
-
-    staged_segments = []
-    for token in raw_tokens:
-        if not token["is_quote"]:
-            line_type = "System" if RE_SYSTEM.search(token["text"]) else "Narration"
-            rk = "system" if line_type == "System" else "narrator"
-            staged_segments.append({"role_key": rk, "line_type": line_type, "text": token["text"]})
-        else:
-            staged_segments.append({"role_key": "mc", "line_type": "Dialogue", "text": token["text"]})
-
-    consolidated = []
-    current_narr_buffer = []
-
-    for seg in staged_segments:
-        if seg["role_key"] == "narrator":
-            current_narr_buffer.append(seg["text"])
-        else:
-            if current_narr_buffer:
-                full_narr = " ".join(current_narr_buffer)
-                for chunk in split_by_sentence_threshold(full_narr, threshold=max_narr_merge):
-                    consolidated.append({"role_key": "narrator", "line_type": "Narration", "text": chunk})
-                current_narr_buffer = []
-            consolidated.append(seg)
-
-    if current_narr_buffer:
-        full_narr = " ".join(current_narr_buffer)
-        for chunk in split_by_sentence_threshold(full_narr, threshold=max_narr_merge):
-            consolidated.append({"role_key": "narrator", "line_type": "Narration", "text": chunk})
-
-    staged_records = []
-    for idx, seg in enumerate(consolidated, 1):
-        rk = seg["role_key"]
-        role_meta = char_map.get(rk, char_map.get("mc", FALLBACK_BASE_CHARACTERS["mc"]))
-        voice = resolve_character_voice(rk, char_map, default_voice=role_meta.get("voice", "en-US-Christopher"))
-        tp = seg["text"].strip()
-        if not re.search(r'[.!?…]$', tp):
-            tp = tp + "."
-
-        sfx_val = ""
-        t_low = tp.lower()
-        is_brief_event = len(tp.split()) < 22
-
-        if re.search(r'\b(gasp|gasps|gasped|sharp\s+intake\s+of\s+breath)\b', t_low) and is_brief_event:
-            sfx_val = "gasp"
-        elif re.search(r'\b(badump|thump-thump|heart\s+is\s+thundering|heart\s+thundering|heartbeat\s+starts|pounding\s+heart)\b', t_low) and is_brief_event:
-            sfx_val = "heartbeat"
-        elif re.search(r'\b(gunshot|shot\s+rang|fired\s+(?:his|her|a)\s+(?:gun|revolver|pistol|rifle|shotgun))\b', t_low):
-            sfx_val = "gunshot"
-        elif re.search(r'\b(grenade\s+exploded|bomb\s+went\s+off|detonated|violent\s+explosion|exploded\s+into\s+shards)\b', t_low):
-            sfx_val = "explosion"
-        elif re.search(r'\b(slammed\s+(?:the\s+)?door|slammed\s+shut|iron\s+grate\s+slammed)\b', t_low):
-            sfx_val = "slam"
-        elif re.search(r'\b(window\s+shattered|glass\s+shattered|vial\s+smashed|potion\s+bottle\s+shattered)\b', t_low):
-            sfx_val = "glass_break"
-        elif re.search(r'\b(turned\s+the\s+page|unfolded\s+(?:the\s+)?(?:letter|map)|parchment\s+rustled)\b', t_low):
-            sfx_val = "paper"
-        elif re.search(r'\b(ticking\s+of\s+(?:the\s+)?clock|grandfather\s+clock\s+ticked|pendulum\s+swung)\b', t_low):
-            sfx_val = "clock"
-        elif re.search(r'\b(car\s+(?:engine|sped|drove|accelerated)|engine\s+roared\s+to\s+life|vehicle\s+rolled)\b', t_low):
-            sfx_val = "car"
-        elif re.search(r'\b(tires?\s+screeched|screeching\s+tires?|braked\s+violently|skidded\s+to\s+a\s+halt)\b', t_low):
-            sfx_val = "screech"
-        elif re.search(r'\b(crickets?\s+chirped|crickets?\s+sang\s+in\s+the\s+night)\b', t_low):
-            sfx_val = "crickets"
-        elif re.search(r'\b(rain\s+(?:poured|drummed|lashed)|raindrops?\s+tapped\s+against\s+(?:the\s+)?(?:window|glass))\b', t_low):
-            sfx_val = "rain"
-        elif re.search(r'\b(crows?\s+cawed|ravens?\s+cawed|croak\s+of\s+a\s+raven)\b', t_low):
-            sfx_val = "crow"
-        elif re.search(r'\b(teleported|teleportation|spatial\s+flash|vanished\s+in\s+a\s+flash\s+of\s+light)\b', t_low):
-            sfx_val = "teleport"
-        elif re.search(r'\b(low\s+snarl|snarled\s+menacingly|growled\s+with\s+bared\s+fangs)\b', t_low):
-            sfx_val = "snarl"
-        elif re.search(r'\b(stomp|stomps|stomping|body\s+collapsed|collapsed\s+lifelessly|slammed\s+onto\s+the\s+ground)\b', t_low):
-            sfx_val = "thud"
-        elif re.search(r'\b(rushed\s+(?:in|into|out\s+of)\s+the\s+room|paced\s+(?:across|around)\s+the\s+room|walked\s+into\s+the\s+(?:room|hall|study|chamber|kitchen|office))\b', t_low):
-            sfx_val = "steps_indoor"
-        elif re.search(r'\b(tiny\s+paws|cat\s+padded|paws\s+pattered|claws\s+scuttled|scurrying\s+steps?)\b', t_low):
-            sfx_val = "patter"
-        elif re.search(r'\b(ground\s+shook\s+with\s+(?:each|every)\s+step|colossus\s+marched|giant\s+stomped|behemoth\s+strode)\b', t_low):
-            sfx_val = "heavy_steps"
-        elif re.search(r'\b(fidgeting\s+with\s+(?:my|her|his)\s+sleeves|straightening\s+(?:his|her)\s+coat|bow(?:s|ed)?\s+low|bow(?:s|ed)?\s+in\s+(?:perfect\s+)?sync|kneel(?:s|ed|ing)?\b.*?\bunison\b|kneel(?:s|ed|ing)?\s+before|outfit\s+adjusts)\b', t_low):
-            sfx_val = "rustle"
-        elif re.search(r'\b(sprint(?:s|ed|ing)?|dashes\s+forward|dashed\s+forward|fled\s+at\s+top\s+speed)\b', t_low):
-            sfx_val = "run"
-        elif re.search(r'\b(tiptoe(?:d|ing)?|cautious\s+steps?|creeping|sneaks?|sneaking)\b', t_low):
-            sfx_val = "tiptoe"
-        elif re.search(r'\b(carriage\s+rolled|wheels?\s+rattled|wagon\s+approached|horses?\s+trotted)\b', t_low):
-            sfx_val = "horseandcart"
-        elif re.search(r'\b(laced\s+(?:her|his|our)\s+fingers|fingers\s+slipped\s+through\s+mine)\b', t_low):
-            sfx_val = "heartwarm"
-        elif re.search(r'\b(sigh(?:ed|ing)?\s+in\s+relief|soft\s+sigh|weary\s+exhale)\b', t_low) and is_brief_event:
-            sfx_val = "sigh"
-        elif re.search(r'\b(phantom\s+murmurs?|eldritch\s+whispers?|voices?\s+coiling\s+in\s+(?:his|her)\s+head)\b', t_low):
-            sfx_val = "whisper"
-        elif re.search(r'\b(unnatural\s+chill|temperature\s+dropped|chilling\s+presence)\b', t_low):
-            sfx_val = "haunt"
-        elif re.search(r'\b(distant\s+howl|howl\s+tore\s+through|wolf\s+howl(?:ed|ing)?)\b', t_low):
-            sfx_val = "howl"
-        elif re.search(r'\b(bells?\s+(?:chimed|tolled|rang)|alarm\s+bells?|death\s+knell)\b', t_low):
-            sfx_val = "bells"
-        elif re.search(r'\b(war\s+drums?\s+beat|marching\s+drums?\s+echoed)\b', t_low):
-            sfx_val = "wardrum"
-        elif re.search(r'\b(spiritual\s+gong|temple\s+gong|gong\s+sounded)\b', t_low):
-            sfx_val = "gong"
-        elif re.search(r'\b(groaned\s+in\s+agony|sharp\s+gasp\s+of\s+pain|clutched\s+(?:his|her)\s+bleeding\s+wound)\b', t_low) and is_brief_event and seg["line_type"] != "Dialogue":
-            sfx_val = "pain"
-        elif re.search(r'\b(sizzled\s+in\s+the\s+pan|pot\s+bubbled\s+over|seared\s+the\s+meat)\b', t_low):
-            sfx_val = "cooking"
-        elif re.search(r'\b(set\s+down\s+the\s+plates?|plates?\s+clattered|dishes\s+clattered\s+on\s+the\s+table)\b', t_low):
-            sfx_val = "dishes"
-        elif re.search(r'\b(chewed\s+hungrily|chewing\s+the\s+meat|took\s+a\s+bite\s+of\s+(?:the\s+)?food)\b', t_low):
-            sfx_val = "eating"
-        elif re.search(r'\b(bustling\s+market|vendors\s+shouting\s+their\s+wares|noisy\s+bazaar)\b', t_low):
-            sfx_val = "market"
-        elif re.search(r'\b(stadium\s+erupted|crowd\s+cheered|applause\s+echoed)\b', t_low):
-            sfx_val = "cheer"
-        elif re.search(r'\b(crowd\s+groaned|disappointed\s+murmurs?)\b', t_low):
-            sfx_val = "disappointed"
-        elif re.search(r'\b(wind\s+howled\s+across|howling\s+gale)\b', t_low):
-            sfx_val = "wind"
-        elif re.search(r'\b(primeval\s+forest|rustling\s+canopy)\b', t_low):
-            sfx_val = "forest"
-        elif re.search(r'\b(waves\s+crashed\s+against|ocean\s+surf)\b', t_low):
-            sfx_val = "ocean"
-
-        # Sliding window deduplication
-        recent_sfx = [r["sfx"] for r in staged_records[-3:] if r.get("sfx")]
-        if sfx_val and sfx_val in recent_sfx:
-            sfx_val = ""
-
-        # Ensure default pitch tier and lung reset are emitted on rule-based fallbacks
-        is_narr = (seg["line_type"] == "Narration")
-        default_pitch_tier = "narrator_anchor" if is_narr else "conversational_mid"
-        default_rate = "-4%" if seg["line_type"] == "Dialogue" else "+0%"
-
-        staged_records.append({
-            "line_id": f"{idx:04d}",
-            "speaker": role_meta.get("display_name", rk.title()),
-            "gender": role_meta.get("gender", "Male"),
-            "line_type": seg["line_type"],
-            "pitch_tier": default_pitch_tier,
-            "lung_reset": (idx == 1 and is_narr),
-            "display_text": tp,
-            "tts_text": tp,
-            "text": tp,
-            "voice": voice,
-            "pitch": role_meta.get("pitch", "+0Hz"),
-            "rate": default_rate,
-            "pause_duration": 0.0,
-            "sfx": sfx_val,
-            "bgm_mood": "no_mood"
-        })
-    return staged_records
+    return run_comprehensive_fallback_director(text, char_map, max_narr_merge=max_narr_merge)
 
 
 # =====================================================================
