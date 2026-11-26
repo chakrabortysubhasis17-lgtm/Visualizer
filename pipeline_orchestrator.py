@@ -443,6 +443,8 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     start_ch = config["start_chapter"]
     end_ch = config["end_chapter"]
     branding = config.get("branding_assets", {})
+    generate_video = bool(config.get("generate_video", True))
+    use_gemini_director = bool(config.get("use_gemini_director", True))
 
     log_banner(
         f"AUDIOBOOK PRODUCTION PIPELINE: {novel_slug.upper()}",
@@ -464,7 +466,9 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     # 3. Initialize Gemini Client
     gemini_client = None
     gemini_key = config.get("gemini_api_key", "")
-    if GENAI_AVAILABLE and genai and gemini_key:
+    if not use_gemini_director:
+        log_info("Direct fallback mode active (use_gemini_director=False). Gemini prompt bypassed.")
+    elif GENAI_AVAILABLE and genai and gemini_key:
         try:
             gemini_client = genai.Client(api_key=gemini_key)
             log_success("Gemini Director client initialized successfully.")
@@ -484,6 +488,10 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     primary_thumb = config.get("cover_image", os.path.join(build_dir, "cover.jpg"))
 
     async def _execute_visuals_async():
+        if not generate_video:
+            log_info(f"[{novel_slug}] [Step 2: Visual Engine] Skipped (generate_video=False).")
+            return
+
         log_info(f"[{novel_slug}] [Step 2: Visual Engine] Generating {len(blocks)} background covers and outro slate...")
         for cfg in blocks:
             r_start, r_end = cfg["range"]
@@ -645,6 +653,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                     stage_file,
                     narration_threshold,
                     refresh_legacy_cache_for_sfx=bool(config.get("refresh_legacy_cache_for_sfx", False)),
+                    use_gemini_director=use_gemini_director,
                 )
                 effective_next = curr_url if (is_pdf_source(curr_url) and next_url) else next_url
                 return title, rows, effective_next
@@ -664,6 +673,7 @@ async def run_audiobook_pipeline(config: dict) -> dict:
                 stage_file,
                 narration_threshold,
                 refresh_legacy_cache_for_sfx=bool(config.get("refresh_legacy_cache_for_sfx", False)),
+                use_gemini_director=use_gemini_director,
             )
             effective_next = curr_url if (is_pdf_source(curr_url) and next_url) else next_url
             return title, rows, effective_next
@@ -805,64 +815,71 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         )
         log_success(f"Master Audio complete: '{final_audio}'")
 
-    # Ensure background visual generation task has completely finished before Phase 5
-    if not visuals_background_task.done():
-        log_info(f"[{novel_slug}] Waiting for all {len(blocks)} background images to finish generating...")
-        await visuals_background_task
+    if generate_video:
+        # Ensure background visual generation task has completely finished before Phase 5
+        if not visuals_background_task.done():
+            log_info(f"[{novel_slug}] Waiting for all {len(blocks)} background images to finish generating...")
+            await visuals_background_task
 
-    missing_covers = [
-        cfg["cover_file"] for cfg in blocks
-        if not verify_cover_integrity(cfg.get("cover_file", ""))
-    ]
-    if missing_covers:
-        raise RuntimeError(
-            f"Cannot build 5-minute HUD loop: {len(missing_covers)}/{len(blocks)} background images are missing: {missing_covers}"
-        )
+        missing_covers = [
+            cfg["cover_file"] for cfg in blocks
+            if not verify_cover_integrity(cfg.get("cover_file", ""))
+        ]
+        if missing_covers:
+            raise RuntimeError(
+                f"Cannot build 5-minute HUD loop: {len(missing_covers)}/{len(blocks)} background images are missing: {missing_covers}"
+            )
 
     # ---------------------------------------------------------
     # PHASE 5: Multiplexing Final Video
     # ---------------------------------------------------------
-    log_info(f"[{novel_slug}] [Phase 5/5] Multiplexing Video Frames with Pre-rendered Images & Subtitles...")
-    final_video = config.get("final_video", os.path.join(build_dir, "final_video.mp4"))
-    assemble_multi_image_video(
-        blocks=blocks,
-        block_durations=block_durations,
-        build_dir=build_dir,
-        final_audio_path=final_audio,
-        output_video_path=final_video,
-        subtitles_srt_path=subtitles_file
-    )
-    log_success(f"Final Video rendered: '{final_video}'")
+    final_video = None
+    if generate_video:
+        log_info(f"[{novel_slug}] [Phase 5/5] Multiplexing Video Frames with Pre-rendered Images & Subtitles...")
+        final_video = config.get("final_video", os.path.join(build_dir, "final_video.mp4"))
+        assemble_multi_image_video(
+            blocks=blocks,
+            block_durations=block_durations,
+            build_dir=build_dir,
+            final_audio_path=final_audio,
+            output_video_path=final_video,
+            subtitles_srt_path=subtitles_file
+        )
+        log_success(f"Final Video rendered: '{final_video}'")
+    else:
+        log_info(f"[{novel_slug}] [Phase 5/5] Video multiplexing skipped (generate_video=False). Output finalized at MP3.")
 
     # Save Complete Upload Payload
-    payload_file = config.get("payload_file", os.path.join(build_dir, "upload_payload.json"))
-    payload = {
-        "snippet": {
-            "title": config.get("video_title", f"{novel_slug.upper()} Ch {start_ch}-{end_ch}"),
-            "description": f"{config.get('desc_header', '')}{chr(10).join(timestamps)}{config.get('desc_footer', '')}",
-            "tags": config.get("tags", []),
-            "categoryId": "24",
-            "defaultLanguage": "en-US"
-        },
-        "status": {
-            "privacyStatus": config.get("privacy_status", "unlisted"),
-            "selfDeclaredMadeForKids": False
-        },
-        "assets": {
-            "video_file": os.path.abspath(final_video),
-            "thumbnail_file": os.path.abspath(primary_thumb),
-            "subtitles_file": os.path.abspath(subtitles_file),
-            "subtitles_dir": os.path.abspath(os.path.join(build_dir, "subtitles")),
-            "timestamps_file": os.path.abspath(timestamps_file)
+    payload_file = None
+    if generate_video:
+        payload_file = config.get("payload_file", os.path.join(build_dir, "upload_payload.json"))
+        payload = {
+            "snippet": {
+                "title": config.get("video_title", f"{novel_slug.upper()} Ch {start_ch}-{end_ch}"),
+                "description": f"{config.get('desc_header', '')}{chr(10).join(timestamps)}{config.get('desc_footer', '')}",
+                "tags": config.get("tags", []),
+                "categoryId": "24",
+                "defaultLanguage": "en-US"
+            },
+            "status": {
+                "privacyStatus": config.get("privacy_status", "unlisted"),
+                "selfDeclaredMadeForKids": False
+            },
+            "assets": {
+                "video_file": os.path.abspath(final_video),
+                "thumbnail_file": os.path.abspath(primary_thumb),
+                "subtitles_file": os.path.abspath(subtitles_file),
+                "subtitles_dir": os.path.abspath(os.path.join(build_dir, "subtitles")),
+                "timestamps_file": os.path.abspath(timestamps_file)
+            }
         }
-    }
-    if AIOFILES_AVAILABLE:
-        async with aiofiles.open(payload_file, "w", encoding="utf-8") as f:
-            await f.write(json.dumps(payload, indent=2, ensure_ascii=False))
-    else:
-        with open(payload_file, "w", encoding="utf-8") as f:
-            json.dump(payload, f, indent=2, ensure_ascii=False)
-    log_success(f"Upload payload generated: '{payload_file}'")
+        if AIOFILES_AVAILABLE:
+            async with aiofiles.open(payload_file, "w", encoding="utf-8") as f:
+                await f.write(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            with open(payload_file, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, ensure_ascii=False)
+        log_success(f"Upload payload generated: '{payload_file}'")
 
     # ---------------------------------------------------------
     # STEP 3: Closed-Loop Registry Final Safety Flush
@@ -889,6 +906,12 @@ async def run_audiobook_pipeline(config: dict) -> dict:
     # ---------------------------------------------------------
     # PHASE 7: Summary Dashboard
     # ---------------------------------------------------------
+    video_status_label = (
+        f"{os.path.getsize(final_video) // (1024*1024)} MB"
+        if final_video and os.path.exists(final_video)
+        else "Skipped (Audio-Only)"
+    )
+
     if RICH_AVAILABLE and console:
         summary_table = Table(title="Production Run Summary", border_style="cyan")
         summary_table.add_column("Artifact", style="bold white")
@@ -898,9 +921,10 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         summary_table.add_row("Total Chapters", f"{start_ch} to {end_ch} ({len(chapter_files)} chs)", "Completed")
         summary_table.add_row("Run Duration", format_timestamp(offset), "Verified")
         summary_table.add_row("Master Audio", final_audio, f"{os.path.getsize(final_audio) // (1024*1024)} MB")
-        summary_table.add_row("Final Video", final_video, f"{os.path.getsize(final_video) // (1024*1024)} MB")
+        #summary_table.add_row("Final Video", final_video, f"{os.path.getsize(final_video) // (1024*1024)} MB")
+        summary_table.add_row("Final Video", final_video or "Disabled (generate_video=False)", video_status_label)
         summary_table.add_row("Subtitles Tracks", f"{len(subtitles_bundle)} Languages in build/subtitles/", "Soft CC Ready")
-        summary_table.add_row("YouTube Payload", payload_file, "Metadata Ready")
+        summary_table.add_row("YouTube Payload", payload_file or "No Payload Generated", "Metadata Ready")
 
         console.print("\n")
         console.print(summary_table)
@@ -909,7 +933,10 @@ async def run_audiobook_pipeline(config: dict) -> dict:
         print("\n" + "=" * 78)
         print("PRODUCTION RUN COMPLETED SUCCESSFULLY")
         print(f"* Audio: {final_audio} ({os.path.getsize(final_audio) // (1024*1024)} MB)")
-        print(f"* Video: {final_video} ({os.path.getsize(final_video) // (1024*1024)} MB)")
+        if final_video and os.path.exists(final_video):
+            print(f"* Video: {final_video} ({video_status_label})")
+        else:
+            print("* Video: Skipped (generate_video=False)")
         print(f"* Subtitles: {len(subtitles_bundle)} tracks in build/subtitles/")
         print(f"* Duration: {format_timestamp(offset)}")
         print("=" * 78 + "\n", flush=True)

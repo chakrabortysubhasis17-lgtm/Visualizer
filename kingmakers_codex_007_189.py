@@ -78,9 +78,12 @@ CONFIG = {
     "start_url": r"D:\Projects\visualer\ebooks\The_Kingmakers_Codex_Vol1.pdf",
     "novel_slug": "kingmaker-system-vol1",
     "start_chapter": 1,
-    "end_chapter": 237,
+    "end_chapter": 35,
     "is_start": True,
     "default_topic": "Kingmaker System: The Pendragon Codex",
+
+    "use_gemini_director": False,  # True = Gemini prompt + fallback on error; False = direct fallback director
+    "generate_video": False,       # True = full MP4 render; False = stop after mastered MP3
 
     "batch_size": 15,
     "parallel_chapters": 3,

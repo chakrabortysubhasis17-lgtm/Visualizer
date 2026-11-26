@@ -42395,6 +42395,106 @@
         "aliases": [
           "dubricus"
         ]
+      },
+      "baron": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "baron"
+        ]
+      },
+      "ember": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-8Hz",
+        "rate": "-4%",
+        "aliases": [
+          "ember"
+        ]
+      },
+      "yang qingzhou": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-RogerNeural",
+        "pitch": "-6Hz",
+        "rate": "-4%",
+        "aliases": [
+          "yang qingzhou"
+        ]
+      },
+      "lina": {
+        "gender": "Female",
+        "role": "supporting_character",
+        "voice": "en-US-AnaNeural",
+        "pitch": "+2Hz",
+        "rate": "-4%",
+        "aliases": [
+          "lina"
+        ]
+      },
+      "monster": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-SteffanNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "monster"
+        ]
+      },
+      "alpha": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "alpha"
+        ]
+      },
+      "guards": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "-2Hz",
+        "rate": "-4%",
+        "aliases": [
+          "guards"
+        ]
+      },
+      "shadow": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "shadow"
+        ]
+      },
+      "captain": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-TonyNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "captain"
+        ]
+      },
+      "human": {
+        "gender": "Male",
+        "role": "supporting_character",
+        "voice": "en-US-EricNeural",
+        "pitch": "+0Hz",
+        "rate": "-4%",
+        "aliases": [
+          "human"
+        ]
       }
     },
     "vocatives": {}

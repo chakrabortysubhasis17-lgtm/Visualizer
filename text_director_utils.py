@@ -1142,6 +1142,7 @@ def parse_chapter_via_gemini_director(
     stage_file: str,
     max_narr_merge: int = 650,
     refresh_legacy_cache_for_sfx: bool = False,
+    use_gemini_director: bool = True,
 ) -> list:
     staged_chars = {}
     if os.path.exists(stage_file):
@@ -1156,7 +1157,9 @@ def parse_chapter_via_gemini_director(
     if not staged_chars:
         staged_chars = dict(FALLBACK_BASE_CHARACTERS)
 
-    if not client or not GENAI_AVAILABLE:
+    if not use_gemini_director or not client or not GENAI_AVAILABLE:
+        if not use_gemini_director:
+            print(f"     [Director Mode] Gemini bypassed (use_gemini_director=False). Running direct fallback director...", flush=True)
         return fallback_rule_based_staging(raw_text, staged_chars, max_narr_merge)
 
     # Build active cast manifest with aliases, gender locks, and neural voice assignments
