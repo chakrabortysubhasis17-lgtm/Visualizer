@@ -2331,19 +2331,19 @@ def _render_25d_parallax_shot_to_ffmpeg(
         if ret != 0:
             raise RuntimeError(f"FFmpeg post-FX pipe failed with exit code {ret}")
 
-
 def build_5min_hud_loop_video(
     blocks: list,
     build_dir: str,
     loop_duration_sec: float = 300.0,
     fps: int = 30,
+    animate_images: bool = True,
 ) -> str:
     """
     Builds a 5-minute (300s) 1080p/30fps animated master loop using the 10 blocks x 3 angles x 10s
     structure enhanced with:
-      - 2.5D Depth Parallax, Energy Shimmer & Volumetric God Rays (OpenCV/NumPy)
-      - Optical Rack Focus, Magic Qi Highlight Bloom, Dynamic Vignette & 35mm Grain (FFmpeg)
-      - Seamless xfade Morph Transitions between all 30 camera angles + hud_overlay_10s.webm
+- 2.5D Depth Parallax, Energy Shimmer & Volumetric God Rays (OpenCV/NumPy)
+- Optical Rack Focus, Magic Qi Highlight Bloom, Dynamic Vignette & 35mm Grain (FFmpeg)
+- Seamless xfade Morph Transitions between all 30 camera angles + hud_overlay_10s.webm
     """
     master_loop_path = os.path.join(build_dir, "master_hud_loop_5m.mp4")
     if os.path.isfile(master_loop_path) and os.path.getsize(master_loop_path) > 100_000:
@@ -2372,136 +2372,172 @@ def build_5min_hud_loop_video(
         )
 
     num_imgs = len(bg_images)
-    angles_per_img = 3
-    effective_angle_sec = round(loop_duration_sec / (num_imgs * angles_per_img), 3)  # 10.0s per angle
-    xfade_dur = 0.50  # 0.50s smooth xfade overlap between every camera cut
-    raw_angle_frames = int(round((effective_angle_sec + xfade_dur) * fps))  # 315 frames = 10.50s
-    raw_angle_sec = raw_angle_frames / float(fps)
-    block_dur_with_tail = round(angles_per_img * effective_angle_sec + xfade_dur, 3)  # 30.50s
-
-    angle_templates = [
-        ("Hero Right Push-In",    1.02, 0.24, 0.48,  0.28, 0.48, -0.08),
-        ("Upper-Left Vista Zoom", 1.04, 0.23, 0.42, -0.25, 0.42, -0.18),
-        ("Rising Center Reveal",  1.03, 0.25, 0.46,  0.12, 0.70, -0.30),
-    ]
-    intra_xfades = ["dissolve", "smoothup", "radial", "smoothright"]
+    xfade_dur = 0.50  # 0.50s smooth xfade overlap between transitions
     inter_xfades = ["fadeblack", "dissolve", "smoothleft", "wipeleft"]
+    raw_bg_300s = os.path.join(build_dir, "_tmp_25d_bg_300s.mp4")
+    temp_files = [raw_bg_300s]
 
-    print(
-        f"[HUD Loop] Building {loop_duration_sec:.0f}s 2.5D FX reel from {num_imgs} backgrounds "
-        f"({angles_per_img} angles x {effective_angle_sec:.1f}s + {xfade_dur}s xfade)...",
-        flush=True,
-    )
+    if animate_images:
+        angles_per_img = 3
+        effective_angle_sec = round(loop_duration_sec / (num_imgs * angles_per_img), 3)  # 10.0s per angle
+        raw_angle_frames = int(round((effective_angle_sec + xfade_dur) * fps))  # 315 frames = 10.50s
+        raw_angle_sec = raw_angle_frames / float(fps)
+        block_dur_with_tail = round(angles_per_img * effective_angle_sec + xfade_dur, 3)  # 30.50s
 
-    block_clips = []
-    temp_files = []
-    total_shots = num_imgs * angles_per_img
-    shot_counter = 0
+        angle_templates = [
+            ("Hero Right Push-In",    1.02, 0.24, 0.48,  0.28, 0.48, -0.08),
+            ("Upper-Left Vista Zoom", 1.04, 0.23, 0.42, -0.25, 0.42, -0.18),
+            ("Rising Center Reveal",  1.03, 0.25, 0.46,  0.12, 0.70, -0.30),
+        ]
+        intra_xfades = ["dissolve", "smoothup", "radial", "smoothright"]
 
-    for seq_idx, (b_idx, img_path) in enumerate(bg_images, 1):
-        angle_clips = []
-        for ang_idx, (ang_name, z0, dz, x0, dx, y0, dy) in enumerate(angle_templates, 1):
-            shot_counter += 1
-            ang_out = os.path.join(build_dir, f"_tmp_25d_b{seq_idx:02d}_a{ang_idx}.mp4")
-            temp_files.append(ang_out)
+        print(
+            f"[HUD Loop] Building {loop_duration_sec:.0f}s 2.5D FX reel from {num_imgs} backgrounds "
+            f"({angles_per_img} angles x {effective_angle_sec:.1f}s + {xfade_dur}s xfade)...",
+            flush=True,
+        )
 
-            if CV2_NUMPY_AVAILABLE:
-                _render_25d_parallax_shot_to_ffmpeg(
-                    img_path=img_path,
-                    out_mp4=ang_out,
-                    num_frames=raw_angle_frames,
-                    fps=fps,
-                    z0=z0, dz=dz, x0=x0, dx=dx, y0=y0, dy=dy,
-                    seed_key=f"fx_25d_{b_idx}_{ang_idx}",
+        block_clips = []
+        total_shots = num_imgs * angles_per_img
+        shot_counter = 0
+
+        for seq_idx, (b_idx, img_path) in enumerate(bg_images, 1):
+            angle_clips = []
+            for ang_idx, (ang_name, z0, dz, x0, dx, y0, dy) in enumerate(angle_templates, 1):
+                shot_counter += 1
+                ang_out = os.path.join(build_dir, f"_tmp_25d_b{seq_idx:02d}_a{ang_idx}.mp4")
+                temp_files.append(ang_out)
+
+                if CV2_NUMPY_AVAILABLE:
+                    _render_25d_parallax_shot_to_ffmpeg(
+                        img_path=img_path,
+                        out_mp4=ang_out,
+                        num_frames=raw_angle_frames,
+                        fps=fps,
+                        z0=z0, dz=dz, x0=x0, dx=dx, y0=y0, dy=dy,
+                        seed_key=f"fx_25d_{b_idx}_{ang_idx}",
+                    )
+                else:
+                    # Pure-FFmpeg fallback if OpenCV is unavailable
+                    ease = f"(0.5*(1-cos(PI*on/{raw_angle_frames})))"
+                    vf = (
+                        f"scale=5760:-1:flags=lanczos,"
+                        f"zoompan=z='{z0}+{dz}*{ease}':"
+                        f"x='(iw-iw/zoom)*clip({x0}+({dx})*{ease},0,1)':"
+                        f"y='(ih-ih/zoom)*clip({y0}+({dy})*{ease},0,1)':"
+                        f"d={raw_angle_frames}:s=1920x1080:fps={fps},"
+                        f"gblur=sigma=8:enable='lt(t,0.45)',"
+                        f"vignette=angle=PI/4.6,noise=alls=6:allf=t+u,format=yuv420p"
+                    )
+                    subprocess.run(
+                        [
+                            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                            "-loop", "1", "-t", f"{raw_angle_sec:.3f}", "-i", img_path,
+                            "-vf", vf, "-t", f"{raw_angle_sec:.3f}",
+                            "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
+                            "-pix_fmt", "yuv420p", "-an", ang_out,
+                        ],
+                        check=True,
+                    )
+
+                angle_clips.append(ang_out)
+                print(
+                    f"     [HUD Loop] Rendered {shot_counter:02d}/{total_shots} "
+                    f"(2.5D FX {ang_name}): {os.path.basename(img_path)}",
+                    flush=True,
                 )
-            else:
-                # Pure-FFmpeg fallback if OpenCV is unavailable
-                ease = f"(0.5*(1-cos(PI*on/{raw_angle_frames})))"
-                vf = (
-                    f"scale=5760:-1:flags=lanczos,"
-                    f"zoompan=z='{z0}+{dz}*{ease}':"
-                    f"x='(iw-iw/zoom)*clip({x0}+({dx})*{ease},0,1)':"
-                    f"y='(ih-ih/zoom)*clip({y0}+({dy})*{ease},0,1)':"
-                    f"d={raw_angle_frames}:s=1920x1080:fps={fps},"
-                    f"gblur=sigma=8:enable='lt(t,0.45)',"
-                    f"vignette=angle=PI/4.6,noise=alls=6:allf=t+u,format=yuv420p"
-                )
-                subprocess.run(
-                    [
-                        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
-                        "-loop", "1", "-t", f"{raw_angle_sec:.3f}", "-i", img_path,
-                        "-vf", vf, "-t", f"{raw_angle_sec:.3f}",
-                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
-                        "-pix_fmt", "yuv420p", "-an", ang_out,
-                    ],
-                    check=True,
-                )
 
-            angle_clips.append(ang_out)
-            print(
-                f"     [HUD Loop] Rendered {shot_counter:02d}/{total_shots} "
-                f"(2.5D FX {ang_name}): {os.path.basename(img_path)}",
-                flush=True,
+            # Blend the 3 angles of this block with xfade (keeps 0.50s tail for inter-block xfade)
+            block_out = os.path.join(build_dir, f"_tmp_25d_block_{seq_idx:02d}.mp4")
+            temp_files.append(block_out)
+            tr1 = intra_xfades[(b_idx) % len(intra_xfades)]
+            tr2 = intra_xfades[(b_idx + 1) % len(intra_xfades)]
+            off1 = round(effective_angle_sec, 3)
+            off2 = round(effective_angle_sec * 2.0, 3)
+
+            subprocess.run(
+                [
+                    "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                    "-i", angle_clips[0], "-i", angle_clips[1], "-i", angle_clips[2],
+                    "-filter_complex",
+                    f"[0:v][1:v]xfade=transition={tr1}:duration={xfade_dur:.2f}:offset={off1:.3f}[xf1];"
+                    f"[xf1][2:v]xfade=transition={tr2}:duration={xfade_dur:.2f}:offset={off2:.3f}[vblk]",
+                    "-map", "[vblk]",
+                    "-t", f"{block_dur_with_tail:.3f}",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "22", "-g", str(fps),
+                    "-pix_fmt", "yuv420p", "-an",
+                    block_out,
+                ],
+                check=True,
             )
+            block_clips.append(block_out)
 
-        # Blend the 3 angles of this block with xfade (keeps 0.50s tail for inter-block xfade)
-        block_out = os.path.join(build_dir, f"_tmp_25d_block_{seq_idx:02d}.mp4")
-        temp_files.append(block_out)
-        tr1 = intra_xfades[(b_idx) % len(intra_xfades)]
-        tr2 = intra_xfades[(b_idx + 1) % len(intra_xfades)]
-        off1 = round(effective_angle_sec, 3)
-        off2 = round(effective_angle_sec * 2.0, 3)
+        # Blend all block clips together via xfade into the 300s background track
+        blk_inputs = []
+        for bc in block_clips:
+            blk_inputs.extend(["-i", bc])
+
+        blk_xfade_chains = []
+        prev_pad = "[0:v]"
+        per_block_step = round(angles_per_img * effective_angle_sec, 3)  # 30.0s
+        for k in range(1, len(block_clips)):
+            off_b = round(k * per_block_step, 3)
+            tr_b = inter_xfades[k % len(inter_xfades)]
+            out_pad = f"[bxf{k}]" if k < len(block_clips) - 1 else "[v300]"
+            blk_xfade_chains.append(
+                f"{prev_pad}[{k}:v]xfade=transition={tr_b}:duration={xfade_dur:.2f}:offset={off_b:.3f}{out_pad}"
+            )
+            prev_pad = out_pad
 
         subprocess.run(
             [
                 "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
-                "-i", angle_clips[0], "-i", angle_clips[1], "-i", angle_clips[2],
-                "-filter_complex",
-                f"[0:v][1:v]xfade=transition={tr1}:duration={xfade_dur:.2f}:offset={off1:.3f}[xf1];"
-                f"[xf1][2:v]xfade=transition={tr2}:duration={xfade_dur:.2f}:offset={off2:.3f}[vblk]",
-                "-map", "[vblk]",
-                "-t", f"{block_dur_with_tail:.3f}",
-                "-c:v", "libx264", "-preset", "veryfast", "-crf", "22", "-g", str(fps),
+                *blk_inputs,
+                "-filter_complex", ";".join(blk_xfade_chains),
+                "-map", "[v300]",
+                "-t", f"{loop_duration_sec:.3f}",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-g", str(fps),
                 "-pix_fmt", "yuv420p", "-an",
-                block_out,
+                raw_bg_300s,
             ],
             check=True,
         )
-        block_clips.append(block_out)
+    else:
+        _first_idx, first_img_path = bg_images[0]
+        hud_dur = _probe_duration_sync(hud_webm)
+        if hud_dur <= 0.5:
+            hud_dur = 10.0
 
-    # Blend all 10 block clips together via xfade into the 300s background track
-    raw_bg_300s = os.path.join(build_dir, "_tmp_25d_bg_300s.mp4")
-    temp_files.append(raw_bg_300s)
-
-    blk_inputs = []
-    for bc in block_clips:
-        blk_inputs.extend(["-i", bc])
-
-    blk_xfade_chains = []
-    prev_pad = "[0:v]"
-    per_block_step = round(angles_per_img * effective_angle_sec, 3)  # 30.0s
-    for k in range(1, len(block_clips)):
-        off_b = round(k * per_block_step, 3)
-        tr_b = inter_xfades[k % len(inter_xfades)]
-        out_pad = f"[bxf{k}]" if k < len(block_clips) - 1 else "[v300]"
-        blk_xfade_chains.append(
-            f"{prev_pad}[{k}:v]xfade=transition={tr_b}:duration={xfade_dur:.2f}:offset={off_b:.3f}{out_pad}"
+        print(
+            f"[HUD Loop] Building lightweight {hud_dur:.1f}s single-image HUD loop from: "
+            f"{os.path.basename(first_img_path)}",
+            flush=True,
         )
-        prev_pad = out_pad
 
-    subprocess.run(
-        [
-            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
-            *blk_inputs,
-            "-filter_complex", ";".join(blk_xfade_chains),
-            "-map", "[v300]",
-            "-t", f"{loop_duration_sec:.3f}",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-g", str(fps),
-            "-pix_fmt", "yuv420p", "-an",
-            raw_bg_300s,
-        ],
-        check=True,
-    )
+        filter_complex = (
+            f"[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,"
+            f"pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,"
+            f"fps={fps},format=rgba[bg];"
+            f"[bg][1:v]overlay=0:0:shortest=1,format=yuv420p[outv]"
+        )
+
+        subprocess.run(
+            [
+                "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                "-loop", "1", "-t", f"{hud_dur:.3f}", "-i", first_img_path,
+                "-c:v", "libvpx-vp9", "-i", hud_webm,
+                "-filter_complex", filter_complex,
+                "-map", "[outv]",
+                "-t", f"{hud_dur:.3f}",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "24", "-g", str(fps),
+                "-pix_fmt", "yuv420p", "-an",
+                master_loop_path,
+            ],
+            check=True,
+        )
+
+        print(f"[HUD Loop] [OK] Created lightweight single-image HUD loop: {master_loop_path}", flush=True)
+        return master_loop_path
 
     # Composite transparent hud_overlay_10s.webm over the 300s 2.5D FX reel
     subprocess.run(
@@ -2529,14 +2565,14 @@ def build_5min_hud_loop_video(
     print(f"[HUD Loop] [✓] Created 5-minute 2.5D FX master loop: {master_loop_path}", flush=True)
     return master_loop_path
 
-
 def assemble_multi_image_video(
     blocks: list,
     block_durations: dict,
     build_dir: str,
     final_audio_path: str,
     output_video_path: str,
-    subtitles_srt_path: Optional[Union[str, Dict[str, str]]] = None
+    subtitles_srt_path: Optional[Union[str, Dict[str, str]]] = None,
+    animate_hud_images: bool = True,
 ):
     print("\n[Multiplexer] Assembling 5-Minute Rolling HUD Video + Outro Card...", flush=True)
 
@@ -2550,7 +2586,7 @@ def assemble_multi_image_video(
     main_video_dur = max(10.0, total_audio_dur - outro_dur)
 
     # 1. Build (or reuse) the 5-minute (300s) 10-background animated HUD loop
-    master_loop_5m = build_5min_hud_loop_video(blocks, build_dir, loop_duration_sec=300.0, fps=30)
+    master_loop_5m = build_5min_hud_loop_video(blocks, build_dir, loop_duration_sec=300.0, fps=30,animate_images=animate_hud_images,)
 
     # 2. Stream-copy the 5-minute loop across the entire main audiobook duration (instantaneous)
     main_looped_track = os.path.join(build_dir, "v_seg_main_hud_loop.mp4")

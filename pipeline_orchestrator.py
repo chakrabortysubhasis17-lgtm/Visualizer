@@ -843,7 +843,8 @@ async def run_audiobook_pipeline(config: dict) -> dict:
             build_dir=build_dir,
             final_audio_path=final_audio,
             output_video_path=final_video,
-            subtitles_srt_path=subtitles_file
+            subtitles_srt_path=subtitles_file,
+            animate_hud_images=bool(config.get("animate_hud_images", True)),
         )
         log_success(f"Final Video rendered: '{final_video}'")
     else:
